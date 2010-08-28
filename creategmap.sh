@@ -17,7 +17,7 @@ version=v0.53
 ##
 ##
 ## Mehr Informationen bei Problemen
-web_help=" Mehr Infos unter http://wiki.openstreetmap.org/wiki/User:Berndw"
+web_help="Mehr Infos unter http://wiki.openstreetmap.org/wiki/User:Berndw"
 #
 #
 #
