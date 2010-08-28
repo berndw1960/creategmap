@@ -5,7 +5,7 @@ version=v0.53
 ## creategmap.sh, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
 ## zu erzeugen, z.B. Garmin eTrex Vista Hcx
 ##
-## Mitwirkende Bernd Weigelt, (Rudolf Heeb), Dschuwa, Jonas Stein
+## Mitwirkende Bernd Weigelt, (Rudolf Heeb), Dschuwa as QCO, Jonas Stein
 ##
 ## License GPL
 ##
