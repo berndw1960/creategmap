@@ -1,0 +1,86 @@
+Diese Anleitung ist für openSUSE Linux , geschrieben vom User Dschuwa
+Es wird keine Haftung übernommen!
+
+Vorbereitung
+
+    * Das Script in eine leere Textdatei kopieren (Rechtsklick auf der neue erstellten Datei, Öffnen mit z.B. KWrite) und den Inhalt einfügen
+          o chmod 755 'Dateiname' nicht vergessen! 
+
+    * "share/osm/map_build" im "/home" Verzeichnis anlegen 
+
+    * "gmt.exe" aus dem Programm "GmaptoolsX.X.X Windows Setup" über die Webseite http://www.anpo.republika.pl/download.html downloaden.
+    * Installation des heruntergeladenen Programms "GmaptoolsX.X.Xsetup.exe": 
+
+    * Dolphin starten (Anleitung für Mausschubser, man kann es auch auf der Konsole machen)
+          o Rechtsklick auf die heruntergeladene "Setup.exe" und „Öffnen mit“ auswählen. "Wine">"Wine file" auswählen und die "Setup.exe" starten.
+          o Das Setup Programm komplett durchführen. Tipp: Das Desktop Icon kann man abwählen.
+          o Danach im Dolphin den Ordner "~/.wine" öffnen (wenn nicht zu sehen, Tasten: ALT + . , dann werden ausgeblendete Dateien angezeigt)
+          o drive_c > programme > Gmaptool auswählen
+          o Den Ordner "gmt" komplett kopieren nach "~/share/osm/map_build" 
+
+    * Installation von Software über die Softwareverwaltung:
+          o "Java 1.6.0" von SUN, mit "openJDK" funktioniert das Script nicht.
+          o wine
+          o git 
+
+    * Zum Kompilieren von "osbsql2osm" werden folgende Pakete benötigt:
+          o gcc (GNU-C-Compiler)
+          o make
+          o automake
+          o autoconf (kann bereits installiert sein) 
+
+    * "osbsql2osm" über das Terminal (Console) wie folgt installieren: 
+
+wget http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz
+tar xzvf osbsql2osm-latest.tar.gz
+cd osbsql2osm-X.X.X/
+./configure
+make
+
+    * beim X muss vorher nachgeschaut werden, welche Version heruntergeladen wurde! Weiter als Root (Eingabe su und dann das Passwort von root eingeben): 
+
+ make install
+
+    * Zur Kontrolle sollte die Datei im Ordner "/usr/local/bin" liegen 
+
+[Bearbeiten] Verwendung
+[Bearbeiten] Starten des Scripts
+
+    * Das Script wird über das Terminal (Console) wie folgt gestartet, falls es in ~/bin liegt genügt der Dateiname, z.B. cgm 
+
+./cgm 
+
+Standard ist der Bau einer Velomap für mehr Kontrast auf kleinen Displays, für die normale Basemap muss die Option -base angehängt werden.
+
+    * Beim ersten Start wird nach dem Arbeitsspeicher im Computer gefragt. Der Wert für die Speichervorgabe für JAVA sollte nicht zu klein sein, eine Eingabe von -Xmx1500M bei 2 GiB ist unterer Wert, dann müssen aber auch die maxnodes reduziert werden.
+          o Je mehr Arbeitsspeicher im Computer verfügbar ist desto besser! 
+
+    * Abfrage der maxnodes, je mehr Arbeitsspeicher, desto höher kann der Wert bei maxnodes eingegeben werden: 2GiB (700000), 4GiB (1000000), bei Problemen mit mkgmap sollte dieser Wert versuchsweise reduziert werden.
+    * Es werden nur einmalig die Versionen für mkgmap und splitter abgefragt, einfach mit "Enter" bestätigen. Bei Problemen kann mit der Startoption -mk, -sp jeweils eine neue Version heruntergeladen werden. Falls die im Script vorgegebene Version nicht verfügbar sein sollte, kann unter [MKGMAP-Homepage] eine andere Versionnummer gefunden werden. Die Versionsnummern wechseln häufig und das Script wird nicht immer up2date sein, deswegen könnte man auch vorher nachschauen. ;-)
+    * Als nächstes muss das Land angegeben werden, für welche die Karte erstellt werden soll. Eine Liste mit den Ländern gibt es hier: http://download.geofabrik.de/osm/europe/ .Die Wahl wird in "creategmap.conf" gespeichert, zum Ändern des Landes die Option '-i' beim Aufruf des Scriptes verwenden. 
+
+Wichtig: Das Land muss in englischer Schreibweise und genauso wie bei http://download.geofabrik.de/osm/europe/ eingegeben werden!
+
+    * Es wird nun die Karte erstellt, dies kann je nach Prozessor, Arbeitsspeicher und der gewählten Karte mehrere Stunden dauern. Die Deutschland-Karte (default) braucht bei einem Intel i5-750 mit 4x2.6 GHz rund 30 Minuten, dazu kommt der Download von rund 900 MiB für die Kartendaten.
+    * Sobald die Meldung "Habe fertig!" erscheint, wurde die gewählte Karte erstellt und befindet sich im Ordner ~/share/osm/ mit dem jeweiligen Ländernamen.
+    * Im Verzeichnis ~/share/osm/map_build befindet sich die zuletzt erstelle Karte im Garmin Format "gmapsupp.img", diese Datei kann direkt auf das Garmin GPS kopiert werden. 
+
+[Bearbeiten] Optionen
+
+Folgende Startoption gibt es für das Script:
+
+    * -h Hilfe, Überblick
+    * -i Interaktiv - Es können die gespeicherten Einstellung wieder geändert werden
+    * -base Es wird eine normale Basempa Karte erstellt, Standard ist die Velomap für mehr Kontrast auf kleinen Displays
+    * -nm Es werden keine neuen Kartendaten geholt (Die Kartendaten werden z. Z. nur einmal am Tag aktualisiert
+    * -nb Es werden keine neuen Openstreetbugs geholt
+    * -mk Es wird ein neues "mkgmap.jar" geholt (Nur bei Problemen erforderlich!)
+    * -sp Es wird ein neues "splitter.jar" geholt (Nur bei Problemen erforderlich!) 
+
+[Bearbeiten] Fehlermeldungen
+
+Bei einer Fehlermeldung sollte folgendes geprüft werden:
+
+    * Alle benötigte Software installiert? (mkgmap und splitter werden vom Script selbstständig heruntergelanden, die Verzeichnisse sollten im map_build Ordner vorhanden sein).
+    * Sollte eine Fehlermeldung bei Java auftauchen, die Installtion von Java 1_6_0 von SUN prüfen ggf. neu installieren, es muss openJDK deinstalliert sein.
+    * Bei Fehlermeldung sollten auch die Einstellungen beim Arbeitsspeicher und maxnodes geprüft werden, ggf. kleiner Werte eintragen. 
