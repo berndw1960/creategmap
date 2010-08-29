@@ -6,12 +6,9 @@ __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = ["Dschuwa"]
 __license__ = "GPL"
-__maintainer__ = Bernd Weigelt, Jonas Stein"
+__maintainer__ = "Bernd Weigelt, Jonas Stein"
 __email__ = "weigelt.bernd@web.de"
 __status__ = "preAlpha"
-
-
-
 
 
 import sys
