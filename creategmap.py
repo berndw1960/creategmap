@@ -117,14 +117,11 @@ log = 0
 enable_log = 0
 disable_log = 0
  
-## Arbeitsverzeichnis
-dir = "~/share/osm/map_build"
- 
 ## Wo ist mkgmap
-mkgmap = "$dir/mkgmap/mkgmap.jar"
+mkgmap = "mkgmap/mkgmap.jar"
  
 ## Splitter
-splitter = "$dir/splitter/splitter.jar"
+splitter = "splitter/splitter.jar"
  
 ## Für Java 
 RAMSIZE = "-Xmx2000M"
@@ -138,9 +135,6 @@ default_map = "germany"
  
 ## Velomap erstellen
 basemap = 0
- 
-## styles holen
-styles = 0
  
 ## Download der aktuellen Kartendaten
 download = 1
@@ -160,6 +154,8 @@ NOBASEMAPOPTIONS = " --no-poi-address --ignore-maxspeeds --ignore-turn-restricti
 VELOMAPOPTIONS = " --generate-sea=polygons,extend-sea-sectors,close-gaps=6000 --reduce-point-density=2.8 --reduce-point-density-polygon=8 --suppress-dead-end-nodes --index --adjust-turn-headings --add-pois-to-areas --ignore-maxspeeds --link-pois-to-ways --remove-short-arcs=4 --location-autofill=1"
 
 
+## Progamme und Verzeichnisse suchen
+
 hint = "mkdir ~/share/osm/map_build "
 FailCounter += checkdir("~/share/osm/map_build", hint) 
 
@@ -175,7 +171,6 @@ FailCounter += checkprg("osbsql2osm", hint)
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 FailCounter += checkprg("git", hint)
 
- 
 #cd "$dir"
 
  
@@ -238,16 +233,6 @@ print(" Bugsholen - off ")
 #		bugsholen=0
 #	;;
 # 
-#	-mk)
-print(" Mkgmap holen - on ")
-#		getmkr=1
-#	;;
-# 
-#	-sp)
-print(" Splitter holen - on ")
-#		getspr=1
-#	;;
-#
 #	-L)
 print(" Log - on ")
 #		enable_log=1
@@ -414,8 +399,6 @@ def getmkgmap(url):
     target.request('GET', 'http://www.mkgmap.org.uk/snapshots/')
     
     htmlcontent =  target.getresponse().read()
-    
-#    print(htmlcontent)
 
     pattern = re.compile('mkgmap-r\d{4}')
     LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
@@ -434,8 +417,6 @@ def getsplitter(url):
     target.request('GET', 'http://www.mkgmap.org.uk/splitter/')
     
     htmlcontent =  target.getresponse().read()
-    
-#    print(htmlcontent)
 
     pattern = re.compile('splitter-r\d{3}')
     LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
