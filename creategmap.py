@@ -50,7 +50,7 @@ import re
 
 # DEFs =============================================================================
 
-def checkprg(programmtofind):
+def checkprg(programmtofind, solutionhint):
     """
     test if program can be found in path environment
     raise message if fails and returns 1
@@ -58,8 +58,10 @@ def checkprg(programmtofind):
     """
     print(programmtofind)
     # FIXME here is no code yet
+    print(solutionhint)
 
     return 0
+
 
 
 # VARs =============================================================================
@@ -104,14 +106,14 @@ getspr = 0
 #splitter = $dir/splitter/splitter.jar
  
 ## Für Java 
-RAMSIZE = '-Xmx2000M'
+RAMSIZE = "-Xmx2000M"
 MAXNODES = 500000
  
 ## Interaktiver Modus
 abfrage = 0
  
 ## Standardkarte
-default_map = 'germany'
+default_map = "germany"
  
 ## Velomap erstellen
 basemap = 0
@@ -164,12 +166,10 @@ print(" gmt fehlt! ")
 print(" Download: http://www.anpo.republika.pl/download.html ")
 #fi
  
-def checkprg(osbsql2osm):
-  return 1  
-#if [ -x $osbsql2osm ]; then :
-#else problems=1
-print(" osbsql2osm zum Auslesen von OSB fehlt! ")
-print(" Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz ")
+hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
+FailCounter += checkprg("osbsql2osm", hint)
+
+
 #fi
  
 def checkprg(git):
