@@ -23,8 +23,7 @@ import re
 ##
 ##
 ##
-## Mehr Informationen bei Problemen
-web_help = " Mehr Infos unter http://wiki.openstreetmap.org/wiki/User:Berndw"
+# 
 #
 #
 #
@@ -46,18 +45,27 @@ web_help = " Mehr Infos unter http://wiki.openstreetmap.org/wiki/User:Berndw"
 # erstellt aus Sourcen 
 # http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz
 #
-####################################################################################
-#
- """
+####################################################################################"""
 
-def checkprg(wine):
-"""test if program can be found in path environment
-raise message if fails
-"""
 
-# FIXME here is no code yet
+# DEFs =============================================================================
 
-  return 1
+def checkprg(programmtofind):
+    """
+    test if program can be found in path environment
+    raise message if fails and returns 1
+    on success return 0
+    """
+    print(programmtofind)
+    # FIXME here is no code yet
+
+    return 0
+
+
+# VARs =============================================================================
+
+web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
+
 
 
  
