@@ -2,7 +2,17 @@
 # -*- coding: utf-8 -*-
 
 __version__ = 0.60
-__author__ = "Bernd Weigelt"
+__author__ = "Bernd Weigelt, Jonas Stein"
+__copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
+__credits__ = ["Dschuwa"]
+__license__ = "GPL"
+__maintainer__ = Bernd Weigelt, Jonas Stein"
+__email__ = "weigelt.bernd@web.de"
+__status__ = "preAlpha"
+
+
+
+
 
 import sys
 import os
