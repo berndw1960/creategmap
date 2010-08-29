@@ -150,55 +150,23 @@ merge_error = "Zusammenfügen der Karte klappt nicht, da nicht alle Teile vorhan
 GBASEMAPOPTIONS = " --remove-short-arcs --add-pois-to-areas --make-all-cycleways --link-pois-to-ways --index  --generate-sea=polygons,no-sea-sectors,close-gaps=2000"
 NOBASEMAPOPTIONS = " --no-poi-address --ignore-maxspeeds --ignore-turn-restrictions --ignore-osm-bounds --transparent"
 VELOMAPOPTIONS = " --generate-sea=polygons,extend-sea-sectors,close-gaps=6000 --reduce-point-density=2.8 --reduce-point-density-polygon=8 --suppress-dead-end-nodes --index --adjust-turn-headings --add-pois-to-areas --ignore-maxspeeds --link-pois-to-ways --remove-short-arcs=4 --location-autofill=1"
- 
- 
- 
-## Alles da?
-problems = 0
- 
-#if [ -d $dir ]; then :
-#else problems=1
-print(" Arbeitsverzeichnis '$dir' wurde nicht gefunden! ")
-#fi
- 
 
-#if [ -x $wine ]; then :
-#else problems=1
-print(" wine fehlt ")
-#fi
+
+hint = "mkdir ~/share/osm/map_build "
+FailCounter += checkdir("~/share/osm/map_build", hint) 
+
+hint = "Install: wine to work with gmt.exe from GMAPTOOLS"
+FailCounter += checkprg("/usr/bin/wine", hint)
  
-## Wine wird benötigt für folgendes DOS-Programm, es gibt eine, statisch gelinkte, Linux-Alternative
-## Beides ist mir unsympatisch
- 
-#if [ -f $dir/gmt/gmt.exe ]; then :
-#else problems=1 
-print(" gmt fehlt! ")
-print(" Download: http://www.anpo.republika.pl/download.html ")
-#fi
+hint = " Download: http://www.anpo.republika.pl/download.html "
+FailCounter += checkprg("~/share/osm/map_build/gmt/gmt.exe", hint)
  
 hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
-FailCounter += checkprg("osbsql2osm", hint)
+FailCounter += checkprg("/usr/local/bin/osbsql2osm", hint)
 
+hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
+FailCounter += checkprg("/usr/bin/git", hint)
 
-#fi
- 
-def checkprg(git):
-  return 1
-#if [ -x $git ]; then :
-#else problems=1
-print(" git fehlt, wird gebraucht um die mkgmap-Styles zu holen! ")
-#fi
- 
-#if [ $problems -eq 1 ] ; then
-
-print("""
-	Ein Problem ist aufgetreten, bitte nach Beheben das Script neu starten!"  
-
-""")
-#      echo  $web_help
-#      exit
-#fi
- 
  
 #cd $dir
  
