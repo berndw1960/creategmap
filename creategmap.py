@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = 0.53
+__version__ = 0.6.0a1
 __author__ = "Bernd Weigelt"
 
 import sys
@@ -10,6 +10,7 @@ from httplib import *
 import re
  
 """ 
+  ===========VORSICHT ALPHA-STADIUM=================
   creategmap.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
   zu erzeugen, z.B. Garmin eTrex Vista Hcx
   Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
@@ -53,7 +54,9 @@ def printwarning(msg):
 def printerror(msg):
     print("EE: " + msg)
 
-
+""" Setzt einen festen Platz für alle Programme voraus, 
+sollte eher mit "which programmname" erledigt werden (Bernd)
+"""
 
 def checkprg(programmtofind, solutionhint):
     """
@@ -685,6 +688,7 @@ print("""
  
  
 ## Änderungen:
+# v0.6.0a1 - Beginn der Umstellung auf python, aktuell noch nicht benutzbar
 
 # v0.53- Erste Änderungen während der Betaphase, Texte und Grundeinstellungen
 #	 Logfunktion implentiert
