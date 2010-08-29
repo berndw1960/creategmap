@@ -44,23 +44,41 @@ import re
 
 # DEFs =============================================================================
 
+def printinfo(msg):
+    print("II: " + msg)
+
+def printwarning(msg):
+    print("WW: " + msg)
+
+def printerror(msg):
+    print("EE: " + msg)
+
+
+
 def checkprg(programmtofind, solutionhint):
     """
-    test if program can be found in path environment
+    test if program can be found 
     raise message if fails and returns 1
     on success return 0
     """
-    print(programmtofind)
-    # FIXME here is no code yet
-    print(solutionhint)
+
+    ExitCode = os.system("test -f " + programmtofind)
+    
+    if ExitCode == 0:
+        printinfo(programmtofind + " found")
+    else:
+        printerror(programmtofind + " not found")
+        print(solutionhint)
 
     return 0
-
 
 
 # VARs =============================================================================
 
 web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
+
+# Brauchen wir den eigentlich wirklich?
+FailCounter = 0
 
 """ 
   Optionen für creategmap
