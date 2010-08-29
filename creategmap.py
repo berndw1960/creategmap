@@ -9,7 +9,7 @@ import os
 from httplib import *
 import re
  
-## creategmap.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
+""" creategmap.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
 ## zu erzeugen, z.B. Garmin eTrex Vista Hcx
 ##
 ## Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
@@ -48,7 +48,18 @@ web_help = " Mehr Infos unter http://wiki.openstreetmap.org/wiki/User:Berndw"
 #
 ####################################################################################
 #
- 
+ """
+
+def checkprg(wine):
+"""test if program can be found in path environment
+raise message if fails
+"""
+
+# FIXME here is no code yet
+
+  return 1
+
+
  
 ## Optionen für creategmap
 ## Eigene Einstellungen können in creategmap.conf eingestellt werden, 
@@ -130,8 +141,7 @@ problems = 0
 print(" Arbeitsverzeichnis '$dir' wurde nicht gefunden! ")
 #fi
  
-def checkprg(wine):
-  return 1
+
 #if [ -x $wine ]; then :
 #else problems=1
 print(" wine fehlt ")
