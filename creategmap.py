@@ -70,8 +70,25 @@ def checkprg(programmtofind, solutionhint):
         printerror(programmtofind + " not found")
         print(solutionhint)
 
-    return 0
+    return ExitCode
 
+
+def checkdir(dirtofind, solutionhint):
+    """
+    test if program can be found 
+    raise message if fails and returns 1
+    on success return 0
+    """
+
+    ExitCode = os.system("test -d " + dirtofind)
+    
+    if ExitCode == 0:
+        printinfo(dirtofind + " found")
+    else:
+        printerror(dirtofind + " not found")
+        print(solutionhint)
+
+    return ExitCode
 
 # VARs =============================================================================
 
