@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = 0.6.0a1
+__version__ = 0.60
 __author__ = "Bernd Weigelt"
 
 import sys
@@ -54,18 +54,16 @@ def printwarning(msg):
 def printerror(msg):
     print("EE: " + msg)
 
-""" Setzt einen festen Platz für alle Programme voraus, 
-sollte eher mit "which programmname" erledigt werden (Bernd)
-"""
 
 def checkprg(programmtofind, solutionhint):
     """
     test if program can be found 
     raise message if fails and returns 1
     on success return 0
+    search follows $PATH
     """
 
-    ExitCode = os.system("test -f " + programmtofind)
+    ExitCode = os.system("which " + programmtofind)
     
     if ExitCode == 0:
         printinfo(programmtofind + " found")
@@ -78,7 +76,7 @@ def checkprg(programmtofind, solutionhint):
 
 def checkdir(dirtofind, solutionhint):
     """
-    test if program can be found 
+    test if work_dir can be found 
     raise message if fails and returns 1
     on success return 0
     """
@@ -97,7 +95,7 @@ def checkdir(dirtofind, solutionhint):
 
 web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
 
-# Brauchen wir den eigentlich wirklich?
+# Brauchen wir den eigentlich wirklich? Bernd: Glaube ich nicht
 FailCounter = 0
 
 """ 
@@ -159,20 +157,20 @@ hint = "mkdir ~/share/osm/map_build "
 FailCounter += checkdir("~/share/osm/map_build", hint) 
 
 hint = "Install: wine to work with gmt.exe from GMAPTOOLS"
-FailCounter += checkprg("/usr/bin/wine", hint)
+FailCounter += checkprg("wine", hint)
  
 hint = " Download: http://www.anpo.republika.pl/download.html "
-FailCounter += checkprg("~/share/osm/map_build/gmt/gmt.exe", hint)
+FailCounter += checkprg("gmt.exe", hint)
  
 hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
-FailCounter += checkprg("/usr/local/bin/osbsql2osm", hint)
+FailCounter += checkprg("osbsql2osm", hint)
 
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
-FailCounter += checkprg("/usr/bin/git", hint)
+FailCounter += checkprg("git", hint)
 
  
-#cd $dir
- 
+#cd "$dir"
+
  
 ## Eigene Einstellungen werden aus creategmap.conf gelesen
  
