@@ -9,43 +9,37 @@ import os
 from httplib import *
 import re
  
-""" creategmap.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
-## zu erzeugen, z.B. Garmin eTrex Vista Hcx
-##
-## Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
-## und als QCO Dschuwa
-##
-## License GPL
-##
-## Work in progress, bitte beachten!
-## Prinzipiell funktioniert es, aber wenn was kaputt geht, 
-## lehnen wir jegliche Haftung ab.
-##
-##
-##
-# 
-#
-#
-#
-# folgende software wird benutzt:
-# 
-# mkgmap von 
-# http://wiki.openstreetmap.org/wiki/Mkgmap
-# http://www.mkgmap.org.uk/snapshots/mkgmap-latest.tar.gz
-#
-# gmaptool von
-# http://www.anpo.republika.pl/download.html
-# gmt.exe
-#
-# splitter von
-# http://www.mkgmap.org.uk/page/tile-splitter
-# splitter.jar 
-#
-# osbsql2osm
-# erstellt aus Sourcen 
-# http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz
-#
-####################################################################################"""
+""" 
+  creategmap.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
+  zu erzeugen, z.B. Garmin eTrex Vista Hcx
+  Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
+  und als QCO Dschuwa
+
+  License GPL
+  
+  Work in progress, bitte beachten!
+  Prinzipiell funktioniert es, aber wenn was kaputt geht, 
+  lehnen wir jegliche Haftung ab.
+  
+  
+  Folgende Software wird benutzt:
+  
+  mkgmap von 
+  http://wiki.openstreetmap.org/wiki/Mkgmap
+  http://www.mkgmap.org.uk/snapshots/mkgmap-latest.tar.gz
+ 
+  gmaptool von
+  http://www.anpo.republika.pl/download.html
+  gmt.exe
+ 
+  splitter von
+  http://www.mkgmap.org.uk/page/tile-splitter
+  splitter.jar 
+ 
+  osbsql2osm
+  erstellt aus Sourcen 
+  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz
+"""
 
 
 # DEFs =============================================================================
@@ -68,13 +62,11 @@ def checkprg(programmtofind, solutionhint):
 
 web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
 
-
-
- 
-## Optionen für creategmap
-## Eigene Einstellungen können in creategmap.conf eingestellt werden, 
-## bei Problemen sollte dort auch kontrolliert werden
- 
+""" 
+  Optionen für creategmap
+  Eigene Einstellungen können in creategmap.conf eingestellt werden, 
+  bei Problemen sollte dort auch kontrolliert werden
+""" 
 firstrun = 1
 
 ## Log
@@ -83,27 +75,13 @@ enable_log = 0
 disable_log = 0
  
 ## Arbeitsverzeichnis
-#dir = ~/share/osm/map_build
- 
-## mkgmap.latest verwenden
-getmkr = 0
- 
-## Mkgmap-Version
-## verfügbare unter http://www.mkgmap.org.uk/snapshots/
-#mkr = r1669
+dir = "~/share/osm/map_build"
  
 ## Wo ist mkgmap
-#mkgmap = $dir/mkgmap/mkgmap.jar
- 
-## splitter aktualisieren
-getspr = 0
- 
-## Splitter-Version
-## verfügbare unter http://www.mkgmap.org.uk/splitter/
-#spr=r123
+mkgmap = "$dir/mkgmap/mkgmap.jar"
  
 ## Splitter
-#splitter = $dir/splitter/splitter.jar
+splitter = "$dir/splitter/splitter.jar"
  
 ## Für Java 
 RAMSIZE = "-Xmx2000M"
@@ -129,9 +107,6 @@ bugsholen = 1
  
 ## Tilesverzeichnis löschen
 rm_tiles = 1
- 
-## Bugs holen 
-bugs_from = 'osb_dump'
  
 ## Falls was fehlt
 merge_error = "Zusammenfügen der Karte klappt nicht, da nicht alle Teile vorhanden sind!"
