@@ -65,7 +65,8 @@ def printerror(msg):
 
 def checkprg(programmtofind, solutionhint):
     """
-    test if program can be found 
+    test if an executable can be found by 
+    following $PATH
     raise message if fails and returns 1
     on success return 0
     search follows $PATH
@@ -81,10 +82,26 @@ def checkprg(programmtofind, solutionhint):
 
     return ExitCode
 
+def checkfile(filetofind, solutionhint):
+    """
+    test if a file can be found at a predefined place
+    raise message if fails and returns 1
+    on success return 0
+    """
+
+    ExitCode = os.system("test -f " + filetofind)
+    
+    if ExitCode == 0:
+        printinfo(filetofind + " found")
+    else:
+        printerror(filetofind + " not found")
+        print(solutionhint)
+
+    return ExitCode
 
 def checkdir(dirtofind, solutionhint):
     """
-    test if work_dir can be found 
+    test if a dir can be found  at a predefined place
     raise message if fails and returns 1
     on success return 0
     """
@@ -103,7 +120,11 @@ def checkdir(dirtofind, solutionhint):
 
 web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
 
-# Brauchen wir den eigentlich wirklich? Bernd: Glaube ich nicht
+
+"""
+  Brauchen wir den eigentlich wirklich? 
+  Bernd: Glaube ich nicht, höchstens für das Debuggen
+"""  
 FailCounter = 0
 
 """ 
@@ -111,32 +132,63 @@ FailCounter = 0
   Eigene Einstellungen können in creategmap.conf eingestellt werden, 
   bei Problemen sollte dort auch kontrolliert werden
 """ 
+
+"""
+  Diese Funktion sollte bestehen bleiben, um entweder bei Erstbenutzung
+  ausführliche Infos zu geben, und eventuell die Möglichkeit des Rücksetzen
+  auf die Default-Einstellungen bei Fehlern zu bieten
+"""
 firstrun = 1
 
+"""
+  Logfunktion sollte eventuell erweitert werden zur besseren Fehlerbehebung
+  Log-, bzw. verbosity-Level sollte einstellbar sein, zumindest varialbel
+"""  
 ## Log
 log = 0
 enable_log = 0
 disable_log = 0
- 
+
+"""
+  Splitter und Mkgmap werden automatisch geholt und installiert
+  Optionen können verbessert werden
+"""
 ## Wo ist mkgmap
 mkgmap = "mkgmap/mkgmap.jar"
  
 ## Splitter
 splitter = "splitter/splitter.jar"
- 
+
+"""
+  Folgende Optionen sollten bei 'firstrun = 1' und Resets der Einstellungen 
+  gesondert abgefragt werden, 
+  Hinweistexte multilingual, mit Hinweise auf das Wiki
+"""  
 ## Für Java 
 RAMSIZE = "-Xmx2000M"
 MAXNODES = 500000
- 
+
+"""
+  Idee similar zu 'firstrun = 1' könnte zusammen gefasst werden
+"""  
 ## Interaktiver Modus
 abfrage = 0
- 
+
+"""
+  Diese Optionen sollte per Konfigurationsdatei variabel sein
+"""
 ## Standardkarte
 default_map = "germany"
  
 ## Velomap erstellen
 basemap = 0
- 
+
+"""
+  Eigentlich geht es nicht ohne die folgenden drei Optionen, aber 
+  wenn kein Download gewünscht, dünne Leitung oder wg. Tests, sollte 
+  es die Möglichkeit geben, Arbeitsschritte zu 
+  überspringen, falls alle Bedingungen erfüllt sind.
+"""
 ## Download der aktuellen Kartendaten
 download = 1
  
@@ -145,14 +197,14 @@ bugsholen = 1
  
 ## Tilesverzeichnis löschen
 rm_tiles = 1
- 
+
+"""
+  Diese Option ist eigentlich sinnfrei, denn wenn nicht alles Teile 
+  vorhanden sind, klappt das ganze nicht und es gibt andere Fehlermeldungen
+  Kann also entfallen
+"""  
 ## Falls was fehlt
 merge_error = "Zusammenfügen der Karte klappt nicht, da nicht alle Teile vorhanden sind!"
- 
-## mkgmap-Optionen
-GBASEMAPOPTIONS = " --remove-short-arcs --add-pois-to-areas --make-all-cycleways --link-pois-to-ways --index  --generate-sea=polygons,no-sea-sectors,close-gaps=2000"
-NOBASEMAPOPTIONS = " --no-poi-address --ignore-maxspeeds --ignore-turn-restrictions --ignore-osm-bounds --transparent"
-VELOMAPOPTIONS = " --generate-sea=polygons,extend-sea-sectors,close-gaps=6000 --reduce-point-density=2.8 --reduce-point-density-polygon=8 --suppress-dead-end-nodes --index --adjust-turn-headings --add-pois-to-areas --ignore-maxspeeds --link-pois-to-ways --remove-short-arcs=4 --location-autofill=1"
 
 
 ## Progamme und Verzeichnisse suchen
@@ -172,11 +224,14 @@ FailCounter += checkprg("osbsql2osm", hint)
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 FailCounter += checkprg("git", hint)
 
+
+
 #cd "$dir"
 
- 
-## Eigene Einstellungen werden aus creategmap.conf gelesen
- 
+""" 
+  Eigene Einstellungen werden aus creategmap.conf gelesen
+""" 
+
 #if [ -f creategmap.conf ] ; then :
 #else
 #    touch creategmap.conf
@@ -187,7 +242,15 @@ FailCounter += checkprg("git", hint)
 #source $dir/creategmap.conf
  
  
-## Optionen beim Programmstart stechen die Vorgaben aus dem Script oder der Konfigurationsdatei.
+"""
+  Optionen beim Programmstart stechen die Vorgaben aus dem Script 
+  oder der Konfigurationsdatei, sollten aber in der Konfiguration
+  gespeichert werden.
+  Aufrufe des Scripts ohne Optionen sollten , wenn sinnvoll, die 
+  vorangegangenen übernehmen.
+  Default (Vorschlag):
+  velomap  mit Bugs und Fixmes, wie beim Bashscript
+"""  
  
 #while test $# -gt 0
 #do
@@ -196,7 +259,7 @@ FailCounter += checkprg("git", hint)
 print("""
 		creategmap [-options]
 
-		-i		interaktiv mit Abfragen
+		-i		interaktiv mit der Möglichkeit, Optionen zu ändern
 		-base		Basemap erstellen
 		-nm  		Keine Kartendaten holen
 		-nb  		keine neuen Bugs holen
@@ -252,6 +315,12 @@ print(" error: invalid argument $1 ")
 #	shift
 #done
 
+"""
+  Logfunktion sollte an die Möglichkeiten von python angepasst werden,
+  firstrun = 1 sollte auf jeden Fall log = 1 mit verbose = 3 (alles) haben.
+  andere nur noch auf Wunsch.
+"""
+
 #if [ $enable_log = 1 ] ; then
 #	log=1
 #elif [ $disable_log = 1 ] ; then
@@ -272,8 +341,11 @@ print(" error: invalid argument $1 ")
 #	echo log=1 >> creategmap.conf
 #fi 
 # 
-# 
-## Einstellungen beim ersten Lauf
+
+""" 
+  Einstellungen beim ersten Lauf
+"""
+
 # 
 #if [ $firstrun -eq 1 ] ; then
 #	    RAMSIZE_OLD=$RAMSIZE
@@ -329,31 +401,13 @@ print("""
 #fi
 
 
-## Optionen für mkgmap, gelesen aus einer eigenen Konfigurationsdatei
-# 
-#if [ -f mkgmap.conf ] ; then :
-#else
-#    touch mkgmap.conf
-#    print("## Generated with ") $version > mkgmap.conf
-#    print("
-#lower-case 
-#max-jobs  
-#country-name=$map 
-#country-abbr=EU  
-#area-name=EU
-#latin1 
-#route 
-#net 
-#no-sort-roads
-#make-all-cycleways
-#gmapsupp
-#keep-going
-#") >> mkgmap.conf
-#fi
- 
+"""
+  Wenn möglich sollte auch der Bau der kleineren Karten möglich sein
+  Wäre eine Suchfunktion sinnvoll?
+  Oder eine Auswahl anhand von direktory-listings?
+  Oder wäre das etwas für eine spätere grafische Version?
+"""
 
-## Auswahl des gewünschten Landes
- 
 #if [ $firstrun -eq 1 ] ; then
 #    map= 
 #    while [ -z $map ] ; do
@@ -548,7 +602,14 @@ print(" Hole die benötigten Höhenlinien! ")
 #	cd ..
 #fi
  
- 
+""" 
+  Die Optionen für MKGMAP sind in externe Dateien ausgelagert
+
+  GBASEMAPOPTIONS =  -c basemap.conf
+  NOBASEMAPOPTIONS = -c fixme_buglayer.conf
+  VELOMAPOPTIONS = -c velomap.conf
+"""
+
 ## Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
  
 #dirs="gfixme gosb "
@@ -565,10 +626,10 @@ print(" Hole die benötigten Höhenlinien! ")
  
 #	  cd gfixme
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../$mapstyles/fixme_style --description='Fixme' $NOBASEMAPOPTIONS --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 $dir/tiles/*.osm.gz $dir/$mapstyles/fixme.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 $dir/tiles/*.osm.gz $dir/$mapstyles/fixme.TYP
 #	  cd ../gosb
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../$mapstyles/osb_style --description='OSB' $NOBASEMAPOPTIONS --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 $dir/OpenStreetBugs.osm $dir/$mapstyles/osb.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 $dir/OpenStreetBugs.osm $dir/$mapstyles/osb.TYP
 #	  cd ../
  
  
@@ -586,7 +647,7 @@ print(" Hole die benötigten Höhenlinien! ")
 #	  done
 #	  cd gvelomap
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../aiostyles/velomap_style --description='Velomap' $VELOMAPOPTIONS --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 $dir/tiles/*.osm.gz $dir/aiostyles/velomap.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../velomap.conf --style-file=../aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 $dir/tiles/*.osm.gz $dir/aiostyles/velomap.TYP
 #	  cd ../
  
  
@@ -604,16 +665,16 @@ print(" Hole die benötigten Höhenlinien! ")
 #	  done
 #	  cd gbasemap
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../aiostyles/basemap_style $GBASEMAPOPTIONS --description='Openstreetmap' --family-id=4 --product-id=45 --series-name='OSMDEbasemap' --family-name=OSMBasemap --mapname=63240023 --draw-priority=10 $dir/tiles/*.osm.gz $dir/aiostyles/basemap.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../basemap.conf --style-file=../aiostyles/basemap_style --description='Openstreetmap' --family-id=4 --product-id=45 --series-name='OSMDEbasemap' --family-name=OSMBasemap --mapname=63240023 --draw-priority=10 $dir/tiles/*.osm.gz $dir/aiostyles/basemap.TYP
 #	  cd ../gaddr
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../aiostyles/addr_style --description='Adressen' $NOBASEMAPOPTIONS --family-id=5 --product-id=40 --series-name='OSMDEAddr' --family-name=OSMAdressen --mapname=63244023 --draw-priority=18  $dir/tiles/*.osm.gz $dir/aiostyles/addr.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/addr_style --description='Adressen' --family-id=5 --product-id=40 --series-name='OSMDEAddr' --family-name=OSMAdressen --mapname=63244023 --draw-priority=18  $dir/tiles/*.osm.gz $dir/aiostyles/addr.TYP
 #	  cd ../gboundary
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../aiostyles/boundary_style --description='Grenzen' $NOBASEMAPOPTIONS --family-id=6 --product-id=30 --series-name='OSMDEboundary' --family-name=OSMGrenzen  --mapname=63245023 --draw-priority=20 $dir/tiles/*.osm.gz $dir/aiostyles/boundary.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/boundary_style --description='Grenzen' --family-id=6 --product-id=30 --series-name='OSMDEboundary' --family-name=OSMGrenzen  --mapname=63245023 --draw-priority=20 $dir/tiles/*.osm.gz $dir/aiostyles/boundary.TYP
 #	  cd ../gmaxspeed
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../mkgmap.conf --style-file=../aiostyles/maxspeed_style $NOBASEMAPOPTIONS --family-name=maxspeed --series-name="maxspeed" --family-id=84 --product-id=15 --series-name=OSMmaxspeed --family-name=OSMmaxspeed --mapname=63246023 --draw-priority=21 $dir/tiles/*.osm.gz $dir/aiostyles/maxspeed.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/maxspeed_style--family-name=maxspeed --series-name="maxspeed" --family-id=84 --product-id=15 --series-name=OSMmaxspeed --family-name=OSMmaxspeed --mapname=63246023 --draw-priority=21 $dir/tiles/*.osm.gz $dir/aiostyles/maxspeed.TYP
 #	  cd ../  
 #fi
  
