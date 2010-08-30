@@ -243,7 +243,6 @@ hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
 
-
 #cd "$dir"
 
 """ 
@@ -253,8 +252,8 @@ checkprg("git", hint)
   vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
 """
 
-hint = "cgmap_py.conf nicht gefunden"
-checkfile("cgmap_py.conf", hint)
+
+# checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
 
 #source $dir/creategmap.conf
  
