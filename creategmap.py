@@ -115,7 +115,30 @@ def checkdir(dirtofind, solutionhint):
         print(solutionhint)
 
     return ExitCode
+    
+def getmkgmap(url):
+    target = HTTPConnection(url)
+    target.request('GET', 'http://www.mkgmap.org.uk/snapshots/')
+    
+    htmlcontent =  target.getresponse().read()
 
+    pattern = re.compile('mkgmap-r\d{4}')
+    LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
+
+    return LatestFile
+    
+def getsplitter(url):
+    target = HTTPConnection(url)
+    target.request('GET', 'http://www.mkgmap.org.uk/splitter/')
+    
+    htmlcontent =  target.getresponse().read()
+
+    pattern = re.compile('splitter-r\d{3}')
+    LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
+
+    return LatestFile
+    
+    
 # VARs =============================================================================
 
 web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
@@ -151,7 +174,7 @@ disable_log = 0
 
 """
   Splitter und Mkgmap werden automatisch geholt und installiert
-  Optionen können verbessert werden
+  Optionen können verbessert oder entfernt werden.
 """
 ## Wo ist mkgmap
 mkgmap = "mkgmap/mkgmap.jar"
@@ -162,7 +185,7 @@ splitter = "splitter/splitter.jar"
 """
   Folgende Optionen sollten bei 'firstrun = 1' und Resets der Einstellungen 
   gesondert abgefragt werden, 
-  Hinweistexte multilingual, mit Hinweise auf das Wiki
+  Hinweistexte multilingual, mit Hinweis auf das Wiki
 """  
 ## Für Java 
 RAMSIZE = "-Xmx2000M"
@@ -170,6 +193,7 @@ MAXNODES = 500000
 
 """
   Idee similar zu 'firstrun = 1' könnte zusammen gefasst werden
+  Oder gibt es was besseres?
 """  
 ## Interaktiver Modus
 abfrage = 0
@@ -342,10 +366,13 @@ print(" error: invalid argument $1 ")
 #fi 
 # 
 
-""" 
-  Einstellungen beim ersten Lauf
-"""
 
+
+""" 
+  Einstellungen beim ersten Lauf, bei RAMSIZE und MAXNODES besteht eine
+  Abhängigkeit, die eventuell sogar überprüft werden sollte. 
+  Erfahrungswerte sind vorhanden, weitere sollten ermittelt werden.
+"""
 # 
 #if [ $firstrun -eq 1 ] ; then
 #	    RAMSIZE_OLD=$RAMSIZE
@@ -402,9 +429,9 @@ print("""
 
 
 """
-  Wenn möglich sollte auch der Bau der kleineren Karten möglich sein
+  Wenn möglich sollte auch der Bau der kleineren Karten möglich sein.
   Wäre eine Suchfunktion sinnvoll?
-  Oder eine Auswahl anhand von direktory-listings?
+  Oder eine Auswahl anhand von directory-listings?
   Oder wäre das etwas für eine spätere grafische Version?
 """
 
@@ -441,50 +468,34 @@ print("""
 #     done
 #fi
 
+"""
+  Einstellungen, die geändert werden sollten auf jeden fall ins Log
+"""  
 #if [ $log = 1 ] ; then
 #	time=`date '+%Y.%m.%d_%H:%M'`
 #	echo $time" cgm-version: " $version "   " $mkr "   " $spr "   " $map "   " $RAMSIZE "   " $MAXNODES >> cgm.log
 #fi 
- 
-## Holen der Sachen von mkgmap.org
 
-
-def getmkgmap(url):
-    target = HTTPConnection(url)
-    target.request('GET', 'http://www.mkgmap.org.uk/snapshots/')
-    
-    htmlcontent =  target.getresponse().read()
-
-    pattern = re.compile('mkgmap-r\d{4}')
-    LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
-
-    return LatestFile
-    
-
+""" 
+  Holen der Sachen von mkgmap.org
+  Bash-Funktioenen nur als Hinweis
+"""
 print("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk")
- 
 
 #tar -xvzf mkgmap-%s.tar.gz
 #ln -s mkgmap-%s mkgmap
-
-def getsplitter(url):
-    target = HTTPConnection(url)
-    target.request('GET', 'http://www.mkgmap.org.uk/splitter/')
-    
-    htmlcontent =  target.getresponse().read()
-
-    pattern = re.compile('splitter-r\d{3}')
-    LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
-
-    return LatestFile
-    
 
 print("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk")
 
 #tar -xvzf splitter-%s.tar.gz
 #ln -s splitter-%s splitter
 
- 
+"""
+  Diese Funktion ist für mich wichtig, könnte aber in einem separaten Modul versteckt werden
+  Oder vorhandene eigene Änderungen haben eine höhere Priorität, dann braucht man die MKGMAP-Optionen
+  nicht zu verändern. Voraussetzung wäre aber ein separates Verzeichnis mit dem eigenen Styles.
+  Sollte im Log berücksichtigt werden.
+"""  
  
 ## auf meinem Rechner benutze ich eine alternative Einstellung für die Darstellung von Bugs und Fixmes
 ## Erläuterungen finden sich auf der AIO-Wiki-Seite
@@ -495,9 +506,11 @@ print("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.or
 #      mapstyles=aiostyles
 #fi
  
- 
-## Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
-## Aktualisierungen erfolgen automatisch
+""" 
+  Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
+  Aktualisierungen erfolgen automatisch
+  Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
+"""  
  
 #if [ -d aiostyles ] ; then 
 #	   cd aiostyles
@@ -515,16 +528,18 @@ print("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.or
 #	      exit
 #fi
  
- 
-## Arbeitsverzeichnis für Splitter wird erstellt...
+""" 
+  Arbeitsverzeichnis für Splitter wird erstellt...
+"""
  
 #if [ -d tiles ] ; then :
 #else mkdir tiles
 #fi
  
- 
-## ... und, falls alte Daten vorhanden,geleert
- 
+"""  
+  und, falls alte Daten vorhanden,geleert
+"""
+
 #if [ $rm_tiles -eq 1 ] ; then 
 #	tiles_dir='tiles'
 #	for i in $tiles_dir; do 
@@ -535,10 +550,14 @@ print("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.or
 #fi
  
  
- 
-## Die Höhenlinien werden einmalig geholt, hier nur für Deutschland, andere z.Z. nur manuell, 
-## siehe Änderung v0.50
- 
+""" 
+  Die Höhenlinien werden einmalig geholt, hier nur für Deutschland, andere z.Z. nur manuell, 
+  siehe Änderung v0.50.
+  Es gibt weitere bei openmtpmap.org, diese könnte man in irgendeiner Form vorbereitet (ready2use)
+  zur Verfügung stellen. Dafür wäre aber Webspace erforderlich.
+"""
+
+
 #if [ -f gcontourlines/gmapsupp.img ] ; then :
 #else 
 print(" Hole die benötigten Höhenlinien! ")
@@ -557,9 +576,11 @@ print(" Hole die benötigten Höhenlinien! ")
 #	cd ..
 #fi
  
- 
-## Das Dumpfile für die OpenStreetBugs wird geholt, eine direkte Abfrage des OSB-Server ist möglich
-## z.Z. aber nicht implementiert
+""" 
+  Das Dumpfile für die OpenStreetBugs wird geholt. 
+  Eine direkte Abfrage des OSB-Server ist möglich, ich habe da noch ein perlscript rum liegen,
+  aber ob das nötig ist?
+"""  
  
 #if [ $bugsholen -eq 1 -o ! -f osbdump_latest.sql.bz2 ] ; then
 #	if [ -f osbdump_latest.sql.bz2 ] ; then
@@ -570,8 +591,9 @@ print(" Hole die benötigten Höhenlinien! ")
 #	bzcat osbdump_latest.sql.bz2 | $osbsql2osm > OpenStreetBugs.osm
 #fi
  
- 
-## Download der OSM-Kartendaten von der Geofabrik
+"""
+  Download der OSM-Kartendaten von der Geofabrik
+"""  
  
 #if [ $download -eq 1 ] ; then
 #	if [ $map = europe ] ; then
@@ -703,9 +725,11 @@ print(" Hole die benötigten Höhenlinien! ")
 #	rm flat_gmapsupp.img
 #fi
  
- 
-## Kopieren der fertigen Karte ins Oberhaus mit aussagekräftigen Namen.
- 
+"""
+  Nach Erstellen einer(mehrere?) Sicherungen
+  kopieren der fertigen Karte ins Oberhaus mit aussagekräftigen Namen.
+""" 
+
 #cp gmapsupp.img ../$map.gmapsupp.img
  
  
