@@ -150,12 +150,6 @@ web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
 """  
 FailCounter = 0
 
-""" 
-  Optionen für creategmap
-  Eigene Einstellungen können in creategmap.conf eingestellt werden, 
-  bei Problemen sollte dort auch kontrolliert werden
-""" 
-
 """
   Diese Funktion sollte bestehen bleiben, um entweder bei Erstbenutzung
   ausführliche Infos zu geben, und eventuell die Möglichkeit des Rücksetzen
@@ -165,7 +159,7 @@ firstrun = 1
 
 """
   Logfunktion sollte eventuell erweitert werden zur besseren Fehlerbehebung
-  Log-, bzw. verbosity-Level sollte einstellbar sein, zumindest varialbel
+  Log-, bzw. verbosity-Level sollte einstellbar sein, zumindest variabel
 """  
 ## Log
 log = 0
@@ -375,10 +369,6 @@ print(" error: invalid argument $1 ")
 """
 # 
 #if [ $firstrun -eq 1 ] ; then
-#	    RAMSIZE_OLD=$RAMSIZE
-#	    RAMSIZE=
-#	    while [ -z $RAMSIZE ] ; do	    
-#		clear
 print(""" 
 		
 		Abhängig vom verwendeten RAM muß die Anzahl des Speichers für Java
@@ -389,7 +379,10 @@ print("""
 		Standard bei 2 GiB RAM ist eine Vorgabe von "-Xmx2000M"
 		
 """)
-#		echo -n "      Wieviel Speicher soll verwendet werden? " [$RAMSIZE_OLD]
+
+RAMSIZE = raw_input("		Wieviel Speicher soll verwendet werden? ")
+
+
 #		read RAMSIZE
 #	  if  [ -z $RAMSIZE ] ; then 
 #		  RAMSIZE=$RAMSIZE_OLD
@@ -401,9 +394,7 @@ print("""
 #	  echo RAMSIZE=$RAMSIZE >> creategmap.conf
 #	  done
  
-#		MAXNODES_OLD=$MAXNODES
-#		MAXNODES=
-#		while [ -z $MAXNODES ] ; do
+
 print(""" 
 		
 		Bei kleineren Karten können die Werte für die MAXNODES bei Splitter eventuell 
@@ -414,6 +405,8 @@ print("""
 		4+GiB (-Xmx3000M) -->	1000000
 		
 """)       
+
+RAMSIZE = raw_input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
 #		echo -n "      Bitte Anzahl der gewünschten Nodes eingeben. " [$MAXNODES_OLD]
 #		read MAXNODES
 #	  if  [ -z $MAXNODES ] ; then 
