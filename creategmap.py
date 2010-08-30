@@ -148,7 +148,7 @@ web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
   Brauchen wir den eigentlich wirklich? 
   Bernd: Glaube ich nicht, höchstens für das Debuggen
 """  
-FailCounter = 0
+#FailCounter = 0
 
 """
   Diese Funktion sollte bestehen bleiben, um entweder bei Erstbenutzung
@@ -228,35 +228,34 @@ merge_error = "Zusammenfügen der Karte klappt nicht, da nicht alle Teile vorhan
 ## Progamme und Verzeichnisse suchen
 
 hint = "mkdir ~/share/osm/map_build "
-FailCounter += checkdir("~/share/osm/map_build", hint) 
+checkdir("~/share/osm/map_build", hint) 
 
 hint = "Install: wine to work with gmt.exe from GMAPTOOLS"
-FailCounter += checkprg("wine", hint)
+checkprg("wine", hint)
  
 hint = " Download: http://www.anpo.republika.pl/download.html "
-FailCounter += checkprg("gmt.exe", hint)
+checkprg("gmt.exe", hint)
  
 hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
-FailCounter += checkprg("osbsql2osm", hint)
+checkprg("osbsql2osm", hint)
 
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
-FailCounter += checkprg("git", hint)
+checkprg("git", hint)
 
 
 
 #cd "$dir"
 
 """ 
-  Eigene Einstellungen werden aus creategmap.conf gelesen
-""" 
+  Eigene Einstellungen werden aus cgmap_py.conf gelesen
 
-#if [ -f creategmap.conf ] ; then :
-#else
-#    touch creategmap.conf
-#    print(" # Hier können eigene Einstellungen vorgenommen werden.' > creategmap.conf 
-#    firstrun=1
-#fi
- 
+  Konfiguraionsdatei umbenannt nach cgmap_py.conf um Konflikte mit der eventuell
+  vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
+"""
+
+hint = "cgmap_py.conf nicht gefunden"
+checkfile("cgmap_py.conf", hint)
+
 #source $dir/creategmap.conf
  
  
@@ -383,6 +382,7 @@ print("""
 RAMSIZE = raw_input("		Wieviel Speicher soll verwendet werden? ")
 
 
+
 #		read RAMSIZE
 #	  if  [ -z $RAMSIZE ] ; then 
 #		  RAMSIZE=$RAMSIZE_OLD
@@ -392,7 +392,7 @@ RAMSIZE = raw_input("		Wieviel Speicher soll verwendet werden? ")
 #	    sed '/RAMSIZE/d' creategmap.conf.sec > creategmap.conf
 #	  fi
 #	  echo RAMSIZE=$RAMSIZE >> creategmap.conf
-#	  done
+
  
 
 print(""" 
@@ -407,7 +407,7 @@ print("""
 """)       
 
 RAMSIZE = raw_input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
-#		echo -n "      Bitte Anzahl der gewünschten Nodes eingeben. " [$MAXNODES_OLD]
+
 #		read MAXNODES
 #	  if  [ -z $MAXNODES ] ; then 
 #		  MAXNODES=$MAXNODES_OLD
@@ -417,7 +417,7 @@ RAMSIZE = raw_input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
 #	    sed '/MAXNODES/d' creategmap.conf.sec > creategmap.conf
 #	  fi
 #	  echo MAXNODES=$MAXNODES >> creategmap.conf
-#	  done
+
 #fi
 
 
