@@ -481,7 +481,7 @@ if  firstrun == 1:
 
 """ 
   Holen der Sachen von mkgmap.org
-  Bash-Funktioenen nur als Hinweis
+  Bash-Funktionen nur als Hinweis
 """
 #print(("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
 
@@ -563,7 +563,9 @@ if  firstrun == 1:
 
 #if [ -f gcontourlines/gmapsupp.img ] ; then :
 #else 
-print(" Hole die benötigten Höhenlinien! ")
+
+printinfo("Hole die benötigten Höhenlinien!")
+
 #	if [ -d gcontourlines ] ; then : 
 #	else mkdir gcontourlines
 #	fi
@@ -749,17 +751,8 @@ print(" Hole die benötigten Höhenlinien! ")
 #rm creategmap.conf.sec
 
 
-#if [ $log = 1 ] ; then
-#	time=`date '+%Y.%m.%d_%H:%M'` 
-#	echo $time " 1 " >> cgm.log
-#fi
- 
-print("""
+printinfo("Habe fertig!")
 
-		  Habe fertig!
-
-""")
-#exit
  
  
 ## Änderungen:
