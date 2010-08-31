@@ -369,20 +369,20 @@ print(" error: invalid argument $1 ")
 #if [ $firstrun -eq 1 ] ; then
 print(""" 
 		
-		Abhängig vom verwendeten RAM muß die Anzahl des Speichers für Java
-		eingestellt werden.
+		Abhängig vom vorhandenen RAM muß die Menge des Speichers 
+		für Java eingestellt werden.
 		Unter 1 GiB dürfte eine Kartenerstellung nicht möglich sein.
 		Empfohlen werden mindestens 2 GiB RAM!
 		
-		Standard bei 2 GiB RAM ist eine Vorgabe von "-Xmx2000M"
+		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
 		
 """)
-
+print("		Vorgabewert: ",RAMSIZE) 
 RAMSIZE = input("		Wieviel Speicher soll verwendet werden? ")
+print("		Wahl:        ",RAMSIZE)
 
 
 
-#		read RAMSIZE
 #	  if  [ -z $RAMSIZE ] ; then 
 #		  RAMSIZE=$RAMSIZE_OLD
 #	  fi
@@ -404,10 +404,11 @@ print("""
 		4+GiB (-Xmx3000M) -->	1000000
 		
 """)       
+print("		Vorgabewert: ",MAXNODES)
+MAXNODES = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
+print("		Wahl:        ",MAXNODES)
 
-RAMSIZE = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
 
-#		read MAXNODES
 #	  if  [ -z $MAXNODES ] ; then 
 #		  MAXNODES=$MAXNODES_OLD
 #	  fi
