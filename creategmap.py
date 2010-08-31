@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 __version__ = 0.60
@@ -13,7 +13,7 @@ __status__ = "preAlpha"
 
 import sys
 import os
-from httplib import *
+from http.client import *
 import re
 
  
@@ -54,13 +54,13 @@ import re
 # DEFs =============================================================================
 
 def printinfo(msg):
-    print("II: " + msg)
+    print(("II: " + msg))
 
 def printwarning(msg):
-    print("WW: " + msg)
+    print(("WW: " + msg))
 
 def printerror(msg):
-    print("EE: " + msg)
+    print(("EE: " + msg))
 
 
 def checkprg(programmtofind, solutionhint):
@@ -378,7 +378,7 @@ print("""
 		
 """)
 
-RAMSIZE = raw_input("		Wieviel Speicher soll verwendet werden? ")
+RAMSIZE = input("		Wieviel Speicher soll verwendet werden? ")
 
 
 
@@ -405,7 +405,7 @@ print("""
 		
 """)       
 
-RAMSIZE = raw_input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
+RAMSIZE = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
 
 #		read MAXNODES
 #	  if  [ -z $MAXNODES ] ; then 
@@ -472,12 +472,12 @@ print("""
   Holen der Sachen von mkgmap.org
   Bash-Funktioenen nur als Hinweis
 """
-print("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk")
+print(("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
 
 #tar -xvzf mkgmap-%s.tar.gz
 #ln -s mkgmap-%s mkgmap
 
-print("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk")
+print(("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk"))
 
 #tar -xvzf splitter-%s.tar.gz
 #ln -s splitter-%s splitter
