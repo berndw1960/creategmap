@@ -155,7 +155,12 @@ FailCounter = 0
   ausführliche Infos zu geben, und eventuell die Möglichkeit des Rücksetzen
   auf die Default-Einstellungen bei Fehlern zu bieten
 """
-firstrun = 1
+firstrun = 0 ## nur zum Testen, default = 1 an dieser Stelle
+
+""" Arbeitsverzeichnis """
+
+work_dir = '~/share/osm/map_build'
+
 
 """
   Logfunktion sollte eventuell erweitert werden zur besseren Fehlerbehebung
@@ -227,8 +232,8 @@ merge_error = "Zusammenfügen der Karte klappt nicht, da nicht alle Teile vorhan
 
 ## Progamme und Verzeichnisse suchen
 
-hint = "mkdir ~/share/osm/map_build "
-checkdir("~/share/osm/map_build", hint) 
+hint = ("mkdir " + (work_dir))
+checkdir((work_dir), hint) 
 
 hint = "Install: wine to work with gmt.exe from GMAPTOOLS"
 checkprg("wine", hint)
@@ -242,8 +247,8 @@ checkprg("osbsql2osm", hint)
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
-
-#cd "$dir"
+os.chdir(work_dir)
+print(os.getcwd())
 
 """ 
   Eigene Einstellungen werden aus cgmap_py.conf gelesen
@@ -255,7 +260,7 @@ checkprg("git", hint)
 
 # checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
 
-#source $dir/creategmap.conf
+#source $work_dir/creategmap.conf
  
  
 """
@@ -366,8 +371,8 @@ print(" error: invalid argument $1 ")
   Erfahrungswerte sind vorhanden, weitere sollten ermittelt werden.
 """
 # 
-#if [ $firstrun -eq 1 ] ; then
-print(""" 
+if  firstrun == 1:
+    print(""" 
 		
 		Abhängig vom vorhandenen RAM muß die Menge des Speichers 
 		für Java eingestellt werden.
@@ -376,10 +381,10 @@ print("""
 		
 		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
 		
-""")
-print("		Vorgabewert: ",RAMSIZE) 
-RAMSIZE = input("		Wieviel Speicher soll verwendet werden? ")
-print("		Wahl:        ",RAMSIZE)
+    """)
+    print("		Vorgabewert: ",RAMSIZE) 
+    RAMSIZE = input("		Wieviel Speicher soll verwendet werden? ")
+    print("		Wahl:        ",RAMSIZE)
 
 
 
@@ -393,8 +398,8 @@ print("		Wahl:        ",RAMSIZE)
 #	  echo RAMSIZE=$RAMSIZE >> creategmap.conf
 
  
-
-print(""" 
+if  firstrun == 1:
+    print(""" 
 		
 		Bei kleineren Karten können die Werte für die MAXNODES bei Splitter eventuell 
 		heraufgesetzt werden, große Karten wie Deutschland und Frankreich sollten mit 
@@ -403,10 +408,10 @@ print("""
 		2 GiB (-Xmx2000M) -->	 500000
 		4+GiB (-Xmx3000M) -->	1000000
 		
-""")       
-print("		Vorgabewert: ",MAXNODES)
-MAXNODES = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
-print("		Wahl:        ",MAXNODES)
+    """)       
+    print("		Vorgabewert: ",MAXNODES)
+    MAXNODES = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
+    print("		Wahl:        ",MAXNODES)
 
 
 #	  if  [ -z $MAXNODES ] ; then 
@@ -431,7 +436,8 @@ print("		Wahl:        ",MAXNODES)
 #if [ $firstrun -eq 1 ] ; then
 #    map= 
 #    while [ -z $map ] ; do
-print(""" 
+if  firstrun == 1:
+    print(""" 
 	  
 	   
 	        Bitte beachten!"
@@ -439,7 +445,8 @@ print("""
 	        diese können über die AIO-Downloadseite gefunden werden.
 	   
 	  
-	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/ 
+	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/
+	        bitte nur den dateinamen ohne Endung.
 	  
 	        Wahl wird in creategmap.conf gespeichert, zum Ändern die Option "-i" 
 	        beim Aufruf des Scriptes verwenden. "
@@ -447,7 +454,10 @@ print("""
 	        europe erzeugt eine Europa-Karte, bitte nur bei ausreichend RAM! 
                 Und dieser Vorgang dauert sehr lang und gelingt nicht unbedingt immer.
        	  
-""")
+    """)
+    print("		Vorgabewert: ",default_map)
+    map = input("		Bitte die gewünschte Karte eingeben ")
+    print("		Wahl:        ",map)
 #	  echo -n "       Ländernamen (englisch) ohne Dateiendung eingeben " [$default_map]
 #	  read map
 #	  if  [ -z $map ] ; then 
@@ -473,12 +483,12 @@ print("""
   Holen der Sachen von mkgmap.org
   Bash-Funktioenen nur als Hinweis
 """
-print(("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
+#print(("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
 
 #tar -xvzf mkgmap-%s.tar.gz
 #ln -s mkgmap-%s mkgmap
 
-print(("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk"))
+#print(("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk"))
 
 #tar -xvzf splitter-%s.tar.gz
 #ln -s splitter-%s splitter
@@ -628,7 +638,7 @@ print(" Hole die benötigten Höhenlinien! ")
 ## Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
  
 #dirs="gfixme gosb "
-#	for i in $dirs; do
+#	for i in $work_dirs; do
 #	  if [ -d $i ] ; then
 #	    cd $i  
 #	    rm -Rf *
@@ -641,10 +651,10 @@ print(" Hole die benötigten Höhenlinien! ")
  
 #	  cd gfixme
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 $dir/tiles/*.osm.gz $dir/$mapstyles/fixme.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 $work_dir/tiles/*.osm.gz $work_dir/$mapstyles/fixme.TYP
 #	  cd ../gosb
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 $dir/OpenStreetBugs.osm $dir/$mapstyles/osb.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 $work_dir/OpenStreetBugs.osm $work_dir/$mapstyles/osb.TYP
 #	  cd ../
  
  
@@ -652,7 +662,7 @@ print(" Hole die benötigten Höhenlinien! ")
  
 #if [ $basemap -eq 0 ] ; then
 #	  dirs_velomap="gvelomap"
-#	  for i in $dirs_velomap; do
+#	  for i in $work_dirs_velomap; do
 #	    if [ -d $i ] ; then
 #	      cd $i  
 #	      rm -Rf *
@@ -662,7 +672,7 @@ print(" Hole die benötigten Höhenlinien! ")
 #	  done
 #	  cd gvelomap
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../velomap.conf --style-file=../aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 $dir/tiles/*.osm.gz $dir/aiostyles/velomap.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../velomap.conf --style-file=../aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/velomap.TYP
 #	  cd ../
  
  
@@ -670,7 +680,7 @@ print(" Hole die benötigten Höhenlinien! ")
  
 #elif [ $basemap -eq 1 ] ; then
 #	dirs_basemap="gbasemap gaddr gboundary gmaxspeed"
-#	  for i in $dirs_basemap; do
+#	  for i in $work_dirs_basemap; do
 #	    if [ -d $i ] ; then
 #	      cd $i  
 #	      rm -Rf *
@@ -680,16 +690,16 @@ print(" Hole die benötigten Höhenlinien! ")
 #	  done
 #	  cd gbasemap
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../basemap.conf --style-file=../aiostyles/basemap_style --description='Openstreetmap' --family-id=4 --product-id=45 --series-name='OSMDEbasemap' --family-name=OSMBasemap --mapname=63240023 --draw-priority=10 $dir/tiles/*.osm.gz $dir/aiostyles/basemap.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../basemap.conf --style-file=../aiostyles/basemap_style --description='Openstreetmap' --family-id=4 --product-id=45 --series-name='OSMDEbasemap' --family-name=OSMBasemap --mapname=63240023 --draw-priority=10 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/basemap.TYP
 #	  cd ../gaddr
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/addr_style --description='Adressen' --family-id=5 --product-id=40 --series-name='OSMDEAddr' --family-name=OSMAdressen --mapname=63244023 --draw-priority=18  $dir/tiles/*.osm.gz $dir/aiostyles/addr.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/addr_style --description='Adressen' --family-id=5 --product-id=40 --series-name='OSMDEAddr' --family-name=OSMAdressen --mapname=63244023 --draw-priority=18  $work_dir/tiles/*.osm.gz $work_dir/aiostyles/addr.TYP
 #	  cd ../gboundary
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/boundary_style --description='Grenzen' --family-id=6 --product-id=30 --series-name='OSMDEboundary' --family-name=OSMGrenzen  --mapname=63245023 --draw-priority=20 $dir/tiles/*.osm.gz $dir/aiostyles/boundary.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/boundary_style --description='Grenzen' --family-id=6 --product-id=30 --series-name='OSMDEboundary' --family-name=OSMGrenzen  --mapname=63245023 --draw-priority=20 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/boundary.TYP
 #	  cd ../gmaxspeed
 #		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/maxspeed_style--family-name=maxspeed --series-name="maxspeed" --family-id=84 --product-id=15 --series-name=OSMmaxspeed --family-name=OSMmaxspeed --mapname=63246023 --draw-priority=21 $dir/tiles/*.osm.gz $dir/aiostyles/maxspeed.TYP
+#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/maxspeed_style--family-name=maxspeed --series-name="maxspeed" --family-id=84 --product-id=15 --series-name=OSMmaxspeed --family-name=OSMmaxspeed --mapname=63246023 --draw-priority=21 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/maxspeed.TYP
 #	  cd ../  
 #fi
  
@@ -697,9 +707,9 @@ print(" Hole die benötigten Höhenlinien! ")
 ## Zusammenfügen der Kartenteile
  
 #if [ -f gvelomap/gmapsupp.img -a -f gosb/gmapsupp.img -a -f gfixme/gmapsupp.img -a $basemap -eq 0 ] ; then
-#	$wine $dir/gmt/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img
+#	$wine $work_dir/gmt/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img
 #elif [ -f gbasemap/gmapsupp.img -a -f gosb/gmapsupp.img -a -f gaddr/gmapsupp.img -a -f gfixme/gmapsupp.img -a -f gboundary/gmapsupp.img -a -f gmaxspeed/gmapsupp.img -a $basemap -eq 1 ] ; then
-#	$wine $dir/gmt/gmt.exe -jo gmapsupp.img gbasemap/gmapsupp.img gosb/gmapsupp.img gaddr/gmapsupp.img gfixme/gmapsupp.img gboundary/gmapsupp.img gmaxspeed/gmapsupp.img
+#	$wine $work_dir/gmt/gmt.exe -jo gmapsupp.img gbasemap/gmapsupp.img gosb/gmapsupp.img gaddr/gmapsupp.img gfixme/gmapsupp.img gboundary/gmapsupp.img gmaxspeed/gmapsupp.img
 #else echo $merge_error ; exit
 #fi
  
@@ -708,10 +718,10 @@ print(" Hole die benötigten Höhenlinien! ")
  
 #if [ $map = germany ] ; then 
 #	mv gmapsupp.img flat_gmapsupp.img
-#	$wine $dir/gmt/gmt.exe -jo gmapsupp.img gcontourlines/gmapsupp.img flat_gmapsupp.img
+#	$wine $work_dir/gmt/gmt.exe -jo gmapsupp.img gcontourlines/gmapsupp.img flat_gmapsupp.img
 #elif [ -d hoehenlinien/$map ] ; then
 #	mv gmapsupp.img flat_gmapsupp.img
-#	$wine $dir/gmt/gmt.exe -jo gmapsupp.img hoehenlinien/$map/gmapsupp.img flat_gmapsupp.img
+#	$wine $work_dir/gmt/gmt.exe -jo gmapsupp.img hoehenlinien/$map/gmapsupp.img flat_gmapsupp.img
 #fi
  
 #if [ -f flat_gmapsupp.img ] ; then
@@ -764,7 +774,7 @@ print("""
  
 # v0.50- Höhenlinien für einige Länder, die Daten gibt es bei http://openmtbmap.org/de/download/#hoehendaten
 #        Die Rohdaten müssen mit gmt.exe zu gmapsupp.img zusammengefügt, Anleitung liegt jeweils bei.
-#        Fertige gmapsupp.img sollten unter $dir/hoehenlinien/$map gespeichert werden, damit
+#        Fertige gmapsupp.img sollten unter $work_dir/hoehenlinien/$map gespeichert werden, damit
 #        das Script sie findet.
 #
 #        Mit wine kann man das mit folgender Zeile erledigen, gmt.exe liegt dabei im Verzeichnis darüber:
