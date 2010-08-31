@@ -159,6 +159,7 @@ firstrun = 0 ## nur zum Testen, default = 1 an dieser Stelle
 
 """ Arbeitsverzeichnis """
 
+
 work_dir = (os.environ['HOME'] + "/share/osm/map_build")
 
 """
@@ -175,11 +176,11 @@ disable_log = 0
   Optionen können verbessert oder entfernt werden.
 """
 ## Wo ist mkgmap
-mkgmap = "mkgmap/mkgmap.jar"
- 
+mkgmap = ((work_dir) + "mkgmap/mkgmap.jar")
+print(mkgmap) 
 ## Splitter
-splitter = "splitter/splitter.jar"
-
+splitter = ((work_dir) + "splitter/splitter.jar")
+print(splitter)
 """
   Folgende Optionen sollten bei 'firstrun = 1' und Resets der Einstellungen 
   gesondert abgefragt werden, 
@@ -245,6 +246,12 @@ checkprg("osbsql2osm", hint)
 
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
+
+hint = " splitter fehlt "
+checkfile(splitter, hint)
+
+hint = " mkgmap fehlt "
+checkfile(mkgmap, hint)
 
 os.chdir(work_dir)
 print(os.getcwd())
