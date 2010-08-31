@@ -159,8 +159,7 @@ firstrun = 0 ## nur zum Testen, default = 1 an dieser Stelle
 
 """ Arbeitsverzeichnis """
 
-work_dir = '~/share/osm/map_build'
-
+work_dir = (os.environ['HOME'] + "/share/osm/map_build")
 
 """
   Logfunktion sollte eventuell erweitert werden zur besseren Fehlerbehebung
