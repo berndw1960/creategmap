@@ -148,7 +148,7 @@ web_help = "http://wiki.openstreetmap.org/wiki/User:Berndw"
   Brauchen wir den eigentlich wirklich? 
   Bernd: Glaube ich nicht, höchstens für das Debuggen
 """  
-#FailCounter = 0
+FailCounter = 0
 
 """
   Diese Funktion sollte bestehen bleiben, um entweder bei Erstbenutzung
