@@ -257,7 +257,7 @@ print(os.getcwd())
 """
 
 
-# checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
+checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
 
 #source $work_dir/creategmap.conf
  
