@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 __version__ = 0.60
@@ -13,7 +13,7 @@ __status__ = "preAlpha"
 
 import sys
 import os
-from http.client import *
+from httplib import *
 import re
 
  
@@ -115,7 +115,9 @@ def checkdir(dirtofind, solutionhint):
         print(solutionhint)
 
     return ExitCode
-    
+
+  
+
 def getmkgmap(url):
     target = HTTPConnection(url)
     target.request('GET', 'http://www.mkgmap.org.uk/snapshots/')
@@ -126,6 +128,7 @@ def getmkgmap(url):
     LatestFile = sorted(pattern.findall(htmlcontent), reverse=True)[1]
 
     return LatestFile
+    
     
 def getsplitter(url):
     target = HTTPConnection(url)
@@ -250,11 +253,6 @@ checkprg("git", hint)
 os.chdir(work_dir)
 print(os.getcwd())
 
-hint = " splitter fehlt "
-checkfile((splitter), hint)
-
-hint = " mkgmap fehlt "
-checkfile((mkgmap), hint)
 
 
 
@@ -391,7 +389,7 @@ if  firstrun == 1:
 		
     """)
     print("		Vorgabewert: ",RAMSIZE) 
-    RAMSIZE = input("		Wieviel Speicher soll verwendet werden? ")
+    RAMSIZE = raw_input("		Wieviel Speicher soll verwendet werden? ")
     print("		Wahl:        ",RAMSIZE)
 
 
@@ -418,7 +416,7 @@ if  firstrun == 1:
 		
     """)       
     print("		Vorgabewert: ",MAXNODES)
-    MAXNODES = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
+    MAXNODES = raw_input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
     print("		Wahl:        ",MAXNODES)
 
 
@@ -491,15 +489,15 @@ if  firstrun == 1:
   Holen der Sachen von mkgmap.org
   Bash-Funktionen nur als Hinweis
 """
-#print(("http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
 
-#tar -xvzf mkgmap-%s.tar.gz
-#ln -s mkgmap-%s mkgmap
+os.system("rm -R mkgmap*")
+os.system(("wget -N http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
+os.system("tar -xvzf mkgmap-*.tar.gz && rm mkgmap-*tar.gz && ln -s mkgmap-r* mkgmap")
 
-#print(("http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk"))
+os.system("rm -R splitter*")
+os.system(("wget -N http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk"))
+os.system("tar -xvzf splitter-*.tar.gz && rm splitter-*.tar.gz && ln -s splitter-r* splitter")
 
-#tar -xvzf splitter-%s.tar.gz
-#ln -s splitter-%s splitter
 
 """
   Diese Funktion ist für mich wichtig, könnte aber in einem separaten Modul versteckt werden
@@ -522,7 +520,7 @@ if  firstrun == 1:
   Aktualisierungen erfolgen automatisch
   Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
 """  
- 
+
 #if [ -d aiostyles ] ; then 
 #	   cd aiostyles
 #	   git pull
