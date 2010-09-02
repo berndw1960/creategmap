@@ -177,10 +177,10 @@ disable_log = 0
 """
 ## Wo ist mkgmap
 mkgmap = ((work_dir) + "mkgmap/mkgmap.jar")
-print(mkgmap) 
+
 ## Splitter
 splitter = ((work_dir) + "splitter/splitter.jar")
-print(splitter)
+
 """
   Folgende Optionen sollten bei 'firstrun = 1' und Resets der Einstellungen 
   gesondert abgefragt werden, 
@@ -247,14 +247,16 @@ checkprg("osbsql2osm", hint)
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
-hint = " splitter fehlt "
-checkfile(splitter, hint)
-
-hint = " mkgmap fehlt "
-checkfile(mkgmap, hint)
-
 os.chdir(work_dir)
 print(os.getcwd())
+
+hint = " splitter fehlt "
+checkfile((splitter), hint)
+
+hint = " mkgmap fehlt "
+checkfile((mkgmap), hint)
+
+
 
 """ 
   Eigene Einstellungen werden aus cgmap_py.conf gelesen
