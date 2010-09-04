@@ -135,8 +135,10 @@ def getmkgmap(url):
     pattern = re.compile('mkgmap-r\d{4}')
 
     mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-    print(mkgmap_rev)
-    
+
+    os.system(("wget -N http://www.mkgmap.org/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+
+       
     
 def getsplitter(url):
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
@@ -152,11 +154,11 @@ def getsplitter(url):
 
     data = data.decode('utf8')
     
-    pattern = re.compile('splitter-r\d{4}')
+    pattern = re.compile('splitter-r\d{3}')
 
     splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-    print(splitter_rev)
-    
+   
+    os.system(("wget -N http://www.mkgmap.org/splitter/") + (splitter_rev) + (".tar.gz"))   
     
 # VARs =============================================================================
 
@@ -503,16 +505,13 @@ if  firstrun == 1:
 
 """ 
   Holen der Sachen von mkgmap.org
-  Bash-Funktionen nur als Hinweis
+  Erst mal zum Probieren ;-)
 """
+mkgmap_get = " hole MKGMAP"
+checkfile("mkgmap", getmkgmap(mkgmap_get))
 
-#s.system("rm -R mkgmap*")
-#os.system(("wget -N http://www.mkgmap.org.uk/snapshots/%s.tar.gz") %getmkgmap("www.mkgmap.org.uk"))
-#os.system("tar -xvzf mkgmap-*.tar.gz && rm mkgmap-*tar.gz && ln -s mkgmap-r* mkgmap")
-
-#os.system("rm -R splitter*")
-#os.system(("wget -N http://www.mkgmap.org.uk/splitter/%s.tar.gz") %getsplitter("www.mkgmap.org.uk"))
-#os.system("tar -xvzf splitter-*.tar.gz && rm splitter-*.tar.gz && ln -s splitter-r* splitter")
+splitter_get = " hole SPLITTER"
+checkfile("splitter", getsplitter(splitter_get))
 
 
 """
