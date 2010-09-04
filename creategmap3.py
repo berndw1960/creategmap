@@ -15,8 +15,11 @@ import sys
 import os
 import http.client
 import re
+import zlib
+import gzip
+import bz2 
+import tarfile
 
- 
 """ 
   ===========VORSICHT ALPHA-STADIUM=================
   creategmap.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
@@ -118,7 +121,7 @@ def checkdir(dirtofind, solutionhint):
 
   
 
-def getmkgmap(url):
+def getmkgmap():
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
     target.request("GET", "/snapshots/index.html")
 
@@ -136,11 +139,14 @@ def getmkgmap(url):
 
     mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
 
-    os.system(("wget -N http://www.mkgmap.org/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+   
+    return mkgmap_rev
 
-       
-    
-def getsplitter(url):
+
+
+
+def getsplitter():
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
     target.request("GET", "/splitter/index.html")
 
@@ -158,7 +164,11 @@ def getsplitter(url):
 
     splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
    
-    os.system(("wget -N http://www.mkgmap.org/splitter/") + (splitter_rev) + (".tar.gz"))   
+    os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
+    
+    
+
+    return splitter_rev
     
 # VARs =============================================================================
 
@@ -507,11 +517,13 @@ if  firstrun == 1:
   Holen der Sachen von mkgmap.org
   Erst mal zum Probieren ;-)
 """
-mkgmap_get = " hole MKGMAP"
-checkfile("mkgmap", getmkgmap(mkgmap_get))
 
-splitter_get = " hole SPLITTER"
-checkfile("splitter", getsplitter(splitter_get))
+getmkgmap()
+
+
+
+getsplitter()
+
 
 
 """
