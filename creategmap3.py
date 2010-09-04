@@ -15,9 +15,6 @@ import sys
 import os
 import http.client
 import re
-import zlib
-import gzip
-import bz2 
 import tarfile
 
 """ 
@@ -121,54 +118,62 @@ def checkdir(dirtofind, solutionhint):
 
   
 
-def getmkgmap():
-    target = http.client.HTTPConnection("www.mkgmap.org.uk")
-    target.request("GET", "/snapshots/index.html")
+#def getmkgmap():
+#    target = http.client.HTTPConnection("www.mkgmap.org.uk")
+#    target.request("GET", "/snapshots/index.html")
+#
+#    htmlcontent =  target.getresponse()
+#
+#    print(htmlcontent.status, htmlcontent.reason)
+#
+#    data = htmlcontent.read()
 
-    htmlcontent =  target.getresponse()
+#    target.close()
 
-    print(htmlcontent.status, htmlcontent.reason)
-
-    data = htmlcontent.read()
-
-    target.close()
-
-    data = data.decode('utf8')
+#    data = data.decode('utf8')
     
-    pattern = re.compile('mkgmap-r\d{4}')
+#    pattern = re.compile('mkgmap-r\d{4}')
 
-    mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
+#    mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
 
-    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+#    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+#    tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
+#    tar.extractall()
+#    tar.close()
+    
+#    mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
+#    print(mkgmap)
+    
+
+
+
+
+#def getsplitter():
+#    target = http.client.HTTPConnection("www.mkgmap.org.uk")
+#    target.request("GET", "/splitter/index.html")
+#
+#    htmlcontent =  target.getresponse()
+
+#    print(htmlcontent.status, htmlcontent.reason)
+
+#    data = htmlcontent.read()
+
+#    target.close()
+
+#    data = data.decode('utf8')
+    
+#    pattern = re.compile('splitter-r\d{3}')
+
+#    splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
    
-    return mkgmap_rev
-
-
-
-
-def getsplitter():
-    target = http.client.HTTPConnection("www.mkgmap.org.uk")
-    target.request("GET", "/splitter/index.html")
-
-    htmlcontent =  target.getresponse()
-
-    print(htmlcontent.status, htmlcontent.reason)
-
-    data = htmlcontent.read()
-
-    target.close()
-
-    data = data.decode('utf8')
+#    os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
+#    tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
+#    tar.extractall()
+#    tar.close()    
     
-    pattern = re.compile('splitter-r\d{3}')
-
-    splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-   
-    os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
+#    splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
+#    print(splitter)
     
-    
-
-    return splitter_rev
     
 # VARs =============================================================================
 
@@ -191,7 +196,7 @@ firstrun = 0 ## nur zum Testen, default = 1 an dieser Stelle
 """ Arbeitsverzeichnis """
 
 
-work_dir = (os.environ['HOME'] + "/share/osm/map_build_test")
+work_dir = (os.environ['HOME'] + "/share/osm/map_build_test/") # Der Slash muss sein!!!
 
 """
   Logfunktion sollte eventuell erweitert werden zur besseren Fehlerbehebung
@@ -207,10 +212,10 @@ disable_log = 0
   Optionen können verbessert oder entfernt werden.
 """
 ## Wo ist mkgmap
-mkgmap = ((work_dir) + "mkgmap/mkgmap.jar")
+#mkgmap = ((work_dir) + "mkgmap/mkgmap.jar")
 
 ## Splitter
-splitter = ((work_dir) + "splitter/splitter.jar")
+#splitter = ((work_dir) + "splitter/splitter.jar")
 
 """
   Folgende Optionen sollten bei 'firstrun = 1' und Resets der Einstellungen 
@@ -513,16 +518,61 @@ if  firstrun == 1:
 #	echo $time" cgm-version: " $version "   " $mkr "   " $spr "   " $map "   " $RAMSIZE "   " $MAXNODES >> cgm.log
 #fi 
 
-""" 
-  Holen der Sachen von mkgmap.org
-  Erst mal zum Probieren ;-)
-"""
 
-getmkgmap()
+#  get mkgmap
+  
+
+target = http.client.HTTPConnection("www.mkgmap.org.uk")
+target.request("GET", "/snapshots/index.html")
+
+htmlcontent =  target.getresponse()
+
+print(htmlcontent.status, htmlcontent.reason)
+
+data = htmlcontent.read()
+
+target.close()
+
+data = data.decode('utf8')
+    
+pattern = re.compile('mkgmap-r\d{4}')
+
+mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
+
+os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
+tar.extractall()
+tar.close()
+    
+mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
 
 
+#  get splitter
 
-getsplitter()
+target = http.client.HTTPConnection("www.mkgmap.org.uk")
+target.request("GET", "/splitter/index.html")
+
+htmlcontent =  target.getresponse()
+
+print(htmlcontent.status, htmlcontent.reason)
+
+data = htmlcontent.read()
+
+target.close()
+
+data = data.decode('utf8')
+    
+pattern = re.compile('splitter-r\d{3}')
+
+splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
+   
+os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
+tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
+tar.extractall()
+tar.close()    
+    
+splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
+
 
 
 
