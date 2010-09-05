@@ -672,7 +672,7 @@ os.system("wget -N http://download.geofabrik.de/osm/europe/" + (build_map) + ".o
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
 ## freier Platz auf der Festplatte sein. Deutschland hat rund 10 GiB
 
-os.system("bunzip2 -k $map.osm.bz2")
+os.system("bunzip2 -k " (build_map) + ".osm.bz2")
 
  
 ## Splitten der Kartendaten, damit mkgmap damit arbeiten kann
