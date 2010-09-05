@@ -16,6 +16,7 @@ import os
 import http.client
 import re
 import tarfile
+import bz2
 
 """ 
   ===========VORSICHT ALPHA-STADIUM=================
@@ -223,8 +224,8 @@ disable_log = 0
   Hinweistexte multilingual, mit Hinweis auf das Wiki
 """  
 ## Für Java 
-RAMSIZE = "-Xmx2000M"
-MAXNODES = 500000
+RAMSIZE = "-Xmx4000M"
+MAXNODES = 1000000
 
 """
   Idee similar zu 'firstrun = 1' könnte zusammen gefasst werden
@@ -237,7 +238,7 @@ abfrage = 0
   Diese Optionen sollte per Konfigurationsdatei variabel sein
 """
 ## Standardkarte
-default_map = "germany"
+build_map = "germany"
  
 ## Velomap erstellen
 basemap = 0
@@ -284,9 +285,6 @@ hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
 os.chdir(work_dir)
-print((os.getcwd()))
-
-
 
 
 """ 
@@ -421,9 +419,9 @@ if  firstrun == 1:
 		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
 		
     """)
-    print(("		Vorgabewert: ",RAMSIZE)) 
-    RAMSIZE = input("		Wieviel Speicher soll verwendet werden? ")
-    print(("		Wahl:        ",RAMSIZE))
+    print("            Vorgabewert: ", (RAMSIZE)) 
+    RAMSIZE = input("      Wieviel Speicher soll verwendet werden? ")
+    print("            Wahl:        ", (RAMSIZE))
 
 
 
@@ -448,9 +446,9 @@ if  firstrun == 1:
 		4+GiB (-Xmx3000M) -->	1000000
 		
     """)       
-    print(("		Vorgabewert: ",MAXNODES))
-    MAXNODES = input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
-    print(("		Wahl:        ",MAXNODES))
+    print("            Vorgabewert: ", (MAXNODES))
+    MAXNODES = input("      Bitte Anzahl der gewünschten Nodes eingeben. ")
+    print("            Wahl:        ", (MAXNODES))
 
 
 #	  if  [ -z $MAXNODES ] ; then 
@@ -494,9 +492,9 @@ if  firstrun == 1:
                 Und dieser Vorgang dauert sehr lang und gelingt nicht unbedingt immer.
        	  
     """)
-    print(("		Vorgabewert: ",default_map))
-    map = eval(input("		Bitte die gewünschte Karte eingeben "))
-    print(("		Wahl:        ",map))
+    print("          Vorgabewert: ", (build_map))
+    build_map = input("     Bitte die gewünschte Karte eingeben ")
+    print("          Wahl:        ", build_map)
 #	  echo -n "       Ländernamen (englisch) ohne Dateiendung eingeben " [$default_map]
 #	  read map
 #	  if  [ -z $map ] ; then 
@@ -597,43 +595,39 @@ splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
   Aktualisierungen erfolgen automatisch
   Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
 """  
-checkdir("aiostyles", os.system("mkdir aiostyles"))
-#if [ -d aiostyles ] ; then 
-#	   cd aiostyles
-#	   git pull
-#	   cd ..
-#else	  
-#	  mkdir aiostyles
-#	  $git clone git://github.com/aiomaster/aiostyles.git
-#fi
- 
-#if [ -d aiostyles ] ; then :
-#else 
-#	      print(" Styles nicht gefunden! '
-#	      echo $web_help 
-#	      exit
-#fi
+
+   
+ExitCode = os.system("test -d aiostyles")
+    
+if ExitCode == 0:
+    os.chdir("aiostyles")
+    os.system("git pull")
+    os.chdir(work_dir)
+
+else:
+    os.system("git clone git://github.com/aiomaster/aiostyles.git")
+    os.chdir(work_dir)
+
+
+
  
 """ 
   Arbeitsverzeichnis für Splitter wird erstellt...
 """
  
-#if [ -d tiles ] ; then :
-#else mkdir tiles
-#fi
  
-"""  
-  und, falls alte Daten vorhanden,geleert
-"""
+ExitCode = os.system("test -d tiles")
 
-#if [ $rm_tiles -eq 1 ] ; then 
-#	tiles_dir='tiles'
-#	for i in $tiles_dir; do 
-#	cd $i
-#	rm -Rf *
-#	cd ..
-#	done
-#fi
+if ExitCode == 0:
+    os.chdir("tiles")
+    os.system("rm -Rf *")
+    os.chdir(work_dir)
+	  
+else: 
+    os.mkdir("tiles")
+            
+  
+
  
  
 """ 
@@ -642,75 +636,54 @@ checkdir("aiostyles", os.system("mkdir aiostyles"))
   Es gibt weitere bei openmtpmap.org, diese könnte man in irgendeiner Form vorbereitet (ready2use)
   zur Verfügung stellen. Dafür wäre aber Webspace erforderlich.
 """
-
-
-#if [ -f gcontourlines/gmapsupp.img ] ; then :
-#else 
-
-printinfo("Hole die benötigten Höhenlinien!")
-
-#	if [ -d gcontourlines ] ; then : 
-#	else mkdir gcontourlines
-#	fi
-#	cd gcontourlines
-#	rm -Rf *
-#	mkdir temp
-#	cd temp
-#	wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip
-#	unzip Topo_D_SRTM.zip
-#	$wine ../../gmt/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img
-#	cd ..
-#	rm -R temp
-#	cd ..
-#fi
+if  firstrun == 1:
+    os.system("rm -Rf gcontourlines")
+    os.mkdir("gcontourlines")
+    os.chdir("gcontourlines")
+    os.mkdir("temp")
+    os.chdir("temp")
+    os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
+    os.system("unzip Topo_D_SRTM.zip")
+    os.system("wine ~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
+    os.chdir("..")
+    os.system("rm -Rf temp")
+    os.chdir(work_dir)
+	
+	
+    	
  
 """ 
   Das Dumpfile für die OpenStreetBugs wird geholt. 
   Eine direkte Abfrage des OSB-Server ist möglich, ich habe da noch ein perlscript rum liegen,
   aber ob das nötig ist?
 """  
- 
-#if [ $bugsholen -eq 1 -o ! -f osbdump_latest.sql.bz2 ] ; then
-#	if [ -f osbdump_latest.sql.bz2 ] ; then
-#		rm osbdump*
-#	fi
-#	wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2
-#	## Umwandlung der Bugs ins OSM-Format
-#	bzcat osbdump_latest.sql.bz2 | $osbsql2osm > OpenStreetBugs.osm
-#fi
- 
-"""
-  Download der OSM-Kartendaten von der Geofabrik
-"""  
- 
-#if [ $download -eq 1 ] ; then
-#	if [ $map = europe ] ; then
-#	    wget -N http://download.geofabrik.de/osm/europe.osm.bz2
-#	else  
-#	    wget -N http://download.geofabrik.de/osm/europe/$map.osm.bz2
-#	fi
-#fi
+
+os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
+os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
+
+
+#  Download der OSM-Kartendaten von der Geofabrik
+  
+
+os.system("wget -N http://download.geofabrik.de/osm/europe/" + (build_map) + ".osm.bz2")
+
  
  
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
 ## freier Platz auf der Festplatte sein. Deutschland hat rund 10 GiB
- 
-#if [ -f $map.osm.bz2 ] ; then
-#	if [ -f $map.osm ] ; then
-#	    rm $map.osm
-#	fi
-#	bunzip2 -k $map.osm.bz2
-#else	echo "$map.osm.bz2 nicht gefunden..."  ; exit
-#fi
- 
+
+#os.system("unzip2 -k $map.osm.bz2")
+zipfile = ((build_map) + "osm.bz2")
+bz2.zipfile(filename, mode='r', buffering=0, compresslevel=9)
+bz2.decompress(filename)
  
 ## Splitten der Kartendaten, damit mkgmap damit arbeiten kann
  
-#if [ $rm_tiles -eq 1 ] ; then
-#	cd tiles
-#	java -ea $RAMSIZE -jar $splitter --mapid=63240023 --max-nodes=$MAXNODES --cache=cache ../$map.osm
-#	cd ..
-#fi
+
+os.chdir("tiles")
+os.system("java -ea $RAMSIZE -jar $splitter --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (build_map) + ".osm")
+os.chdir(work_dir)
+
  
 """ 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
@@ -719,46 +692,36 @@ printinfo("Hole die benötigten Höhenlinien!")
   NOBASEMAPOPTIONS = -c fixme_buglayer.conf
   VELOMAPOPTIONS = -c velomap.conf
 """
+if  firstrun == 1:
+    os.mkdir("gfixme")
+    os.mkdir("gosb")
+    os.mkdir("gvelomap") 
+    os.mkdir("gbasemap")
+    os.mkdir("gaddr") 
+    os.mkdir("gmaxspeed")
+    os.mkdir("gboundary")
 
 ## Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
  
-#dirs="gfixme gosb "
-#	for i in $work_dirs; do
-#	  if [ -d $i ] ; then
-#	    cd $i  
-#	    rm -Rf *
-#	    cd ..
-#	  else mkdir $i
-#	  fi
-#	done
+os.system("rm -Rf gfixme/* gosb/* ")
  
 #	echo $mapstyles 
  
-#	  cd gfixme
-#		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 $work_dir/tiles/*.osm.gz $work_dir/$mapstyles/fixme.TYP
-#	  cd ../gosb
-#		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../$mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 $work_dir/OpenStreetBugs.osm $work_dir/$mapstyles/osb.TYP
-#	  cd ../
+os.chdir("gfixme")
+print(os.getcwd())
+os.system("java -ea " + (RAMSIZE) + "-jar " + (mkgmap) + "-c ../fixme_buglayer.conf --style-file=../mystyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 " + (work_dir) + "/tiles/*.osm.gz " + (work_dir) + "/mystyles/fixme.TYP")
+os.chdir((work_dir) + "/gosb")
+print(os.getcwd())
+os.system("java -ea " + (RAMSIZE) + "-jar " + (mkgmap) + "-c ../fixme_buglayer.conf --style-file=../$mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "/OpenStreetBugs.osm " + (work_dir) + "/mystyles/osb.TYP")
+os.chdir(work_dir)
  
  
 ## Erstellen des Velomap-Layers
- 
-#if [ $basemap -eq 0 ] ; then
-#	  dirs_velomap="gvelomap"
-#	  for i in $work_dirs_velomap; do
-#	    if [ -d $i ] ; then
-#	      cd $i  
-#	      rm -Rf *
-#	      cd ..
-#	    else mkdir $i
-#	    fi
-#	  done
-#	  cd gvelomap
-#		  echo $PWD
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../velomap.conf --style-file=../aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/velomap.TYP
-#	  cd ../
+os.system("rm -Rf gvelomap/* ") 
+os.chdir("gvelomap")
+print(os.getcwd())
+os.system("java -ea " + (RAMSIZE) + "-jar " + (mkgmap) + "-c ../velomap.conf --style-file=../aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 " + (work_dir) + "/tiles/*.osm.gz " + (work_dir) + "/aiostyles/velomap.TYP")
+os.chdir(work_dir)
  
  
 ## oder der AIO-Karte, diese enthält zusätzlich einen Adress-, einen Grenz- und einen Maxspeed-Layer, jeweils abschaltbar im Kartenmenü des Navis.	  
@@ -792,7 +755,7 @@ printinfo("Hole die benötigten Höhenlinien!")
 ## Zusammenfügen der Kartenteile
  
 #if [ -f gvelomap/gmapsupp.img -a -f gosb/gmapsupp.img -a -f gfixme/gmapsupp.img -a $basemap -eq 0 ] ; then
-#	$wine $work_dir/gmt/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img
+os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
 #elif [ -f gbasemap/gmapsupp.img -a -f gosb/gmapsupp.img -a -f gaddr/gmapsupp.img -a -f gfixme/gmapsupp.img -a -f gboundary/gmapsupp.img -a -f gmaxspeed/gmapsupp.img -a $basemap -eq 1 ] ; then
 #	$wine $work_dir/gmt/gmt.exe -jo gmapsupp.img gbasemap/gmapsupp.img gosb/gmapsupp.img gaddr/gmapsupp.img gfixme/gmapsupp.img gboundary/gmapsupp.img gmaxspeed/gmapsupp.img
 #else echo $merge_error ; exit
