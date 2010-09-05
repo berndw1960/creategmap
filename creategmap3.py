@@ -225,7 +225,7 @@ disable_log = 0
 """  
 ## Für Java 
 RAMSIZE = "-Xmx4000M"
-MAXNODES = 1000000
+MAXNODES = "1000000"
 
 """
   Idee similar zu 'firstrun = 1' könnte zusammen gefasst werden
@@ -522,21 +522,13 @@ if  firstrun == 1:
 
 target = http.client.HTTPConnection("www.mkgmap.org.uk")
 target.request("GET", "/snapshots/index.html")
-
 htmlcontent =  target.getresponse()
-
 print(htmlcontent.status, htmlcontent.reason)
-
 data = htmlcontent.read()
-
 target.close()
-
 data = data.decode('utf8')
-    
 pattern = re.compile('mkgmap-r\d{4}')
-
 mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-
 os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
 tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
 tar.extractall()
@@ -549,21 +541,13 @@ mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
 
 target = http.client.HTTPConnection("www.mkgmap.org.uk")
 target.request("GET", "/splitter/index.html")
-
 htmlcontent =  target.getresponse()
-
 print(htmlcontent.status, htmlcontent.reason)
-
 data = htmlcontent.read()
-
 target.close()
-
 data = data.decode('utf8')
-    
 pattern = re.compile('splitter-r\d{3}')
-
 splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-   
 os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
 tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
 tar.extractall()
@@ -672,14 +656,14 @@ os.system("wget -N http://download.geofabrik.de/osm/europe/" + (build_map) + ".o
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
 ## freier Platz auf der Festplatte sein. Deutschland hat rund 10 GiB
 
-os.system("bunzip2 -k " (build_map) + ".osm.bz2")
+os.system("bunzip2 -k " + (build_map) + ".osm.bz2")
 
  
 ## Splitten der Kartendaten, damit mkgmap damit arbeiten kann
  
 
 os.chdir("tiles")
-os.system("java -ea $RAMSIZE -jar $splitter --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (build_map) + ".osm")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (build_map) + ".osm")
 os.chdir(work_dir)
 
  
@@ -706,19 +690,25 @@ os.system("rm -Rf gfixme/* gosb/* ")
 #	echo $mapstyles 
  
 os.chdir("gfixme")
+
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + "-jar " + (mkgmap) + "-c ../fixme_buglayer.conf --style-file=../mystyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 " + (work_dir) + "/tiles/*.osm.gz " + (work_dir) + "/mystyles/fixme.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/fixme.TYP")
+
 os.chdir((work_dir) + "/gosb")
+
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + "-jar " + (mkgmap) + "-c ../fixme_buglayer.conf --style-file=../$mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "/OpenStreetBugs.osm " + (work_dir) + "/mystyles/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + "aiostyles/osb.TYP")
 os.chdir(work_dir)
  
  
 ## Erstellen des Velomap-Layers
 os.system("rm -Rf gvelomap/* ") 
+
 os.chdir("gvelomap")
+
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + "-jar " + (mkgmap) + "-c ../velomap.conf --style-file=../aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 " + (work_dir) + "/tiles/*.osm.gz " + (work_dir) + "/aiostyles/velomap.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+
 os.chdir(work_dir)
  
  
