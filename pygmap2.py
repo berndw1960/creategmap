@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 __version__ = "0.6.1"
@@ -12,7 +12,7 @@ __status__ = "preAlpha"
 
 """ 
   ===========VORSICHT ALPHA-STADIUM=================
-  creategmap3.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
+  pygmap2.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
   zu erzeugen, z.B. Garmin eTrex Vista Hcx
   Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
   und als QCO Dschuwa
@@ -45,7 +45,7 @@ __status__ = "preAlpha"
 
 import sys
 import os
-import http.client
+from httplib import *
 import re
 import tarfile
 
@@ -114,7 +114,7 @@ def checkdir(dirtofind, solutionhint):
 
     return ExitCode
 
-
+    
     
 # VARs =============================================================================
 
@@ -126,27 +126,13 @@ def checkdir(dirtofind, solutionhint):
 """
 verbose = 0 ## nur zum Testen, default = 1 an dieser Stelle
 
-""" Arbeitsverzeichnis """
-
 
 work_dir = (os.environ['HOME'] + "/share/osm/map_build_test/") # Der letzte Slash muss sein!!!
 
-
-"""
-  Folgende Optionen sollten bei 'firstrun = 1' und Resets der Einstellungen 
-  gesondert abgefragt werden, 
-  Hinweistexte multilingual, mit Hinweis auf das Wiki
-"""  
-## Für Java 
 RAMSIZE = "-Xmx4000M"
 MAXNODES = "1000000"
 
-
-"""
-  Diese Optionen sollte per Konfigurationsdatei variabel sein
-"""
-## Standardkarte
-build_map = "germany"
+build_map = "sweden"
 
 
 
@@ -168,16 +154,22 @@ hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
 os.chdir(work_dir)
+print(os.getcwd())
+
+
 
 
 """ 
   Eigene Einstellungen werden aus cgmap_py.conf gelesen
 
-  Konfiguraionsdatei cgmap_py.conf um Konflikte mit der eventuell
+  Konfiguraionsdatei umbenannt nach cgmap_py.conf um Konflikte mit der eventuell
   vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
 """
 
+
 #checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
+
+#source $work_dir/creategmap.conf
 
  
  
@@ -202,7 +194,6 @@ os.chdir(work_dir)
 """
 
 
-
 """ 
   Einstellungen beim ersten Lauf, bei RAMSIZE und MAXNODES besteht eine
   Abhängigkeit, die eventuell sogar überprüft werden sollte. 
@@ -220,10 +211,9 @@ if  verbose == 1:
 		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
 		
     """)
-    print("                 Vorgabewert: ", (RAMSIZE)) 
-    RAMSIZE = input("                 Wieviel Speicher soll verwendet werden? ")
-    print("                 Wahl:        ", (RAMSIZE))
- 
+    print("		Vorgabewert: ",RAMSIZE) 
+    RAMSIZE = raw_input("		Wieviel Speicher soll verwendet werden? ")
+    print("		Wahl:        ",RAMSIZE)
 
     print(""" 
 		
@@ -235,9 +225,9 @@ if  verbose == 1:
 		4+GiB (-Xmx3000M) -->	1000000
 		
     """)       
-    print("                 Vorgabewert: ", (MAXNODES))
-    MAXNODES = input("                 Bitte Anzahl der gewünschten Nodes eingeben. ")
-    print("                 Wahl:        ", (MAXNODES))
+    print("		Vorgabewert: ",MAXNODES)
+    MAXNODES = raw_input("		Bitte Anzahl der gewünschten Nodes eingeben. ")
+    print("		Wahl:        ",MAXNODES)
 
     print(""" 
 	  
@@ -257,25 +247,30 @@ if  verbose == 1:
                 Und dieser Vorgang dauert sehr lang und gelingt nicht unbedingt immer.
        	  
     """)
-    print("                 Vorgabewert: ", (build_map))
-    build_map = input("                 Bitte die gewünschte Karte eingeben ")
-    print("                 Wahl:        ", build_map)
+    print("		Vorgabewert: ",default_map)
+    map = input("		Bitte die gewünschte Karte eingeben ")
+    print("		Wahl:        ",map)
 
 
 
-##  get mkgmap
-  
+##  get mkgmap and splitter
 
-target = http.client.HTTPConnection("www.mkgmap.org.uk")
-target.request("GET", "/snapshots/index.html")
-htmlcontent =  target.getresponse()
-print(htmlcontent.status, htmlcontent.reason)
-data = htmlcontent.read()
-target.close()
-data = data.decode('utf8')
+target = HTTPConnection("www.mkgmap.org.uk")
+
+target.request('GET', 'http://www.mkgmap.org.uk/snapshots/')
+htmlcontent =  target.getresponse().read()
 pattern = re.compile('mkgmap-r\d{4}')
-mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
+mkgmap_rev = sorted(pattern.findall(htmlcontent), reverse=True)[1]
+
+target.request('GET', 'http://www.mkgmap.org.uk/splitter/')
+htmlcontent =  target.getresponse().read()
+pattern = re.compile('splitter-r\d{3}')
+splitter_rev = sorted(pattern.findall(htmlcontent), reverse=True)[1]
+
+target.close()
+
 os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+
 tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
 tar.extractall()
 tar.close()
@@ -283,24 +278,13 @@ tar.close()
 mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
 
 
-##  get splitter
-
-target = http.client.HTTPConnection("www.mkgmap.org.uk")
-target.request("GET", "/splitter/index.html")
-htmlcontent =  target.getresponse()
-print(htmlcontent.status, htmlcontent.reason)
-data = htmlcontent.read()
-target.close()
-data = data.decode('utf8')
-pattern = re.compile('splitter-r\d{3}')
-splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
 os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
+
 tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
 tar.extractall()
 tar.close()    
     
 splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
-
 
 
 """ 
@@ -329,7 +313,7 @@ else:
   Es gibt weitere bei openmtpmap.org, diese könnte man in irgendeiner Form vorbereitet (ready2use)
   zur Verfügung stellen. Dafür wäre aber Webspace erforderlich.
 """
-if  firstrun == 1:
+if  verbose == 1:
     os.system("rm -Rf gcontourlines")
     os.mkdir("gcontourlines")
     os.chdir("gcontourlines")
@@ -393,7 +377,7 @@ os.chdir(work_dir)
   NOBASEMAPOPTIONS =  -c fixme_buglayer.conf
   VELOMAPOPTIONS   =  -c velomap.conf
 """
-if  firstrun == 1:
+if  verbose == 1:
     os.mkdir("gfixme")
     os.mkdir("gosb")
     os.mkdir("gvelomap") 
