@@ -269,6 +269,7 @@ print(htmlcontent.status, htmlcontent.reason)
 data = htmlcontent.read()
 data = data.decode('utf8')
 pattern = re.compile('splitter-r\d{3}')
+splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
 
 target.close()
 
