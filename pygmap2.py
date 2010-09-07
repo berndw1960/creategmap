@@ -305,9 +305,36 @@ if  verbose == 1:
     os.chdir("..")
     os.system("rm -Rf temp")
     os.chdir(work_dir)
-	
-	
-    	
+
+
+
+""" 
+  Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
+  Aktualisierungen erfolgen automatisch
+  Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
+"""   
+   
+ExitCode = os.system("test -d aiostyles")
+    
+if ExitCode == 0:
+    os.chdir("aiostyles")
+    os.system("git pull")
+    os.chdir(work_dir)
+
+else:
+    os.system("git clone git://github.com/aiomaster/aiostyles.git")
+    os.chdir(work_dir)
+
+## add your own styles in mystyles and change the path for mkgmap 
+
+ExitCode = os.system("test -d mystyles")
+    
+if ExitCode == 0:    
+    mapstyle = mystyles
+
+else:
+    mapstyle = aiostyles
+    
  
 """ 
   Das Dumpfile für die OpenStreetBugs wird geholt. 
@@ -356,35 +383,6 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 -
 os.chdir(work_dir)
 
 
-
-""" 
-  Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
-  Aktualisierungen erfolgen automatisch
-  Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
-"""   
-   
-ExitCode = os.system("test -d aiostyles")
-    
-if ExitCode == 0:
-    os.chdir("aiostyles")
-    os.system("git pull")
-    os.chdir(work_dir)
-
-else:
-    os.system("git clone git://github.com/aiomaster/aiostyles.git")
-    os.chdir(work_dir)
-
-
-## add your own styles in mystyles and change the path for mkgmap 
-
-ExitCode = os.system("test -d mystyles")
-    
-if ExitCode == 0:    
-    mapstyle = mystyles
-
-else:
-    mapstyle = aiostyles
-    
  
 """ 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
