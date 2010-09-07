@@ -290,27 +290,7 @@ tar.close()
     
 splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 
-
-
-""" 
-  Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
-  Aktualisierungen erfolgen automatisch
-  Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
-"""  
-
-   
-ExitCode = os.system("test -d aiostyles")
     
-if ExitCode == 0:
-    os.chdir("aiostyles")
-    os.system("git pull")
-    os.chdir(work_dir)
-
-else:
-    os.system("git clone git://github.com/aiomaster/aiostyles.git")
-    os.chdir(work_dir)
-
-
  
 """ 
   Die Höhenlinien werden einmalig geholt, hier nur für Deutschland, andere z.Z. nur manuell, 
@@ -353,6 +333,12 @@ os.system("wget -N http://download.geofabrik.de/osm/europe/" + (build_map) + ".o
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
 ## freier Platz auf der Festplatte sein. Deutschland hat rund 10 GiB
 
+ExitCode = os.system("test -f " + (build_map) + ".osm")
+
+if ExitCode == 0:
+    os.remove((build_map) + ".osm")
+
+
 os.system("bunzip2 -k " + (build_map) + ".osm.bz2")
  
 
@@ -374,7 +360,38 @@ os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (build_map) + ".osm")
 os.chdir(work_dir)
 
- 
+
+
+""" 
+  Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
+  Aktualisierungen erfolgen automatisch
+  Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
+"""   
+   
+ExitCode = os.system("test -d aiostyles")
+    
+if ExitCode == 0:
+    os.chdir("aiostyles")
+    os.system("git pull")
+    os.chdir(work_dir)
+
+else:
+    os.system("git clone git://github.com/aiomaster/aiostyles.git")
+    os.chdir(work_dir)
+
+
+## add your own styles in mystyles and change the path for mkgmap 
+
+ExitCode = os.system("test -d mystyles")
+    
+if ExitCode == 0:    
+    mapstyle = mystyles
+
+else:
+    mapstyle = aiostyles
+    
+    
+    
 """ 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
 
@@ -398,12 +415,12 @@ os.system("rm -Rf gfixme/* gosb/* ")
 os.chdir("gfixme")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/fixme.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "mapstyles/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/fixme.TYP")
 
 os.chdir((work_dir) + "/gosb")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + "aiostyles/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "mapstyles/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + "aiostyles/osb.TYP")
 os.chdir(work_dir)
  
  
