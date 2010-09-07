@@ -341,8 +341,8 @@ if ExitCode == 0:
 else:
     mapstyle = "aiostyles"
     
-    	
-    	
+ 
+ 
  
 """ 
   Das Dumpfile für die OpenStreetBugs wird geholt. 
