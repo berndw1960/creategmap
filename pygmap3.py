@@ -163,7 +163,7 @@ os.chdir(work_dir)
   vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
 """
 
-#checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
+#checkfile("pygmap_py.conf", os.system("touch pygmap_py.conf"))
 
  
  
@@ -415,12 +415,12 @@ os.system("rm -Rf gfixme/* gosb/* ")
 os.chdir("gfixme")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/fixme.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme' --family-name=OSMFixme --mapname=63242023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/fixme.TYP")
 
 os.chdir((work_dir) + "/gosb")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + "aiostyles/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=20 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + "aiostyles/osb.TYP")
 os.chdir(work_dir)
  
  
@@ -458,7 +458,7 @@ printinfo("Habe fertig!")
 ## Änderungen:
 
 v0.6.1- first working version with python3, but there are a lot of things to do,
-       next is make it use startoptions and the cgmap_py.conf to remember
+       next is make it use startoptions and the pygmap_py.conf to remember
        these options
        there are many systemcalls, which only work on Linux, they must be changed
        remove many comments and code from the bash, because they make it unreadable
