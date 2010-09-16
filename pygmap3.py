@@ -157,13 +157,13 @@ os.chdir(work_dir)
 
 
 """ 
-  Eigene Einstellungen werden aus cgmap_py.conf gelesen
+  Eigene Einstellungen werden aus pygmap.conf gelesen
 
-  Konfiguraionsdatei cgmap_py.conf um Konflikte mit der eventuell
+  Konfiguraionsdatei pygmap.conf um Konflikte mit der eventuell
   vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
 """
 
-#checkfile("pygmap_py.conf", os.system("touch pygmap_py.conf"))
+#checkfile("pygmap.conf", os.system("touch pygmap.conf"))
 
  
  
@@ -175,7 +175,7 @@ os.chdir(work_dir)
 
 		creategmap3.py [-options]
 
-		-i		interaktiv mit der Möglichkeit, Optionen zu ändern
+		-v		interaktiv mit der Möglichkeit, Optionen zu ändern
 		-base		Basemap erstellen
 		-nm  		Keine Kartendaten holen
 		-nb  		keine neuen Bugs holen
@@ -234,14 +234,8 @@ if  verbose == 1:
 	   
 	  
 	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/
-	        bitte nur den dateinamen ohne Endung.
+	        bitte nur den Dateinamen ohne Endung.
 	  
-	        Wahl wird in creategmap.conf gespeichert, zum Ändern die Option "-i" 
-	        beim Aufruf des Scriptes verwenden. "
-	   
-	        europe erzeugt eine Europa-Karte, bitte nur bei ausreichend RAM! 
-                Und dieser Vorgang dauert sehr lang und gelingt nicht unbedingt immer.
-       	  
     """)
     print("                 Vorgabewert: ", (build_map))
     build_map = input("                 Bitte die gewünschte Karte eingeben ")
@@ -390,26 +384,24 @@ os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (build_map) + ".osm")
 os.chdir(work_dir)
 
+## Erstellen der Arbeitsverzeichnisse
 
-    
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gaddr', 'gmaxspeed', 'gboundary']:
+    ExitCode = os.system("test -d " + (dir))
+    if ExitCode != 0:
+      os.mkdir(dir)
+      
 """ 
+  Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
+ 
+
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
 
   GBASEMAPOPTIONS  =  -c basemap.conf
   NOBASEMAPOPTIONS =  -c fixme_buglayer.conf
   VELOMAPOPTIONS   =  -c velomap.conf
+
 """
-if  verbose == 1:
-    os.mkdir("gfixme")
-    os.mkdir("gosb")
-    os.mkdir("gvelomap") 
-    os.mkdir("gbasemap")
-    os.mkdir("gaddr") 
-    os.mkdir("gmaxspeed")
-    os.mkdir("gboundary")
-
-## Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
-
 os.system("rm -Rf gfixme/* gosb/* ")
 
 os.chdir("gfixme")
@@ -436,7 +428,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + 
 os.chdir(work_dir)
  
  
-## Optionen für die Basemap, bitte stehenlassen, werden och gebraucht
+## Optionen für die Basemap, bitte stehenlassen, werden noch gebraucht
 
 #		  java -ea $RAMSIZE -jar $mkgmap -c ../basemap.conf --style-file=../aiostyles/basemap_style --description='Openstreetmap' --family-id=4 --product-id=45 --series-name='OSMDEbasemap' --family-name=OSMBasemap --mapname=63240023 --draw-priority=10 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/basemap.TYP
 
