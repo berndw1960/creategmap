@@ -160,16 +160,16 @@ print(os.getcwd())
 
 
 """ 
-  Eigene Einstellungen werden aus cgmap_py.conf gelesen
+  Eigene Einstellungen werden aus pygmap.conf gelesen
 
-  Konfiguraionsdatei umbenannt nach cgmap_py.conf um Konflikte mit der eventuell
+  Konfiguraionsdatei umbenannt nach pygmap.conf um Konflikte mit der eventuell
   vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
 """
 
 
-#checkfile("cgmap_py.conf", os.system("touch cgmap_py.conf"))
+#checkfile("pygmap.conf", os.system("touch pygmap.conf"))
 
-#source $work_dir/creategmap.conf
+
 
  
  
@@ -181,7 +181,7 @@ print(os.getcwd())
 
 		creategmap3.py [-options]
 
-		-i		interaktiv mit der Möglichkeit, Optionen zu ändern
+		-v		interaktiv mit der Möglichkeit, Optionen zu ändern
 		-base		Basemap erstellen
 		-nm  		Keine Kartendaten holen
 		-nb  		keine neuen Bugs holen
@@ -243,9 +243,6 @@ if  verbose == 1:
 	        Wahl wird in creategmap.conf gespeichert, zum Ändern die Option "-i" 
 	        beim Aufruf des Scriptes verwenden. "
 	   
-	        europe erzeugt eine Europa-Karte, bitte nur bei ausreichend RAM! 
-                Und dieser Vorgang dauert sehr lang und gelingt nicht unbedingt immer.
-       	  
     """)
     print("		Vorgabewert: ",default_map)
     map = input("		Bitte die gewünschte Karte eingeben ")
@@ -382,7 +379,12 @@ os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (build_map) + ".osm")
 os.chdir(work_dir)
 
+## Erstellen der Arbeitsverzeichnisse
 
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gaddr', 'gmaxspeed', 'gboundary']:
+    ExitCode = os.system("test -d " + (dir))
+    if ExitCode != 0:
+      os.mkdir(dir)
  
 """ 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
@@ -390,17 +392,10 @@ os.chdir(work_dir)
   GBASEMAPOPTIONS  =  -c basemap.conf
   NOBASEMAPOPTIONS =  -c fixme_buglayer.conf
   VELOMAPOPTIONS   =  -c velomap.conf
-"""
-if  verbose == 1:
-    os.mkdir("gfixme")
-    os.mkdir("gosb")
-    os.mkdir("gvelomap") 
-    os.mkdir("gbasemap")
-    os.mkdir("gaddr") 
-    os.mkdir("gmaxspeed")
-    os.mkdir("gboundary")
 
-## Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
+  Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
+
+"""
 
 os.system("rm -Rf gfixme/* gosb/* ")
 
