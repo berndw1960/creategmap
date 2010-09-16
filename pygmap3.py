@@ -124,15 +124,15 @@ def checkdir(dirtofind, solutionhint):
   ausführliche Infos zu geben, und eventuell die Möglichkeit des Rücksetzen
   auf die Default-Einstellungen bei Fehlern zu bieten
 """
-verbose = 0 ## nur zum Testen, default = 1 an dieser Stelle
+verbose = 1 ## nur zum Testen, default = 1 an dieser Stelle
 
 
 work_dir = (os.environ['HOME'] + "/share/osm/map_build_test/") # Der letzte Slash muss sein!!!
 
-RAMSIZE = "-Xmx4000M"
-MAXNODES = "1000000"
+RAMSIZE_DEFAULT = "-Xmx4000M"
+MAXNODES_DEFAULT = "1000000"
 
-build_map = "germany"
+BUILD_MAP_DEFAULT = "germany"
 
 
 
@@ -206,10 +206,12 @@ if  verbose == 1:
 		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
 		
     """)
-    print("                 Vorgabewert: ", (RAMSIZE)) 
-    RAMSIZE = input("                 Wieviel Speicher soll verwendet werden? ")
-    print("                 Wahl:        ", (RAMSIZE))
- 
+    print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
+    RAMSIZE = input("                Wieviel Speicher soll verwendet werden? ")
+
+    if RAMSIZE == "":
+        RAMSIZE = (RAMSIZE_DEFAULT)  
+    print("                Wahl:        ", (RAMSIZE)) 
 
     print(""" 
 		
@@ -221,9 +223,13 @@ if  verbose == 1:
 		4+GiB (-Xmx3000M) -->	1000000
 		
     """)       
-    print("                 Vorgabewert: ", (MAXNODES))
-    MAXNODES = input("                 Bitte Anzahl der gewünschten Nodes eingeben. ")
-    print("                 Wahl:        ", (MAXNODES))
+    print("                Vorgabewert: ", (MAXNODES_DEFAULT))
+    MAXNODES = input("                Bitte Anzahl der gewünschten Nodes eingeben. ")
+    
+    if MAXNODES == "":
+        MAXNODES = (MAXNODES_DEFAULT)
+
+    print("                Wahl:        ", (MAXNODES))
 
     print(""" 
 	  
@@ -237,9 +243,13 @@ if  verbose == 1:
 	        bitte nur den Dateinamen ohne Endung.
 	  
     """)
-    print("                 Vorgabewert: ", (build_map))
-    build_map = input("                 Bitte die gewünschte Karte eingeben ")
-    print("                 Wahl:        ", build_map)
+    print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
+    BUILD_MAP = input("                Bitte die gewünschte Karte eingeben ")
+    
+    if BUILD_MAP == "":
+        BUILD_MAP = (BUILD_MAP_DEFAULT)
+    
+    print("                Wahl:        ", BUILD_MAP)
 
 
 
@@ -287,25 +297,26 @@ splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
     
  
 """ 
-  Die Höhenlinien werden einmalig geholt, hier nur für Deutschland, andere z.Z. nur manuell, 
-  siehe Änderung v0.50.
-  Es gibt weitere bei openmtpmap.org, diese könnte man in irgendeiner Form vorbereitet (ready2use)
-  zur Verfügung stellen. Dafür wäre aber Webspace erforderlich.
+  get the contourlines for Germany, if not present
+  other countries could be found at openmtp.org
+  please build the gmapsupp.img for every country in own folders and store it
+  in hoehenlinien/(buildmap)/gmapsupp.img
+  
 """
-if  verbose == 1:
-    os.system("rm -Rf gcontourlines")
-    os.mkdir("gcontourlines")
-    os.chdir("gcontourlines")
-    os.mkdir("temp")
-    os.chdir("temp")
-    os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
-    os.system("unzip Topo_D_SRTM.zip")
-    os.system("wine ~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
-    os.chdir("..")
-    os.system("rm -Rf temp")
-    os.chdir(work_dir)
-	
-
+if (BUILD_MAP) == "germany":
+    ExitCode  = os.system("test -d gcontourlines")
+    if ExitCode != 0:
+        os.system("rm -Rf gcontourlines")
+        os.mkdir("gcontourlines")
+        os.chdir("gcontourlines")
+        os.mkdir("temp")
+        os.chdir("temp")
+        os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
+        os.system("unzip Topo_D_SRTM.zip")
+        os.system("wine ~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
+        os.chdir("..")
+        os.system("rm -Rf temp")
+        os.chdir(work_dir)
 
 """ 
   Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
@@ -340,8 +351,7 @@ print(mapstyle)
  
 """ 
   Das Dumpfile für die OpenStreetBugs wird geholt. 
-  Eine direkte Abfrage des OSB-Server ist möglich, ich habe da noch ein perlscript rum liegen,
-  aber ob das nötig ist?
+  
 """  
 
 os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
@@ -350,20 +360,20 @@ os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 
 #  Download der OSM-Kartendaten von der Geofabrik
 
-os.system("wget -N http://download.geofabrik.de/osm/europe/" + (build_map) + ".osm.bz2")
+os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")
 
  
  
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
 ## freier Platz auf der Festplatte sein. Deutschland hat rund 10 GiB
 
-ExitCode = os.system("test -f " + (build_map) + ".osm")
+ExitCode = os.system("test -f " + (BUILD_MAP) + ".osm")
 
 if ExitCode == 0:
-    os.remove((build_map) + ".osm")
+    os.remove((BUILD_MAP) + ".osm")
 
 
-os.system("bunzip2 -k " + (build_map) + ".osm.bz2")
+os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
  
 
 ##  Arbeitsverzeichnis für Splitter wird erstellt...
@@ -381,7 +391,7 @@ else:
 ## Splitten der Kartendaten, damit mkgmap damit arbeiten kann
 
 os.chdir("tiles")
-os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (build_map) + ".osm")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm")
 os.chdir(work_dir)
 
 ## Erstellen der Arbeitsverzeichnisse
@@ -423,7 +433,7 @@ os.system("rm -Rf gvelomap/* ")
 os.chdir("gvelomap")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMDEVelomap' --family-name=OSMVelomap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
 
 os.chdir(work_dir)
  
@@ -440,20 +450,27 @@ os.chdir(work_dir)
 
  
 ## Zusammenfügen der Kartenteile
-os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
 
-
+if (BUILD_MAP) == "germany":
+    os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+elif (BUILD_MAP) != "germany":
+    ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+    if ExitCode == 0:
+        os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+    else:
+        os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+        
+os.system("cp gmapsupp.img " + (work_dir) + "_" + (BUILD_MAP) + "_gmapsupp.img")
 printinfo("Habe fertig!")
 
 """ 
  
-## Änderungen:
+## Changelog:
 
 v0.6.1- first working version with python3, but there are a lot of things to do,
-       next is make it use startoptions and the pygmap_py.conf to remember
-       these options
+       next is make it use startoptions and the pygmap.conf to remember these options
        there are many systemcalls, which only work on Linux, they must be changed
-       remove many comments and code from the bash, because they make it unreadable
+       removed many comments and code from the bash, because they make it unreadable
 
 v0.6.0 - Beginn der Umstellung auf python, aktuell noch nicht benutzbar
 
