@@ -159,7 +159,7 @@ os.chdir(work_dir)
 """ 
   Eigene Einstellungen werden aus pygmap.conf gelesen
 
-  Konfiguraionsdatei pygmap.conf um Konflikte mit der eventuell
+  Konfigurationsdatei pygmap.conf, um Konflikte mit der eventuell
   vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
 """
 
