@@ -206,7 +206,7 @@ if  verbose == 1:
 		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
 		
     """)
-    print('                Vorgabewert: ', (RAMSIZE_DEFAULT)) 
+    print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
     RAMSIZE = raw_input("                Wieviel Speicher soll verwendet werden? ")
 
     if RAMSIZE == "":
