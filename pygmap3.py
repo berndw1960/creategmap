@@ -460,7 +460,9 @@ elif (BUILD_MAP) != "germany":
     else:
         os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
         
-os.system("cp gmapsupp.img " + (work_dir) + "_" + (BUILD_MAP) + "_gmapsupp.img")
+os.system("cp gmapsupp.img " + (work_dir) + (BUILD_MAP) + "_gmapsupp.img")
+
+
 printinfo("Habe fertig!")
 
 """ 
