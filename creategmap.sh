@@ -110,7 +110,7 @@ merge_error="Zusammenfügen der Karte klappt nicht, da nicht alle Teile vorhande
 ## mkgmap-Optionen
 GBASEMAPOPTIONS=" --remove-short-arcs --add-pois-to-areas --make-all-cycleways --link-pois-to-ways --index  --generate-sea=polygons,no-sea-sectors,close-gaps=2000"
 NOBASEMAPOPTIONS=" --no-poi-address --ignore-maxspeeds --ignore-turn-restrictions --ignore-osm-bounds --transparent"
-VELOMAPOPTIONS=" --generate-sea=polygons,extend-sea-sectors,close-gaps=6000 --reduce-point-density=2.8 --reduce-point-density-polygon=8 --suppress-dead-end-nodes --index --adjust-turn-headings --add-pois-to-areas --ignore-maxspeeds --link-pois-to-ways --remove-short-arcs=4 --location-autofill=1"
+VELOMAPOPTIONS=" --generate-sea=polygons,extend-sea-sectors,close-gaps=6000 --reduce-point-density-polygon=8 --suppress-dead-end-nodes --index --adjust-turn-headings --add-pois-to-areas --ignore-maxspeeds --link-pois-to-ways --remove-short-arcs=4 --location-autofill=1"
  
  
  
@@ -377,7 +377,7 @@ area-name=EU
 latin1 
 route 
 net 
-no-sort-roads
+no-sorted-roads
 make-all-cycleways
 gmapsupp
 keep-going
