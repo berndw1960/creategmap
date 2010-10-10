@@ -153,6 +153,9 @@ checkprg("osbsql2osm", hint)
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
+hint = " osmosis fehlt, wird gebraucht zur Verarbeitung der *.pbf files! "
+checkprg("osmosis", hint)
+
 os.chdir(work_dir)
 
 
@@ -358,10 +361,11 @@ os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql
 os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 
 
+
 #  Download der OSM-Kartendaten von der Geofabrik
 
-os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")
-
+#os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")
+os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
  
  
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
@@ -373,7 +377,8 @@ if ExitCode == 0:
     os.remove((BUILD_MAP) + ".osm")
 
 
-os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
+#os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
+os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
  
 
 ##  Arbeitsverzeichnis für Splitter wird erstellt...
