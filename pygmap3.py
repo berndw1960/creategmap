@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.6.1"
+__version__ = "0.6.5"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -242,8 +242,10 @@ if  verbose == 1:
 	        diese können über die AIO-Downloadseite gefunden werden.
 	   
 	  
-	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/
-	        bitte nur den Dateinamen ohne Endung.
+	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/,
+	        eine Europakarte kann mit der Eingabe von 'europe' erstellt werden.
+	        
+	        Bitte nur den Dateinamen ohne Endung!
 	  
     """)
     print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
@@ -364,8 +366,11 @@ os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 
 #  Download der OSM-Kartendaten von der Geofabrik
 
-#os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")
-os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
+if (BUILD_MAP) == "europe":
+    os.system("wget -N http://download.geofabrik.de/osm/" + (BUILD_MAP) + ".osm.pbf")
+else:    
+    #os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")
+    os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
  
  
 ## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
@@ -473,11 +478,12 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+v0.6.5- europe-card added, minor changes
 
 v0.6.1- first working version with python3, but there are a lot of things to do,
-       next is make it use startoptions and the pygmap.conf to remember these options
-       there are many systemcalls, which only work on Linux, they must be changed
-       removed many comments and code from the bash, because they make it unreadable
+        next is make it use startoptions and the pygmap.conf to remember these options
+        there are many systemcalls, which only work on Linux, they must be changed
+        removed many comments and code from the bash, because they make it unreadable
 
 v0.6.0 - Beginn der Umstellung auf python, aktuell noch nicht benutzbar
 
