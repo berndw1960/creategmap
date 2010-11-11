@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.6.6"
+__version__ = "0.6.7"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -124,10 +124,10 @@ def checkdir(dirtofind, solutionhint):
   ausführliche Infos zu geben, und eventuell die Möglichkeit des Rücksetzen
   auf die Default-Einstellungen bei Fehlern zu bieten
 """
-verbose = 1 ## nur zum Testen, default = 1 an dieser Stelle
+verbose = 1 ## default '= 1' an dieser Stelle
 
 
-work_dir = (os.environ['HOME'] + "/share/osm/map_build_test/") # Der letzte Slash muss sein!!!
+work_dir = (os.environ['HOME'] + "/share/osm/map_build/") # Der letzte Slash muss sein!!!
 
 RAMSIZE_DEFAULT = "-Xmx4000M"
 MAXNODES_DEFAULT = "1000000"
@@ -478,7 +478,10 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
-v0.6.6- better map-description, if more then is used on the GPS-device
+
+v0.6.7- change work_dir to map_build
+
+v0.6.6- better map-description, if more then one map is used on the GPS-device
 
 v0.6.5- europe-card added, minor changes
 
