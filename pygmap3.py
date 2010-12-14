@@ -303,7 +303,7 @@ splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
  
 """ 
   get the contourlines for Germany, if not present
-  other countries could be found at openmtp.org
+  other countries could be found at openmtb.org
   please build the gmapsupp.img for every country in own folders and store it
   in hoehenlinien/(buildmap)/gmapsupp.img
   
