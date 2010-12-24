@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.6.7"
+__version__ = "0.6.8"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -159,45 +159,6 @@ checkprg("osmosis", hint)
 os.chdir(work_dir)
 
 
-""" 
-  Eigene Einstellungen werden aus pygmap.conf gelesen
-
-  Konfigurationsdatei pygmap.conf, um Konflikte mit der eventuell
-  vorhandenen creategmap.conf des Bashscriptes zu vermeiden.
-"""
-
-#checkfile("pygmap.conf", os.system("touch pygmap.conf"))
-
- 
- 
-"""
- 
-  Default (Vorschlag):
-  velomap  mit Bugs und Fixmes
-
-
-		creategmap3.py [-options]
-
-		-v		interaktiv mit der Möglichkeit, Optionen zu ändern
-		-base		Basemap erstellen
-		-nm  		Keine Kartendaten holen
-		-nb  		keine neuen Bugs holen
-		-L		Log einschalten
-		-l		Log ausschalten
-
-
-		Standard ist der Bau einer Velomap für mehr Kontrast auf kleinen Displays."
-
-"""
-
-
-
-""" 
-  Einstellungen beim ersten Lauf, bei RAMSIZE und MAXNODES besteht eine
-  Abhängigkeit, die eventuell sogar überprüft werden sollte. 
-  Erfahrungswerte sind vorhanden, weitere sollten ermittelt werden.
-"""
-# 
 if  verbose == 1:
     print(""" 
 		
@@ -417,7 +378,7 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gaddr', 'gmaxspeed', 'gbo
 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
 
-  GBASEMAPOPTIONS  =  -c basemap.conf
+
   NOBASEMAPOPTIONS =  -c fixme_buglayer.conf
   VELOMAPOPTIONS   =  -c velomap.conf
 
@@ -441,24 +402,13 @@ os.chdir(work_dir)
 os.system("rm -Rf gvelomap/* ") 
 
 os.chdir("gvelomap")
-
 print(os.getcwd())
+
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
 
 os.chdir(work_dir)
  
- 
-## Optionen für die Basemap, bitte stehenlassen, werden noch gebraucht
 
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../basemap.conf --style-file=../aiostyles/basemap_style --description='Openstreetmap' --family-id=4 --product-id=45 --series-name='OSMDEbasemap' --family-name=OSMBasemap --mapname=63240023 --draw-priority=10 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/basemap.TYP
-
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/addr_style --description='Adressen' --family-id=5 --product-id=40 --series-name='OSMDEAddr' --family-name=OSMAdressen --mapname=63244023 --draw-priority=18  $work_dir/tiles/*.osm.gz $work_dir/aiostyles/addr.TYP
-
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/boundary_style --description='Grenzen' --family-id=6 --product-id=30 --series-name='OSMDEboundary' --family-name=OSMGrenzen  --mapname=63245023 --draw-priority=20 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/boundary.TYP
-
-#		  java -ea $RAMSIZE -jar $mkgmap -c ../fixme_buglayer.conf --style-file=../aiostyles/maxspeed_style--family-name=maxspeed --series-name="maxspeed" --family-id=84 --product-id=15 --series-name=OSMmaxspeed --family-name=OSMmaxspeed --mapname=63246023 --draw-priority=21 $work_dir/tiles/*.osm.gz $work_dir/aiostyles/maxspeed.TYP
-
- 
 ## Zusammenfügen der Kartenteile
 
 if (BUILD_MAP) == "germany":
@@ -478,6 +428,7 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+v0.6.8- Cleanups
 
 v0.6.7- change work_dir to map_build
 
