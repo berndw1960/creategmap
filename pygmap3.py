@@ -300,28 +300,17 @@ if ExitCode == 0:
 else:
     os.system("git clone git://github.com/aiomaster/aiostyles.git")
     os.chdir(work_dir)
-
-
-## add your own styles in mystyles and change the path for mkgmap 
-
-ExitCode = os.system("test -d mystyles")
-    
-if ExitCode == 0:    
-    mapstyle = "mystyles"
-
-else:
-    mapstyle = "aiostyles"
-    
- 
-print(mapstyle) 
  
 """ 
   Das Dumpfile für die OpenStreetBugs wird geholt. 
   
 """  
 
-os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
-os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
+# os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
+os.system("wget http://www.gary68.de/osm/qa/gpx/allbugs.gpx --output-document=OpenStreetBugs.gpx")
+
+# os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
+os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
 
 
 
@@ -385,29 +374,60 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gaddr', 'gmaxspeed', 'gbo
 """
 os.system("rm -Rf gfixme/* gosb/* ")
 
+## add your own styles in mystyles 
+ExitCode = os.system("test -d mystyles/fixme_style")
+    
+if ExitCode == 0:    
+    mapstyle_fixme = "mystyles"
+else:
+    mapstyle_fixme = "aiostyles" 
+
+print(mapstyle_fixme) 
+
+ExitCode = os.system("test -d mystyles/osb_style")
+    
+if ExitCode == 0:    
+    mapstyle_osb = "mystyles"
+else:
+    mapstyle_osb = "aiostyles" 
+
+print(mapstyle_osb) 
+
+
 os.chdir("gfixme")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme_" + (BUILD_MAP) + "' --family-name=OSMFixme_" + (BUILD_MAP) + " --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/fixme.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description='Fixme' --family-id=3 --product-id=33 --series-name='OSMDEFixme_" + (BUILD_MAP) + "' --family-name=OSMFixme_" + (BUILD_MAP) + " --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
 
 os.chdir((work_dir) + "/gosb")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + "aiostyles/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description='OSB' --family-id=2323 --product-id=42 --series-name='OSMBugs' --family-name=OSMBugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
+
 os.chdir(work_dir)
  
  
 ## Erstellen des Velomap-Layers
+
+ExitCode = os.system("test -d mystyles/velomap_style")
+    
+if ExitCode == 0:    
+    mapstyle_velo = "mystyles"
+else:
+    mapstyle_velo = "aiostyles" 
+
+print(mapstyle_velo) 
 
 os.system("rm -Rf gvelomap/* ") 
 
 os.chdir("gvelomap")
 print(os.getcwd())
 
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + (mapstyle_velo) + "/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_velo) + "/velomap.TYP")
 
 os.chdir(work_dir)
- 
+
+
 
 ## Zusammenfügen der Kartenteile
 
