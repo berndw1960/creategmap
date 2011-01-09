@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.6.8"
+__version__ = "0.7.0"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -188,7 +188,7 @@ if  verbose == 1:
 		
     """)       
     print("                Vorgabewert: ", (MAXNODES_DEFAULT))
-    MAXNODES = input("                Bitte Anzahl der gewünschten Nodes eingeben. ")
+    MAXNODES = input("                Bitte Anzahl der gewünschten Nodes eingeben: ")
     
     if MAXNODES == "":
         MAXNODES = (MAXNODES_DEFAULT)
@@ -210,7 +210,7 @@ if  verbose == 1:
 	  
     """)
     print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
-    BUILD_MAP = input("                Bitte die gewünschte Karte eingeben ")
+    BUILD_MAP = input("                Bitte die gewünschte Karte eingeben: ")
     
     if BUILD_MAP == "":
         BUILD_MAP = (BUILD_MAP_DEFAULT)
@@ -287,7 +287,8 @@ if (BUILD_MAP) == "germany":
 """ 
   Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
   Aktualisierungen erfolgen automatisch
-  Eine Rückfallebene wäre sinnvoll, da die AIO-Styles nicht immer in Ordnung sind
+  Eine Rückfallebene ist sinnvoll, da die AIO-Styles nicht immer in Ordnung sind, 
+  mögliches Verzeichnis mystyles, wird verwendet, wenn vorhanden.
 """   
    
 ExitCode = os.system("test -d aiostyles")
@@ -305,36 +306,33 @@ else:
   Das Dumpfile für die OpenStreetBugs wird geholt. 
   
 """  
+ExitCode = os.system("which osbsql2osm")
+if ExitCode == 0:
+    os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
+    os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
+else:
+    os.system("wget -N http://www.gary68.de/osm/qa/gpx/allbugs.gpx --output-document=OpenStreetBugs.gpx")
+    os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
 
-# os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
-os.system("wget http://www.gary68.de/osm/qa/gpx/allbugs.gpx --output-document=OpenStreetBugs.gpx")
-
-# os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
-os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
 
 
-
-#  Download der OSM-Kartendaten von der Geofabrik
-
-if (BUILD_MAP) == "europe":
-    os.system("wget -N http://download.geofabrik.de/osm/" + (BUILD_MAP) + ".osm.pbf")
-else:    
-    #os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")
-    os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
- 
- 
-## Entpacken der Kartendaten, bei den Europadaten sind es über 50 GiB, es sollte also genug 
-## freier Platz auf der Festplatte sein. Deutschland hat rund 10 GiB
+# Entfernen alter Daten und Download der OSM-Kartendaten von der Geofabrik
 
 ExitCode = os.system("test -f " + (BUILD_MAP) + ".osm")
 
 if ExitCode == 0:
     os.remove((BUILD_MAP) + ".osm")
 
+ExitCode = os.system("which osmosis")
 
-#os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
-os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
- 
+if ExitCode == 0:
+    os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
+    os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
+
+else:
+    os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")   
+    os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
+
 
 ##  Arbeitsverzeichnis für Splitter wird erstellt...
  
@@ -362,7 +360,7 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gaddr', 'gmaxspeed', 'gbo
       os.mkdir(dir)
       
 """ 
-  Erstellen der Bugs- und FIXME-Layer für beide Kartenvarianten, Velomap oder AIO
+  Erstellen der Bugs- und FIXME-Layer 
  
 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
@@ -448,6 +446,8 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+v0.7.0- download *.pbf (osmosis) or *.bz2, check osbsql2osm 
+
 v0.6.8- Cleanups
 
 v0.6.7- change work_dir to map_build
