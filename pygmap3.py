@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -161,6 +161,27 @@ os.chdir(work_dir)
 
 if  verbose == 1:
     print(""" 
+	  
+	   
+	        Bitte beachten!"
+	        Erstellen von Karten für einzelne Bundesländer ist nicht möglich,
+	        diese können über die AIO-Downloadseite gefunden werden.
+	   
+	  
+	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/.
+	        
+	        Bitte nur den Dateinamen ohne Endung!
+	  
+    """)
+    print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
+    BUILD_MAP = input("                Bitte die gewünschte Karte eingeben: ")
+    
+    if BUILD_MAP == "":
+        BUILD_MAP = (BUILD_MAP_DEFAULT)
+    
+    print("                Wahl:        ", BUILD_MAP)
+
+    print(""" 
 		
 		Abhängig vom vorhandenen RAM muß die Menge des Speichers 
 		für Java eingestellt werden.
@@ -194,28 +215,6 @@ if  verbose == 1:
         MAXNODES = (MAXNODES_DEFAULT)
 
     print("                Wahl:        ", (MAXNODES))
-
-    print(""" 
-	  
-	   
-	        Bitte beachten!"
-	        Erstellen von Karten für einzelne Bundesländer ist nicht möglich,
-	        diese können über die AIO-Downloadseite gefunden werden.
-	   
-	  
-	        Mögliche Länder finden Sie unter http://download.geofabrik.de/osm/europe/,
-	        eine Europakarte kann mit der Eingabe von 'europe' erstellt werden.
-	        
-	        Bitte nur den Dateinamen ohne Endung!
-	  
-    """)
-    print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
-    BUILD_MAP = input("                Bitte die gewünschte Karte eingeben: ")
-    
-    if BUILD_MAP == "":
-        BUILD_MAP = (BUILD_MAP_DEFAULT)
-    
-    print("                Wahl:        ", BUILD_MAP)
 
 
 
@@ -446,6 +445,8 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+v0.7.1- minor fixes
+
 v0.7.0- download *.pbf (osmosis) or *.bz2, check osbsql2osm 
 
 v0.6.8- Cleanups
