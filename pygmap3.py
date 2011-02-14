@@ -429,18 +429,18 @@ if (MAP_TYPE) == "velomap":
     ExitCode = os.system("test -d mystyles/velomap_style")
     
     if ExitCode == 0:    
-        mapstyle_velo = "mystyles"
+        mapstyle = "mystyles"
     else:
-        mapstyle_velo = "aiostyles" 
+        mapstyle = "aiostyles" 
 
-    print(mapstyle_velo) 
+    print(mapstyle) 
 
     os.system("rm -Rf gvelomap/* ") 
 
     os.chdir("gvelomap")
     print(os.getcwd())
 
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + (mapstyle_velo) + "/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_velo) + "/velomap.TYP")
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + (mapstyle) + "/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/velomap.TYP")
 
     os.chdir(work_dir)
     
@@ -457,18 +457,18 @@ elif (MAP_TYPE) == "AIO-Basemap":
     ExitCode = os.system("test -d mystyles/basemap_style")
     
     if ExitCode == 0:    
-        mapstyle_base = "mystyles"
+        mapstyle = "mystyles"
     else:
-        mapstyle_base = "aiostyles" 
+        mapstyle = "aiostyles" 
 
-    print(mapstyle_base) 
+    print(mapstyle) 
 
     os.system("rm -Rf gbasemap/* ") 
 
     os.chdir("gbasemap")
     print(os.getcwd())
 
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + (mapstyle_base) + "/basemap_style --description='AIO-Basemap' --family-id=4 --product-id=45 --series-name='OSMBasemap_" + (BUILD_MAP) + "' --family-name=OSMBASEmap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_velo) + "/basemap.TYP")
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + (mapstyle) + "/basemap_style --description='AIO-Basemap' --family-id=4 --product-id=45 --series-name='OSMBasemap_" + (BUILD_MAP) + "' --family-name=OSMBASEmap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/basemap.TYP")
 
     os.chdir(work_dir)
 
