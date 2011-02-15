@@ -196,7 +196,7 @@ if  verbose == 1:
     if MAP_TYPE == "":
         MAP_TYPE = (MAP_TYPE_DEFAULT)
     elif MAP_TYPE != "velomap":
-        MAP_TYPE = "AIO-Basemap"
+        MAP_TYPE = "basemap"
         
     print("                Wahl:        ", MAP_TYPE)
 
@@ -208,7 +208,7 @@ if  verbose == 1:
 		Unter 1 GiB dürfte eine Kartenerstellung nicht möglich sein.
 		Empfohlen werden mindestens 2 GiB RAM!
 		
-		Standard bei 2 GiB RAM ist die Vorgabe von "-Xmx2000M"
+		Standard ist "-Xmx4000M"
 		
     """)
     print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
@@ -225,7 +225,7 @@ if  verbose == 1:
 		den folgenden Vorschlagswerten erstellt werden.
 
 		2 GiB (-Xmx2000M) -->	 500000
-		4+GiB (-Xmx3000M) -->	1000000
+		4+GiB (-Xmx4000M) -->	1000000
 		
     """)       
     print("                Vorgabewert: ", (MAXNODES_DEFAULT))
@@ -453,7 +453,7 @@ if (MAP_TYPE) == "velomap":
         else:
             os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
-elif (MAP_TYPE) == "AIO-Basemap":
+elif (MAP_TYPE) == "basemap":
     ExitCode = os.system("test -d mystyles/basemap_style")
     
     if ExitCode == 0:    
@@ -468,7 +468,7 @@ elif (MAP_TYPE) == "AIO-Basemap":
     os.chdir("gbasemap")
     print(os.getcwd())
 
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + (mapstyle) + "/basemap_style --description='AIO-Basemap' --family-id=4 --product-id=45 --series-name='OSMBasemap_" + (BUILD_MAP) + "' --family-name=OSMBASEmap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/basemap.TYP")
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + (mapstyle) + "/basemap_style --description='AIO-Basemap' --family-id=4 --product-id=45 --series-name='OSMBasemap_" + (BUILD_MAP) + "' --family-name=OSMBASEmap_" + (BUILD_MAP) + " --mapname=63241023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/basemap.TYP")
 
     os.chdir(work_dir)
 
