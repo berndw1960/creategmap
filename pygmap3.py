@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.8.0"
+__version__ = "0.8.2"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -134,7 +134,7 @@ MAXNODES_DEFAULT = "1000000"
 
 BUILD_MAP_DEFAULT = "germany"
 
-MAP_TYPE_DEFAULT = "velomap"
+MAP_TYPE_DEFAULT = "all"
 
 ## Progamme und Verzeichnisse suchen
 
@@ -156,10 +156,36 @@ checkprg("git", hint)
 hint = " osmosis fehlt, wird gebraucht zur Verarbeitung der *.pbf files! "
 checkprg("osmosis", hint)
 
+hint = " gpsbabel fehlt, wird gebraucht zur Verarbeitung der OSB als bz2! "
+checkprg("gpsbabel", hint)
 os.chdir(work_dir)
 
 
 if  verbose == 1:
+
+    print(""" 
+	  
+	   
+	        Welche Art von Karte soll erstellt werden?
+	        
+	        Möglich sind die 
+	        velomap  
+	        basemap 
+	        all (Standard, beide als Einzelimages für neuere Garmingeräte)
+	        zusätzlich werden immer aktuelle OSB- und fixme-Layer erstellt.
+	  
+    """)
+    print("                Vorgabewert: ", (MAP_TYPE_DEFAULT))
+    MAP_TYPE = input("                Bitte die gewünschte Kartenart eingeben: ")
+    
+    if MAP_TYPE == "":
+        MAP_TYPE = (MAP_TYPE_DEFAULT)
+
+        
+    print("                Wahl:        ", MAP_TYPE)
+
+
+
     print(""" 
 	  
 	   
@@ -181,24 +207,6 @@ if  verbose == 1:
     
     print("                Wahl:        ", BUILD_MAP)
 
-
-    print(""" 
-	  
-	   
-	        Welche Art von Karte soll erstellt werden?
-	        
-	        Möglich sind die velomap (Standard) oder die AIO-basemap.
-	  
-    """)
-    print("                Vorgabewert: ", (MAP_TYPE_DEFAULT))
-    MAP_TYPE = input("                Bitte die gewünschte Kartenart eingeben: ")
-    
-    if MAP_TYPE == "":
-        MAP_TYPE = (MAP_TYPE_DEFAULT)
-    elif MAP_TYPE != "velomap":
-        MAP_TYPE = "basemap"
-        
-    print("                Wahl:        ", MAP_TYPE)
 
 
     print(""" 
@@ -373,20 +381,16 @@ os.chdir(work_dir)
 
 ## Erstellen der Arbeitsverzeichnisse
 
-for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gaddr', 'gmaxspeed', 'gboundary']:
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gps_parts', 'gps_ready']:
     ExitCode = os.system("test -d " + (dir))
     if ExitCode != 0:
       os.mkdir(dir)
       
 """ 
   Erstellen der Bugs- und FIXME-Layer 
- 
+
 
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
-
-
-  NOBASEMAPOPTIONS =  -c fixme_buglayer.conf
-  VELOMAPOPTIONS   =  -c velomap.conf
 
 """
 os.system("rm -Rf gfixme/* gosb/* ")
@@ -424,67 +428,47 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + 
 os.chdir(work_dir)
 
 
-## Erstellen des Velomap-Layers 
-if (MAP_TYPE) == "velomap": 
-    ExitCode = os.system("test -d mystyles/velomap_style")
-    
-    if ExitCode == 0:    
-        mapstyle = "mystyles"
-    else:
-        mapstyle = "aiostyles" 
+## Erstellen der Layer 
 
-    print(mapstyle) 
-
-    os.system("rm -Rf gvelomap/* ") 
-
+def velomap():
     os.chdir("gvelomap")
+    os.system("rm -Rf * ")
     print(os.getcwd())
-
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + (mapstyle) + "/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/velomap.TYP")
-
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description='Velomap' --family-id=6365 --product-id=1 --series-name='OSMVelomap_" + (BUILD_MAP) + "' --family-name=OSMVelomap_" + (BUILD_MAP) + " --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
     os.chdir(work_dir)
     
-    if (BUILD_MAP) == "germany":
-        os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
-    elif (BUILD_MAP) != "germany":
-        ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-        if ExitCode == 0:
-            os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-        else:
-            os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gvelomap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+def basemap():
+    os.chdir("gbasemap")
+    os.system("rm -Rf * ")
+    print(os.getcwd())
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + "aiostyles/basemap_style --description='AIO-Basemap' --family-id=4 --product-id=45 --series-name='OSMBasemap_" + (BUILD_MAP) + "' --family-name=OSMBASEmap_" + (BUILD_MAP) + " --mapname=63241023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/basemap.TYP")
+    os.chdir(work_dir)
+
+if (MAP_TYPE) == "velomap":
+    velomap()
 
 elif (MAP_TYPE) == "basemap":
-    ExitCode = os.system("test -d mystyles/basemap_style")
-    
-    if ExitCode == 0:    
-        mapstyle = "mystyles"
-    else:
-        mapstyle = "aiostyles" 
+    basemap()
 
-    print(mapstyle) 
+elif (MAP_TYPE) == "all":
+    velomap()
+    basemap() 
 
-    os.system("rm -Rf gbasemap/* ") 
+os.chdir(work_dir) 
 
-    os.chdir("gbasemap")
-    print(os.getcwd())
+if (MAP_TYPE) == "all":
+    for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap']:
+        os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + (mapstyle) + "/basemap_style --description='AIO-Basemap' --family-id=4 --product-id=45 --series-name='OSMBasemap_" + (BUILD_MAP) + "' --family-name=OSMBASEmap_" + (BUILD_MAP) + " --mapname=63241023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/basemap.TYP")
-
-    os.chdir(work_dir)
-
+else: 
     if (BUILD_MAP) == "germany":
-        os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gbasemap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+        os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
     elif (BUILD_MAP) != "germany":
         ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
         if ExitCode == 0:
-            os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gbasemap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
         else:
-            os.system("wine ~/bin/gmt.exe -jo gmapsupp.img gbasemap/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
-
-else:
-    printinfo("Abbruch mit Fehler!")   
-    
-os.system("cp gmapsupp.img " + (work_dir) + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img")
+            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
 
 printinfo("Habe fertig!")
@@ -492,6 +476,11 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+
+v0.8.2- code cleanup, dirs added gps_parts and gps_ready
+
+v0.8.1- separate Images for 'all' 
+
 v0.8.0- AIO-basemap as additional maptype
 
 ## 2011-02-14 Projectstatus changed to BETA
