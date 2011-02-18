@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.8.2"
+__version__ = "0.8.3"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -418,12 +418,12 @@ print(mapstyle_osb)
 os.chdir("gfixme")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name='OSMfixme_" + (BUILD_MAP) + "' --family-name=OSMfixme_" + (BUILD_MAP) + " --mapname=63242023 --draw-priority=23 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63242023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
 
 os.chdir((work_dir) + "/gosb")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63243023 --draw-priority=22 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63243023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
 
 os.chdir(work_dir)
 
@@ -434,7 +434,7 @@ def velomap():
     os.chdir("gvelomap")
     os.system("rm -Rf * ")
     print(os.getcwd())
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=20 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
     os.chdir(work_dir)
     
 def basemap():
@@ -459,7 +459,15 @@ os.chdir(work_dir)
 if (MAP_TYPE) == "all":
     for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap']:
         os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
-
+    ExitCode = os.system("test -f " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")    
+    if ExitCode != 0:
+        if (BUILD_MAP) != "germany":
+            ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+            if ExitCode == 0:
+                os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")
+        elif (BUILD_MAP) == "germany":
+            os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")
+        
 else: 
     if (BUILD_MAP) == "germany":
         os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
@@ -476,6 +484,8 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+
+v0.8.3- add contourlines to gps_parts if available
 
 v0.8.2- code cleanup, dirs added gps_parts and gps_ready
 
