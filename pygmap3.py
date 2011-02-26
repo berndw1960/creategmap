@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.8.3"
+__version__ = "0.8.4"
 __author__ = "Bernd Weigelt, Jonas Stein"
-__copyright__ = "Copyright 2010, The OSM-TroLUG-Project"
+__copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
 __license__ = "GPL"
 __maintainer__ = "Bernd Weigelt, Jonas Stein"
@@ -11,13 +11,14 @@ __email__ = "weigelt.bernd@web.de"
 __status__ = "beta"
 
 """ 
-  ===========VORSICHT ALPHA-STADIUM=================
+  
   pygmap3.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
   zu erzeugen, z.B. Garmin eTrex Vista Hcx
   Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
   und als QCO Dschuwa
 
-  License GPL
+  License GPL -  read more: www.gnu.org/licenses/licenses.html
+  
   
   Work in progress, bitte beachten!
   Prinzipiell funktioniert es, aber wenn was kaputt geht, 
@@ -28,8 +29,7 @@ __status__ = "beta"
   
   mkgmap von 
   http://wiki.openstreetmap.org/wiki/Mkgmap
-  http://www.mkgmap.org.uk/snapshots/mkgmap-latest.tar.gz
- 
+  
   gmaptool von
   http://www.anpo.republika.pl/download.html
   gmt.exe
@@ -41,6 +41,7 @@ __status__ = "beta"
   osbsql2osm
   erstellt aus Sourcen 
   http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz
+
 """
 
 import sys
@@ -136,6 +137,7 @@ BUILD_MAP_DEFAULT = "germany"
 
 MAP_TYPE_DEFAULT = "all"
 
+
 ## Progamme und Verzeichnisse suchen
 
 hint = ("mkdir " + (work_dir))
@@ -158,6 +160,9 @@ checkprg("osmosis", hint)
 
 hint = " gpsbabel fehlt, wird gebraucht zur Verarbeitung der OSB als bz2! "
 checkprg("gpsbabel", hint)
+
+
+
 os.chdir(work_dir)
 
 
@@ -246,46 +251,6 @@ if  verbose == 1:
 
 
 
-##  get mkgmap and splitter
-  
-
-target = http.client.HTTPConnection("www.mkgmap.org.uk")
-
-target.request("GET", "/snapshots/index.html")
-htmlcontent =  target.getresponse()
-print(htmlcontent.status, htmlcontent.reason)
-data = htmlcontent.read()
-data = data.decode('utf8')
-pattern = re.compile('mkgmap-r\d{4}')
-mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-
-
-target.request("GET", "/splitter/index.html")
-htmlcontent =  target.getresponse()
-print(htmlcontent.status, htmlcontent.reason)
-data = htmlcontent.read()
-data = data.decode('utf8')
-pattern = re.compile('splitter-r\d{3}')
-splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-
-target.close()
-
-os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
-
-tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
-tar.extractall()
-tar.close()
-    
-mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
-
-
-os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
-
-tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
-tar.extractall()
-tar.close()    
-    
-splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 
     
  
@@ -328,7 +293,49 @@ if ExitCode == 0:
 else:
     os.system("git clone git://github.com/aiomaster/aiostyles.git")
     os.chdir(work_dir)
- 
+
+##  get mkgmap and splitter
+  
+
+target = http.client.HTTPConnection("www.mkgmap.org.uk")
+
+target.request("GET", "/snapshots/index.html")
+htmlcontent =  target.getresponse()
+print(htmlcontent.status, htmlcontent.reason)
+data = htmlcontent.read()
+data = data.decode('utf8')
+pattern = re.compile('mkgmap-r\d{4}')
+mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
+
+
+target.request("GET", "/splitter/index.html")
+htmlcontent =  target.getresponse()
+print(htmlcontent.status, htmlcontent.reason)
+data = htmlcontent.read()
+data = data.decode('utf8')
+pattern = re.compile('splitter-r\d{3}')
+splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
+
+target.close()
+
+os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))  
+
+tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
+tar.extractall()
+tar.close()
+    
+mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
+
+
+os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + (splitter_rev) + (".tar.gz"))
+
+tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
+tar.extractall()
+tar.close()    
+    
+splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
+
+
 """ 
   Das Dumpfile für die OpenStreetBugs wird geholt. 
   
@@ -395,7 +402,7 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gps_parts', 'gps_ready']:
 """
 os.system("rm -Rf gfixme/* gosb/* ")
 
-## add your own styles in mystyles 
+## add your own styles for OSB and FIXMEs in mystyles 
 ExitCode = os.system("test -d mystyles/fixme_style")
     
 if ExitCode == 0:    
@@ -403,7 +410,10 @@ if ExitCode == 0:
 else:
     mapstyle_fixme = "aiostyles" 
 
-print(mapstyle_fixme) 
+os.chdir("gfixme")
+
+print(os.getcwd())
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63242023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
 
 ExitCode = os.system("test -d mystyles/osb_style")
     
@@ -411,14 +421,6 @@ if ExitCode == 0:
     mapstyle_osb = "mystyles"
 else:
     mapstyle_osb = "aiostyles" 
-
-print(mapstyle_osb) 
-
-
-os.chdir("gfixme")
-
-print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63242023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
 
 os.chdir((work_dir) + "/gosb")
 
@@ -431,10 +433,19 @@ os.chdir(work_dir)
 ## Erstellen der Layer 
 
 def velomap():
+
+    ## use another mkgmap for the velomap
+    ExitCode = os.system("test -f aiostyles/mkgmap_velo.jar")
+    if ExitCode == 0:
+        mkgmap_velo = (work_dir) + "aiostyles/mkgmap_velo.jar"
+        
+    else:
+        mkgmap_velo = (mkgmap)
+
     os.chdir("gvelomap")
     os.system("rm -Rf * ")
     print(os.getcwd())
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap_velo) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
     os.chdir(work_dir)
     
 def basemap():
@@ -484,6 +495,8 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+
+v0.8.4- mkgmap.jar >> mkgmap_velo.jar for the velomap, style-copyright by Felix Hartmann
 
 v0.8.3- add contourlines to gps_parts if available
 
