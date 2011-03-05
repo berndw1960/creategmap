@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.8.4"
+__version__ = "0.8.5"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -280,7 +280,6 @@ if (BUILD_MAP) == "germany":
   Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
   Aktualisierungen erfolgen automatisch
   Eine Rückfallebene ist sinnvoll, da die AIO-Styles nicht immer in Ordnung sind, 
-  mögliches Verzeichnis mystyles, wird verwendet, wenn vorhanden.
 """   
    
 ExitCode = os.system("test -d aiostyles")
@@ -396,31 +395,33 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gps_parts', 'gps_ready']:
 """ 
   Erstellen der Bugs- und FIXME-Layer 
 
-
   Die Optionen für MKGMAP sind in externe Dateien ausgelagert
-
 """
 os.system("rm -Rf gfixme/* gosb/* ")
 
 ## add your own styles for OSB and FIXMEs in mystyles 
-ExitCode = os.system("test -d mystyles/fixme_style")
+ExitCode = os.system("test -d " + (work_dir) + "mystyles/fixme_style")
     
 if ExitCode == 0:    
     mapstyle_fixme = "mystyles"
 else:
     mapstyle_fixme = "aiostyles" 
 
-os.chdir("gfixme")
+print(mapstyle_fixme)
+
+os.chdir((work_dir) + "gfixme")
 
 print(os.getcwd())
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63242023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
 
-ExitCode = os.system("test -d mystyles/osb_style")
+ExitCode = os.system("test -d " + (work_dir) + "mystyles/osb_style")
     
 if ExitCode == 0:    
     mapstyle_osb = "mystyles"
 else:
     mapstyle_osb = "aiostyles" 
+
+print(mapstyle_osb)
 
 os.chdir((work_dir) + "/gosb")
 
@@ -495,6 +496,8 @@ printinfo("Habe fertig!")
 """ 
  
 ## Changelog:
+
+v0.8.5- minor fixes
 
 v0.8.4- mkgmap.jar >> mkgmap_velo.jar for the velomap, style-copyright by Felix Hartmann
 
