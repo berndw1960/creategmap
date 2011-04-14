@@ -220,9 +220,7 @@ if  verbose == 1:
 		für Java eingestellt werden.
 		Unter 1 GiB dürfte eine Kartenerstellung nicht möglich sein.
 		Empfohlen werden mindestens 2 GiB RAM!
-		
-		Standard ist "-Xmx4000M"
-		
+
     """)
     print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
     RAMSIZE = input("                Wieviel Speicher soll verwendet werden? ")
