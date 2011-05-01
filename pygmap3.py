@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.8.5"
+__version__ = "0.9.0"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
 __license__ = "GPL"
 __maintainer__ = "Bernd Weigelt, Jonas Stein"
 __email__ = "weigelt.bernd@web.de"
-__status__ = "beta"
+__status__ = "RC"
 
 """ 
   
@@ -32,7 +32,7 @@ __status__ = "beta"
   
   gmaptool von
   http://www.anpo.republika.pl/download.html
-  gmt.exe
+  ~/bin/gmt.exe
  
   splitter von
   http://www.mkgmap.org.uk/page/tile-splitter
@@ -130,24 +130,24 @@ verbose = 1 ## default '= 1' an dieser Stelle
 
 work_dir = (os.environ['HOME'] + "/share/osm/map_build/") # Der letzte Slash muss sein!!!
 
-RAMSIZE_DEFAULT = "-Xmx4000M"
-MAXNODES_DEFAULT = "1000000"
+RAMSIZE_DEFAULT = "-Xmx6000M"
+MAXNODES_DEFAULT = "1200000"
 
 BUILD_MAP_DEFAULT = "germany"
 
 MAP_TYPE_DEFAULT = "all"
 
 
-## Progamme und Verzeichnisse suchen
+## needed programs und dirs
 
 hint = ("mkdir " + (work_dir))
 checkdir((work_dir), hint) 
 
-hint = "Install: wine to work with gmt.exe from GMAPTOOLS"
+hint = "Install: wine to work with ~/bin/gmt.exe from GMAPTOOLS"
 checkprg("wine", hint)
  
 hint = " Download: http://www.anpo.republika.pl/download.html "
-checkprg("gmt.exe", hint)
+checkprg("~/bin/gmt.exe", hint)
  
 hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
 checkprg("osbsql2osm", hint)
@@ -174,10 +174,12 @@ if  verbose == 1:
 	        Welche Art von Karte soll erstellt werden?
 	        
 	        Möglich sind die 
-	        velomap  
-	        basemap 
-	        all (Standard, beide als Einzelimages für neuere Garmingeräte)
-	        zusätzlich werden immer aktuelle OSB- und fixme-Layer erstellt.
+	        velomap  		gmapsupp.img
+	        basemap 		gmapsupp.img
+	        all (Standard)		Einzelimages für neuere Garmingeräte 
+					und gmapsupp.img für die älteren.
+		
+		Zusätzlich werden immer aktuelle OSB- und fixme-Layer erstellt.
 	  
     """)
     print("                Vorgabewert: ", (MAP_TYPE_DEFAULT))
@@ -219,9 +221,7 @@ if  verbose == 1:
 		Abhängig vom vorhandenen RAM muß die Menge des Speichers 
 		für Java eingestellt werden.
 		Unter 1 GiB dürfte eine Kartenerstellung nicht möglich sein.
-		Empfohlen werden mindestens 2 GiB RAM!
-		
-		Standard ist "-Xmx4000M"
+		Empfohlen werden mindestens 2 GiB RAM!"
 		
     """)
     print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
@@ -271,15 +271,14 @@ if (BUILD_MAP) == "germany":
         os.chdir("temp")
         os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
         os.system("unzip Topo_D_SRTM.zip")
-        os.system("wine ~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
+        os.system("wine ~/bin/~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
         os.chdir("..")
         os.system("rm -Rf temp")
         os.chdir(work_dir)
 
 """ 
-  Styles-Vorlagen werden von GIT-Server der AIO-Karte geholt
-  Aktualisierungen erfolgen automatisch
-  Eine Rückfallebene ist sinnvoll, da die AIO-Styles nicht immer in Ordnung sind, 
+  get the styles for base- and velomap with git
+
 """   
    
 ExitCode = os.system("test -d aiostyles")
@@ -336,7 +335,7 @@ splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 
 
 """ 
-  Das Dumpfile für die OpenStreetBugs wird geholt. 
+  get the OpenStreetBugs
   
 """  
 ExitCode = os.system("which osbsql2osm")
@@ -349,7 +348,7 @@ else:
 
 
 
-# Entfernen alter Daten und Download der OSM-Kartendaten von der Geofabrik
+# cleanup
 
 ExitCode = os.system("test -f " + (BUILD_MAP) + ".osm")
 
@@ -367,7 +366,7 @@ else:
     os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
 
 
-##  Arbeitsverzeichnis für Splitter wird erstellt...
+##  create (work_dir) for splitter
  
 ExitCode = os.system("test -d tiles")
 
@@ -379,13 +378,13 @@ if ExitCode == 0:
 else: 
     os.mkdir("tiles")
              
-## Splitten der Kartendaten, damit mkgmap damit arbeiten kann
+## split rawdata
 
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm")
 os.chdir(work_dir)
 
-## Erstellen der Arbeitsverzeichnisse
+## create mapdirs
 
 for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gps_parts', 'gps_ready']:
     ExitCode = os.system("test -d " + (dir))
@@ -393,9 +392,9 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gps_parts', 'gps_ready']:
       os.mkdir(dir)
       
 """ 
-  Erstellen der Bugs- und FIXME-Layer 
+ create Bugs- and FIXME-Layer 
 
-  Die Optionen für MKGMAP sind in externe Dateien ausgelagert
+
 """
 os.system("rm -Rf gfixme/* gosb/* ")
 
@@ -431,7 +430,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + 
 os.chdir(work_dir)
 
 
-## Erstellen der Layer 
+## build the layer and merge them to the maps
 
 def velomap():
 
@@ -456,31 +455,8 @@ def basemap():
     os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + "aiostyles/basemap_style --description=basemap --family-id=4 --product-id=45 --series-name=OSMbasemap --family-name=OSMbasemap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/basemap.TYP")
     os.chdir(work_dir)
 
-if (MAP_TYPE) == "velomap":
-    velomap()
-
-elif (MAP_TYPE) == "basemap":
-    basemap()
-
-elif (MAP_TYPE) == "all":
-    velomap()
-    basemap() 
-
-os.chdir(work_dir) 
-
-if (MAP_TYPE) == "all":
-    for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap']:
-        os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
-    ExitCode = os.system("test -f " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")    
-    if ExitCode != 0:
-        if (BUILD_MAP) != "germany":
-            ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-            if ExitCode == 0:
-                os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")
-        elif (BUILD_MAP) == "germany":
-            os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")
-        
-else: 
+def merge():
+    os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
         os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
     elif (BUILD_MAP) != "germany":
@@ -490,12 +466,58 @@ else:
         else:
             os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
+def merge_all():
+    for map in ['velomap', 'basemap']:
+        os.chdir(work_dir)
+        if (BUILD_MAP) == "germany":
+            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+        elif (BUILD_MAP) != "germany":
+            ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+            if ExitCode == 0:
+                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+            else:
+                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+
+def copy_parts():
+    os.chdir(work_dir)
+    for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap']:
+        os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
+    ExitCode = os.system("test -f " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")    
+    if ExitCode != 0:
+        if (BUILD_MAP) != "germany":
+            ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+            if ExitCode == 0:
+                os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")
+        elif (BUILD_MAP) == "germany":
+            os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")   
+
+
+if (MAP_TYPE) == "velomap":
+    velomap()
+    merge()
+
+elif (MAP_TYPE) == "basemap":
+    basemap()
+    merge()
+
+elif (MAP_TYPE) == "all":
+    velomap()
+    basemap() 
+    merge_all()
+    copy_parts() 
 
 printinfo("Habe fertig!")
 
 """ 
- 
+## ToDo:
+
+automatic zipping and upload to local FTP-Server
+
 ## Changelog:
+
+v0.9.0- all=parts+base+velo
+
+## 2011-05-01 Projectstatus changed to RC
 
 v0.8.5- minor fixes
 
