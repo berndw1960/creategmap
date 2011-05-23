@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -491,29 +491,38 @@ def copy_parts():
         elif (BUILD_MAP) == "germany":
             os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")   
 
+def zip_file():
+    for dirs in ['gps_ready/', 'gps_parts/']:
+        os.chdir((work_dir) + (dirs))
+        os.system("for file in " + (BUILD_MAP) + "*.img; do zip $file.zip $file; done") 
 
 if (MAP_TYPE) == "velomap":
     velomap()
     merge()
-
+    zip_file()
+    
 elif (MAP_TYPE) == "basemap":
     basemap()
     merge()
-
+    zip_file()
+    
 elif (MAP_TYPE) == "all":
     velomap()
     basemap() 
     merge_all()
-    copy_parts() 
+    copy_parts()
+    zip_file()
 
 printinfo("Habe fertig!")
 
 """ 
 ## ToDo:
 
-automatic zipping and upload to local FTP-Server
+upload to local FTP-Server
 
 ## Changelog:
+
+v0.9.1- zip-function added
 
 v0.9.0- all=parts+base+velo
 
