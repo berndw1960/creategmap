@@ -425,7 +425,7 @@ print(mapstyle_osb)
 os.chdir((work_dir) + "/gosb")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63244023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63245023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
 
 os.chdir(work_dir)
 
