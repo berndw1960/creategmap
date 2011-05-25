@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -386,7 +386,7 @@ os.chdir(work_dir)
 
 ## create mapdirs
 
-for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gps_parts', 'gps_ready']:
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gaddr', 'gps_parts', 'gps_ready']:
     ExitCode = os.system("test -d " + (dir))
     if ExitCode != 0:
       os.mkdir(dir)
@@ -411,7 +411,7 @@ print(mapstyle_fixme)
 os.chdir((work_dir) + "gfixme")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63242023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63244023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
 
 ExitCode = os.system("test -d " + (work_dir) + "mystyles/osb_style")
     
@@ -425,10 +425,23 @@ print(mapstyle_osb)
 os.chdir((work_dir) + "/gosb")
 
 print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63243023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63244023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
 
 os.chdir(work_dir)
 
+os.chdir((work_dir) + "/gaddr")
+
+print(os.getcwd())
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/addr_style --description=addr --family-id=5 --product-id=40 --series-name=OSMAdressen --family-name=OSMaddr --mapname=63242023 --draw-priority=14 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/addr.TYP")
+
+os.chdir(work_dir)
+
+os.chdir((work_dir) + "/gboundary")
+
+print(os.getcwd())
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/boundary_style --description=boundary --family-id=6 --product-id=30 --series-name=OSMboundary --family-name=OSMboundary --mapname=63243023 --draw-priority=14 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/boundary.TYP")
+
+os.chdir(work_dir)
 
 ## build the layer and merge them to the maps
 
@@ -458,29 +471,29 @@ def basemap():
 def merge():
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
-        os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+        os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
     elif (BUILD_MAP) != "germany":
         ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
         if ExitCode == 0:
-            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
         else:
-            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
 def merge_all():
     for map in ['velomap', 'basemap']:
         os.chdir(work_dir)
         if (BUILD_MAP) == "germany":
-            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
         elif (BUILD_MAP) != "germany":
             ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
             if ExitCode == 0:
-                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
             else:
-                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
 def copy_parts():
     os.chdir(work_dir)
-    for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap']:
+    for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
         os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
     ExitCode = os.system("test -f " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")    
     if ExitCode != 0:
@@ -521,6 +534,8 @@ printinfo("Habe fertig!")
 upload to local FTP-Server
 
 ## Changelog:
+
+v0.9.1- addr- and boundary-layer added
 
 v0.9.1- zip-function added
 
