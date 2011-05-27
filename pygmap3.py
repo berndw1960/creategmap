@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.2"
+__version__ = "0.9.3"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -49,71 +49,72 @@ import os
 import http.client
 import re
 import tarfile
+import datetime
 
 # DEFs =============================================================================
 
 def printinfo(msg):
-    print(("II: " + msg))
+  print(("II: " + msg))
 
 def printwarning(msg):
-    print(("WW: " + msg))
+  print(("WW: " + msg))
 
 def printerror(msg):
-    print(("EE: " + msg))
+  print(("EE: " + msg))
 
 
 def checkprg(programmtofind, solutionhint):
-    """
+  """
     test if an executable can be found by 
     following $PATH
     raise message if fails and returns 1
     on success return 0
     search follows $PATH
-    """
+  """
 
-    ExitCode = os.system("which " + programmtofind)
+  ExitCode = os.system("which " + programmtofind)
     
-    if ExitCode == 0:
-        printinfo(programmtofind + " found")
-    else:
-        printerror(programmtofind + " not found")
-        print(solutionhint)
+  if ExitCode == 0:
+    printinfo(programmtofind + " found")
+  else:
+    printerror(programmtofind + " not found")
+    print(solutionhint)
 
-    return ExitCode
+  return ExitCode
 
 def checkfile(filetofind, solutionhint):
-    """
+  """
     test if a file can be found at a predefined place
     raise message if fails and returns 1
     on success return 0
-    """
+  """
 
-    ExitCode = os.system("test -f " + filetofind)
+  ExitCode = os.system("test -f " + filetofind)
     
-    if ExitCode == 0:
-        printinfo(filetofind + " found")
-    else:
-        printerror(filetofind + " not found")
-        print(solutionhint)
+  if ExitCode == 0:
+     printinfo(filetofind + " found")
+  else:
+    printerror(filetofind + " not found")
+    print(solutionhint)
 
-    return ExitCode
+  return ExitCode
 
 def checkdir(dirtofind, solutionhint):
-    """
+  """
     test if a dir can be found  at a predefined place
     raise message if fails and returns 1
     on success return 0
-    """
+  """
 
-    ExitCode = os.system("test -d " + dirtofind)
+  ExitCode = os.system("test -d " + dirtofind)
     
-    if ExitCode == 0:
-        printinfo(dirtofind + " found")
-    else:
-        printerror(dirtofind + " not found")
-        print(solutionhint)
+  if ExitCode == 0:
+    printinfo(dirtofind + " found")
+  else:
+    printerror(dirtofind + " not found")
+    print(solutionhint)
 
-    return ExitCode
+  return ExitCode
 
 
     
@@ -168,7 +169,7 @@ os.chdir(work_dir)
 
 if  verbose == 1:
 
-    print(""" 
+  print(""" 
 	  
 	   
 	        Welche Art von Karte soll erstellt werden?
@@ -181,19 +182,19 @@ if  verbose == 1:
 		
 		Zusätzlich werden immer aktuelle OSB- und fixme-Layer erstellt.
 	  
-    """)
-    print("                Vorgabewert: ", (MAP_TYPE_DEFAULT))
-    MAP_TYPE = input("                Bitte die gewünschte Kartenart eingeben: ")
+  """)
+  print("                Vorgabewert: ", (MAP_TYPE_DEFAULT))
+  MAP_TYPE = input("                Bitte die gewünschte Kartenart eingeben: ")
     
-    if MAP_TYPE == "":
-        MAP_TYPE = (MAP_TYPE_DEFAULT)
+  if MAP_TYPE == "":
+    MAP_TYPE = (MAP_TYPE_DEFAULT)
 
         
-    print("                Wahl:        ", MAP_TYPE)
+  print("                Wahl:        ", MAP_TYPE)
 
 
 
-    print(""" 
+  print(""" 
 	  
 	   
 	        Bitte beachten!"
@@ -205,33 +206,33 @@ if  verbose == 1:
 	        
 	        Bitte nur den Dateinamen ohne Endung!
 	  
-    """)
-    print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
-    BUILD_MAP = input("                Bitte die gewünschte Karte eingeben: ")
+  """)
+  print("                Vorgabewert: ", (BUILD_MAP_DEFAULT))
+  BUILD_MAP = input("                Bitte die gewünschte Karte eingeben: ")
     
-    if BUILD_MAP == "":
-        BUILD_MAP = (BUILD_MAP_DEFAULT)
+  if BUILD_MAP == "":
+    BUILD_MAP = (BUILD_MAP_DEFAULT)
     
-    print("                Wahl:        ", BUILD_MAP)
+  print("                Wahl:        ", BUILD_MAP)
 
 
 
-    print(""" 
+  print(""" 
 		
 		Abhängig vom vorhandenen RAM muß die Menge des Speichers 
 		für Java eingestellt werden.
 		Unter 1 GiB dürfte eine Kartenerstellung nicht möglich sein.
 		Empfohlen werden mindestens 2 GiB RAM!"
 		
-    """)
-    print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
-    RAMSIZE = input("                Wieviel Speicher soll verwendet werden? ")
+  """)
+  print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
+  RAMSIZE = input("                Wieviel Speicher soll verwendet werden? ")
 
-    if RAMSIZE == "":
-        RAMSIZE = (RAMSIZE_DEFAULT)  
-    print("                Wahl:        ", (RAMSIZE)) 
+  if RAMSIZE == "":
+    RAMSIZE = (RAMSIZE_DEFAULT)  
+  print("                Wahl:        ", (RAMSIZE)) 
 
-    print(""" 
+  print(""" 
 		
 		Bei kleineren Karten können die Werte für die MAXNODES bei Splitter eventuell 
 		heraufgesetzt werden, große Karten wie Deutschland und Frankreich sollten mit 
@@ -240,14 +241,14 @@ if  verbose == 1:
 		2 GiB (-Xmx2000M) -->	 500000
 		4+GiB (-Xmx4000M) -->	1000000
 		
-    """)       
-    print("                Vorgabewert: ", (MAXNODES_DEFAULT))
-    MAXNODES = input("                Bitte Anzahl der gewünschten Nodes eingeben: ")
+  """)       
+  print("                Vorgabewert: ", (MAXNODES_DEFAULT))
+  MAXNODES = input("                Bitte Anzahl der gewünschten Nodes eingeben: ")
     
-    if MAXNODES == "":
-        MAXNODES = (MAXNODES_DEFAULT)
+  if MAXNODES == "":
+    MAXNODES = (MAXNODES_DEFAULT)
 
-    print("                Wahl:        ", (MAXNODES))
+  print("                Wahl:        ", (MAXNODES))
 
 
 
@@ -262,19 +263,19 @@ if  verbose == 1:
   
 """
 if (BUILD_MAP) == "germany":
-    ExitCode  = os.system("test -d gcontourlines")
-    if ExitCode != 0:
-        os.system("rm -Rf gcontourlines")
-        os.mkdir("gcontourlines")
-        os.chdir("gcontourlines")
-        os.mkdir("temp")
-        os.chdir("temp")
-        os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
-        os.system("unzip Topo_D_SRTM.zip")
-        os.system("wine ~/bin/~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
-        os.chdir("..")
-        os.system("rm -Rf temp")
-        os.chdir(work_dir)
+  ExitCode  = os.system("test -d gcontourlines")
+  if ExitCode != 0:
+      os.system("rm -Rf gcontourlines")
+      os.mkdir("gcontourlines")
+      os.chdir("gcontourlines")
+      os.mkdir("temp")
+      os.chdir("temp")
+      os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
+      os.system("unzip Topo_D_SRTM.zip")
+      os.system("wine ~/bin/~/bin/gmt.exe -j -f 5,25 -m HOEHE -o ../gmapsupp.img Topo\ D\ SRTM/*.img")
+      os.chdir("..")
+      os.system("rm -Rf temp")
+      os.chdir(work_dir)
 
 """ 
   get the styles for base- and velomap with git
@@ -284,13 +285,13 @@ if (BUILD_MAP) == "germany":
 ExitCode = os.system("test -d aiostyles")
     
 if ExitCode == 0:
-    os.chdir("aiostyles")
-    os.system("git pull")
-    os.chdir(work_dir)
+  os.chdir("aiostyles")
+  os.system("git pull")
+  os.chdir(work_dir)
 
 else:
-    os.system("git clone git://github.com/aiomaster/aiostyles.git")
-    os.chdir(work_dir)
+  os.system("git clone git://github.com/aiomaster/aiostyles.git")
+  os.chdir(work_dir)
 
 ##  get mkgmap and splitter
   
@@ -340,11 +341,11 @@ splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 """  
 ExitCode = os.system("which osbsql2osm")
 if ExitCode == 0:
-    os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
-    os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
+  os.system("wget -N http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
+  os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 else:
-    os.system("wget -N http://www.gary68.de/osm/qa/gpx/allbugs.gpx --output-document=OpenStreetBugs.gpx")
-    os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
+  os.system("wget -N http://www.gary68.de/osm/qa/gpx/allbugs.gpx --output-document=OpenStreetBugs.gpx")
+  os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
 
 
 
@@ -353,17 +354,17 @@ else:
 ExitCode = os.system("test -f " + (BUILD_MAP) + ".osm")
 
 if ExitCode == 0:
-    os.remove((BUILD_MAP) + ".osm")
+  os.remove((BUILD_MAP) + ".osm")
 
 ExitCode = os.system("which osmosis")
 
 if ExitCode == 0:
-    os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
-    os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
+  os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.pbf")
+  os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
 
 else:
-    os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")   
-    os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
+  os.system("wget -N http://download.geofabrik.de/osm/europe/" + (BUILD_MAP) + ".osm.bz2")   
+  os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
 
 
 ##  create (work_dir) for splitter
@@ -371,9 +372,9 @@ else:
 ExitCode = os.system("test -d tiles")
 
 if ExitCode == 0:
-    os.chdir("tiles")
-    os.system("rm -Rf *")
-    os.chdir(work_dir)
+  os.chdir("tiles")
+  os.system("rm -Rf *")
+  os.chdir(work_dir)
 	  
 else: 
     os.mkdir("tiles")
@@ -386,10 +387,10 @@ os.chdir(work_dir)
 
 ## create mapdirs
 
-for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gaddr', 'gps_parts', 'gps_ready']:
-    ExitCode = os.system("test -d " + (dir))
-    if ExitCode != 0:
-      os.mkdir(dir)
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gaddr', 'gps_ready']:
+  ExitCode = os.system("test -d " + (dir))
+  if ExitCode != 0:
+    os.mkdir(dir)
       
 """ 
  create Bugs- and FIXME-Layer 
@@ -402,9 +403,9 @@ os.system("rm -Rf gfixme/* gosb/* ")
 ExitCode = os.system("test -d " + (work_dir) + "mystyles/fixme_style")
     
 if ExitCode == 0:    
-    mapstyle_fixme = "mystyles"
+  mapstyle_fixme = "mystyles"
 else:
-    mapstyle_fixme = "aiostyles" 
+  mapstyle_fixme = "aiostyles" 
 
 print(mapstyle_fixme)
 
@@ -416,9 +417,9 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + 
 ExitCode = os.system("test -d " + (work_dir) + "mystyles/osb_style")
     
 if ExitCode == 0:    
-    mapstyle_osb = "mystyles"
+  mapstyle_osb = "mystyles"
 else:
-    mapstyle_osb = "aiostyles" 
+  mapstyle_osb = "aiostyles" 
 
 print(mapstyle_osb)
 
@@ -443,88 +444,117 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + 
 
 os.chdir(work_dir)
 
-## build the layer and merge them to the maps
 
-def velomap():
+## destination separated for country and day
 
-    ## use another mkgmap for the velomap
-    ExitCode = os.system("test -f aiostyles/mkgmap_velo.jar")
+today = datetime.datetime.now()
+day = today.strftime('%Y_%m_%d')
+  
+dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
+dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
+
+
+def mk_store():
+  os.chdir(work_dir)
+  for dir in [(dir1), (dir2)]:
+    ExitCode = os.system("test -d " +  (dir))
     if ExitCode == 0:
-        mkgmap_velo = (work_dir) + "aiostyles/mkgmap_velo.jar"
+      os.system("rm -Rf " + (dir)) 
+      os.makedirs(dir)
+    elif ExitCode != 0:
+      os.makedirs(dir)
+    
+    
+## look for mkgmap's special version for the velomap and then build the maps
+def velomap():
+  os.chdir(work_dir)
+  ExitCode = os.system("test -f aiostyles/mkgmap_velo.jar")
+  if ExitCode == 0:
+    mkgmap_velo = (work_dir) + "aiostyles/mkgmap_velo.jar"
         
-    else:
-        mkgmap_velo = (mkgmap)
+  else:
+    mkgmap_velo = (mkgmap)
 
-    os.chdir("gvelomap")
-    os.system("rm -Rf * ")
-    print(os.getcwd())
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap_velo) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
-    os.chdir(work_dir)
+  os.chdir("gvelomap")
+  os.system("rm -Rf * ")
+  print(os.getcwd())
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap_velo) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+  os.chdir(work_dir)
     
 def basemap():
-    os.chdir("gbasemap")
-    os.system("rm -Rf * ")
-    print(os.getcwd())
-    os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + "aiostyles/basemap_style --description=basemap --family-id=4 --product-id=45 --series-name=OSMbasemap --family-name=OSMbasemap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/basemap.TYP")
-    os.chdir(work_dir)
+  os.chdir(work_dir)  
+  os.chdir("gbasemap")
+  os.system("rm -Rf * ")
+  print(os.getcwd())
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + "aiostyles/basemap_style --description=basemap --family-id=4 --product-id=45 --series-name=OSMbasemap --family-name=OSMbasemap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/basemap.TYP")
+  os.chdir(work_dir)
 
+## Wenn nur die base- oder velomap gewählt wurde
 def merge():
+  os.chdir(work_dir)
+  if (BUILD_MAP) == "germany":
+    os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+  elif (BUILD_MAP) != "germany":
+    ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+    if ExitCode == 0:
+      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+    else:
+      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+
+## falls _alle_ Karten erstellt werden (default)
+def merge_all():
+  for map in ['velomap', 'basemap']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
-        os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
     elif (BUILD_MAP) != "germany":
-        ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-        if ExitCode == 0:
-            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-        else:
-            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+      ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+      if ExitCode == 0:
+        os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+      else:
+        os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
-def merge_all():
-    for map in ['velomap', 'basemap']:
-        os.chdir(work_dir)
-        if (BUILD_MAP) == "germany":
-            os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
-        elif (BUILD_MAP) != "germany":
-            ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-            if ExitCode == 0:
-                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-            else:
-                os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/" + (BUILD_MAP) + "_" + (map) + "_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
-
+## diverse einzelne Layer für neuere garmin
 def copy_parts():
-    os.chdir(work_dir)
-    for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
-        os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
-    ExitCode = os.system("test -f " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")    
-    if ExitCode != 0:
-        if (BUILD_MAP) != "germany":
-            ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-            if ExitCode == 0:
-                os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")
-        elif (BUILD_MAP) == "germany":
-            os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_parts/" + (BUILD_MAP) + "_contourlines_gmapsupp.img")   
+  os.chdir(work_dir)
+  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
+    os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (dir) + "_parts_gmapsupp.img")
+  ExitCode = os.system("test -f " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")    
+  if ExitCode != 0:
+    if (BUILD_MAP) != "germany":
+      ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+      if ExitCode == 0:
+        os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")
+    elif (BUILD_MAP) == "germany":
+      os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")   
 
 def zip_file():
-    for dirs in ['gps_ready/', 'gps_parts/']:
-        os.chdir((work_dir) + (dirs))
-        os.system("for file in " + (BUILD_MAP) + "*.img; do zip $file.zip $file; done") 
+  os.chdir(work_dir) 
+  os.chdir(dir2)
+  print(os.getcwd())
+  os.system("for file in *.img; do zip $file.zip $file; done")
+  os.system("mv *.zip " + (work_dir) + (dir1))
+  
 
 if (MAP_TYPE) == "velomap":
-    velomap()
-    merge()
-    zip_file()
+  mk_store()
+  velomap()
+  merge()
+  zip_file()
     
 elif (MAP_TYPE) == "basemap":
-    basemap()
-    merge()
-    zip_file()
+  mk_store()
+  basemap()
+  merge()
+  zip_file()
     
 elif (MAP_TYPE) == "all":
-    velomap()
-    basemap() 
-    merge_all()
-    copy_parts()
-    zip_file()
+  mk_store()  
+  velomap()
+  basemap()
+  merge_all()
+  copy_parts()
+  zip_file()
 
 printinfo("Habe fertig!")
 
@@ -535,7 +565,9 @@ upload to local FTP-Server
 
 ## Changelog:
 
-v0.9.1- addr- and boundary-layer added
+v0.9.3- separated folder for the maps per day
+
+v0.9.2- addr- and boundary-layer added
 
 v0.9.1- zip-function added
 
