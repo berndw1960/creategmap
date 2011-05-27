@@ -531,7 +531,6 @@ def copy_parts():
 def zip_file():
   os.chdir(work_dir) 
   os.chdir(dir2)
-  print(os.getcwd())
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (work_dir) + (dir1))
   
