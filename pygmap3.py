@@ -468,17 +468,10 @@ def mk_store():
 ## look for mkgmap's special version for the velomap and then build the maps
 def velomap():
   os.chdir(work_dir)
-  ExitCode = os.system("test -f aiostyles/mkgmap_velo.jar")
-  if ExitCode == 0:
-    mkgmap_velo = (work_dir) + "aiostyles/mkgmap_velo.jar"
-        
-  else:
-    mkgmap_velo = (mkgmap)
-
   os.chdir("gvelomap")
   os.system("rm -Rf * ")
   print(os.getcwd())
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap_velo) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
   os.chdir(work_dir)
     
 def basemap():
