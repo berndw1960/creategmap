@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.3"
+__version__ = "0.9.4"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -373,7 +373,7 @@ ExitCode = os.system("test -d tiles")
 
 if ExitCode == 0:
   os.chdir("tiles")
-  os.system("rm -Rf *")
+#  os.system("rm -Rf *")
   os.chdir(work_dir)
 	  
 else: 
@@ -391,56 +391,48 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gaddr', 'gps
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
     os.mkdir(dir)
-      
+
+
+## add your own styles in mystyles 
+def __style():
+  os.chdir(work_dir)
+  ExitCode = os.system("test -d " + (work_dir) + "mystyles/" + (layer) + "_style")
+  if ExitCode == 0:
+    global mapstyle
+    mapstyle = "mystyles"
+  else:
+    global mapstyle
+    mapstyle = "aiostyles"
+  
+def __cleanup():  
+  os.chdir((work_dir) + "/g" + (layer))
+  print((layer) + "-layer build with " + (mapstyle))
+  os.system("rm -Rf * ")
+  
 """ 
  create Bugs- and FIXME-Layer 
 
-
 """
-os.system("rm -Rf gfixme/* gosb/* ")
 
-## add your own styles for OSB and FIXMEs in mystyles 
-ExitCode = os.system("test -d " + (work_dir) + "mystyles/fixme_style")
-    
-if ExitCode == 0:    
-  mapstyle_fixme = "mystyles"
-else:
-  mapstyle_fixme = "aiostyles" 
+layer = "fixme"
+__style()
+__cleanup()
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63244023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/fixme.TYP")
 
-print(mapstyle_fixme)
+layer = "osb"
+__style()
+__cleanup()
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63245023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle) + "/osb.TYP")
 
-os.chdir((work_dir) + "gfixme")
+layer = "addr"
+__style()
+__cleanup()
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/addr_style --description=addr --family-id=5 --product-id=40 --series-name=OSMAdressen --family-name=OSMaddr --mapname=63242023 --draw-priority=14 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) +"/addr.TYP")
 
-print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_fixme) + "/fixme_style --description=fixme --family-id=3 --product-id=33 --series-name=OSMfixme --family-name=OSMfixme --mapname=63244023 --draw-priority=16 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle_fixme) + "/fixme.TYP")
-
-ExitCode = os.system("test -d " + (work_dir) + "mystyles/osb_style")
-    
-if ExitCode == 0:    
-  mapstyle_osb = "mystyles"
-else:
-  mapstyle_osb = "aiostyles" 
-
-print(mapstyle_osb)
-
-os.chdir((work_dir) + "/gosb")
-
-print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle_osb) + "/osb_style --description=osb --family-id=2323 --product-id=42 --series-name=OSMbugs --family-name=OSMbugs --mapname=63245023 --draw-priority=14 " + (work_dir) + "OpenStreetBugs.osm " + (work_dir) + (mapstyle_osb) + "/osb.TYP")
-
-os.chdir(work_dir)
-
-os.chdir((work_dir) + "/gaddr")
-
-print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/addr_style --description=addr --family-id=5 --product-id=40 --series-name=OSMAdressen --family-name=OSMaddr --mapname=63242023 --draw-priority=14 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/addr.TYP")
-
-os.chdir(work_dir)
-
-os.chdir((work_dir) + "/gboundary")
-
-print(os.getcwd())
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + "aiostyles/boundary_style --description=boundary --family-id=6 --product-id=30 --series-name=OSMboundary --family-name=OSMboundary --mapname=63243023 --draw-priority=14 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/boundary.TYP")
+layer = "boundary"
+__style()
+__cleanup()
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "fixme_buglayer.conf --style-file=" + (work_dir) + (mapstyle) + "/boundary_style --description=boundary --family-id=6 --product-id=30 --series-name=OSMboundary --family-name=OSMboundary --mapname=63243023 --draw-priority=14 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/boundary.TYP")
 
 os.chdir(work_dir)
 
@@ -454,7 +446,7 @@ dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
 dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
 
 
-def mk_store():
+def __mk_store():
   os.chdir(work_dir)
   for dir in [(dir1), (dir2)]:
     ExitCode = os.system("test -d " +  (dir))
@@ -463,27 +455,25 @@ def mk_store():
       os.makedirs(dir)
     elif ExitCode != 0:
       os.makedirs(dir)
-    
-    
-## look for mkgmap's special version for the velomap and then build the maps
-def velomap():
-  os.chdir(work_dir)
-  os.chdir("gvelomap")
-  os.system("rm -Rf * ")
-  print(os.getcwd())
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + "aiostyles/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/velomap.TYP")
+
+def __velomap():
+  global layer
+  layer = "velomap"
+  __style()
+  __cleanup()
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "velomap.conf --style-file=" + (work_dir) + (mapstyle) + "/velomap_style --description=velomap --family-id=6365 --product-id=1 --series-name=OSMvelomap --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/velomap.TYP")
   os.chdir(work_dir)
     
-def basemap():
-  os.chdir(work_dir)  
-  os.chdir("gbasemap")
-  os.system("rm -Rf * ")
-  print(os.getcwd())
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + "aiostyles/basemap_style --description=basemap --family-id=4 --product-id=45 --series-name=OSMbasemap --family-name=OSMbasemap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + "aiostyles/basemap.TYP")
+def __basemap():
+  global layer
+  layer = "basemap"
+  __style()
+  __cleanup()
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + (work_dir) + "basemap.conf --style-file=" + (work_dir) + (mapstyle) + "/basemap_style --description=basemap --family-id=4 --product-id=45 --series-name=OSMbasemap --family-name=OSMbasemap --mapname=63240023 --draw-priority=10 " + (work_dir) + "tiles/*.osm.gz " + (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
 
 ## Wenn nur die base- oder velomap gewählt wurde
-def merge():
+def __merge():
   os.chdir(work_dir)
   if (BUILD_MAP) == "germany":
     os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
@@ -495,7 +485,7 @@ def merge():
       os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
 ## falls _alle_ Karten erstellt werden (default)
-def merge_all():
+def __merge_all():
   for map in ['velomap', 'basemap']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
@@ -508,7 +498,7 @@ def merge_all():
         os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img g" + (map) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
 ## diverse einzelne Layer für neuere garmin
-def copy_parts():
+def __copy_parts():
   os.chdir(work_dir)
   for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (dir) + "_parts_gmapsupp.img")
@@ -521,7 +511,7 @@ def copy_parts():
     elif (BUILD_MAP) == "germany":
       os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")   
 
-def zip_file():
+def __zip_file():
   os.chdir(work_dir) 
   os.chdir(dir2)
   print(os.getcwd())
@@ -530,24 +520,24 @@ def zip_file():
   
 
 if (MAP_TYPE) == "velomap":
-  mk_store()
-  velomap()
-  merge()
-  zip_file()
+  __mk_store()
+  __velomap()
+  __merge()
+  __zip_file()
     
 elif (MAP_TYPE) == "basemap":
-  mk_store()
-  basemap()
-  merge()
-  zip_file()
+  __mk_store()
+  __basemap()
+  __merge()
+  __zip_file()
     
 elif (MAP_TYPE) == "all":
-  mk_store()  
-  velomap()
-  basemap()
-  merge_all()
-  copy_parts()
-  zip_file()
+  __mk_store()  
+  __velomap()
+  __basemap()
+  __merge_all()
+  __copy_parts()
+  __zip_file()
 
 printinfo("Habe fertig!")
 
@@ -558,7 +548,9 @@ upload to local FTP-Server
 
 ## Changelog:
 
-v0.9.3- separated folder for the maps per day
+v0.9.4- cleanups
+
+v0.9.3- sepatated folder for the maps
 
 v0.9.2- addr- and boundary-layer added
 
