@@ -397,11 +397,10 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gaddr', 'gps
 def __style():
   os.chdir(work_dir)
   ExitCode = os.system("test -d " + (work_dir) + "mystyles/" + (layer) + "_style")
+  global mapstyle
   if ExitCode == 0:
-    global mapstyle
     mapstyle = "mystyles"
   else:
-    global mapstyle
     mapstyle = "aiostyles"
   
 def __cleanup():  
