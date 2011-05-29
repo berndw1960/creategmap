@@ -373,7 +373,7 @@ ExitCode = os.system("test -d tiles")
 
 if ExitCode == 0:
   os.chdir("tiles")
-#  os.system("rm -Rf *")
+  os.system("rm -Rf *")
   os.chdir(work_dir)
 	  
 else: 
@@ -475,13 +475,13 @@ def __basemap():
 def __merge():
   os.chdir(work_dir)
   if (BUILD_MAP) == "germany":
-    os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
+    os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img gcontourlines/gmapsupp.img")
   elif (BUILD_MAP) != "germany":
     ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
     if ExitCode == 0:
-      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
     else:
-      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
+      os.system("wine ~/bin/gmt.exe -jo " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/" + (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img g" + (MAP_TYPE) + "/gmapsupp.img gaddr/gmapsupp.img gboundary/gmapsupp.img gosb/gmapsupp.img gfixme/gmapsupp.img")
 
 ## falls _alle_ Karten erstellt werden (default)
 def __merge_all():
