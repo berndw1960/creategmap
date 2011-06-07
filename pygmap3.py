@@ -296,8 +296,8 @@ ExitCode = os.system("which osmosis")
 if ExitCode == 0:
   os.system("wget -N http://download.geofabrik.de/osm/europe/" + 
              (BUILD_MAP) + ".osm.pbf")
-  os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (
-             BUILD_MAP) + ".osm")
+  os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + 
+             (BUILD_MAP) + ".osm")
 
 else:
   os.system("wget -N http://download.geofabrik.de/osm/europe/" + 
