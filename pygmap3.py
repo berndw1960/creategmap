@@ -167,7 +167,7 @@ checkprg("gpsbabel", hint)
 os.chdir(work_dir)
 
 
-if  verbose == 1:
+if  verbose == 0:
 
   print(""" 
 	  
@@ -250,7 +250,11 @@ if  verbose == 1:
 
   print("                Wahl:        ", (MAXNODES))
 
-
+else:
+  MAP_TYPE = (MAP_TYPE_DEFAULT)
+  BUILD_MAP = (BUILD_MAP_DEFAULT)
+  RAMSIZE = (RAMSIZE_DEFAULT)
+  MAXNODES = (MAXNODES_DEFAULT)
 
 
     
@@ -501,14 +505,14 @@ def __copy_parts():
   os.chdir(work_dir)
   for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_" + (dir) + "_parts_gmapsupp.img")
-  ExitCode = os.system("test -f " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")    
+  ExitCode = os.system("test -f " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")    
   if ExitCode != 0:
     if (BUILD_MAP) != "germany":
       ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
       if ExitCode == 0:
-        os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")
+        os.system("cp " + (work_dir) + "hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")
     elif (BUILD_MAP) == "germany":
-      os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_parts_contourlines_gmapsupp.img")   
+      os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")   
 
 def __zip_file():
   os.chdir(work_dir) 
