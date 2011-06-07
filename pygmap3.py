@@ -320,7 +320,9 @@ else:
 ## split rawdata
 
 os.chdir("tiles")
-os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + " --mapid=63240023 --max-nodes=" + (MAXNODES) + " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm")
+os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
+           " --mapid=63240023 --max-nodes=" + (MAXNODES) + 
+           " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm")
 os.chdir(work_dir)
 
 ## create mapdirs
