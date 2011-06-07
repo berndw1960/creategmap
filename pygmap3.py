@@ -126,13 +126,15 @@ def checkdir(dirtofind, solutionhint):
   ausführliche Infos zu geben, und eventuell die Möglichkeit des Rücksetzen
   auf die Default-Einstellungen bei Fehlern zu bieten
 """
-verbose = 1 ## default '= 1' an dieser Stelle
+verbose = 0 ## default '= 1' an dieser Stelle
 
 
 work_dir = (os.environ['HOME'] + "/share/osm/map_build/") # Der letzte Slash muss sein!!!
 
-RAMSIZE_DEFAULT = "-Xmx6000M"
-MAXNODES_DEFAULT = "1200000"
+PREFIX = "-Xmx"
+RAMSIZE_DEFAULT = "3000M"
+
+MAXNODES_DEFAULT = "1000000"
 
 BUILD_MAP_DEFAULT = "germany"
 
@@ -167,7 +169,7 @@ checkprg("gpsbabel", hint)
 os.chdir(work_dir)
 
 
-if  verbose == 0:
+if  verbose == 1:
 
   print(""" 
 	  
@@ -226,10 +228,10 @@ if  verbose == 0:
 		
   """)
   print("                Vorgabewert: ", (RAMSIZE_DEFAULT)) 
-  RAMSIZE = input("                Wieviel Speicher soll verwendet werden? ")
+  RAMSIZE = (PREFIX) + (input("                Wieviel Speicher soll verwendet werden? "))
 
   if RAMSIZE == "":
-    RAMSIZE = (RAMSIZE_DEFAULT)  
+    RAMSIZE = ((PREFIX) + (RAMSIZE_DEFAULT))
   print("                Wahl:        ", (RAMSIZE)) 
 
   print(""" 
@@ -253,7 +255,7 @@ if  verbose == 0:
 else:
   MAP_TYPE = (MAP_TYPE_DEFAULT)
   BUILD_MAP = (BUILD_MAP_DEFAULT)
-  RAMSIZE = (RAMSIZE_DEFAULT)
+  RAMSIZE = ((PREFIX) + (RAMSIZE_DEFAULT))
   MAXNODES = (MAXNODES_DEFAULT)
 
 
