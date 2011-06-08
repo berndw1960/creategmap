@@ -139,7 +139,7 @@ parser = argparse.ArgumentParser(
             
             Die anderen Einstellungen können bei Bedarf angepasst werden
             MAP_TYPE = [all|velomap|basemap]
-            RAMSIZE = "3000M"
+            RAMSIZE = "3000M" or "3G"
             MAXNODES = "1000000"
             
         '''))
