@@ -146,7 +146,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-c', '--country', dest='build_map', default='germany')
 parser.add_argument('-t', '--type', dest='map_type', default='all')
-parser.add_argument('-r', '--ramsize', dest='ramsize', default='3000M')
+parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 args = parser.parse_args()
 
