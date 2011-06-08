@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.5"
+__version__ = "0.9.6"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -131,29 +131,35 @@ parser = argparse.ArgumentParser(
         prog='PROG', 
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
-            
-            BUILD_MAP = "germany"
+        
             Als Basis können alle Dateien unter
-            http://download.geofabrik.de/osm/europe
+            http://download.geofabrik.de/osm/
             verwendet werden, Dateinamen bitte _ohne_ Endung verwenden.
+            
+
+            CONTINENT = "europe" (default)
+            BUILD_MAP = "germany" (default)
+            
             
             Die anderen Einstellungen können bei Bedarf angepasst werden
             MAP_TYPE = [all|velomap|basemap]
-            RAMSIZE = "3000M" or "3G"
-            MAXNODES = "1000000"
+            RAMSIZE = "3000M" or "3G" (default)
+            MAXNODES = "1000000" (default)
             
         '''))
 
-parser.add_argument('-c', '--country', dest='build_map', default='germany')
+parser.add_argument('-c', '--continent', dest='continent', default='europe')
+parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
 parser.add_argument('-t', '--type', dest='map_type', default='all')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3000M')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 args = parser.parse_args()
 
 
-PREFIX = "-Xmx"
+CONTINENT = (args.continent)
 BUILD_MAP = (args.build_map)
 MAP_TYPE = (args.map_type)
+PREFIX = "-Xmx"
 RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
 
@@ -294,13 +300,13 @@ if ExitCode == 0:
 ExitCode = os.system("which osmosis")
 
 if ExitCode == 0:
-  os.system("wget -N http://download.geofabrik.de/osm/europe/" + 
+  os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
              (BUILD_MAP) + ".osm.pbf")
   os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + 
              (BUILD_MAP) + ".osm")
 
 else:
-  os.system("wget -N http://download.geofabrik.de/osm/europe/" + 
+  os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
              (BUILD_MAP) + ".osm.bz2")   
   os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
 
@@ -407,8 +413,8 @@ os.chdir(work_dir)
 today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d')
   
-dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
-dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
+dir1 = ("gps_ready/" + (CONTINENT) + "/" + (BUILD_MAP) + "/" + (day))
+dir2 = ("gps_ready/unzipped/" + (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day))
 
 
 def __mk_store():
@@ -455,7 +461,7 @@ def __merge():
   if (BUILD_MAP) == "germany":
     os.system("wine ~/bin/gmt.exe -jo " + 
               (work_dir) + "gps_ready/unzipped/" + 
-              (BUILD_MAP) + "/" + (day) + "/" + 
+              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
               (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img  \
               g" + (MAP_TYPE) + "/gmapsupp.img  \
               gaddr/gmapsupp.img  \
@@ -469,7 +475,7 @@ def __merge():
     if ExitCode == 0:
       os.system("wine ~/bin/gmt.exe -jo " + 
               (work_dir) + "gps_ready/unzipped/" + 
-              (BUILD_MAP) + "/" + (day) + "/" + 
+              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
               (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img  \
               g" + (MAP_TYPE) + "/gmapsupp.img  \
               gaddr/gmapsupp.img  \
@@ -481,7 +487,7 @@ def __merge():
     else:
       os.system("wine ~/bin/gmt.exe -jo " + 
                 (work_dir) + "gps_ready/unzipped/" + 
-                (BUILD_MAP) + "/" + (day) + "/" + 
+                (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
                 (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img  \
                 g" + (MAP_TYPE) + "/gmapsupp.img  \
                 gaddr/gmapsupp.img  \
@@ -496,7 +502,7 @@ def __merge_all():
     if (BUILD_MAP) == "germany":
       os.system("wine ~/bin/gmt.exe -jo " +
                 (work_dir) + "gps_ready/unzipped/" +
-                (BUILD_MAP) + "/" + (day) + "/"  + 
+                (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                 (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img  \
                 g" + (map) + "/gmapsupp.img  \
                 gaddr/gmapsupp.img  \
@@ -510,7 +516,7 @@ def __merge_all():
       if ExitCode == 0:
         os.system("wine ~/bin/gmt.exe -jo " + 
                   (work_dir) + "gps_ready/unzipped/" +
-                  (BUILD_MAP) + "/" + (day) + "/"  + 
+                  (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                   (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
                   gaddr/gmapsupp.img  \
@@ -522,7 +528,7 @@ def __merge_all():
       else:
         os.system("wine ~/bin/gmt.exe -jo " + 
                   (work_dir) + "gps_ready/unzipped/" + 
-                  (BUILD_MAP) + "/" + (day) + "/"  + 
+                  (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                   (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
                   gaddr/gmapsupp.img  \
@@ -536,10 +542,11 @@ def __copy_parts():
   for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
-             (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_" + (dir) + "_parts_gmapsupp.img") 
+             (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
+             (BUILD_MAP) + "_" + (dir) + "_parts_gmapsupp.img")
+             
   ExitCode = os.system("test -f " + (work_dir) + "gps_ready/unzipped/" + 
-             (BUILD_MAP) + "/" + (day) + "/"  + 
+             (CONTINENT) + "/" + (BUILD_MAP) + "/" + (day) + "/"  + 
              (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")    
   if ExitCode != 0:
     if (BUILD_MAP) != "germany":
@@ -548,7 +555,7 @@ def __copy_parts():
         os.system("cp " + (work_dir) + "hoehenlinien/" + 
              (BUILD_MAP) + "/gmapsupp.img " + 
              (work_dir) + "gps_ready/unzipped/" + 
-             (BUILD_MAP) + "/" + (day) + "/"  + 
+             (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
              (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img") 
     elif (BUILD_MAP) == "germany":
       os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + 
@@ -591,6 +598,8 @@ printinfo("Habe fertig!")
 upload to local FTP-Server
 
 ## Changelog:
+
+v0.9.6- added function to set another continent
 
 v0,9.5- Umstieg auf Python 3.2.x 
       - commandline-otions added with argparse
