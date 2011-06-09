@@ -560,7 +560,7 @@ def __copy_parts():
     elif (BUILD_MAP) == "germany":
       os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + 
                 (work_dir) + "gps_ready/unzipped/" + 
-                (BUILD_MAP) + "/" + (day) + "/"  + 
+                (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                 (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")   
 
 def __zip_file():
