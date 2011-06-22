@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.6"
+__version__ = "0.9.7"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -297,18 +297,9 @@ ExitCode = os.system("test -f " + (BUILD_MAP) + ".osm")
 if ExitCode == 0:
   os.remove((BUILD_MAP) + ".osm")
 
-ExitCode = os.system("which osmosis")
-
-if ExitCode == 0:
-  os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
+os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
              (BUILD_MAP) + ".osm.pbf")
-  os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + 
-             (BUILD_MAP) + ".osm")
-
-else:
-  os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
-             (BUILD_MAP) + ".osm.bz2")   
-  os.system("bunzip2 -k " + (BUILD_MAP) + ".osm.bz2")
+# os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
 
 
 ##  create (work_dir) for splitter
@@ -328,7 +319,7 @@ else:
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
            " --mapid=63240023 --max-nodes=" + (MAXNODES) + 
-           " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm")
+           " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
 os.chdir(work_dir)
 
 ## create mapdirs
@@ -369,7 +360,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) + "/fixme_style --description=fixme  \
           --family-id=3 --product-id=33 --series-name=OSMfixme  \
           --family-name=OSMfixme --mapname=63244023 --draw-priority=16 " + 
-          (work_dir) + "tiles/*.osm.gz " + 
+          (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme.TYP")
 
 layer = "osb"
@@ -391,7 +382,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) + "/addr_style --description=addr \
           --family-id=5 --product-id=40 --series-name=OSMAdressen  \
           --family-name=OSMaddr --mapname=63242023 --draw-priority=14 " + 
-          (work_dir) + "tiles/*.osm.gz " + 
+          (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) +"/addr.TYP")
 
 layer = "boundary"
@@ -402,7 +393,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) + "/boundary_style --description=boundary \
           --family-id=6 --product-id=30 --series-name=OSMboundary  \
           --family-name=OSMboundary --mapname=63243023 --draw-priority=14 " + 
-          (work_dir) + "tiles/*.osm.gz " + 
+          (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/boundary.TYP")
 
 os.chdir(work_dir)
@@ -437,7 +428,7 @@ def __velomap():
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
             --family-name=OSMvelomap --mapname=63241023 --draw-priority=12 " + 
-            (work_dir) + "tiles/*.osm.gz " + 
+            (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/velomap.TYP")
   os.chdir(work_dir)
     
@@ -451,7 +442,7 @@ def __basemap():
             (work_dir) + (mapstyle) + "/basemap_style --description=basemap  \
             --family-id=4 --product-id=45 --series-name=OSMbasemap  \
             --family-name=OSMbasemap --mapname=63240023 --draw-priority=10 " + 
-            (work_dir) + "tiles/*.osm.gz " + 
+            (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
 
@@ -598,6 +589,9 @@ printinfo("Habe fertig!")
 upload to local FTP-Server
 
 ## Changelog:
+
+v0.9.7- removed use of osm.bz2 and osm.gz, use osm.pbf as 
+        new default by splitter
 
 v0.9.6- added function to set another continent
 
