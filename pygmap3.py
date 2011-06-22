@@ -181,9 +181,6 @@ checkprg("osbsql2osm", hint)
 hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
 checkprg("git", hint)
 
-hint = " osmosis fehlt, wird gebraucht zur Verarbeitung der *.pbf files! "
-checkprg("osmosis", hint)
-
 hint = " gpsbabel fehlt, wird gebraucht zur Verarbeitung der OSB als bz2! "
 checkprg("gpsbabel", hint)
 
@@ -275,8 +272,8 @@ splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 
 """ 
   get the OpenStreetBugs
-  
 """  
+
 ExitCode = os.system("which osbsql2osm")
 if ExitCode == 0:
   os.system("wget -N   \
@@ -288,21 +285,17 @@ else:
              --output-document=OpenStreetBugs.gpx")
   os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
 
-
-
-# cleanup
-
-ExitCode = os.system("test -f " + (BUILD_MAP) + ".osm")
-
-if ExitCode == 0:
-  os.remove((BUILD_MAP) + ".osm")
+"""
+  get the raw map-extracts from the geofabrik
+"""  
 
 os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
-             (BUILD_MAP) + ".osm.pbf")
-# os.system("osmosis --read-bin " + (BUILD_MAP) + ".osm.pbf --write-xml " + (BUILD_MAP) + ".osm")
+            (BUILD_MAP) + ".osm.pbf")
 
 
-##  create (work_dir) for splitter
+"""
+  create (work_dir) for splitter
+"""  
  
 ExitCode = os.system("test -d tiles")
 
@@ -313,16 +306,19 @@ if ExitCode == 0:
 	  
 else: 
     os.mkdir("tiles")
-             
-## split rawdata
 
+"""
+  split rawdata
+"""
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
            " --mapid=63240023 --max-nodes=" + (MAXNODES) + 
            " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
 os.chdir(work_dir)
 
-## create mapdirs
+"""
+  create mapdirs
+"""
 
 for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 
             'gaddr', 'gps_ready']:
@@ -330,8 +326,10 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary',
   if ExitCode != 0:
     os.mkdir(dir)
 
+"""
+  add your own styles in mystyles
+"""
 
-## add your own styles in mystyles 
 def __style():
   os.chdir(work_dir)
   ExitCode = os.system("test -d " + (work_dir) + "mystyles/" + 
@@ -349,7 +347,6 @@ def __cleanup():
   
 """ 
  create Bugs- and FIXME-Layer 
-
 """
 
 layer = "fixme"
@@ -398,8 +395,9 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
 
 os.chdir(work_dir)
 
-
-## destination separated for country and day
+"""
+  destination separated for country and day
+"""
 
 today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d')
@@ -446,7 +444,10 @@ def __basemap():
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
 
-## Wenn nur die base- oder velomap gewählt wurde
+"""
+  Wenn nur die base- oder velomap gewählt wurde
+"""
+
 def __merge():
   os.chdir(work_dir)
   if (BUILD_MAP) == "germany":
@@ -486,7 +487,10 @@ def __merge():
                 gosb/gmapsupp.img  \
                 gfixme/gmapsupp.img")
 
-## falls _alle_ Karten erstellt werden (default)
+"""
+  Erstellen der verschiedenen Images
+"""
+
 def __merge_all():
   for map in ['velomap', 'basemap']:
     os.chdir(work_dir)
@@ -527,7 +531,10 @@ def __merge_all():
                   gosb/gmapsupp.img  \
                   gfixme/gmapsupp.img") 
 
-## diverse einzelne Layer für neuere garmin
+"""
+  Umkopieren der Images
+"""
+
 def __copy_parts():
   os.chdir(work_dir)
   for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
@@ -553,6 +560,10 @@ def __copy_parts():
                 (work_dir) + "gps_ready/unzipped/" + 
                 (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                 (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")   
+
+"""
+  Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
+"""  
 
 def __zip_file():
   os.chdir(work_dir) 
@@ -584,14 +595,12 @@ elif (MAP_TYPE) == "all":
 printinfo("Habe fertig!")
 
 """ 
-## ToDo:
-
-upload to local FTP-Server
 
 ## Changelog:
 
 v0.9.7- removed use of osm.bz2 and osm.gz, use osm.pbf as 
-        new default by splitter
+        new default by splitter, 
+      - cleanups and comments
 
 v0.9.6- added function to set another continent
 
