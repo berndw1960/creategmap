@@ -202,7 +202,8 @@ if (BUILD_MAP) == "germany":
       os.chdir("gcontourlines")
       os.mkdir("temp")
       os.chdir("temp")
-      os.system("wget -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
+      os.system("wget \
+              -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
       os.system("unzip Topo_D_SRTM.zip")
       os.system("wine ~/bin/~/bin/gmt.exe -j -f 5,25 -m HOEHE -o \
                 ../gmapsupp.img Topo\ D\ SRTM/*.img")
@@ -330,7 +331,7 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary',
   add your own styles in mystyles
 """
 
-def __style():
+def style():
   os.chdir(work_dir)
   ExitCode = os.system("test -d " + (work_dir) + "mystyles/" + 
                          (layer) + "_style")
@@ -340,7 +341,7 @@ def __style():
   else:
     mapstyle = "aiostyles"
   
-def __cleanup():  
+def cleanup():  
   os.chdir((work_dir) + "/g" + (layer))
   print((layer) + "-layer build with " + (mapstyle))
   os.system("rm -Rf * ")
@@ -350,8 +351,8 @@ def __cleanup():
 """
 
 layer = "fixme"
-__style()
-__cleanup()
+style()
+cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/fixme_style --description=fixme  \
@@ -361,8 +362,8 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) + "/fixme.TYP")
 
 layer = "osb"
-__style()
-__cleanup()
+style()
+cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/osb_style --description=osb \
@@ -372,8 +373,8 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) + "/osb.TYP")
 
 layer = "addr"
-__style()
-__cleanup()
+style()
+cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/addr_style --description=addr \
@@ -383,8 +384,8 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) +"/addr.TYP")
 
 layer = "boundary"
-__style()
-__cleanup()
+style()
+cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/boundary_style --description=boundary \
@@ -406,7 +407,7 @@ dir1 = ("gps_ready/" + (CONTINENT) + "/" + (BUILD_MAP) + "/" + (day))
 dir2 = ("gps_ready/unzipped/" + (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day))
 
 
-def __mk_store():
+def mk_store():
   os.chdir(work_dir)
   for dir in [(dir1), (dir2)]:
     ExitCode = os.system("test -d " +  (dir))
@@ -416,11 +417,11 @@ def __mk_store():
     elif ExitCode != 0:
       os.makedirs(dir)
 
-def __velomap():
+def velomap():
   global layer
   layer = "velomap"
-  __style()
-  __cleanup()
+  style()
+  cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "velomap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
@@ -430,11 +431,11 @@ def __velomap():
             (work_dir) + (mapstyle) + "/velomap.TYP")
   os.chdir(work_dir)
     
-def __basemap():
+def basemap():
   global layer
   layer = "basemap"
-  __style()
-  __cleanup()
+  style()
+  cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "basemap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/basemap_style --description=basemap  \
@@ -448,7 +449,7 @@ def __basemap():
   Wenn nur die base- oder velomap gewählt wurde
 """
 
-def __merge():
+def merge():
   os.chdir(work_dir)
   if (BUILD_MAP) == "germany":
     os.system("wine ~/bin/gmt.exe -jo " + 
@@ -491,7 +492,7 @@ def __merge():
   Erstellen der verschiedenen Images
 """
 
-def __merge_all():
+def merge_all():
   for map in ['velomap', 'basemap']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
@@ -535,7 +536,7 @@ def __merge_all():
   Umkopieren der Images
 """
 
-def __copy_parts():
+def copy_parts():
   os.chdir(work_dir)
   for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
@@ -565,7 +566,7 @@ def __copy_parts():
   Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
 """  
 
-def __zip_file():
+def zip_file():
   os.chdir(work_dir) 
   os.chdir(dir2)
   os.system("for file in *.img; do zip $file.zip $file; done")
@@ -573,24 +574,24 @@ def __zip_file():
   
 
 if (MAP_TYPE) == "velomap":
-  __mk_store()
-  __velomap()
-  __merge()
-  __zip_file()
+  mk_store()
+  velomap()
+  merge()
+  zip_file()
     
 elif (MAP_TYPE) == "basemap":
-  __mk_store()
-  __basemap()
-  __merge()
-  __zip_file()
+  mk_store()
+  basemap()
+  merge()
+  zip_file()
     
 elif (MAP_TYPE) == "all":
-  __mk_store()  
-  __velomap()
-  __basemap()
-  __merge_all()
-  __copy_parts()
-  __zip_file()
+  mk_store()  
+  velomap()
+  basemap()
+  merge_all()
+  copy_parts()
+  zip_file()
 
 printinfo("Habe fertig!")
 
