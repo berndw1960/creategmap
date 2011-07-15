@@ -198,14 +198,12 @@ if (BUILD_MAP) == "germany":
   ExitCode  = os.system("test -d gcontourlines")
   if ExitCode != 0:
       os.system("rm -Rf gcontourlines")
-      os.mkdir("gcontourlines")
-      os.chdir("gcontourlines")
-      os.mkdir("temp")
-      os.chdir("temp")
+      os.makedirs("gcontourlines/temp")
+      os.chdir("gcontourlines/temp")
       os.system("wget \
               -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
       os.system("unzip Topo_D_SRTM.zip")
-      os.system("wine ~/bin/~/bin/gmt.exe -j -f 5,25 -m HOEHE -o \
+      os.system("wine ~/bin/gmt.exe -j -f 5,25 -m HOEHE -o \
                 ../gmapsupp.img Topo\ D\ SRTM/*.img")
       os.chdir("..")
       os.system("rm -Rf temp")
