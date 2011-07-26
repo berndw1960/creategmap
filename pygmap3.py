@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.7"
+__version__ = "0.9.8"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -300,7 +300,7 @@ ExitCode = os.system("test -d tiles")
 
 if ExitCode == 0:
   os.chdir("tiles")
-  os.system("rm -Rf *")
+  os.system("rm -Rf *.pbf")
   os.chdir(work_dir)
 	  
 else: 
@@ -314,6 +314,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) +
            " --mapid=63240023 --max-nodes=" + (MAXNODES) + 
            " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
 os.chdir(work_dir)
+
 
 """
   create mapdirs
@@ -596,6 +597,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.8- added bounds-support
 
 v0.9.7- removed use of osm.bz2 and osm.gz, use osm.pbf as 
         new default by splitter, 
