@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.8"
+__version__ = "0.9.9"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -125,7 +125,10 @@ work_dir = (os.environ['HOME'] + "/share/osm/map_build/")
 # Der letzte Slash muss sein!!!
 
 
-## argparse
+"""
+  argparse
+  
+"""
 
 parser = argparse.ArgumentParser(
         prog='PROG', 
@@ -145,6 +148,9 @@ parser = argparse.ArgumentParser(
             MAP_TYPE = [all|velomap|basemap]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
+            MKGMAP_VERSION = use a defined mkgmap-version, 
+                             for available versions
+                             http://www.mkgmap.org.uk/snapshots/
             
         '''))
 
@@ -153,6 +159,7 @@ parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
 parser.add_argument('-t', '--type', dest='map_type', default='all')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
+parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
 args = parser.parse_args()
 
 
@@ -162,9 +169,12 @@ MAP_TYPE = (args.map_type)
 PREFIX = "-Xmx"
 RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
+MKGMAP_VERSION = (args.mkgmap_version)
 
-
-## needed programs und dirs
+"""
+  needed programs und dirs
+  
+"""
 
 hint = ("mkdir " + (work_dir))
 checkdir((work_dir), hint) 
@@ -225,19 +235,12 @@ else:
   os.system("git clone git://github.com/aiomaster/aiostyles.git")
   os.chdir(work_dir)
 
-##  get mkgmap and splitter
+"""
+  get splitter and mkgmap 
   
+"""  
 
-target = http.client.HTTPConnection("www.mkgmap.org.uk")
-
-target.request("GET", "/snapshots/index.html")
-htmlcontent =  target.getresponse()
-print(htmlcontent.status, htmlcontent.reason)
-data = htmlcontent.read()
-data = data.decode('utf8')
-pattern = re.compile('mkgmap-r\d{4}')
-mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-
+target = http.client.HTTPConnection("www.mkgmap.org.uk") 
 
 target.request("GET", "/splitter/index.html")
 htmlcontent =  target.getresponse()
@@ -246,18 +249,6 @@ data = htmlcontent.read()
 data = data.decode('utf8')
 pattern = re.compile('splitter-r\d{3}')
 splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-
-target.close()
-
-os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + 
-            (mkgmap_rev) + (".tar.gz"))  
-
-tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
-tar.extractall()
-tar.close()
-    
-mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
-
 
 os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + 
             (splitter_rev) + (".tar.gz"))
@@ -268,9 +259,46 @@ tar.close()
     
 splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 
+if MKGMAP_VERSION != 0:
+  os.system(("wget -N http://www.mkgmap.org.uk/snapshots/mkgmap-r") + (MKGMAP_VERSION) + (".tar.gz"))
+  
+  tar = tarfile.open((work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + (".tar.gz"))
+  tar.extractall()
+  tar.close()
+  
+  mkgmap = (work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + "/mkgmap.jar"
+  
+
+else:
+  target = http.client.HTTPConnection("www.mkgmap.org.uk")
+  target.request("GET", "/snapshots/index.html")
+  htmlcontent =  target.getresponse()
+  print(htmlcontent.status, htmlcontent.reason)
+  data = htmlcontent.read()
+  data = data.decode('utf8')
+  pattern = re.compile('mkgmap-r\d{4}')
+  mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
+  
+  os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))
+
+  tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
+  tar.extractall()
+  tar.close()
+
+  mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
+
+target.close()
+
+""" 
+  Welche Versionen werden benutzt
+
+"""
+print(splitter)
+print(mkgmap)
 
 """ 
   get the OpenStreetBugs
+  
 """  
 
 ExitCode = os.system("which osbsql2osm")
@@ -286,6 +314,7 @@ else:
 
 """
   get the raw map-extracts from the geofabrik
+  
 """  
 
 os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
@@ -294,6 +323,7 @@ os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" +
 
 """
   create (work_dir) for splitter
+  
 """  
  
 ExitCode = os.system("test -d tiles")
@@ -308,6 +338,7 @@ else:
 
 """
   split rawdata
+  
 """
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
@@ -318,6 +349,7 @@ os.chdir(work_dir)
 
 """
   create mapdirs
+  
 """
 
 for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 
@@ -328,6 +360,7 @@ for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary',
 
 """
   add your own styles in mystyles
+  
 """
 
 def style():
@@ -344,9 +377,11 @@ def cleanup():
   os.chdir((work_dir) + "/g" + (layer))
   print((layer) + "-layer build with " + (mapstyle))
   os.system("rm -Rf * ")
+  os.system("ln -s ../bounds bounds")
   
 """ 
  create Bugs- and FIXME-Layer 
+ 
 """
 
 layer = "fixme"
@@ -397,6 +432,7 @@ os.chdir(work_dir)
 
 """
   destination separated for country and day
+  
 """
 
 today = datetime.datetime.now()
@@ -446,6 +482,7 @@ def basemap():
 
 """
   Wenn nur die base- oder velomap gewählt wurde
+  
 """
 
 def merge():
@@ -489,6 +526,7 @@ def merge():
 
 """
   Erstellen der verschiedenen Images
+  
 """
 
 def merge_all():
@@ -533,6 +571,7 @@ def merge_all():
 
 """
   Umkopieren der Images
+  
 """
 
 def copy_parts():
@@ -563,6 +602,7 @@ def copy_parts():
 
 """
   Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
+  
 """  
 
 def zip_file():
@@ -597,6 +637,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.9- defined mkgmap-version
 
 v0.9.8- added bounds-support
 
