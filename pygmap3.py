@@ -265,7 +265,6 @@ else:
   data = htmlcontent.read()
   data = data.decode('utf8')
   pattern = re.compile('splitter-r\d{3}')
-  print(pattern)
   splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
   target.close()
   os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + 
@@ -295,7 +294,6 @@ else:
   data = htmlcontent.read()
   data = data.decode('utf8')
   pattern = re.compile('mkgmap-r\d{4}')
-  print(pattern)
   mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
   target.close()
   os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + 
