@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.9"
+__version__ = "0.9.10"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -137,20 +137,24 @@ parser = argparse.ArgumentParser(
         
             Als Basis können alle Dateien unter
             http://download.geofabrik.de/osm/
-            verwendet werden, Dateinamen bitte _ohne_ Endung verwenden.
+            verwendet werden.
+            
+            Dateinamen bitte _ohne_ Endung verwenden.
             
 
             CONTINENT = "europe" (default)
             BUILD_MAP = "germany" (default)
             
             
-            Die anderen Einstellungen können bei Bedarf angepasst werden
-            MAP_TYPE = [all|velomap|basemap]
+            Andere Einstellungen können bei Bedarf angepasst werden.
+            
+            MAP_TYPE = [all(default)|velomap|basemap]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
                              for available versions
                              http://www.mkgmap.org.uk/snapshots/
+             SPLITTER_VERSION = same as before for splitter                
             
         '''))
 
@@ -160,6 +164,7 @@ parser.add_argument('-t', '--type', dest='map_type', default='all')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default=0)
 args = parser.parse_args()
 
 
@@ -170,6 +175,7 @@ PREFIX = "-Xmx"
 RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
 MKGMAP_VERSION = (args.mkgmap_version)
+SPLITTER_VERSION = (args.splitter_version)
 
 """
   needed programs und dirs
@@ -239,38 +245,49 @@ else:
   get splitter and mkgmap 
   
 """  
+target = http.client.HTTPConnection("www.mkgmap.org.uk")
 
-target = http.client.HTTPConnection("www.mkgmap.org.uk") 
-
-target.request("GET", "/splitter/index.html")
-htmlcontent =  target.getresponse()
-print(htmlcontent.status, htmlcontent.reason)
-data = htmlcontent.read()
-data = data.decode('utf8')
-pattern = re.compile('splitter-r\d{3}')
-splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-
-os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + 
+if SPLITTER_VERSION != 0:
+  ExitCode = os.system("test -d splitter-r" + (SPLITTER_VERSION))
+  if ExitCode != 0:
+    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/splitter-r") + 
+	      (SPLITTER_VERSION) + (".tar.gz"))
+    tar = tarfile.open((work_dir) + "splitter-r" + (SPLITTER_VERSION) + (".tar.gz"))
+    tar.extractall()
+    tar.close()   
+  
+  splitter = ((work_dir) + "splitter-r" + (SPLITTER_VERSION) + "/splitter.jar")
+  
+else:    
+  target.request("GET", "/splitter/index.html")
+  htmlcontent =  target.getresponse()
+  print(htmlcontent.status, htmlcontent.reason)
+  data = htmlcontent.read()
+  data = data.decode('utf8')
+  pattern = re.compile('splitter-r\d{3}')
+  splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
+  target.close()
+  os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + 
             (splitter_rev) + (".tar.gz"))
-
-tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
-tar.extractall()
-tar.close()    
+  tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
+  tar.extractall()
+  tar.close()    
     
-splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
+  splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
 
 if MKGMAP_VERSION != 0:
-  os.system(("wget -N http://www.mkgmap.org.uk/snapshots/mkgmap-r") + (MKGMAP_VERSION) + (".tar.gz"))
-  
-  tar = tarfile.open((work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + (".tar.gz"))
-  tar.extractall()
-  tar.close()
+  ExitCode = os.system("test -d mkgmap-r" + (MKGMAP_VERSION))
+  if ExitCode != 0:
+    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/mkgmap-r") + 
+              (MKGMAP_VERSION) + (".tar.gz"))
+    tar = tarfile.open((work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + (".tar.gz"))
+    tar.extractall()
+    tar.close()
   
   mkgmap = (work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + "/mkgmap.jar"
   
 
 else:
-  target = http.client.HTTPConnection("www.mkgmap.org.uk")
   target.request("GET", "/snapshots/index.html")
   htmlcontent =  target.getresponse()
   print(htmlcontent.status, htmlcontent.reason)
@@ -278,9 +295,9 @@ else:
   data = data.decode('utf8')
   pattern = re.compile('mkgmap-r\d{4}')
   mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-  
-  os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + (mkgmap_rev) + (".tar.gz"))
-
+  target.close()
+  os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + 
+            (mkgmap_rev) + (".tar.gz"))
   tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
   tar.extractall()
   tar.close()
@@ -441,7 +458,11 @@ day = today.strftime('%Y_%m_%d')
 dir1 = ("gps_ready/" + (CONTINENT) + "/" + (BUILD_MAP) + "/" + (day))
 dir2 = ("gps_ready/unzipped/" + (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day))
 
-
+"""
+  diverse Definitionen
+  
+"""  
+  
 def mk_store():
   os.chdir(work_dir)
   for dir in [(dir1), (dir2)]:
@@ -480,10 +501,7 @@ def basemap():
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
 
-"""
-  Wenn nur die base- oder velomap gewählt wurde
-  
-"""
+###  Wenn nur die base- oder velomap gewählt wurde
 
 def merge():
   os.chdir(work_dir)
@@ -524,10 +542,7 @@ def merge():
                 gosb/gmapsupp.img  \
                 gfixme/gmapsupp.img")
 
-"""
-  Erstellen der verschiedenen Images
-  
-"""
+###  Erstellen der verschiedenen Images
 
 def merge_all():
   for map in ['velomap', 'basemap']:
@@ -569,10 +584,7 @@ def merge_all():
                   gosb/gmapsupp.img  \
                   gfixme/gmapsupp.img") 
 
-"""
-  Umkopieren der Images
-  
-"""
+###  Umkopieren der Images
 
 def copy_parts():
   os.chdir(work_dir)
@@ -600,10 +612,7 @@ def copy_parts():
                 (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                 (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")   
 
-"""
-  Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
-  
-"""  
+###  Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
 
 def zip_file():
   os.chdir(work_dir) 
@@ -611,6 +620,11 @@ def zip_file():
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (work_dir) + (dir1))
   
+
+"""
+  Ausführen der o.g. defs zum erstellen der Karten
+  
+"""
 
 if (MAP_TYPE) == "velomap":
   mk_store()
@@ -637,63 +651,64 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.10	- offline-mode for splitter and mkgmap
 
-v0.9.9- defined mkgmap-version
+v0.9.9	- defined mkgmap-version
 
-v0.9.8- added bounds-support
+v0.9.8	- added bounds-support
 
-v0.9.7- removed use of osm.bz2 and osm.gz, use osm.pbf as 
-        new default by splitter, 
-      - cleanups and comments
+v0.9.7	- removed use of osm.bz2 and osm.gz, use osm.pbf as 
+          new default by splitter, 
+	- cleanups and comments
 
-v0.9.6- added function to set another continent
+v0.9.6	- added function to set another continent
 
-v0,9.5- Umstieg auf Python 3.2.x 
-      - commandline-otions added with argparse
-      - Umformatierung langer Zeilen
+v0,9.5	- Umstieg auf Python 3.2.x 
+	- commandline-otions added with argparse
+	- Umformatierung langer Zeilen
 
-v0.9.4- cleanups
+v0.9.4	- cleanups
 
-v0.9.3- sepatated folder for the maps
+v0.9.3	- sepatated folder for the maps
 
-v0.9.2- addr- and boundary-layer added
+v0.9.2	- addr- and boundary-layer added
 
-v0.9.1- zip-function added
+v0.9.1	- zip-function added
 
-v0.9.0- all=parts+base+velo
+v0.9.0	- all=parts+base+velo
 
 ## 2011-05-01 Projectstatus changed to RC
 
-v0.8.5- minor fixes
+v0.8.5	- minor fixes
 
-v0.8.4- mkgmap.jar >> mkgmap_velo.jar for the velomap, style-copyright by Felix Hartmann
+v0.8.4	- mkgmap.jar >> mkgmap_velo.jar for the velomap, style-copyright by Felix Hartmann
 
-v0.8.3- add contourlines to gps_parts if available
+v0.8.3	- add contourlines to gps_parts if available
 
-v0.8.2- code cleanup, dirs added gps_parts and gps_ready
+v0.8.2	- code cleanup, dirs added gps_parts and gps_ready
 
-v0.8.1- separate Images for 'all' 
+v0.8.1	- separate Images for 'all' 
 
-v0.8.0- AIO-basemap as additional maptype
+v0.8.0	- AIO-basemap as additional maptype
 
 ## 2011-02-14 Projectstatus changed to BETA
 
-v0.7.1- minor fixes
+v0.7.1	- minor fixes
 
-v0.7.0- download *.pbf (osmosis) or *.bz2, check osbsql2osm to use OSB-database-dumps
+v0.7.0	- download *.pbf (osmosis) or *.bz2, check osbsql2osm to use OSB-database-dumps
 
-v0.6.8- Cleanups
+v0.6.8	- Cleanups
 
-v0.6.7- change work_dir to map_build
+v0.6.7	- change work_dir to map_build
 
-v0.6.6- better map-description, if more then one map is used on the GPS-device
+v0.6.6	- better map-description, if more then one map is used on the GPS-device
 
 
-v0.6.1- first working version with python3, but there are a lot of things to do,
-        next is make it use startoptions and the pygmap.conf to remember these options
-        there are many systemcalls, which only work on Linux, they must be changed
-        removed many comments and code from the bash, because they make it unreadable
+v0.6.1	- first working version with python3, but there are a lot of things to do,
+	  next is make it use startoptions and the pygmap.conf to remember these options
+	  there are many systemcalls, which only work on Linux, they must be changed
+	  removed many comments and code from the bash, because they make it unreadable
 
-v0.6.0 - Beginn der Umstellung auf python, aktuell noch nicht benutzbar
+v0.6.0 	- Beginn der Umstellung auf python, aktuell noch nicht benutzbar
 
 """
