@@ -310,7 +310,11 @@ target.close()
   Welche Versionen werden benutzt
 
 """
+
 print(splitter)
+
+mkgmap_alt = (work_dir) + "mkgmap-r1995/mkgmap.jar"
+print(mkgmap_alt)
 print(mkgmap)
 
 """ 
@@ -478,7 +482,7 @@ def velomap():
   layer = "velomap"
   style()
   cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (work_dir) + "mkgmap-r1995/mkgmap.jar -c " + 
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap_alt) + " -c " + 
             (work_dir) + "velomap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
