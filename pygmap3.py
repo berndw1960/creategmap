@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.12"
+__version__ = "0.9.14"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -315,9 +315,10 @@ target.close()
 
 print(splitter)
 
-mkgmap_alt = (work_dir) + "mkgmap-r1995/mkgmap.jar"
-print(mkgmap_alt)
 print(mkgmap)
+
+# mkgmap_alt = (work_dir) + "mkgmap-r1995/mkgmap.jar"
+# print(mkgmap_alt)
 
 """ 
   get the OpenStreetBugs
@@ -484,7 +485,7 @@ def velomap():
   layer = "velomap"
   style()
   cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap_alt) + " -c " + 
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "velomap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
@@ -657,6 +658,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.14 - cleanups
+
 v0.9.12 - options to change mapid 
 
 v0-9.11 - mkgmap.jar >> mkgmap_v1995.jar for the velomap, style-copyright by Felix Hartmann
