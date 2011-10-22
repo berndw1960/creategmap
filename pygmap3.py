@@ -325,16 +325,10 @@ print(mkgmap)
   
 """  
 
-ExitCode = os.system("which osbsql2osm")
-if ExitCode == 0:
-  os.system("wget -N   \
-             http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
-  os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
-else:
-  os.system("wget -N   \
-             http://www.gary68.de/osm/qa/gpx/allbugs.gpx   \
-             --output-document=OpenStreetBugs.gpx")
-  os.system("gpsbabel -i gpx -o osm OpenStreetBugs.gpx OpenStreetBugs.osm")
+os.system("wget -N   \
+           http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
+os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
+
 
 """
   get the raw map-extracts from the geofabrik
