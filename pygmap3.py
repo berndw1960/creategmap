@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.14"
+__version__ = "0.9.15"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -154,7 +154,11 @@ parser = argparse.ArgumentParser(
             MKGMAP_VERSION = use a defined mkgmap-version, 
                              for available versions
                              http://www.mkgmap.org.uk/snapshots/
-             SPLITTER_VERSION = same as before for splitter                
+            SPLITTER_VERSION = same as before for splitter    
+            MAPID = wenn mehrere Karten(=Länder) gleichzeitig benutzt 
+		    werden sollen, muß dieser Wert für jede Karte anders
+		    sein.
+		    (ToDo: Liste erstellen)
             
         '''))
 
@@ -360,7 +364,7 @@ else:
 """
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-           " --mapid=" + (MAPID) + "0023 --max-nodes=" + (MAXNODES) + 
+           " --mapid=" + (MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
            " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
 os.chdir(work_dir)
 
@@ -409,7 +413,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/fixme_style --description=fixme  \
           --family-id=3 --product-id=33 --series-name=OSMfixme  \
-          --family-name=OSMfixme --mapname=" + (MAPID) + "4023 --draw-priority=16 " + 
+          --family-name=OSMfixme --mapname=" + (MAPID) + "4001 --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme.TYP")
 
@@ -420,7 +424,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/osb_style --description=osb \
           --family-id=2323 --product-id=42 --series-name=OSMbugs \
-          --family-name=OSMbugs --mapname=" + (MAPID) + "5023 --draw-priority=14 " + 
+          --family-name=OSMbugs --mapname=" + (MAPID) + "5001 --draw-priority=14 " + 
           (work_dir) + "OpenStreetBugs.osm " + 
           (work_dir) + (mapstyle) + "/osb.TYP")
 
@@ -431,7 +435,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/addr_style --description=addr \
           --family-id=5 --product-id=40 --series-name=OSMAdressen  \
-          --family-name=OSMaddr --mapname=" + (MAPID) + "2023 --draw-priority=14 " + 
+          --family-name=OSMaddr --mapname=" + (MAPID) + "2001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) +"/addr.TYP")
 
@@ -442,7 +446,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/boundary_style --description=boundary \
           --family-id=6 --product-id=30 --series-name=OSMboundary  \
-          --family-name=OSMboundary --mapname=" + (MAPID) + "3023 --draw-priority=14 " + 
+          --family-name=OSMboundary --mapname=" + (MAPID) + "3001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/boundary.TYP")
 
@@ -483,7 +487,7 @@ def velomap():
             (work_dir) + "velomap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
-            --family-name=OSMvelomap --mapname=" + (MAPID) + "1023 --draw-priority=12 " + 
+            --family-name=OSMvelomap --mapname=" + (MAPID) + "1001 --draw-priority=12 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/velomap.TYP")
   os.chdir(work_dir)
@@ -497,7 +501,7 @@ def basemap():
             (work_dir) + "basemap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/basemap_style --description=basemap  \
             --family-id=4 --product-id=45 --series-name=OSMbasemap  \
-            --family-name=OSMbasemap --mapname=" + (MAPID) + "0023 --draw-priority=10 " + 
+            --family-name=OSMbasemap --mapname=" + (MAPID) + "0001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
@@ -652,6 +656,9 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.15 - Anpassung der Kachelnummerierung für Splitter, bginnt jetzt bei 0001
+          statt 0023, erforderlich für ODbL-Layer von Simon Poole
+
 v0.9.14 - cleanups
 
 v0.9.12 - options to change mapid 
