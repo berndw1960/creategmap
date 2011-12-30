@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.16"
+__version__ = "0.9.17"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -51,6 +51,7 @@ import re
 import tarfile
 import datetime
 import argparse
+import random
 
 # DEFs =============================================================================
 
@@ -155,16 +156,11 @@ parser = argparse.ArgumentParser(
                              for available versions
                              http://www.mkgmap.org.uk/snapshots/
             SPLITTER_VERSION = same as before for splitter    
-            MAPID = wenn mehrere Karten(=Länder) gleichzeitig benutzt 
-		    werden sollen, muß dieser Wert für jede Karte anders
-		    sein.
-		    (ToDo: Liste erstellen)
             
         '''))
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
-parser.add_argument('-i', '--mapid', dest='mapid', default='6324')
 parser.add_argument('-t', '--type', dest='map_type', default='all')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
@@ -175,7 +171,6 @@ args = parser.parse_args()
 
 CONTINENT = (args.continent)
 BUILD_MAP = (args.build_map)
-MAPID = (args.mapid)
 MAP_TYPE = (args.map_type)
 PREFIX = "-Xmx"
 RAMSIZE = ((PREFIX) + (args.ramsize))
@@ -358,13 +353,22 @@ if ExitCode == 0:
 else: 
     os.mkdir("tiles")
 
+    
+"""
+  Zufällige mapid, damit mehrere Karten verwendet werden können,
+  alternativ könnte man eine Liste erstellen
+"""
+
+MAPID = random.randint(6301, 6399)
+
+
 """
   split rawdata
   
 """
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-           " --mapid=" + (MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
+           " --mapid=" + str(MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
            " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
 os.chdir(work_dir)
 
@@ -406,28 +410,6 @@ def cleanup():
  
 """
 
-layer = "fixme"
-style()
-cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-          (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/fixme_style --description=fixme  \
-          --family-id=3 --product-id=33 --series-name=OSMfixme  \
-          --family-name=OSMfixme --mapname=" + (MAPID) + "4001 --draw-priority=16 " + 
-          (work_dir) + "tiles/*.osm.pbf " + 
-          (work_dir) + (mapstyle) + "/fixme.TYP")
-
-layer = "osb"
-style()
-cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-          (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/osb_style --description=osb \
-          --family-id=2323 --product-id=42 --series-name=OSMbugs \
-          --family-name=OSMbugs --mapname=" + (MAPID) + "5001 --draw-priority=14 " + 
-          (work_dir) + "OpenStreetBugs.osm " + 
-          (work_dir) + (mapstyle) + "/osb.TYP")
-
 layer = "addr"
 style()
 cleanup()
@@ -435,7 +417,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/addr_style --description=addr \
           --family-id=5 --product-id=40 --series-name=OSMAdressen  \
-          --family-name=OSMaddr --mapname=" + (MAPID) + "2001 --draw-priority=14 " + 
+          --family-name=OSMaddr --mapname=" + str(MAPID) + "4001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) +"/addr.TYP")
 
@@ -446,10 +428,31 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/boundary_style --description=boundary \
           --family-id=6 --product-id=30 --series-name=OSMboundary  \
-          --family-name=OSMboundary --mapname=" + (MAPID) + "3001 --draw-priority=14 " + 
+          --family-name=OSMboundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/boundary.TYP")
 
+layer = "fixme"
+style()
+cleanup()
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
+          (work_dir) + "fixme_buglayer.conf --style-file=" + 
+          (work_dir) + (mapstyle) + "/fixme_style --description=fixme  \
+          --family-id=3 --product-id=33 --series-name=OSMfixme  \
+          --family-name=OSMfixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
+          (work_dir) + "tiles/*.osm.pbf " + 
+          (work_dir) + (mapstyle) + "/fixme.TYP")
+
+layer = "osb"
+style()
+cleanup()
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
+          (work_dir) + "fixme_buglayer.conf --style-file=" + 
+          (work_dir) + (mapstyle) + "/osb_style --description=osb \
+          --family-id=2323 --product-id=42 --series-name=OSMbugs \
+          --family-name=OSMbugs --mapname=" + str(MAPID) + "7001 --draw-priority=14 " + 
+          (work_dir) + "OpenStreetBugs.osm " + 
+          (work_dir) + (mapstyle) + "/osb.TYP")
 os.chdir(work_dir)
 
 """
@@ -487,7 +490,7 @@ def velomap():
             (work_dir) + "velomap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
-            --family-name=OSMvelomap --mapname=" + (MAPID) + "1001 --draw-priority=12 " + 
+            --family-name=OSMvelomap --mapname=" + str(MAPID) + "1001 --draw-priority=12 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/velomap.TYP")
   os.chdir(work_dir)
@@ -501,7 +504,7 @@ def basemap():
             (work_dir) + "basemap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/basemap_style --description=basemap  \
             --family-id=4 --product-id=45 --series-name=OSMbasemap  \
-            --family-name=OSMbasemap --mapname=" + (MAPID) + "0001 --draw-priority=10 " + 
+            --family-name=OSMbasemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
@@ -515,7 +518,7 @@ def freizeitmap():
             (work_dir) + "basemap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/freizeitmap_style --description=freizeitmap  \
             --family-id=5824 --product-id=1 --series-name=OSMfreizeitmap  \
-            --family-name=OSMfreizeitmap --mapname=" + (MAPID) + "0001 --draw-priority=10 " + 
+            --family-name=OSMfreizeitmap --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/freizeitmap.TYP")
   os.chdir(work_dir)
@@ -678,6 +681,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.17 - Zufallszahlen für mapid
+
 v0.9.16 - Freizeitkarte hinzugefügt copyright siehe 
           http://www.easyclasspage.de/karten/index.html
 
