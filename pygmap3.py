@@ -374,7 +374,7 @@ os.chdir(work_dir)
   
 """
 
-for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'freizeitmap', 
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gfreizeitmap', 
             'gaddr', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
@@ -514,7 +514,7 @@ def freizeitmap():
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "basemap.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/freizeitmap_style --description=freizeitmap  \
-            --family-id=4 --product-id=45 --series-name=OSMfreizeitmap  \
+            --family-id=5824 --product-id=1 --series-name=OSMfreizeitmap  \
             --family-name=OSMfreizeitmap --mapname=" + (MAPID) + "0001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/freizeitmap.TYP")
@@ -607,7 +607,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap', 'freizeitmap' ]:
+  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap', 'gfreizeitmap' ]:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
@@ -668,6 +668,7 @@ elif (MAP_TYPE) == "all":
   mk_store()  
   velomap()
   basemap()
+  freizeitmap()
   merge_all()
   copy_parts()
   zip_file()
