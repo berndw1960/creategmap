@@ -531,7 +531,7 @@ def merge():
     os.system("wine ~/bin/gmt.exe -jo " + 
               (work_dir) + "gps_ready/unzipped/" + 
               (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
-              (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img  \
+              (BUILD_MAP) + "_full_" + (MAP_TYPE) + "_gmapsupp.img  \
               g" + (MAP_TYPE) + "/gmapsupp.img  \
               gaddr/gmapsupp.img  \
               gboundary/gmapsupp.img  \
@@ -545,7 +545,7 @@ def merge():
       os.system("wine ~/bin/gmt.exe -jo " + 
               (work_dir) + "gps_ready/unzipped/" + 
               (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
-              (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img  \
+              (BUILD_MAP) + "_full_" + (MAP_TYPE) + "_gmapsupp.img  \
               g" + (MAP_TYPE) + "/gmapsupp.img  \
               gaddr/gmapsupp.img  \
               gboundary/gmapsupp.img  \
@@ -557,7 +557,7 @@ def merge():
       os.system("wine ~/bin/gmt.exe -jo " + 
                 (work_dir) + "gps_ready/unzipped/" + 
                 (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
-                (BUILD_MAP) + "_" + (MAP_TYPE) + "_full_gmapsupp.img  \
+                (BUILD_MAP) + "_full_" + (MAP_TYPE) + "_gmapsupp.img  \
                 g" + (MAP_TYPE) + "/gmapsupp.img  \
                 gaddr/gmapsupp.img  \
                 gboundary/gmapsupp.img  \
@@ -573,7 +573,7 @@ def merge_all():
       os.system("wine ~/bin/gmt.exe -jo " +
                 (work_dir) + "gps_ready/unzipped/" +
                 (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-                (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img  \
+                (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                 g" + (map) + "/gmapsupp.img  \
                 gaddr/gmapsupp.img  \
                 gboundary/gmapsupp.img  \
@@ -587,7 +587,7 @@ def merge_all():
         os.system("wine ~/bin/gmt.exe -jo " + 
                   (work_dir) + "gps_ready/unzipped/" +
                   (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-                  (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img  \
+                  (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
                   gaddr/gmapsupp.img  \
                   gboundary/gmapsupp.img   \
@@ -599,7 +599,7 @@ def merge_all():
         os.system("wine ~/bin/gmt.exe -jo " + 
                   (work_dir) + "gps_ready/unzipped/" + 
                   (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-                  (BUILD_MAP) + "_" + (map) + "_full_gmapsupp.img  \
+                  (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
                   gaddr/gmapsupp.img  \
                   gboundary/gmapsupp.img  \
@@ -614,11 +614,11 @@ def copy_parts():
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_" + (dir) + "_parts_gmapsupp.img")
+             (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
              
   ExitCode = os.system("test -f " + (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")    
+             (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")    
   if ExitCode != 0:
     if (BUILD_MAP) != "germany":
       ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
@@ -627,12 +627,12 @@ def copy_parts():
              (BUILD_MAP) + "/gmapsupp.img " + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img") 
+             (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img") 
     elif (BUILD_MAP) == "germany":
       os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + 
                 (work_dir) + "gps_ready/unzipped/" + 
                 (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-                (BUILD_MAP) + "_gcontourlines_parts_gmapsupp.img")   
+                (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")   
 
 ###  Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
 
