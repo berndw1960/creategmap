@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.15"
+__version__ = "0.9.16"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -148,7 +148,7 @@ parser = argparse.ArgumentParser(
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            MAP_TYPE = [all(default)|velomap|basemap]
+            MAP_TYPE = [all(default)|velomap|basemap|freizeitmap]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
@@ -374,7 +374,7 @@ os.chdir(work_dir)
   
 """
 
-for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 
+for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'freizeitmap', 
             'gaddr', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
@@ -505,8 +505,22 @@ def basemap():
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
-
-###  Wenn nur die base- oder velomap gewählt wurde
+                         
+def freizeitmap():
+  global layer
+  layer = "freizeitmap"
+  style()
+  cleanup()
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
+            (work_dir) + "basemap.conf --style-file=" + 
+            (work_dir) + (mapstyle) + "/freizeitmap_style --description=freizeitmap  \
+            --family-id=4 --product-id=45 --series-name=OSMfreizeitmap  \
+            --family-name=OSMfreizeitmap --mapname=" + (MAPID) + "0001 --draw-priority=10 " + 
+            (work_dir) + "tiles/*.osm.pbf " + 
+            (work_dir) + (mapstyle) + "/freizeitmap.TYP")
+  os.chdir(work_dir)
+    
+###  Wenn nur die einzelne Karten gewählt wurden
 
 def merge():
   os.chdir(work_dir)
@@ -550,7 +564,7 @@ def merge():
 ###  Erstellen der verschiedenen Images
 
 def merge_all():
-  for map in ['velomap', 'basemap']:
+  for map in ['velomap', 'basemap', 'freizeitmap']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
       os.system("wine ~/bin/gmt.exe -jo " +
@@ -593,7 +607,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap']:
+  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap', 'freizeitmap' ]:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
@@ -631,6 +645,7 @@ def zip_file():
   
 """
 
+
 if (MAP_TYPE) == "velomap":
   mk_store()
   velomap()
@@ -642,7 +657,13 @@ elif (MAP_TYPE) == "basemap":
   basemap()
   merge()
   zip_file()
-    
+
+elif (MAP_TYPE) == "freizeitmap":
+  mk_store()
+  freizeitmap()
+  merge()
+  zip_file()  
+  
 elif (MAP_TYPE) == "all":
   mk_store()  
   velomap()
@@ -656,6 +677,9 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.16 - Freizeitkarte hinzugefügt copyright siehe 
+          http://www.easyclasspage.de/karten/index.html
+
 v0.9.15 - Anpassung der Kachelnummerierung für Splitter, bginnt jetzt bei 0001
           statt 0023, erforderlich für ODbL-Layer von Simon Poole
 
