@@ -149,7 +149,7 @@ parser = argparse.ArgumentParser(
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            MAP_TYPE = [basemap(default)|velomap|freizeitmap|all]
+            MAP_TYPE = [basemap|velomap|freizeitmap|all(default)]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
@@ -161,7 +161,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
-parser.add_argument('-t', '--type', dest='map_type', default='basemap')
+parser.add_argument('-t', '--type', dest='map_type', default='all')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
