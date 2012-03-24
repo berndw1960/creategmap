@@ -149,7 +149,7 @@ parser = argparse.ArgumentParser(
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            MAP_TYPE = [all(default)|velomap|basemap|freizeitmap]
+            MAP_TYPE = [basemap(default)|velomap|freizeitmap|all]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
@@ -161,7 +161,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
-parser.add_argument('-t', '--type', dest='map_type', default='all')
+parser.add_argument('-t', '--type', dest='map_type', default='basemap')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
@@ -177,7 +177,6 @@ RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
 MKGMAP_VERSION = (args.mkgmap_version)
 SPLITTER_VERSION = (args.splitter_version)
-
 """
   needed programs und dirs
   
@@ -487,7 +486,7 @@ def velomap():
   style()
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "velomap.conf --style-file=" + 
+            (work_dir) + "map.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
             --family-name=OSMvelomap --mapname=" + str(MAPID) + "1001 --draw-priority=12 " + 
@@ -501,7 +500,7 @@ def basemap():
   style()
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "basemap.conf --style-file=" + 
+            (work_dir) + "map.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/basemap_style --description=basemap  \
             --family-id=4 --product-id=45 --series-name=OSMbasemap  \
             --family-name=OSMbasemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
@@ -515,7 +514,7 @@ def freizeitmap():
   style()
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "basemap.conf --style-file=" + 
+            (work_dir) + "map.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/freizeitmap_style --description=freizeitmap  \
             --family-id=5824 --product-id=1 --series-name=OSMfreizeitmap  \
             --family-name=OSMfreizeitmap --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
