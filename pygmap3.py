@@ -149,7 +149,7 @@ parser = argparse.ArgumentParser(
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            MAP_TYPE = [basemap|velomap|freizeitmap|all(default)]
+            MAP_TYPE = [basemap|freizeitmap|all(default)]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
@@ -188,14 +188,14 @@ checkdir((work_dir), hint)
 hint = "Install: wine to work with ~/bin/gmt.exe from GMAPTOOLS"
 checkprg("wine", hint)
  
-hint = " Download: http://www.anpo.republika.pl/download.html "
+hint = " Download: http://www.anpo.republika.pl/download.html"
 checkprg("~/bin/gmt.exe", hint)
  
 hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
 checkprg("osbsql2osm", hint)
 
-hint = " git fehlt, wird gebraucht um die mkgmap-Styles zu holen! "
-checkprg("git", hint)
+hint = "Install: 7z to extract mkgmap's sStylefiles"
+checkprg("7z", hint)
 
 hint = " gpsbabel fehlt, wird gebraucht zur Verarbeitung der OSB als bz2! "
 checkprg("gpsbabel", hint)
@@ -226,19 +226,18 @@ if (BUILD_MAP) == "germany":
       os.chdir(work_dir)
 
 """ 
-  get the styles for base- and velomap with git
+  get the styles, 7z is needed to extract the styles
 
 """   
    
 ExitCode = os.system("test -d aiostyles")
     
 if ExitCode == 0:
-  os.chdir("aiostyles")
-  os.system("git pull")
   os.chdir(work_dir)
 
 else:
-  os.system("git clone git://github.com/aiomaster/aiostyles.git")
+  os.system("wget http://dev.openstreetmap.de/aio/aiostyles.7z")
+  os.system("7z x aiostyles.7z -oaiostyles")
   os.chdir(work_dir)
 
 """
@@ -307,18 +306,6 @@ else:
 target.close()
 
 """ 
-  Welche Versionen werden benutzt
-
-"""
-
-print(splitter)
-
-print(mkgmap)
-
-# mkgmap_alt = (work_dir) + "mkgmap-r1995/mkgmap.jar"
-# print(mkgmap_alt)
-
-""" 
   get the OpenStreetBugs
   
 """  
@@ -377,7 +364,7 @@ os.chdir(work_dir)
   
 """
 
-for dir in ['gfixme', 'gosb', 'gvelomap', 'gbasemap', 'gboundary', 'gfreizeitmap', 
+for dir in ['gfixme', 'gosb', 'gbasemap', 'gboundary', 'gfreizeitmap', 
             'gaddr', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
@@ -480,20 +467,7 @@ def mk_store():
     elif ExitCode != 0:
       os.makedirs(dir)
 
-def velomap():
-  global layer
-  layer = "velomap"
-  style()
-  cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
-            --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
-            --family-name=OSMvelomap --mapname=" + str(MAPID) + "1001 --draw-priority=10 " + 
-            (work_dir) + "tiles/*.osm.pbf " + 
-            (work_dir) + (mapstyle) + "/velomap.TYP")
-  os.chdir(work_dir)
-    
+  
 def basemap():
   global layer
   layer = "basemap"
@@ -507,6 +481,7 @@ def basemap():
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
+                         
                          
 def freizeitmap():
   global layer
@@ -566,7 +541,7 @@ def merge():
 ###  Erstellen der verschiedenen Images
 
 def merge_all():
-  for map in ['velomap', 'basemap', 'freizeitmap']:
+  for map in ['basemap', 'freizeitmap']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
       os.system("wine ~/bin/gmt.exe -jo " +
@@ -609,7 +584,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gvelomap', 'gbasemap', 'gfreizeitmap' ]:
+  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gbasemap', 'gfreizeitmap' ]:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
@@ -646,14 +621,7 @@ def zip_file():
   Ausführen der o.g. defs zum erstellen der Karten
   
 """
-
-
-if (MAP_TYPE) == "velomap":
-  mk_store()
-  velomap()
-  merge()
-  zip_file()
-    
+ 
 elif (MAP_TYPE) == "basemap":
   mk_store()
   basemap()
@@ -668,7 +636,6 @@ elif (MAP_TYPE) == "freizeitmap":
   
 elif (MAP_TYPE) == "all":
   mk_store()  
-  velomap()
   basemap()
   freizeitmap()
   merge_all()
@@ -680,20 +647,23 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.20 - removed velomap-code 
+	  use 7z for styles
+	  removed git-code
+	  some cleanups
+
 v0.9.17 - Zufallszahlen für mapid
 
 v0.9.16 - Freizeitkarte hinzugefügt copyright siehe 
           http://www.easyclasspage.de/karten/index.html
 
-v0.9.15 - Anpassung der Kachelnummerierung für Splitter, bginnt jetzt bei 0001
-          statt 0023, erforderlich für ODbL-Layer von Simon Poole
+v0.9.15 - Anpassung der Kachelnummerierung für Splitter, beginnt jetzt bei 0001
+          statt 0023
 
 v0.9.14 - cleanups
 
 v0.9.12 - options to change mapid 
-
-v0-9.11 - mkgmap.jar >> mkgmap_v1995.jar for the velomap, style-copyright by Felix Hartmann
-	- because there trouble between velomap_style and mkgmap v>r1995  
 
 v0.9.10	- offline-mode for splitter and mkgmap
 
@@ -719,13 +689,9 @@ v0.9.2	- addr- and boundary-layer added
 
 v0.9.1	- zip-function added
 
-v0.9.0	- all=parts+base+velo
-
 ## 2011-05-01 Projectstatus changed to RC
 
 v0.8.5	- minor fixes
-
-v0.8.4	- mkgmap.jar >> mkgmap_velo.jar for the velomap, style-copyright by Felix Hartmann
 
 v0.8.3	- add contourlines to gps_parts if available
 

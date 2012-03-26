@@ -1,8 +1,6 @@
 A python3-script to build maps for Garmin PNAs from OpenStreetMap-Data
 www.openstreetmap.org
 
-Styles based on Velomap from velomap.org
-
 tested with 
 eTrex Vista Hcx
 eTrex Legend
