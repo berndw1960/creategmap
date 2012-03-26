@@ -416,7 +416,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/addr_style --description=addr \
           --family-id=5 --product-id=40 --series-name=OSMAdressen  \
-          --family-name=OSMaddr --mapname=" + str(MAPID) + "4001 --draw-priority=14 " + 
+          --family-name=OSMaddr --mapname=" + str(MAPID) + "4001 --draw-priority=12 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) +"/addr.TYP")
 
@@ -449,7 +449,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
           (work_dir) + (mapstyle) + "/osb_style --description=osb \
           --family-id=2323 --product-id=42 --series-name=OSMbugs \
-          --family-name=OSMbugs --mapname=" + str(MAPID) + "7001 --draw-priority=14 " + 
+          --family-name=OSMbugs --mapname=" + str(MAPID) + "7001 --draw-priority=18 " + 
           (work_dir) + "OpenStreetBugs.osm " + 
           (work_dir) + (mapstyle) + "/osb.TYP")
 os.chdir(work_dir)
@@ -489,7 +489,7 @@ def velomap():
             (work_dir) + "map.conf --style-file=" + 
             (work_dir) + (mapstyle) + "/velomap_style --description=velomap \
             --family-id=6365 --product-id=1 --series-name=OSMvelomap  \
-            --family-name=OSMvelomap --mapname=" + str(MAPID) + "1001 --draw-priority=12 " + 
+            --family-name=OSMvelomap --mapname=" + str(MAPID) + "1001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/velomap.TYP")
   os.chdir(work_dir)
