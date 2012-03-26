@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.17"
+__version__ = "0.9.20"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
