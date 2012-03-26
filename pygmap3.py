@@ -621,7 +621,15 @@ def zip_file():
   Ausführen der o.g. defs zum erstellen der Karten
   
 """
- 
+
+if (MAP_TYPE) == "all":
+  mk_store()  
+  basemap()
+  freizeitmap()
+  merge_all()
+  copy_parts()
+  zip_file()
+
 elif (MAP_TYPE) == "basemap":
   mk_store()
   basemap()
@@ -634,13 +642,7 @@ elif (MAP_TYPE) == "freizeitmap":
   merge()
   zip_file()  
   
-elif (MAP_TYPE) == "all":
-  mk_store()  
-  basemap()
-  freizeitmap()
-  merge_all()
-  copy_parts()
-  zip_file()
+
 
 printinfo("Habe fertig!")
 
