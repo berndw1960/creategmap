@@ -401,8 +401,8 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/addr_style --description=addr \
-          --family-id=5 --product-id=40 --series-name=OSMAdressen  \
+          (work_dir) + (mapstyle) + "/addr_style --description=OSMaddr \
+          --family-id=5 --product-id=40 --series-name=OSMadresses  \
           --family-name=OSMaddr --mapname=" + str(MAPID) + "4001 --draw-priority=12 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) +"/addr.TYP")
@@ -412,7 +412,7 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/boundary_style --description=boundary \
+          (work_dir) + (mapstyle) + "/boundary_style --description=OSMboundary \
           --family-id=6 --product-id=30 --series-name=OSMboundary  \
           --family-name=OSMboundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
@@ -423,7 +423,7 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/fixme_style --description=fixme  \
+          (work_dir) + (mapstyle) + "/fixme_style --description=OSMfixme  \
           --family-id=3 --product-id=33 --series-name=OSMfixme  \
           --family-name=OSMfixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
@@ -434,7 +434,7 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/osb_style --description=osb \
+          (work_dir) + (mapstyle) + "/osb_style --description=OpenStreetBugs \
           --family-id=2323 --product-id=42 --series-name=OSMbugs \
           --family-name=OSMbugs --mapname=" + str(MAPID) + "7001 --draw-priority=18 " + 
           (work_dir) + "OpenStreetBugs.osm " + 
