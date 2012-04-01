@@ -332,7 +332,7 @@ elif (BUILD_MAP) == "benelux":
     os.system("wget -N http://download.geofabrik.de/osm/europe/" + (i) + ".osm.pbf")
     os.system("osmconvert netherlands.osm.pbf -o=netherlands.o5m && ./osmconvert belgium.osm.pbf -o=belgium.o5m && ./osmconvert luxembourg.osm.pbf -o=luxembourg.o5m && ./osmconvert netherlands.o5m belgium.o5m luxembourg.o5m -o=benelux.osm.pbf")    
 
-else  
+else:  
    os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
             (BUILD_MAP) + ".osm.pbf")
 
