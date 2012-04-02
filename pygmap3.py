@@ -138,14 +138,14 @@ parser = argparse.ArgumentParser(
         
             Als Basis können alle Dateien unter
             http://download.geofabrik.de/osm/
-            verwendet werden.
+            verwendet werden,dach und benelux sind möglich.
             
             Dateinamen bitte _ohne_ Endung verwenden.
             
 
             CONTINENT = "europe" (default)
             BUILD_MAP = "germany" (default)
-            dach und benelux sind möglich
+            
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
