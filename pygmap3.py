@@ -325,12 +325,18 @@ os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 if (BUILD_MAP) == "dach":
     for i in ['germany', 'austria', 'switzerland']:
       os.system("wget -N http://download.geofabrik.de/osm/europe/" + (i) + ".osm.pbf")
-    os.system("osmconvert austria.osm.pbf -o=austria.o5m && osmconvert germany.osm.pbf -o=germany.o5m && osmconvert switzerland.osm.pbf -o=switzerland.o5m && osmconvert austria.o5m germany.o5m switzerland.o5m -o=dach.o5m && osmconvert dach.o5m -o=dach.osm.pbf")
+    os.system("osmconvert austria.osm.pbf -o=austria.osm && \
+               osmconvert germany.osm.pbf -o=germany.osm && \
+               osmconvert switzerland.osm.pbf -o=switzerland.osm && \
+               osmconvert austria.osm germany.osm switzerland.osm -o=dach.osm.pbf")
     
 elif (BUILD_MAP) == "benelux":  
     for i in ['netherlands', 'belgium', 'luxembourg']:
       os.system("wget -N http://download.geofabrik.de/osm/europe/" + (i) + ".osm.pbf")
-    os.system("osmconvert netherlands.osm.pbf -o=netherlands.o5m && osmconvert belgium.osm.pbf -o=belgium.o5m && osmconvert luxembourg.osm.pbf -o=luxembourg.o5m && osmconvert netherlands.o5m belgium.o5m luxembourg.o5m -o=benelux.o5m && osmconvert benelux.o5m -o=benelux.osm.pbf")    
+    os.system("osmconvert netherlands.osm.pbf -o=netherlands.o5m && \
+               osmconvert belgium.osm.pbf -o=belgium.o5m && \
+               osmconvert luxembourg.osm.pbf -o=luxembourg.o5m && \
+               osmconvert netherlands.o5m belgium.o5m luxembourg.o5m -o=benelux.osm.pbf")    
 
 else:  
    os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
