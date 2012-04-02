@@ -325,7 +325,7 @@ os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 if (BUILD_MAP) == "dach":
     for i in ['germany', 'austria', 'switzerland']:
       os.system("wget -N http://download.geofabrik.de/osm/europe/" + (i) + ".osm.pbf")
-    os.system("osmconvert austria.osm.pbf -o=austria.o5m && osmconvert germany.osm.pbf -o=germany.o5m && osmconvert switzerland.osm.pbf -o=switzerland.o5m && osmconvert austria.o5m germany.o5m switzerland.o5m -o=dach.o5m.pbf && osmconvert dach.o5m -o=dach.osm.pbf")
+    os.system("osmconvert austria.osm.pbf -o=austria.o5m && osmconvert germany.osm.pbf -o=germany.o5m && osmconvert switzerland.osm.pbf -o=switzerland.o5m && osmconvert austria.o5m germany.o5m switzerland.o5m -o=dach.o5m && osmconvert dach.o5m -o=dach.osm.pbf")
     
 elif (BUILD_MAP) == "benelux":  
     for i in ['netherlands', 'belgium', 'luxembourg']:
