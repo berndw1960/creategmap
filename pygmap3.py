@@ -324,11 +324,11 @@ os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
 """  
 if (BUILD_MAP) == "dach":
     os.system("wget -N http://download.geofabrik.de/osm/europe.osm.pbf")
-    os.system("osmconvert europe.osm.pbf -b=1,49,8,54 -o=dach.osm.pbf")
+    os.system("osmconvert europe.osm.pbf -b=5,45,18,56 -o=dach.osm.pbf")
     
 elif (BUILD_MAP) == "benelux":  
     os.system("wget -N http://download.geofabrik.de/osm/europe.osm.pbf")
-    os.system("osmconvert europe.osm.pbf -b=5,45,18,56 -o=benelux.osm.pbf")    
+    os.system("osmconvert europe.osm.pbf -b=1,49,8,54 -o=benelux.osm.pbf")    
 
 else:  
    os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
