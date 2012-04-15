@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.21"
+__version__ = "0.9.23"
 __author__ = "Bernd Weigelt, Jonas Stein"
-__copyright__ = "Copyright 2011, The OSM-TroLUG-Project"
+__copyright__ = "Copyright 2012, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
 __license__ = "GPL"
 __maintainer__ = "Bernd Weigelt, Jonas Stein"
@@ -136,6 +136,10 @@ parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
         
+            Zum Bauen diverser Karten für Garmin PNA
+                                               
+            Das Copyright der Styles liegt bei den jeweiligen Autoren!
+            
             Als Basis können alle Dateien unter
             http://download.geofabrik.de/osm/
             verwendet werden..
@@ -146,10 +150,12 @@ parser = argparse.ArgumentParser(
             CONTINENT = "europe" (default)
             BUILD_MAP = "germany" (default)
             
+            alternativ:
+            D_A_CH 	--> -b dach
+            Benelux	--> -b benelux
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            MAP_TYPE = [basemap|freizeitmap|all(default)]
             RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1000000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
@@ -161,7 +167,6 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
-parser.add_argument('-t', '--type', dest='map_type', default='all')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
@@ -171,7 +176,6 @@ args = parser.parse_args()
 
 CONTINENT = (args.continent)
 BUILD_MAP = (args.build_map)
-MAP_TYPE = (args.map_type)
 PREFIX = "-Xmx"
 RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
@@ -375,8 +379,7 @@ os.chdir(work_dir)
   
 """
 
-for dir in ['gfixme', 'gosb', 'gbasemap', 'gboundary', 'gfreizeitmap', 
-            'gaddr', 'gps_ready']:
+for dir in ['gfixme', 'gosb', 'gbasemap', 'gboundary', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
     os.mkdir(dir)
@@ -406,17 +409,6 @@ def cleanup():
  create Bugs- and FIXME-Layer 
  
 """
-
-layer = "addr"
-style()
-cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-          (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/addr_style --description=OSMaddr \
-          --family-id=5 --product-id=40 --series-name=OSMadresses  \
-          --family-name=OSMaddr --mapname=" + str(MAPID) + "4001 --draw-priority=12 " + 
-          (work_dir) + "tiles/*.osm.pbf " + 
-          (work_dir) + (mapstyle) +"/addr.TYP")
 
 layer = "boundary"
 style()
@@ -493,66 +485,12 @@ def basemap():
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
                          
-                         
-def freizeitmap():
-  global layer
-  layer = "freizeitmap"
-  style()
-  cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/freizeitmap_style --description=freizeitmap  \
-            --family-id=5824 --product-id=1 --series-name=OSMfreizeitmap  \
-            --family-name=OSMfreizeitmap --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
-            (work_dir) + "tiles/*.osm.pbf " + 
-            (work_dir) + (mapstyle) + "/freizeitmap.TYP")
-  os.chdir(work_dir)
-    
-###  Wenn nur die einzelne Karten gewählt wurden
 
-def merge():
-  os.chdir(work_dir)
-  if (BUILD_MAP) == "germany":
-    os.system("wine ~/bin/gmt.exe -jo " + 
-              (work_dir) + "gps_ready/unzipped/" + 
-              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
-              (BUILD_MAP) + "_full_" + (MAP_TYPE) + "_gmapsupp.img  \
-              g" + (MAP_TYPE) + "/gmapsupp.img  \
-              gaddr/gmapsupp.img  \
-              gboundary/gmapsupp.img  \
-              gosb/gmapsupp.img  \
-              gfixme/gmapsupp.img  \
-              gcontourlines/gmapsupp.img")
-              
-  elif (BUILD_MAP) != "germany":
-    ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-    if ExitCode == 0:
-      os.system("wine ~/bin/gmt.exe -jo " + 
-              (work_dir) + "gps_ready/unzipped/" + 
-              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
-              (BUILD_MAP) + "_full_" + (MAP_TYPE) + "_gmapsupp.img  \
-              g" + (MAP_TYPE) + "/gmapsupp.img  \
-              gaddr/gmapsupp.img  \
-              gboundary/gmapsupp.img  \
-              gosb/gmapsupp.img  \
-              gfixme/gmapsupp.img  \
-              hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-              
-    else:
-      os.system("wine ~/bin/gmt.exe -jo " + 
-                (work_dir) + "gps_ready/unzipped/" + 
-                (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/" + 
-                (BUILD_MAP) + "_full_" + (MAP_TYPE) + "_gmapsupp.img  \
-                g" + (MAP_TYPE) + "/gmapsupp.img  \
-                gaddr/gmapsupp.img  \
-                gboundary/gmapsupp.img  \
-                gosb/gmapsupp.img  \
-                gfixme/gmapsupp.img")
 
 ###  Erstellen der verschiedenen Images
 
 def merge_all():
-  for map in ['basemap', 'freizeitmap']:
+  for map in ['basemap']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
       os.system("wine ~/bin/gmt.exe -jo " +
@@ -560,7 +498,6 @@ def merge_all():
                 (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                 (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                 g" + (map) + "/gmapsupp.img  \
-                gaddr/gmapsupp.img  \
                 gboundary/gmapsupp.img  \
                 gosb/gmapsupp.img  \
                 gfixme/gmapsupp.img  \
@@ -574,7 +511,6 @@ def merge_all():
                   (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                   (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
-                  gaddr/gmapsupp.img  \
                   gboundary/gmapsupp.img   \
                   gosb/gmapsupp.img  \
                   gfixme/gmapsupp.img  \
@@ -586,7 +522,6 @@ def merge_all():
                   (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
                   (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
-                  gaddr/gmapsupp.img  \
                   gboundary/gmapsupp.img  \
                   gosb/gmapsupp.img  \
                   gfixme/gmapsupp.img") 
@@ -595,7 +530,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gosb', 'gboundary', 'gaddr', 'gbasemap', 'gfreizeitmap' ]:
+  for dir in ['gfixme', 'gosb', 'gboundary', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
@@ -633,26 +568,13 @@ def zip_file():
   
 """
 
-if (MAP_TYPE) == "all":
-  mk_store()  
-  basemap()
-  freizeitmap()
-  merge_all()
-  copy_parts()
-  zip_file()
+mk_store()  
+basemap()
+merge_all()
+copy_parts()
+zip_file()
 
-elif (MAP_TYPE) == "basemap":
-  mk_store()
-  basemap()
-  merge()
-  zip_file()
 
-elif (MAP_TYPE) == "freizeitmap":
-  mk_store()
-  freizeitmap()
-  merge()
-  zip_file()  
-  
 
 
 printinfo("Habe fertig!")
@@ -660,6 +582,9 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.23 - Freizeitkarte removed, not really usable on PNAs
+
+v0.9.22 - addr-Layer removed
 
 v0.9.21 - predefined bundles of maps like DACH or Benelux
 
@@ -670,8 +595,6 @@ v0.9.20 - removed velomap-code
 
 v0.9.17 - Zufallszahlen für mapid
 
-v0.9.16 - Freizeitkarte hinzugefügt copyright siehe 
-          http://www.easyclasspage.de/karten/index.html
 
 v0.9.15 - Anpassung der Kachelnummerierung für Splitter, beginnt jetzt bei 0001
           statt 0023
