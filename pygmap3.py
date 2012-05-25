@@ -469,7 +469,7 @@ def rrk():
             --family-id=5824 --product-id=1 --series-name=OSMrrk \
             --family-name=OSMrrk --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
-            (work_dir) + (mapstyle) + "/rrk.TYP")
+            (work_dir) + (mapstyle) + "/rrk_typ.txt")
   os.chdir(work_dir)
 
 ###  Erstellen der verschiedenen Images
