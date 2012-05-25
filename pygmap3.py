@@ -137,7 +137,10 @@ parser = argparse.ArgumentParser(
         description=('''\
         
             Zum Bauen diverser Karten für Garmin PNA
-                                               
+            Verfügbar aktuell:
+            AIO-Basemap
+            RadReiseKarte
+            
             Das Copyright der Styles liegt bei den jeweiligen Autoren!
             
             Als Basis können alle Dateien unter
@@ -379,7 +382,7 @@ os.chdir(work_dir)
   
 """
 
-for dir in ['gfixme', 'gosb', 'gbasemap', 'gboundary', 'gps_ready']:
+for dir in ['gfixme', 'gosb', 'gbasemap', 'grrk', 'gboundary', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
     os.mkdir(dir)
@@ -485,12 +488,24 @@ def basemap():
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
                          
-
+def rrk():
+  global layer
+  layer = "rrk"
+  style()
+  cleanup()
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
+            (work_dir) + "map.conf --style-file=" + 
+            (work_dir) + (mapstyle) + "/rrk_style --description=rrk  \
+            --family-id=5824 --product-id=1 --series-name=OSMrrk \
+            --family-name=OSMrrk --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
+            (work_dir) + "tiles/*.osm.pbf " + 
+            (work_dir) + (mapstyle) + "/rrk.TYP")
+  os.chdir(work_dir)
 
 ###  Erstellen der verschiedenen Images
 
 def merge_all():
-  for map in ['basemap']:
+  for map in ['basemap', 'rrk']:
     os.chdir(work_dir)
     if (BUILD_MAP) == "germany":
       os.system("wine ~/bin/gmt.exe -jo " +
@@ -530,7 +545,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gosb', 'gboundary', 'gbasemap']:
+  for dir in ['gfixme', 'gosb', 'gboundary', 'gbasemap', 'grrk']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
@@ -570,6 +585,7 @@ def zip_file():
 
 mk_store()  
 basemap()
+rrk()
 merge_all()
 copy_parts()
 zip_file()
