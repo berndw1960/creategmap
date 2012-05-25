@@ -315,15 +315,6 @@ else:
 
 target.close()
 
-""" 
-  get the OpenStreetBugs
-  
-"""  
-
-os.system("wget -N   \
-           http://openstreetbugs.schokokeks.org/dumps/osbdump_latest.sql.bz2")
-os.system("bzcat osbdump_latest.sql.bz2 | osbsql2osm > OpenStreetBugs.osm")
-
 
 """
   get the raw map-extracts from the geofabrik and cut special regions
@@ -435,17 +426,6 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme.TYP")
 
-layer = "osb"
-style()
-cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-          (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/osb_style --description=OpenStreetBugs \
-          --family-id=2323 --product-id=42 --series-name=OSMbugs \
-          --family-name=OSMbugs --mapname=" + str(MAPID) + "7001 --draw-priority=18 " + 
-          (work_dir) + "OpenStreetBugs.osm " + 
-          (work_dir) + (mapstyle) + "/osb.TYP")
-os.chdir(work_dir)
 
 """
   destination separated for country and day
@@ -545,7 +525,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gosb', 'gboundary', 'gbasemap', 'grrk']:
+  for dir in ['gfixme', 'gboundary', 'gbasemap', 'grrk']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + 
              (CONTINENT) + "/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
