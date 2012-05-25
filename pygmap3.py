@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.23"
+__version__ = "0.9.24"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2012, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -38,10 +38,6 @@ __status__ = "RC"
   http://www.mkgmap.org.uk/page/tile-splitter
   splitter.jar 
  
-  osbsql2osm
-  erstellt aus Sourcen 
-  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz
-
 """
 
 import sys
@@ -197,15 +193,9 @@ checkprg("wine", hint)
  
 hint = " Download: http://www.anpo.republika.pl/download.html"
 checkprg("~/bin/gmt.exe", hint)
- 
-hint = "Download:  http://tuxcode.org/john/osbsql2osm/osbsql2osm-latest.tar.gz"
-checkprg("osbsql2osm", hint)
 
-hint = "Install: 7z to extract mkgmap's sStylefiles"
+hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
-
-hint = " gpsbabel fehlt, wird gebraucht zur Verarbeitung der OSB als bz2! "
-checkprg("gpsbabel", hint)
 
 hint = " osmconvert fehlt, wird gebraucht zum Erstellen von Kartenbündeln wie DACH"
 checkprg("osmconvert", hint)
@@ -373,7 +363,7 @@ os.chdir(work_dir)
   
 """
 
-for dir in ['gfixme', 'gosb', 'gbasemap', 'grrk', 'gboundary', 'gps_ready']:
+for dir in ['gfixme', 'gbasemap', 'grrk', 'gboundary', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
     os.mkdir(dir)
@@ -494,7 +484,6 @@ def merge_all():
                 (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                 g" + (map) + "/gmapsupp.img  \
                 gboundary/gmapsupp.img  \
-                gosb/gmapsupp.img  \
                 gfixme/gmapsupp.img  \
                 gcontourlines/gmapsupp.img")
 
@@ -507,7 +496,6 @@ def merge_all():
                   (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
                   gboundary/gmapsupp.img   \
-                  gosb/gmapsupp.img  \
                   gfixme/gmapsupp.img  \
                   hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
                   
@@ -518,7 +506,6 @@ def merge_all():
                   (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                   g" + (map) + "/gmapsupp.img  \
                   gboundary/gmapsupp.img  \
-                  gosb/gmapsupp.img  \
                   gfixme/gmapsupp.img") 
 
 ###  Umkopieren der Images
@@ -578,6 +565,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.24 - RadReiseKarte added, OSB removed
+
 v0.9.23 - Freizeitkarte removed, not really usable on PNAs
 
 v0.9.22 - addr-Layer removed
