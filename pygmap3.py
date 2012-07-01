@@ -399,9 +399,9 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/boundary_style --description=OSMboundary \
-          --family-id=6 --product-id=30 --series-name=OSMboundary  \
-          --family-name=OSMboundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
+          (work_dir) + (mapstyle) + "/boundary_style --description=OSM-boundary \
+          --family-id=6 --product-id=30 --series-name=OSM-boundary  \
+          --family-name=OSM-boundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/boundary.TYP")
 
@@ -410,9 +410,9 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/fixme_style --description=OSMfixme  \
-          --family-id=3 --product-id=33 --series-name=OSMfixme  \
-          --family-name=OSMfixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
+          (work_dir) + (mapstyle) + "/fixme_style --description=OSM-fixme  \
+          --family-id=3 --product-id=33 --series-name=OSM-fixme  \
+          --family-name=OSM-fixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme.TYP")
 
@@ -451,9 +451,9 @@ def basemap():
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/basemap_style --description=basemap  \
-            --family-id=4 --product-id=45 --series-name=OSMbasemap  \
-            --family-name=OSMbasemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
+            (work_dir) + (mapstyle) + "/basemap_style --description=AIO-basemap  \
+            --family-id=4 --product-id=45 --series-name=AIO-basemap  \
+            --family-name=AIO-basemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap.TYP")
   os.chdir(work_dir)
@@ -465,9 +465,9 @@ def rrk():
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/rrk_style --description=rrk  \
-            --family-id=5824 --product-id=1 --series-name=OSMrrk \
-            --family-name=OSMrrk --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
+            (work_dir) + (mapstyle) + "/rrk_style --description=OSM-RadReiseKarte  \
+            --family-id=5824 --product-id=1 --series-name=OSM-RadReiseKarte \
+            --family-name=OSM-RadReiseKarte --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/rrk_typ.txt")
   os.chdir(work_dir)
