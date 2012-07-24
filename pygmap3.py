@@ -388,6 +388,7 @@ def cleanup():
   print((layer) + "-layer build with " + (mapstyle))
   os.system("rm -Rf * ")
   os.system("ln -s ../bounds bounds")
+  os.system("ln -s ../data data") 
   
 """ 
  create Bugs- and FIXME-Layer 
