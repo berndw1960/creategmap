@@ -236,7 +236,7 @@ if ExitCode == 0:
   os.chdir(work_dir)
 
 else:
-  os.system("wget http://dev.openstreetmap.de/aio/aiostyles.7z")
+  os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
   os.system("7z x aiostyles.7z -oaiostyles")
   os.chdir(work_dir)
 
