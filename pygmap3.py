@@ -320,7 +320,7 @@ elif (BUILD_MAP) == "benelux":
 
 elif (BUILD_MAP) == "sri-lanka":  
     os.system("wget -N http://download.geofabrik.de/osm/asia.osm.pbf")
-    os.system("osmconvert asia.osm.pbf -b=79.5,5,83,10 -o=sri-lanka.osm.pbf")
+    os.system("osmconvert asia.osm.pbf -B poly/sri-lanka.poly -o=sri-lanka.osm.pbf")
     
 else:  
    os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
