@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.24"
+__version__ = "0.9.30"
 __author__ = "Bernd Weigelt, Jonas Stein"
 __copyright__ = "Copyright 2012, The OSM-TroLUG-Project"
 __credits__ = "Dschuwa"
@@ -115,9 +115,6 @@ def checkdir(dirtofind, solutionhint):
   return ExitCode
 
 
-    
-# defaults =============================================================================
-
 work_dir = (os.environ['HOME'] + "/share/osm/map_build/") 
 # Der letzte Slash muss sein!!!
 
@@ -136,22 +133,43 @@ parser = argparse.ArgumentParser(
             Verfügbar aktuell:
             AIO-Basemap
             RadReiseKarte
+
+            
+            ############################################################
+            # Work in progress, bitte beachten!                        #
+            # Prinzipiell funktioniert es, aber wenn was kaputt geht,  #
+            # lehnen wir jegliche Haftung ab                           #
+            ############################################################
+            
+            
             
             Das Copyright der Styles liegt bei den jeweiligen Autoren!
+            Die Styles der RRK müssen manuell installiert werden.
             
             Als Basis können alle Dateien unter
             http://download.geofabrik.de/osm/
-            verwendet werden..
+            verwendet werden.
             
-            Dateinamen bitte _ohne_ Endung verwenden.
+            pygmap3 -b germany -c europe 
+                      
             
+            Oder mit lokalem Planet möglich...
+            
+            ...als BBOX:
+            
+            D_A_CH 	--> -b dach     (default)
+            Benelux	--> -b benelux  
 
-            CONTINENT = "europe" (default)
-            BUILD_MAP = "germany" (default)
+            ...per poly:            
             
-            alternativ:
-            D_A_CH 	--> -b dach
-            Benelux	--> -b benelux
+            Eigene poly-Dateien können im Verzeichnis 'poly' im Arbeitsverzeichnis
+            abgelegt werden. 
+            Der Namen muss identisch zur Karte sein mit der Endung '.poly'
+                          
+            Hamburg     --> -b hamburg  
+            Bayern      --> -b bayern
+            Deutschland --> -b germany
+            Europa	--> -b europe (nicht nutzbar wegen FAT, zu groß!)   
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
@@ -165,7 +183,7 @@ parser = argparse.ArgumentParser(
         '''))
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
-parser.add_argument('-b', '--buildmap', dest='build_map', default='germany')
+parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
@@ -180,6 +198,8 @@ RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
 MKGMAP_VERSION = (args.mkgmap_version)
 SPLITTER_VERSION = (args.splitter_version)
+
+
 """
   needed programs und dirs
   
@@ -187,6 +207,8 @@ SPLITTER_VERSION = (args.splitter_version)
 
 hint = ("mkdir " + (work_dir))
 checkdir((work_dir), hint) 
+
+os.chdir(work_dir)
 
 hint = "Install: wine to work with ~/bin/gmt.exe from GMAPTOOLS"
 checkprg("wine", hint)
@@ -197,33 +219,12 @@ checkprg("~/bin/gmt.exe", hint)
 hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
 
-hint = " osmconvert fehlt, wird gebraucht zum Erstellen von Kartenbündeln wie DACH"
+hint = " osmconvert missed, needed to cut data from the planet.osm.pbf"
 checkprg("osmconvert", hint)
 
-os.chdir(work_dir)
-  
- 
-""" 
-  get the contourlines for Germany, if not present
-  other countries could be found at openmtb.org
-  please build the gmapsupp.img for every country in own folders and store it
-  in hoehenlinien/(buildmap)/gmapsupp.img
-  
-"""
-if (BUILD_MAP) == "germany":
-  ExitCode  = os.system("test -d gcontourlines")
-  if ExitCode != 0:
-      os.system("rm -Rf gcontourlines")
-      os.makedirs("gcontourlines/temp")
-      os.chdir("gcontourlines/temp")
-      os.system("wget \
-              -N http://www.glade-web.de/GLADE_geocaching/maps/TOPO_D_SRTM.zip")
-      os.system("unzip Topo_D_SRTM.zip")
-      os.system("wine ~/bin/gmt.exe -j -f 5,25 -m HOEHE -o \
-                ../gmapsupp.img Topo\ D\ SRTM/*.img")
-      os.chdir("..")
-      os.system("rm -Rf temp")
-      os.chdir(work_dir)
+hint = (" No Planet-File found, get it and store it as planet.osm.pbf in " + (work_dir))
+checkfile("planet.osm.pbf", hint)
+
 
 """ 
   get the styles, 7z is needed to extract the styles
@@ -307,23 +308,35 @@ target.close()
 
 
 """
-  get the raw map-extracts from the geofabrik and cut special regions
+  cut data from planet-file or get the raw map-extracts from the geofabrik 
   
 """  
-if (BUILD_MAP) == "dach":
-    os.system("wget -N http://download.geofabrik.de/osm/europe.osm.pbf")
-    os.system("osmconvert europe.osm.pbf -b=5,45,18,56 -o=dach.osm.pbf")
-    
-elif (BUILD_MAP) == "benelux":  
-    os.system("wget -N http://download.geofabrik.de/osm/europe.osm.pbf")
-    os.system("osmconvert europe.osm.pbf -b=1,49,8,54 -o=benelux.osm.pbf")    
 
-elif (BUILD_MAP) == "sri-lanka":  
-    os.system("wget -N http://download.geofabrik.de/osm/asia.osm.pbf")
-    os.system("osmconvert asia.osm.pbf -B poly/sri-lanka.poly -o=sri-lanka.osm.pbf")
+today = datetime.datetime.now()
+day = today.strftime('%Y_%m_%d')
+
+
+ExitCode = os.system("test -f planet.osm.pbf")
+if ExitCode == 0:
+  ExitCode = os.system("test -f poly/" + (BUILD_MAP) + ".poly")
+  if ExitCode == 0:                     
+    os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -B=poly/" +
+             (BUILD_MAP) + ".poly -o=" + (BUILD_MAP) + ".osm.pbf")
+
+  elif (BUILD_MAP) == "dach":
+    os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=5,45,18,56 -o=" +
+              (BUILD_MAP) + ".osm.pbf")
     
+  elif (BUILD_MAP) == "benelux":  
+    os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=1,49,8,54 -o=" + 
+              (BUILD_MAP) + ".osm.pbf")    
+
+  else:
+    printinfo("no poly or BBOX found... exit")
+    (quit)
+
 else:  
-   os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" + 
+   os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" +
             (BUILD_MAP) + ".osm.pbf")
 
 
@@ -344,8 +357,8 @@ else:
 
     
 """
-  Zufällige mapid, damit mehrere Karten verwendet werden können,
-  alternativ könnte man eine Liste erstellen
+  random mapid
+  
 """
 
 MAPID = random.randint(6301, 6399)
@@ -373,8 +386,8 @@ for dir in ['gfixme', 'gbasemap', 'grrk', 'gboundary', 'gps_ready']:
     os.mkdir(dir)
 
 """
-  add your own styles in mystyles
-  
+  add your own styles in mystyles, as an example rrk_style and rrk_typ 
+    
 """
 
 def style():
@@ -422,19 +435,13 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           (work_dir) + (mapstyle) + "/fixme.TYP")
 
 
-"""
-  destination separated for country and day
-  
-"""
 
-today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d')
   
 dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
 dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
 
 """
-  diverse Definitionen
+  some defs
   
 """  
   
@@ -477,40 +484,37 @@ def rrk():
             (work_dir) + (mapstyle) + "/rrk_typ.txt")
   os.chdir(work_dir)
 
-###  Erstellen der verschiedenen Images
+"""
+  build the images
+  
+"""  
 
 def merge_all():
   for map in ['basemap', 'rrk']:
     os.chdir(work_dir)
-    if (BUILD_MAP) == "germany":
-      os.system("wine ~/bin/gmt.exe -jo " +
+
+    ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+    if ExitCode == 0:
+      os.system("wine ~/bin/gmt.exe -jo " + 
+                (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
+                (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
+                g" + (map) + "/gmapsupp.img  \
+                gboundary/gmapsupp.img   \
+                gfixme/gmapsupp.img  \
+                hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+                  
+    else:
+      os.system("wine ~/bin/gmt.exe -jo " + 
                 (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
                 (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
                 g" + (map) + "/gmapsupp.img  \
                 gboundary/gmapsupp.img  \
-                gfixme/gmapsupp.img  \
-                gcontourlines/gmapsupp.img")
+                gfixme/gmapsupp.img") 
 
-    elif (BUILD_MAP) != "germany":
-      ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-      if ExitCode == 0:
-        os.system("wine ~/bin/gmt.exe -jo " + 
-                  (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-                  (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
-                  g" + (map) + "/gmapsupp.img  \
-                  gboundary/gmapsupp.img   \
-                  gfixme/gmapsupp.img  \
-                  hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-                  
-      else:
-        os.system("wine ~/bin/gmt.exe -jo " + 
-                  (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-                  (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
-                  g" + (map) + "/gmapsupp.img  \
-                  gboundary/gmapsupp.img  \
-                  gfixme/gmapsupp.img") 
+"""
+  rename the images
 
-###  Umkopieren der Images
+"""  
 
 def copy_parts():
   os.chdir(work_dir)
@@ -519,22 +523,11 @@ def copy_parts():
              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
              (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
              
-  ExitCode = os.system("test -f " + (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")    
-  if ExitCode != 0:
-    if (BUILD_MAP) != "germany":
-      ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-      if ExitCode == 0:
-        os.system("cp " + (work_dir) + "hoehenlinien/" + 
-             (BUILD_MAP) + "/gmapsupp.img " + 
-             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img") 
-    elif (BUILD_MAP) == "germany":
-      os.system("cp " + (work_dir) + "gcontourlines/gmapsupp.img " + 
-                (work_dir) + "gps_ready/unzipped/"  + (BUILD_MAP) + "/" + (day) + "/"  + 
-                (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")   
 
-###  Komprimieren der Images und Kopieren der Zips in ein separates Verzeichnis
+"""
+  zipp the images and mv them to separate dirs
+
+"""
 
 def zip_file():
   os.chdir(work_dir) 
@@ -544,7 +537,7 @@ def zip_file():
   
 
 """
-  Ausführen der o.g. defs zum erstellen der Karten
+  make it now
   
 """
 
@@ -563,9 +556,11 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
-v0.9.24 - RadReiseKarte added, OSB removed
 
-v0.9.23 - Freizeitkarte removed, not really usable on PNAs
+v0.9.30 - use a planetfile if possible
+	  look at the OSM-Wiki for infos about osmconvert and osmupdate
+
+v0.9.24 - RadReiseKarte added, OSB removed
 
 v0.9.22 - addr-Layer removed
 
@@ -575,14 +570,6 @@ v0.9.20 - removed velomap-code
 	  use 7z for styles
 	  removed git-code
 	  some cleanups
-
-v0.9.17 - Zufallszahlen für mapid
-
-
-v0.9.15 - Anpassung der Kachelnummerierung für Splitter, beginnt jetzt bei 0001
-          statt 0023
-
-v0.9.14 - cleanups
 
 v0.9.12 - options to change mapid 
 
@@ -598,13 +585,8 @@ v0.9.7	- removed use of osm.bz2 and osm.gz, use osm.pbf as
 
 v0.9.6	- added function to set another continent
 
-v0,9.5	- Umstieg auf Python 3.2.x 
+v0,9.5	- first version for Python 3.2.x 
 	- commandline-otions added with argparse
-	- Umformatierung langer Zeilen
-
-v0.9.4	- cleanups
-
-v0.9.3	- sepatated folder for the maps
 
 v0.9.2	- addr- and boundary-layer added
 
@@ -612,23 +594,10 @@ v0.9.1	- zip-function added
 
 ## 2011-05-01 Projectstatus changed to RC
 
-v0.8.5	- minor fixes
-
-v0.8.3	- add contourlines to gps_parts if available
-
-v0.8.2	- code cleanup, dirs added gps_parts and gps_ready
-
-v0.8.1	- separate Images for 'all' 
 
 v0.8.0	- AIO-basemap as additional maptype
 
 ## 2011-02-14 Projectstatus changed to BETA
-
-v0.7.1	- minor fixes
-
-v0.7.0	- download *.pbf (osmosis) or *.bz2, check osbsql2osm to use OSB-database-dumps
-
-v0.6.8	- Cleanups
 
 v0.6.7	- change work_dir to map_build
 
