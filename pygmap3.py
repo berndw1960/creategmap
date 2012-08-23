@@ -522,7 +522,12 @@ def copy_parts():
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
              (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
-             
+
+  ExitCode = os.system("test -f hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+  if ExitCode == 0:
+    os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
+             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
+             (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")
 
 """
   zipp the images and mv them to separate dirs
