@@ -1,12 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.9.30"
-__author__ = "Bernd Weigelt, Jonas Stein"
-__copyright__ = "Copyright 2012, The OSM-TroLUG-Project"
+"""
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Affero General Public License
+  version 3 as published by the Free Software Foundation.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+  You should have received a copy of this license along
+  with this program; if not, see http://www.gnu.org/licenses/.
+
+
+"""
+__version__ = "0.9.31"
+__author__ = "Bernd Weigelt"
+__copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
-__license__ = "GPL"
-__maintainer__ = "Bernd Weigelt, Jonas Stein"
+__license__ = "AGPLv3"
+__maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
 __status__ = "RC"
 
@@ -14,12 +27,7 @@ __status__ = "RC"
   
   pygmap3.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
   zu erzeugen, z.B. Garmin eTrex Vista Hcx
-  Ein Gemeinschaftsprojekt von Bernd Weigelt und Jonas Stein
-  und als QCO Dschuwa
-
-  License GPL -  read more: www.gnu.org/licenses/licenses.html
-  
-  
+    
   Work in progress, bitte beachten!
   Prinzipiell funktioniert es, aber wenn was kaputt geht, 
   lehnen wir jegliche Haftung ab.
@@ -27,16 +35,18 @@ __status__ = "RC"
   
   Folgende Software wird benutzt:
   
-  mkgmap von 
+  mkgmap from 
   http://wiki.openstreetmap.org/wiki/Mkgmap
   
-  gmaptool von
-  http://www.anpo.republika.pl/download.html
-  ~/bin/gmt.exe
- 
-  splitter von
+  splitter from
   http://www.mkgmap.org.uk/page/tile-splitter
   splitter.jar 
+  
+  gmaptool from
+  http://www.anpo.republika.pl/download.html
+  ~/bin/gmt.exe
+  
+  osmconvert and osmupdate
  
 """
 

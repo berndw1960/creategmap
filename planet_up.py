@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Affero General Public License
+  version 3 as published by the Free Software Foundation.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+  You should have received a copy of this license along
+  with this program; if not, see http://www.gnu.org/licenses/.
 
+
+"""
 __version__ = "0.0.1"
 __author__ = "Bernd Weigelt"
-__copyright__ = "Copyright 2012, The OSM-TroLUG-Project"
-__license__ = "GPL"
+__copyright__ = "Copyright 2012 Bernd Weigelt"
+__license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
-__status__ = "Alpha" 
+__status__ = "RC" 
 
 import sys
 import os
@@ -101,7 +113,7 @@ day = today.strftime('%Y_%m_%d')
 ExitCode = os.system("test -f planet.osm.pbf")
 if ExitCode == 0:
   os.system("osmupdate -v --daily \
-	     --planet-url=http://planet.openstreetmap.org/redaction-period/ \
+	     --planet-url=http://planet.openstreetmap.org/ \
 	     planet.osm.pbf planet_new.osm.pbf") 
 
   ExitCode = os.system("test -f planet_new.osm.pbf")
