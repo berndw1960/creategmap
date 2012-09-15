@@ -103,19 +103,22 @@ os.chdir(work_dir)
 hint = " osmupdate missed, needed to update the planet.osm.pbf"
 checkprg("osmupdate", hint)
 
-hint = (" No Planet-File found, it will be downloaded. Size ~15+ Gigabytes ")
+hint = (" No Planet-File found, download started. Size ~17+ Gigabytes ")
 checkfile("planet.osm.pbf", hint)
 
 
 today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d')
 
+def update():
+  os.system("osmupdate -v --daily \
+             --planet-url=mirror \
+	     planet.osm.pbf planet_new.osm.pbf")
+
 ExitCode = os.system("test -f planet.osm.pbf")
 if ExitCode == 0:
-  os.system("osmupdate -v --daily \
-	     --planet-url=http://planet.openstreetmap.org/ \
-	     planet.osm.pbf planet_new.osm.pbf") 
-
+  update() 
+ 
   ExitCode = os.system("test -f planet_new.osm.pbf")
   if ExitCode == 0:
     os.system("mv planet.osm.pbf planet-" + (day) + ".osm.pbf && \
@@ -125,9 +128,12 @@ if ExitCode == 0:
     (quit)
 
 else:
-  os.system("wget -N http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf \
-            -o planet.osm.pbf")
-
+  os.system("wget -N \
+    http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf \
+    -o planet.osm.pbf")
+  update()
+  
+  
 printinfo("Habe fertig!")
 (quit)
 
