@@ -128,7 +128,7 @@ if ExitCode == 0:
     (quit)
 
 else:
-  os.system("wget -N \
+  os.system("wget \
     http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf \
     -O planet.osm.pbf")
   update()
