@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.31"
+__version__ = "0.9.32"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -157,7 +157,7 @@ parser = argparse.ArgumentParser(
             Die Styles der RRK müssen manuell installiert werden.
             
             Als Basis können alle Dateien unter
-            http://download.geofabrik.de/osm/
+            http://download.geofabrik.de/openstreetmap/
             verwendet werden.
             
             pygmap3 -b germany -c europe 
@@ -346,7 +346,7 @@ if ExitCode == 0:
     (quit)
 
 else:  
-   os.system("wget -N http://download.geofabrik.de/osm/" + (CONTINENT) + "/" +
+   os.system("wget -N http://download.geofabrik.de/openstreetmap/" + (CONTINENT) + "/" +
             (BUILD_MAP) + ".osm.pbf")
 
 
@@ -571,6 +571,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.32 - Geofabrik path changed
 
 v0.9.30 - use a planetfile if possible
 	  look at the OSM-Wiki for infos about osmconvert and osmupdate
