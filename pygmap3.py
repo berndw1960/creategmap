@@ -224,7 +224,7 @@ hint = "Install: wine to work with ~/bin/gmt.exe from GMAPTOOLS"
 checkprg("wine", hint)
  
 hint = " Download: http://www.anpo.republika.pl/download.html"
-checkprg("~/bin/gmt.exe", hint)
+checkprg("gmt.exe", hint)
 
 hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
