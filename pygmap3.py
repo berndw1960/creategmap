@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.32"
+__version__ = "0.9.33"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -431,7 +431,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           --family-id=6 --product-id=30 --series-name=OSM-boundary  \
           --family-name=OSM-boundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
-          (work_dir) + (mapstyle) + "/boundary.TYP")
+          (work_dir) + (mapstyle) + "/boundary_typ.txt")
 
 layer = "fixme"
 style()
@@ -442,7 +442,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           --family-id=3 --product-id=33 --series-name=OSM-fixme  \
           --family-name=OSM-fixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
-          (work_dir) + (mapstyle) + "/fixme.TYP")
+          (work_dir) + (mapstyle) + "/fixme_typ.txt")
 
 
 
@@ -477,7 +477,7 @@ def basemap():
             --family-id=4 --product-id=45 --series-name=AIO-basemap  \
             --family-name=AIO-basemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
-            (work_dir) + (mapstyle) + "/basemap.TYP")
+            (work_dir) + (mapstyle) + "/basemap_typ.txt")
   os.chdir(work_dir)
                          
 def rrk():
@@ -571,6 +571,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.33 - TYP changed to TXT
 
 v0.9.32 - Geofabrik path changed
 
