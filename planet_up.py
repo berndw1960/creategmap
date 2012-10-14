@@ -124,7 +124,7 @@ if ExitCode == 0:
     os.system("mv planet.osm.pbf planet-" + (day) + ".osm.pbf && \
                mv planet_new.osm.pbf planet.osm.pbf")
   else:
-    printinfo("no new planet_file found... exit")
+    printerror("no new planet_file found... exit")
     (quit)
 
 else:
