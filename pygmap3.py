@@ -445,7 +445,7 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/boundary_style --description=OSM-boundary \
+          (work_dir) + (mapstyle) + "/boundary_style --description='" + (BUILD_MAP) + " OSM-boundary' \
           --family-id=6 --product-id=30 --series-name=OSM-boundary  \
           --family-name=OSM-boundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
@@ -456,7 +456,7 @@ style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
           (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/fixme_style --description=OSM-fixme  \
+          (work_dir) + (mapstyle) + "/fixme_style --description='" + (BUILD_MAP) + " OSM-fixme'  \
           --family-id=3 --product-id=33 --series-name=OSM-fixme  \
           --family-name=OSM-fixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
@@ -491,13 +491,13 @@ def basemap():
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/basemap_style --description=AIO-basemap  \
+            (work_dir) + (mapstyle) + "/basemap_style --description='" + (BUILD_MAP) + " AIO-basemap'  \
             --family-id=4 --product-id=45 --series-name=AIO-basemap  \
             --family-name=AIO-basemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap_typ.txt")
   os.chdir(work_dir)
-                         
+
 def rrk():
   global layer
   layer = "rrk"
@@ -505,7 +505,7 @@ def rrk():
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
             (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/rrk_style --description=OSM-RadReiseKarte  \
+            (work_dir) + (mapstyle) + "/rrk_style --description='" + (BUILD_MAP) + " OSM-RadReiseKarte'  \
             --family-id=5824 --product-id=1 --series-name=OSM-RadReiseKarte \
             --family-name=OSM-RadReiseKarte --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
