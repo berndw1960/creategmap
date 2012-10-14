@@ -321,34 +321,47 @@ target.close()
   cut data from planet-file or get the raw map-extracts from the geofabrik 
   
 """  
+def fetch():
+  ExitCode = os.system("test -f planet.osm.pbf")
+  if ExitCode == 0:
+    ExitCode = os.system("test -f poly/" + (BUILD_MAP) + ".poly")
+    if ExitCode == 0:                     
+      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -B=poly/" +
+               (BUILD_MAP) + ".poly -o=" + (BUILD_MAP) + ".osm.pbf")
+
+    elif (BUILD_MAP) == "dach":
+      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=5,45,18,56 -o=" +
+                (BUILD_MAP) + ".osm.pbf")
+    
+    elif (BUILD_MAP) == "benelux":  
+      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=1,49,8,54 -o=" + 
+               (BUILD_MAP) + ".osm.pbf")    
+
+    else:
+      printerror("no poly or BBOX found... exit")
+      quit()
+
+  else:  
+     os.system("wget -N http://download.geofabrik.de/openstreetmap/" + (CONTINENT) + "/" +
+              (BUILD_MAP) + ".osm.pbf")
 
 today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d')
 
-
-ExitCode = os.system("test -f planet.osm.pbf")
+ExitCode = os.system("test -f keep_pbf.lck")
 if ExitCode == 0:
-  ExitCode = os.system("test -f poly/" + (BUILD_MAP) + ".poly")
-  if ExitCode == 0:                     
-    os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -B=poly/" +
-             (BUILD_MAP) + ".poly -o=" + (BUILD_MAP) + ".osm.pbf")
+  keep_pbf = 1
+  printwarning("keep_pbf switched on!")
+  ExitCode = os.system( "test -f " + (BUILD_MAP) + ".osm.pbf")
+  if ExitCode != 0:
+    printerror("no old " + (BUILD_MAP) + ".osm.pbf found, please fetch it")
+    quit()
 
-  elif (BUILD_MAP) == "dach":
-    os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=5,45,18,56 -o=" +
-              (BUILD_MAP) + ".osm.pbf")
-    
-  elif (BUILD_MAP) == "benelux":  
-    os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=1,49,8,54 -o=" + 
-              (BUILD_MAP) + ".osm.pbf")    
-
-  else:
-    printinfo("no poly or BBOX found... exit")
-    (quit)
-
-else:  
-   os.system("wget -N http://download.geofabrik.de/openstreetmap/" + (CONTINENT) + "/" +
-            (BUILD_MAP) + ".osm.pbf")
-
+else:
+  keep_pbf = 0
+  printinfo("keep_pbf switched off!")
+  fetch()
+  
 
 """
   create (work_dir) for splitter
