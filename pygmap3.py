@@ -169,7 +169,8 @@ parser = argparse.ArgumentParser(
             
             D_A_CH 	--> -b dach     (default)
             Benelux	--> -b benelux  
-
+            Bonn	--> -b bonn
+            
             ...per poly:            
             
             Eigene poly-Dateien können im Verzeichnis 'poly' im Arbeitsverzeichnis
@@ -335,6 +336,10 @@ def fetch():
     
     elif (BUILD_MAP) == "benelux":  
       os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=1,49,8,54 -o=" + 
+               (BUILD_MAP) + ".osm.pbf")    
+               
+    elif (BUILD_MAP) == "bonn":  
+      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=6.1,49.7,8.1,51.7 -o=" + 
                (BUILD_MAP) + ".osm.pbf")    
 
     else:
