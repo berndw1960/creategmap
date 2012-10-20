@@ -185,7 +185,7 @@ parser = argparse.ArgumentParser(
             Andere Einstellungen können bei Bedarf angepasst werden.
             
             RAMSIZE = "3000M" or "3G" (default)
-            MAXNODES = "1000000" (default)
+            MAXNODES = "1600000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
                              for available versions
                              http://www.mkgmap.org.uk/snapshots/
@@ -196,7 +196,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
-parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='2000000')
+parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
 parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default=0)
 args = parser.parse_args()
