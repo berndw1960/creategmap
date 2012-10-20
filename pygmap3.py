@@ -196,7 +196,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
-parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1000000')
+parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='2000000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
 parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default=0)
 args = parser.parse_args()
@@ -399,7 +399,7 @@ MAPID = random.randint(6301, 6399)
 os.chdir("tiles")
 os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
            " --mapid=" + str(MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
-           " --cache=cache " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
+           " --cache=cache --overlap=5000 " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
 os.chdir(work_dir)
 
 
