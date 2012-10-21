@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.33"
+__version__ = "0.9.34"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -139,8 +139,6 @@ parser = argparse.ArgumentParser(
             Zum Bauen diverser Karten für Garmin PNA
             Verfügbar aktuell:
             AIO-Basemap
-            RadReiseKarte
-
             
             ############################################################
             # Work in progress, bitte beachten!                        #
@@ -151,7 +149,7 @@ parser = argparse.ArgumentParser(
             
             
             Das Copyright der Styles liegt bei den jeweiligen Autoren!
-            Die Styles der RRK müssen manuell installiert werden.
+            
             
             Als Basis können alle Dateien unter
             http://download.geofabrik.de/openstreetmap/
@@ -164,7 +162,6 @@ parser = argparse.ArgumentParser(
             
             ...als BBOX:
             
-            D_A_CH 	--> -b dach     (default)
             Benelux	--> -b benelux  
             Bonn	--> -b bonn
             
@@ -380,6 +377,15 @@ if ExitCode == 0:
 else: 
     os.mkdir("tiles")
 
+"""
+  create dir for areas
+  
+"""  
+ 
+ExitCode = os.system("test -d areas")
+
+if ExitCode != 0:
+  os.mkdir("areas")
     
 """
   random mapid
@@ -393,19 +399,29 @@ MAPID = random.randint(6301, 6399)
   split rawdata
   
 """
-os.chdir("tiles")
-os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
+
+ExitCode = os.system("test -f areas/" + (BUILD_MAP) + "_areas.list")
+if ExitCode == 0:
+  os.chdir("tiles")
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
+           " --split-file=" + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list \
+            --mapid=" + str(MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
+           " --cache=cache --overlap=5000 " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
+else:
+  os.chdir("tiles")
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
            " --mapid=" + str(MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
            " --cache=cache --overlap=5000 " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
+  os.system("cp areas.list " + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list")
+  
 os.chdir(work_dir)
-
 
 """
   create mapdirs
   
 """
 
-for dir in ['gfixme', 'gbasemap', 'grrk', 'gboundary', 'gps_ready']:
+for dir in ['gfixme', 'gbasemap', 'gboundary', 'gps_ready']:
   ExitCode = os.system("test -d " + (dir))
   if ExitCode != 0:
     os.mkdir(dir)
@@ -495,19 +511,6 @@ def basemap():
             (work_dir) + (mapstyle) + "/basemap_typ.txt")
   os.chdir(work_dir)
 
-def rrk():
-  global layer
-  layer = "rrk"
-  style()
-  cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/rrk_style --description='" + (BUILD_MAP) + " OSM-RadReiseKarte'  \
-            --family-id=5824 --product-id=1 --series-name=OSM-RadReiseKarte \
-            --family-name=OSM-RadReiseKarte --mapname=" + str(MAPID) + "3001 --draw-priority=10 " + 
-            (work_dir) + "tiles/*.osm.pbf " + 
-            (work_dir) + (mapstyle) + "/rrk_typ.txt")
-  os.chdir(work_dir)
 
 """
   build the images
@@ -515,26 +518,24 @@ def rrk():
 """  
 
 def merge_all():
-  for map in ['basemap', 'rrk']:
-    os.chdir(work_dir)
-
-    ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-    if ExitCode == 0:
-      os.system("wine ~/bin/gmt.exe -jo " + 
-                (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-                (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
-                g" + (map) + "/gmapsupp.img  \
-                gboundary/gmapsupp.img   \
-                gfixme/gmapsupp.img  \
-                hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+  os.chdir(work_dir)
+  ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
+  if ExitCode == 0:
+    os.system("wine ~/bin/gmt.exe -jo " + 
+              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
+              (BUILD_MAP) + "_full_basemap_gmapsupp.img  \
+              gbasemap/gmapsupp.img  \
+              gboundary/gmapsupp.img   \
+              gfixme/gmapsupp.img  \
+              hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
                   
-    else:
-      os.system("wine ~/bin/gmt.exe -jo " + 
-                (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-                (BUILD_MAP) + "_full_" + (map) + "_gmapsupp.img  \
-                g" + (map) + "/gmapsupp.img  \
-                gboundary/gmapsupp.img  \
-                gfixme/gmapsupp.img") 
+  else:
+    os.system("wine ~/bin/gmt.exe -jo " + 
+              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
+              (BUILD_MAP) + "_full_basemap_gmapsupp.img  \
+              gbasemap/gmapsupp.img  \
+              gboundary/gmapsupp.img  \
+              gfixme/gmapsupp.img") 
 
 """
   rename the images
@@ -543,7 +544,7 @@ def merge_all():
 
 def copy_parts():
   os.chdir(work_dir)
-  for dir in ['gfixme', 'gboundary', 'gbasemap', 'grrk']:
+  for dir in ['gfixme', 'gboundary', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
              (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
@@ -573,7 +574,6 @@ def zip_file():
 
 mk_store()  
 basemap()
-rrk()
 merge_all()
 copy_parts()
 zip_file()
@@ -586,7 +586,10 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
-
+v0.9.34 - dach.poly added
+          keep areas.list for next runs
+          remove rrk-code
+          
 v0.9.33 - TYP changed to TXT
 
 v0.9.32 - Geofabrik path changed
@@ -613,9 +616,9 @@ v0.9.9	- defined mkgmap-version
 
 v0.9.8	- added bounds-support
 
-v0.9.7	- removed use of osm.bz2 and osm.gz, use osm.pbf as 
-          new default by splitter, 
-	- cleanups and comments
+v0.9.7	- removed use of osm.bz2 and osm.gz, 
+          use osm.pbf as new default by splitter, 
+	  cleanups and comments
 
 v0.9.6	- added function to set another continent
 
