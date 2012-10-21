@@ -125,7 +125,7 @@ if ExitCode == 0:
                mv planet_new.osm.pbf planet.osm.pbf")
   else:
     printerror("no new planet_file found... exit")
-    (quit)
+    quit()
 
 else:
   os.system("wget \
@@ -135,5 +135,5 @@ else:
   
   
 printinfo("Habe fertig!")
-(quit)
+quit()
 
