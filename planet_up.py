@@ -54,8 +54,8 @@ def checkprg(programmtofind, solutionhint):
   else:
     printerror(programmtofind + " not found")
     print(solutionhint)
-
-  return ExitCode
+    quit()
+ 
 
 def checkfile(filetofind, solutionhint):
   """
@@ -71,8 +71,8 @@ def checkfile(filetofind, solutionhint):
   else:
     printerror(filetofind + " not found")
     print(solutionhint)
-
-  return ExitCode
+    quit()
+  
 
 def checkdir(dirtofind, solutionhint):
   """
@@ -88,6 +88,8 @@ def checkdir(dirtofind, solutionhint):
   else:
     printerror(dirtofind + " not found")
     print(solutionhint)
+    quit()
+
 
 # defaults =============================================================================
 

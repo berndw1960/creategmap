@@ -36,7 +36,8 @@ def checkdir(dirtofind, solutionhint):
   else:
     printerror(dirtofind + " not found")
     print(solutionhint)
-
+    quit()
+    
   return ExitCode
 
 work_dir = (os.environ['HOME'] + "/share/osm/map_build/")

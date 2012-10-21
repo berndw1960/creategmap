@@ -87,8 +87,7 @@ def checkprg(programmtofind, solutionhint):
   else:
     printerror(programmtofind + " not found")
     print(solutionhint)
-
-  return ExitCode
+    quit()
 
 def checkfile(filetofind, solutionhint):
   """
@@ -105,7 +104,6 @@ def checkfile(filetofind, solutionhint):
     printerror(filetofind + " not found")
     print(solutionhint)
 
-  return ExitCode
 
 def checkdir(dirtofind, solutionhint):
   """
@@ -121,8 +119,7 @@ def checkdir(dirtofind, solutionhint):
   else:
     printerror(dirtofind + " not found")
     print(solutionhint)
-
-  return ExitCode
+    quit()
 
 
 work_dir = (os.environ['HOME'] + "/share/osm/map_build/") 
