@@ -474,9 +474,6 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
           --family-name=OSM-fixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme_typ.txt")
-
-
-
   
 dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
 dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))

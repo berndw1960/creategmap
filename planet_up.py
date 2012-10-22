@@ -113,7 +113,7 @@ today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d')
 
 def update():
-  os.system("osmupdate -v --daily \
+  os.system("osmupdate -v --daily --hourly\
              --planet-url=mirror \
 	     planet.osm.pbf planet_new.osm.pbf")
 
