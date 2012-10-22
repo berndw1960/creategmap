@@ -371,7 +371,7 @@ ExitCode = os.system("test -d tiles")
 
 if ExitCode == 0:
   os.chdir("tiles")
-  os.system("rm -Rf *.pbf")
+  os.system("rm -Rf *")
   os.chdir(work_dir)
 	  
 else: 
@@ -482,18 +482,6 @@ dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
   some defs
   
 """  
-  
-def mk_store():
-  os.chdir(work_dir)
-  for dir in [(dir1), (dir2)]:
-    ExitCode = os.system("test -d " +  (dir))
-    if ExitCode == 0:
-      os.system("rm -Rf " + (dir)) 
-      os.makedirs(dir)
-    elif ExitCode != 0:
-      os.makedirs(dir)
-
-  
 def basemap():
   global layer
   layer = "basemap"
@@ -507,6 +495,17 @@ def basemap():
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap_typ.txt")
   os.chdir(work_dir)
+  
+
+def mk_store():
+  os.chdir(work_dir)
+  for dir in [(dir1), (dir2)]:
+    ExitCode = os.system("test -d " +  (dir))
+    if ExitCode == 0:
+      os.system("rm -Rf " + (dir)) 
+      os.makedirs(dir)
+    elif ExitCode != 0:
+      os.makedirs(dir)
 
 
 """
@@ -569,13 +568,17 @@ def zip_file():
   
 """
 
-mk_store()  
 basemap()
+
+
+today = datetime.datetime.now()
+day = today.strftime('%Y_%m_%d') 
+  
+
+mk_store()  
 merge_all()
 copy_parts()
 zip_file()
-
-
 
 
 printinfo("Habe fertig!")
