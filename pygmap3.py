@@ -257,7 +257,8 @@ if SPLITTER_VERSION != 0:
   if ExitCode != 0:
     os.system(("wget -N http://www.mkgmap.org.uk/snapshots/splitter-r") + 
 	      (SPLITTER_VERSION) + (".tar.gz"))
-    tar = tarfile.open((work_dir) + "splitter-r" + (SPLITTER_VERSION) + (".tar.gz"))
+    tar = tarfile.open((work_dir) + "splitter-r" + 
+                       (SPLITTER_VERSION) + (".tar.gz"))
     tar.extractall()
     tar.close()   
   
@@ -285,7 +286,8 @@ if MKGMAP_VERSION != 0:
   if ExitCode != 0:
     os.system(("wget -N http://www.mkgmap.org.uk/snapshots/mkgmap-r") + 
               (MKGMAP_VERSION) + (".tar.gz"))
-    tar = tarfile.open((work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + (".tar.gz"))
+    tar = tarfile.open((work_dir) + "mkgmap-r" + 
+                       (MKGMAP_VERSION) + (".tar.gz"))
     tar.extractall()
     tar.close()
   
@@ -321,28 +323,42 @@ def fetch():
   if ExitCode == 0:
     ExitCode = os.system("test -f poly/" + (BUILD_MAP) + ".poly")
     if ExitCode == 0:                     
-      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -B=poly/" +
-               (BUILD_MAP) + ".poly -o=" + (BUILD_MAP) + ".osm.pbf")
+      os.system("osmconvert planet.osm.pbf " +
+                "--complete-ways --complex-ways " +
+                " -B=poly/" + (BUILD_MAP) + ".poly " +
+                " -o=" + (BUILD_MAP) + ".osm.pbf")
 
     elif (BUILD_MAP) == "dach":
-      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=5,45,18,56 -o=" +
-                (BUILD_MAP) + ".osm.pbf")
+      os.system("osmconvert planet.osm.pbf " +
+                "--complete-ways --complex-ways " +
+                " -b=5,45,18,56 " +
+                " -o=" + (BUILD_MAP) + ".osm.pbf")
     
     elif (BUILD_MAP) == "benelux":  
-      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=1,49,8,54 -o=" + 
-               (BUILD_MAP) + ".osm.pbf")    
+      os.system("osmconvert planet.osm.pbf " +
+                "--complete-ways --complex-ways " +
+                " -b=1,49,8,54 " +
+                " -o=" + (BUILD_MAP) + ".osm.pbf")    
                
     elif (BUILD_MAP) == "bonn":  
-      os.system("osmconvert planet.osm.pbf --complete-ways --complex-ways -b=6.1,49.7,8.1,51.7 -o=" + 
-               (BUILD_MAP) + ".osm.pbf")    
+      os.system("osmconvert planet.osm.pbf " + 
+                "--complete-ways --complex-ways " +
+                " -b=6.1,49.7,8.1,51.7 " +
+                " -o=" + (BUILD_MAP) + ".osm.pbf")    
+
+    elif (BUILD_MAP) == "voralpen":  
+      os.system("osmconvert planet.osm.pbf " + 
+                "--complete-ways --complex-ways " +
+                " -b=9,47,14,49 " +
+                " -o=" + (BUILD_MAP) + ".osm.pbf")    
 
     else:
       printerror("no poly or BBOX found... exit")
       quit()
 
   else:  
-     os.system("wget -N http://download.geofabrik.de/openstreetmap/" + (CONTINENT) + "/" +
-              (BUILD_MAP) + ".osm.pbf")
+     os.system("wget -N http://download.geofabrik.de/openstreetmap/" + 
+              (CONTINENT) + "/" + (BUILD_MAP) + ".osm.pbf")
 
 today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d')
@@ -404,14 +420,22 @@ ExitCode = os.system("test -f areas/" + (BUILD_MAP) + "_areas.list")
 if ExitCode == 0:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-           " --split-file=" + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list \
-            --mapid=" + str(MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
-           " --cache=cache --overlap=5000 " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
+#           " --problem-file=" + (work_dir) + "problem_polygons.txt" +
+           " --split-file=" + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list " +
+           " --overlap=5000 " +
+           " --mapid=" + str(MAPID) + "0001 " +
+           "--max-nodes=" + (MAXNODES) + 
+           " --cache=cache " + 
+           (work_dir) + (BUILD_MAP) + ".osm.pbf")
 else:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-           " --mapid=" + str(MAPID) + "0001 --max-nodes=" + (MAXNODES) + 
-           " --cache=cache --overlap=5000 " + (work_dir) + (BUILD_MAP) + ".osm.pbf")
+#           " --problem-file=" + (work_dir) + "problem_polygons.txt" +
+           " --overlap=5000 " +
+           " --mapid=" + str(MAPID) + "0001 " +
+           " --max-nodes=" + (MAXNODES) + 
+           " --cache=cache " + 
+           (work_dir) + (BUILD_MAP) + ".osm.pbf")
   os.system("cp areas.list " + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list")
   
 os.chdir(work_dir)
@@ -467,11 +491,16 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " +
 layer = "fixme"
 style()
 cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-          (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/fixme_style --description='" + (BUILD_MAP) + " OSM-fixme'  \
-          --family-id=3 --product-id=33 --series-name=OSM-fixme  \
-          --family-name=OSM-fixme --mapname=" + str(MAPID) + "6001 --draw-priority=16 " + 
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
+          " -c " + (work_dir) + "fixme_buglayer.conf" + 
+          " --style-file=" + (work_dir) + (mapstyle) + "/fixme_style" +
+          " --description='" + (BUILD_MAP) + " OSM-fixme'" +
+          " --family-id=3 " +
+          " --product-id=33 " + 
+          " --series-name=OSM-fixme " +
+          " --family-name=OSM-fixme " + 
+          " --mapname=" + str(MAPID) + "6001 " + 
+          " --draw-priority=16 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme_typ.txt")
   
@@ -487,11 +516,15 @@ def basemap():
   layer = "basemap"
   style()
   cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-            (work_dir) + "map.conf --style-file=" + 
-            (work_dir) + (mapstyle) + "/basemap_style --description='" + (BUILD_MAP) + " AIO-basemap'  \
-            --family-id=4 --product-id=45 --series-name=AIO-basemap  \
-            --family-name=AIO-basemap --mapname=" + str(MAPID) + "2001 --draw-priority=10 " + 
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
+            " -c " + (work_dir) + "map.conf " +
+            " --style-file=" + (work_dir) + (mapstyle) + "/basemap_style " + 
+            " --description='" + (BUILD_MAP) + " AIO-basemap' " +
+            " --family-id=4 --product-id=45 " + 
+            " --series-name=AIO-basemap " +
+            " --family-name=AIO-basemap " + 
+            " --mapname=" + str(MAPID) + "2001 " + 
+            " --draw-priority=10 " + 
             (work_dir) + "tiles/*.osm.pbf " + 
             (work_dir) + (mapstyle) + "/basemap_typ.txt")
   os.chdir(work_dir)
@@ -507,6 +540,15 @@ def mk_store():
     elif ExitCode != 0:
       os.makedirs(dir)
 
+"""
+  one dircectory per day 
+"""  
+
+def dir_per_day():
+  today = datetime.datetime.now()
+  global day
+  day = today.strftime('%Y_%m_%d') 
+  
 
 """
   build the images
@@ -518,20 +560,22 @@ def merge_all():
   ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
   if ExitCode == 0:
     os.system("wine ~/bin/gmt.exe -jo " + 
-              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-              (BUILD_MAP) + "_full_basemap_gmapsupp.img  \
-              gbasemap/gmapsupp.img  \
-              gboundary/gmapsupp.img   \
-              gfixme/gmapsupp.img  \
-              hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
+              "/" + (day) + 
+              "/"  + (BUILD_MAP) + "_full_basemap_gmapsupp.img " +
+              " gbasemap/gmapsupp.img " +
+              " gboundary/gmapsupp.img " +
+              " gfixme/gmapsupp.img " +
+              " hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
                   
   else:
     os.system("wine ~/bin/gmt.exe -jo " + 
-              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-              (BUILD_MAP) + "_full_basemap_gmapsupp.img  \
-              gbasemap/gmapsupp.img  \
-              gboundary/gmapsupp.img  \
-              gfixme/gmapsupp.img") 
+              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
+              "/" + (day) + 
+              "/"  + (BUILD_MAP) + "_full_basemap_gmapsupp.img " +
+              " gbasemap/gmapsupp.img " +
+              " gboundary/gmapsupp.img " +
+              " gfixme/gmapsupp.img") 
 
 """
   rename the images
@@ -542,14 +586,16 @@ def copy_parts():
   os.chdir(work_dir)
   for dir in ['gfixme', 'gboundary', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
-             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
+             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
+             "/" + (day) + 
+             "/"  + (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
 
   ExitCode = os.system("test -f hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
   if ExitCode == 0:
     os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
-             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day) + "/"  + 
-             (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")
+             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
+             "/" + (day) + 
+             "/"  + (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")
 
 """
   zipp the images and mv them to separate dirs
@@ -570,10 +616,7 @@ def zip_file():
 
 basemap()
 
-
-today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d') 
-  
+dir_per_day()
 
 mk_store()  
 merge_all()
