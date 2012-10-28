@@ -346,6 +346,12 @@ def fetch():
                 " -b=6.1,49.7,8.1,51.7 " +
                 " -o=" + (BUILD_MAP) + ".osm.pbf")    
 
+    elif (BUILD_MAP) == "th_sn":  
+      os.system("osmconvert planet.osm.pbf " + 
+                "--complete-ways --complex-ways " +
+                " -b=9.93,50.4,14.9,51.53 " +
+                " -o=" + (BUILD_MAP) + ".osm.pbf") 
+
     elif (BUILD_MAP) == "voralpen":  
       os.system("osmconvert planet.osm.pbf " + 
                 "--complete-ways --complex-ways " +
