@@ -103,8 +103,8 @@ def checkfile(filetofind, solutionhint):
   else:
     printerror(filetofind + " not found")
     print(solutionhint)
-
-
+    quit()
+    
 def checkdir(dirtofind, solutionhint):
   """
     test if a dir can be found  at a predefined place
@@ -227,9 +227,8 @@ checkprg("7z", hint)
 hint = " osmconvert missed, needed to cut data from the planet.osm.pbf"
 checkprg("osmconvert", hint)
 
-hint = (" No Planet-File found, get it and store it as planet.osm.pbf in " + (work_dir))
-checkfile("planet.osm.pbf", hint)
-
+hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
+checkfile("bounds.zip", hint)
 
 """ 
   get the styles, 7z is needed to extract the styles
@@ -366,8 +365,10 @@ def fetch():
      os.system("wget -N http://download.geofabrik.de/openstreetmap/" + 
               (CONTINENT) + "/" + (BUILD_MAP) + ".osm.pbf")
 
-today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d')
+"""
+is there a keep_pbf.lck, then use the old osm.pbf
+
+"""
 
 ExitCode = os.system("test -f keep_pbf.lck")
 if ExitCode == 0:
@@ -410,7 +411,7 @@ if ExitCode != 0:
   os.mkdir("areas")
     
 """
-  random mapid
+  random mapid, just fun, not really needed
   
 """
 
@@ -475,7 +476,6 @@ def cleanup():
   os.chdir((work_dir) + "/g" + (layer))
   print((layer) + "-layer build with " + (mapstyle))
   os.system("rm -Rf * ")
-  os.system("ln -s ../bounds bounds")
   os.system("ln -s ../data data") 
   
 """ 
@@ -486,11 +486,16 @@ def cleanup():
 layer = "boundary"
 style()
 cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + " -c " + 
-          (work_dir) + "fixme_buglayer.conf --style-file=" + 
-          (work_dir) + (mapstyle) + "/boundary_style --description='" + (BUILD_MAP) + " OSM-boundary' \
-          --family-id=6 --product-id=30 --series-name=OSM-boundary  \
-          --family-name=OSM-boundary --mapname=" + str(MAPID) + "5001 --draw-priority=14 " + 
+os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
+          " -c " + (work_dir) + "fixme_buglayer.conf " +
+          " --style-file=" + (work_dir) + (mapstyle) + "/boundary_style " +
+          " --description='" + (BUILD_MAP) + " OSM-boundary' " +
+          " --family-id=6 " +
+          " --product-id=30 " +
+          " --series-name=OSM-boundary " +
+          " --family-name=OSM-boundary " + 
+          " --mapname=" + str(MAPID) + "5001  " +
+          " --draw-priority=14 " + 
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/boundary_typ.txt")
 
@@ -498,9 +503,9 @@ layer = "fixme"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
-          " -c " + (work_dir) + "fixme_buglayer.conf" + 
-          " --style-file=" + (work_dir) + (mapstyle) + "/fixme_style" +
-          " --description='" + (BUILD_MAP) + " OSM-fixme'" +
+          " -c " + (work_dir) + "fixme_buglayer.conf " + 
+          " --style-file=" + (work_dir) + (mapstyle) + "/fixme_style " +
+          " --description='" + (BUILD_MAP) + " OSM-fixme' " +
           " --family-id=3 " +
           " --product-id=33 " + 
           " --series-name=OSM-fixme " +
@@ -510,8 +515,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) +
           (work_dir) + "tiles/*.osm.pbf " + 
           (work_dir) + (mapstyle) + "/fixme_typ.txt")
   
-dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
-dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
+
 
 """
   some defs
@@ -526,6 +530,7 @@ def basemap():
             " -c " + (work_dir) + "map.conf " +
             " --style-file=" + (work_dir) + (mapstyle) + "/basemap_style " + 
             " --description='" + (BUILD_MAP) + " AIO-basemap' " +
+            " --bounds=" + (work_dir) + "bounds.zip " +
             " --family-id=4 --product-id=45 " + 
             " --series-name=AIO-basemap " +
             " --family-name=AIO-basemap " + 
@@ -546,14 +551,7 @@ def mk_store():
     elif ExitCode != 0:
       os.makedirs(dir)
 
-"""
-  one dircectory per day 
-"""  
 
-def dir_per_day():
-  today = datetime.datetime.now()
-  global day
-  day = today.strftime('%Y_%m_%d') 
   
 
 """
@@ -615,15 +613,18 @@ def zip_file():
   os.system("mv *.zip " + (work_dir) + (dir1))
   
 
+
 """
-  make it now
-  
-"""
+  one dircectory per day 
+"""  
+
+today = datetime.datetime.now()
+day = today.strftime('%Y_%m_%d') 
+dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
+dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
+
 
 basemap()
-
-dir_per_day()
-
 mk_store()  
 merge_all()
 copy_parts()
@@ -635,6 +636,9 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+v0.9.35 - some changes in workprocess
+          some changes at mkgmap-options
+
 v0.9.34 - dach.poly added
           keep areas.list for next runs
           remove rrk-code
