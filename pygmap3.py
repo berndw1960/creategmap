@@ -178,7 +178,7 @@ parser = argparse.ArgumentParser(
             
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            RAMSIZE = "3000M" or "3G" (default)
+            RAMSIZE = "3000M" or "4G" (default)
             MAXNODES = "1600000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
                              for available versions
@@ -189,10 +189,10 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
-parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
+parser.add_argument('-r', '--ramsize', dest='ramsize', default='4G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default=0)
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='224')
 args = parser.parse_args()
 
 
@@ -427,21 +427,25 @@ ExitCode = os.system("test -f areas/" + (BUILD_MAP) + "_areas.list")
 if ExitCode == 0:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-#           " --problem-file=" + (work_dir) + "problem_polygons.txt" +
            " --split-file=" + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list " +
-           " --overlap=5000 " +
+           " --geonames-file=" + (work_dir) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
-           "--max-nodes=" + (MAXNODES) + 
-           " --cache=cache " + 
+           " --keep-complete " +
+           " --write-kml=" +  (BUILD_MAP) + ".kml "
+           " --max-areas=1024 " +
+           " --max-nodes=" + (MAXNODES) + 
+           " --overlap=0 " +
            (work_dir) + (BUILD_MAP) + ".osm.pbf")
 else:
   os.chdir("tiles")
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-#           " --problem-file=" + (work_dir) + "problem_polygons.txt" +
-           " --overlap=5000 " +
+  os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) +
+           " --geonames-file=" + (work_dir) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
+           " --keep-complete " +
+           " --write-kml=" +  (BUILD_MAP) + ".kml "
+           " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
-           " --cache=cache " + 
+           " --overlap=0 " +
            (work_dir) + (BUILD_MAP) + ".osm.pbf")
   os.system("cp areas.list " + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list")
   
@@ -476,7 +480,6 @@ def cleanup():
   os.chdir((work_dir) + "/g" + (layer))
   print((layer) + "-layer build with " + (mapstyle))
   os.system("rm -Rf * ")
-  os.system("ln -s ../data data") 
   
 """ 
  create Bugs- and FIXME-Layer 
@@ -496,7 +499,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) +
           " --family-name=OSM-boundary " + 
           " --mapname=" + str(MAPID) + "5001  " +
           " --draw-priority=14 " + 
-          (work_dir) + "tiles/*.osm.pbf " + 
+          " -c " + (work_dir) + "tiles/template.args " +
           (work_dir) + (mapstyle) + "/boundary_typ.txt")
 
 layer = "fixme"
@@ -512,7 +515,7 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) +
           " --family-name=OSM-fixme " + 
           " --mapname=" + str(MAPID) + "6001 " + 
           " --draw-priority=16 " + 
-          (work_dir) + "tiles/*.osm.pbf " + 
+          " -c " + (work_dir) + "tiles/template.args " + 
           (work_dir) + (mapstyle) + "/fixme_typ.txt")
   
 
@@ -536,7 +539,7 @@ def basemap():
             " --family-name=AIO-basemap " + 
             " --mapname=" + str(MAPID) + "2001 " + 
             " --draw-priority=10 " + 
-            (work_dir) + "tiles/*.osm.pbf " + 
+            " -c " + (work_dir) + "tiles/template.args " + 
             (work_dir) + (mapstyle) + "/basemap_typ.txt")
   os.chdir(work_dir)
   
@@ -611,6 +614,7 @@ def zip_file():
   os.chdir(dir2)
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (work_dir) + (dir1))
+  os.system("mv " + (work_dir) + "tiles/"+ (BUILD_MAP) + ".kml " + (work_dir) + (dir1))
   
 
 
