@@ -555,34 +555,6 @@ def mk_store():
       os.makedirs(dir)
 
 
-  
-
-"""
-  build the images
-  
-"""  
-
-def merge_all():
-  os.chdir(work_dir)
-  ExitCode = os.system("test -d hoehenlinien/" + (BUILD_MAP))
-  if ExitCode == 0:
-    os.system("wine ~/bin/gmt.exe -jo " + 
-              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
-              "/" + (day) + 
-              "/"  + (BUILD_MAP) + "_full_basemap_gmapsupp.img " +
-              " gbasemap/gmapsupp.img " +
-              " gboundary/gmapsupp.img " +
-              " gfixme/gmapsupp.img " +
-              " hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-                  
-  else:
-    os.system("wine ~/bin/gmt.exe -jo " + 
-              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
-              "/" + (day) + 
-              "/"  + (BUILD_MAP) + "_full_basemap_gmapsupp.img " +
-              " gbasemap/gmapsupp.img " +
-              " gboundary/gmapsupp.img " +
-              " gfixme/gmapsupp.img") 
 
 """
   rename the images
@@ -595,14 +567,14 @@ def copy_parts():
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
              "/" + (day) + 
-             "/"  + (BUILD_MAP) + "_parts_" + (dir) + "_gmapsupp.img")
+             "/"  + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
   ExitCode = os.system("test -f hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
   if ExitCode == 0:
     os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
              (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
              "/" + (day) + 
-             "/"  + (BUILD_MAP) + "_parts_gcontourlines_gmapsupp.img")
+             "/"  + (BUILD_MAP) + "_gcontourlines_gmapsupp.img")
 
 """
   zipp the images and mv them to separate dirs
@@ -630,7 +602,6 @@ dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
 
 basemap()
 mk_store()  
-#merge_all()
 copy_parts()
 zip_file()
 
@@ -640,6 +611,9 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.36 - simplify workprocess
+
 v0.9.35 - some changes in workprocess
           some changes at mkgmap-options
 
