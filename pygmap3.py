@@ -630,7 +630,7 @@ dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
 
 basemap()
 mk_store()  
-merge_all()
+#merge_all()
 copy_parts()
 zip_file()
 
