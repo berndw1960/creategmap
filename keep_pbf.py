@@ -40,7 +40,7 @@ def checkdir(dirtofind, solutionhint):
     
   return ExitCode
 
-work_dir = (os.environ['HOME'] + "/share/osm/map_build/")
+work_dir = (os.environ['HOME'] + "/map_build/")
 
 hint = ("mkdir " + (work_dir))
 checkdir((work_dir), hint) 

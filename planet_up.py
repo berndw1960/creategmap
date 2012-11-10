@@ -93,9 +93,8 @@ def checkdir(dirtofind, solutionhint):
 
 # defaults =============================================================================
 
-work_dir = (os.environ['HOME'] + "/share/osm/map_build/") 
+work_dir = (os.environ['HOME'] + "/map_build/") 
 # Der letzte Slash muss sein!!!
-
 
 hint = ("mkdir " + (work_dir))
 checkdir((work_dir), hint) 
