@@ -564,11 +564,6 @@ def mk_store():
 
   os.chdir(WORK_DIR)
 
-  today = datetime.datetime.now()
-  day = today.strftime('%Y_%m_%d') 
-  dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
-  dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
-
   for dir in [(dir1), (dir2)]:
     ExitCode = os.system("test -d " +  (dir))
     if ExitCode == 0:
@@ -626,6 +621,14 @@ def zip_file():
 
 
 basemap()
+
+
+today = datetime.datetime.now()
+day = today.strftime('%Y_%m_%d') 
+dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
+dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
+
+
 mk_store()  
 copy_parts()
 zip_file()
