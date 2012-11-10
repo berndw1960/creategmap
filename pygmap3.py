@@ -122,8 +122,8 @@ def checkdir(dirtofind, solutionhint):
     quit()
 
 
-work_dir = (os.environ['HOME'] + "/share/osm/map_build/") 
-# Der letzte Slash muss sein!!!
+
+
 
 
 """
@@ -193,6 +193,7 @@ parser.add_argument('-r', '--ramsize', dest='ramsize', default='4G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
 parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='224')
+parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
 args = parser.parse_args()
 
 
@@ -203,6 +204,9 @@ RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
 MKGMAP_VERSION = (args.mkgmap_version)
 SPLITTER_VERSION = (args.splitter_version)
+WORK_DIR = (os.environ['HOME'] + "/"  + (args.work_dir) + "/")
+
+# Der letzte Slash muss sein!!!
 
 
 """
@@ -210,16 +214,10 @@ SPLITTER_VERSION = (args.splitter_version)
   
 """
 
-hint = ("mkdir " + (work_dir))
-checkdir((work_dir), hint) 
+hint = ("mkdir " + (WORK_DIR))
+checkdir((WORK_DIR), hint) 
 
-os.chdir(work_dir)
-
-hint = "Install: wine to work with ~/bin/gmt.exe from GMAPTOOLS"
-checkprg("wine", hint)
- 
-hint = " Download: http://www.anpo.republika.pl/download.html"
-checkprg("gmt.exe", hint)
+os.chdir(WORK_DIR)
 
 hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
@@ -238,12 +236,12 @@ checkfile("bounds.zip", hint)
 ExitCode = os.system("test -d aiostyles")
     
 if ExitCode == 0:
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
 
 else:
   os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
   os.system("7z x aiostyles.7z -oaiostyles")
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
 
 """
   get splitter and mkgmap 
@@ -256,12 +254,12 @@ if SPLITTER_VERSION != 0:
   if ExitCode != 0:
     os.system(("wget -N http://www.mkgmap.org.uk/snapshots/splitter-r") + 
 	      (SPLITTER_VERSION) + (".tar.gz"))
-    tar = tarfile.open((work_dir) + "splitter-r" + 
+    tar = tarfile.open((WORK_DIR) + "splitter-r" + 
                        (SPLITTER_VERSION) + (".tar.gz"))
     tar.extractall()
     tar.close()   
   
-  splitter = ((work_dir) + "splitter-r" + (SPLITTER_VERSION) + "/splitter.jar")
+  splitter = ((WORK_DIR) + "splitter-r" + (SPLITTER_VERSION) + "/splitter.jar")
   
 else:    
   target.request("GET", "/splitter/index.html")
@@ -274,23 +272,23 @@ else:
   target.close()
   os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + 
             (splitter_rev) + (".tar.gz"))
-  tar = tarfile.open((work_dir) + (splitter_rev) + (".tar.gz"))
+  tar = tarfile.open((WORK_DIR) + (splitter_rev) + (".tar.gz"))
   tar.extractall()
   tar.close()    
     
-  splitter = ((work_dir) + (splitter_rev) + "/splitter.jar")
+  splitter = ((WORK_DIR) + (splitter_rev) + "/splitter.jar")
 
 if MKGMAP_VERSION != 0:
   ExitCode = os.system("test -d mkgmap-r" + (MKGMAP_VERSION))
   if ExitCode != 0:
     os.system(("wget -N http://www.mkgmap.org.uk/snapshots/mkgmap-r") + 
               (MKGMAP_VERSION) + (".tar.gz"))
-    tar = tarfile.open((work_dir) + "mkgmap-r" + 
+    tar = tarfile.open((WORK_DIR) + "mkgmap-r" + 
                        (MKGMAP_VERSION) + (".tar.gz"))
     tar.extractall()
     tar.close()
   
-  mkgmap = (work_dir) + "mkgmap-r" + (MKGMAP_VERSION) + "/mkgmap.jar"
+  mkgmap = (WORK_DIR) + "mkgmap-r" + (MKGMAP_VERSION) + "/mkgmap.jar"
   
 
 else:
@@ -304,11 +302,11 @@ else:
   target.close()
   os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + 
             (mkgmap_rev) + (".tar.gz"))
-  tar = tarfile.open((work_dir) + (mkgmap_rev) + (".tar.gz"))
+  tar = tarfile.open((WORK_DIR) + (mkgmap_rev) + (".tar.gz"))
   tar.extractall()
   tar.close()
 
-  mkgmap = (work_dir) + (mkgmap_rev) + "/mkgmap.jar"
+  mkgmap = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
 
 target.close()
 
@@ -386,7 +384,7 @@ else:
   
 
 """
-  create (work_dir) for splitter
+  create (WORK_DIR) for splitter
   
 """  
  
@@ -395,7 +393,7 @@ ExitCode = os.system("test -d tiles")
 if ExitCode == 0:
   os.chdir("tiles")
   os.system("rm -Rf *")
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
 	  
 else: 
     os.mkdir("tiles")
@@ -427,29 +425,29 @@ ExitCode = os.system("test -f areas/" + (BUILD_MAP) + "_areas.list")
 if ExitCode == 0:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
-           " --split-file=" + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list " +
-           " --geonames-file=" + (work_dir) + "cities15000.txt " +
+           " --split-file=" + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list " +
+           " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
            " --keep-complete " +
            " --write-kml=" +  (BUILD_MAP) + ".kml "
            " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
-           (work_dir) + (BUILD_MAP) + ".osm.pbf")
+           (WORK_DIR) + (BUILD_MAP) + ".osm.pbf")
 else:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) +
-           " --geonames-file=" + (work_dir) + "cities15000.txt " +
+           " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
            " --keep-complete " +
            " --write-kml=" +  (BUILD_MAP) + ".kml "
            " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
-           (work_dir) + (BUILD_MAP) + ".osm.pbf")
-  os.system("cp areas.list " + (work_dir) + "areas/" + (BUILD_MAP) + "_areas.list")
+           (WORK_DIR) + (BUILD_MAP) + ".osm.pbf")
+  os.system("cp areas.list " + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list")
   
-os.chdir(work_dir)
+os.chdir(WORK_DIR)
 
 """
   create mapdirs
@@ -467,8 +465,8 @@ for dir in ['gfixme', 'gbasemap', 'gboundary', 'gps_ready']:
 """
 
 def style():
-  os.chdir(work_dir)
-  ExitCode = os.system("test -d " + (work_dir) + "mystyles/" + 
+  os.chdir(WORK_DIR)
+  ExitCode = os.system("test -d " + (WORK_DIR) + "mystyles/" + 
                          (layer) + "_style")
   global mapstyle
   if ExitCode == 0:
@@ -477,7 +475,7 @@ def style():
     mapstyle = "aiostyles"
   
 def cleanup():  
-  os.chdir((work_dir) + "/g" + (layer))
+  os.chdir((WORK_DIR) + "/g" + (layer))
   print((layer) + "-layer build with " + (mapstyle))
   os.system("rm -Rf * ")
   
@@ -490,8 +488,8 @@ layer = "boundary"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
-          " -c " + (work_dir) + "fixme_buglayer.conf " +
-          " --style-file=" + (work_dir) + (mapstyle) + "/boundary_style " +
+          " -c " + (WORK_DIR) + "fixme_buglayer.conf " +
+          " --style-file=" + (WORK_DIR) + (mapstyle) + "/boundary_style " +
           " --description='" + (BUILD_MAP) + " OSM-boundary' " +
           " --family-id=6 " +
           " --product-id=30 " +
@@ -499,15 +497,15 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) +
           " --family-name=OSM-boundary " + 
           " --mapname=" + str(MAPID) + "5001  " +
           " --draw-priority=14 " + 
-          " -c " + (work_dir) + "tiles/template.args " +
-          (work_dir) + (mapstyle) + "/boundary_typ.txt")
+          " -c " + (WORK_DIR) + "tiles/template.args " +
+          (WORK_DIR) + (mapstyle) + "/boundary_typ.txt")
 
 layer = "fixme"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
-          " -c " + (work_dir) + "fixme_buglayer.conf " + 
-          " --style-file=" + (work_dir) + (mapstyle) + "/fixme_style " +
+          " -c " + (WORK_DIR) + "fixme_buglayer.conf " + 
+          " --style-file=" + (WORK_DIR) + (mapstyle) + "/fixme_style " +
           " --description='" + (BUILD_MAP) + " OSM-fixme' " +
           " --family-id=3 " +
           " --product-id=33 " + 
@@ -515,8 +513,8 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) +
           " --family-name=OSM-fixme " + 
           " --mapname=" + str(MAPID) + "6001 " + 
           " --draw-priority=16 " + 
-          " -c " + (work_dir) + "tiles/template.args " + 
-          (work_dir) + (mapstyle) + "/fixme_typ.txt")
+          " -c " + (WORK_DIR) + "tiles/template.args " + 
+          (WORK_DIR) + (mapstyle) + "/fixme_typ.txt")
   
 
 
@@ -530,22 +528,22 @@ def basemap():
   style()
   cleanup()
   os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
-            " -c " + (work_dir) + "map.conf " +
-            " --style-file=" + (work_dir) + (mapstyle) + "/basemap_style " + 
+            " -c " + (WORK_DIR) + "map.conf " +
+            " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " + 
             " --description='" + (BUILD_MAP) + " AIO-basemap' " +
-            " --bounds=" + (work_dir) + "bounds.zip " +
+            " --bounds=" + (WORK_DIR) + "bounds.zip " +
             " --family-id=4 --product-id=45 " + 
             " --series-name=AIO-basemap " +
             " --family-name=AIO-basemap " + 
             " --mapname=" + str(MAPID) + "2001 " + 
             " --draw-priority=10 " + 
-            " -c " + (work_dir) + "tiles/template.args " + 
-            (work_dir) + (mapstyle) + "/basemap_typ.txt")
-  os.chdir(work_dir)
+            " -c " + (WORK_DIR) + "tiles/template.args " + 
+            (WORK_DIR) + (mapstyle) + "/basemap_typ.txt")
+  os.chdir(WORK_DIR)
   
 
 def mk_store():
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
   for dir in [(dir1), (dir2)]:
     ExitCode = os.system("test -d " +  (dir))
     if ExitCode == 0:
@@ -562,17 +560,17 @@ def mk_store():
 """  
 
 def copy_parts():
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
   for dir in ['gfixme', 'gboundary', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
-             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
+             (WORK_DIR) + "gps_ready/unzipped/" + (BUILD_MAP) + 
              "/" + (day) + 
              "/"  + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
   ExitCode = os.system("test -f hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
   if ExitCode == 0:
     os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
-             (work_dir) + "gps_ready/unzipped/" + (BUILD_MAP) + 
+             (WORK_DIR) + "gps_ready/unzipped/" + (BUILD_MAP) + 
              "/" + (day) + 
              "/"  + (BUILD_MAP) + "_gcontourlines_gmapsupp.img")
 
@@ -582,11 +580,11 @@ def copy_parts():
 """
 
 def zip_file():
-  os.chdir(work_dir) 
+  os.chdir(WORK_DIR) 
   os.chdir(dir2)
   os.system("for file in *.img; do zip $file.zip $file; done")
-  os.system("mv *.zip " + (work_dir) + (dir1))
-  os.system("mv " + (work_dir) + "tiles/"+ (BUILD_MAP) + ".kml " + (work_dir) + (dir1))
+  os.system("mv *.zip " + (WORK_DIR) + (dir1))
+  os.system("mv " + (WORK_DIR) + "tiles/"+ (BUILD_MAP) + ".kml " + (WORK_DIR) + (dir1))
   
 
 
@@ -667,7 +665,7 @@ v0.8.0	- AIO-basemap as additional maptype
 
 ## 2011-02-14 Projectstatus changed to BETA
 
-v0.6.7	- change work_dir to map_build
+v0.6.7	- change WORK_DIR to map_build
 
 v0.6.6	- better map-description, if more then one map is used on the GPS-device
 
