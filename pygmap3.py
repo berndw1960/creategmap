@@ -600,7 +600,7 @@ def copy_parts():
   if ExitCode == 0: 
     os.system("mv " + (WORK_DIR) + "tiles/" + (BUILD_MAP) + ".kml " + (WORK_DIR) + (dir1))
   
-  ExitCode = os.system("test -f " + (WORK_DIR) + "gbasemap/mkgmap.log.* ")
+  ExitCode = os.system("test -f " + (WORK_DIR) + "gbasemap/mkgmap.log ")
   if ExitCode == 0:
     os.system("mv " + (WORK_DIR) + "gbasemap/mkgmap.log.* " + (WORK_DIR) + (dir2))
     
