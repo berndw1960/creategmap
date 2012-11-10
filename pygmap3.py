@@ -424,7 +424,9 @@ MAPID = random.randint(6301, 6399)
 ExitCode = os.system("test -f areas/" + (BUILD_MAP) + "_areas.list")
 if ExitCode == 0:
   os.chdir("tiles")
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) + 
+  os.system("java -ea " + (RAMSIZE) + 
+           " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+	   " -jar " + (splitter) + 
            " --split-file=" + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list " +
            " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
@@ -436,7 +438,9 @@ if ExitCode == 0:
            (WORK_DIR) + (BUILD_MAP) + ".osm.pbf")
 else:
   os.chdir("tiles")
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (splitter) +
+  os.system("java -ea " + (RAMSIZE) + 
+           " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+           " -jar " + (splitter) +
            " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
            " --keep-complete " +
@@ -487,7 +491,9 @@ def cleanup():
 layer = "boundary"
 style()
 cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
+os.system("java -ea " + (RAMSIZE) + 
+          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+          " -jar " + (mkgmap) + 
           " -c " + (WORK_DIR) + "fixme_buglayer.conf " +
           " --style-file=" + (WORK_DIR) + (mapstyle) + "/boundary_style " +
           " --description='" + (BUILD_MAP) + " OSM-boundary' " +
@@ -503,7 +509,9 @@ os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) +
 layer = "fixme"
 style()
 cleanup()
-os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
+os.system("java -ea " + (RAMSIZE) + 
+          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+          " -jar " + (mkgmap) +
           " -c " + (WORK_DIR) + "fixme_buglayer.conf " + 
           " --style-file=" + (WORK_DIR) + (mapstyle) + "/fixme_style " +
           " --description='" + (BUILD_MAP) + " OSM-fixme' " +
@@ -527,7 +535,9 @@ def basemap():
   layer = "basemap"
   style()
   cleanup()
-  os.system("java -ea " + (RAMSIZE) + " -jar " + (mkgmap) + 
+  os.system("java -ea " + (RAMSIZE) + 
+            " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+            " -jar " + (mkgmap) + 
             " -c " + (WORK_DIR) + "map.conf " +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " + 
             " --description='" + (BUILD_MAP) + " AIO-basemap' " +
@@ -542,8 +552,23 @@ def basemap():
   os.chdir(WORK_DIR)
   
 
+"""
+  one dircectory per day 
+"""  
+
+
+
+
+
 def mk_store():
+
   os.chdir(WORK_DIR)
+
+  today = datetime.datetime.now()
+  day = today.strftime('%Y_%m_%d') 
+  dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
+  dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
+
   for dir in [(dir1), (dir2)]:
     ExitCode = os.system("test -d " +  (dir))
     if ExitCode == 0:
@@ -560,7 +585,9 @@ def mk_store():
 """  
 
 def copy_parts():
+  
   os.chdir(WORK_DIR)
+  
   for dir in ['gfixme', 'gboundary', 'gbasemap']:
     os.system("cp " + (dir) + "/gmapsupp.img "  + 
              (WORK_DIR) + "gps_ready/unzipped/" + (BUILD_MAP) + 
@@ -574,28 +601,28 @@ def copy_parts():
              "/" + (day) + 
              "/"  + (BUILD_MAP) + "_gcontourlines_gmapsupp.img")
 
+  ExitCode = os.system("test -f " + (WORK_DIR) + "tiles/" + (BUILD_MAP) + ".kml ")
+  if ExitCode == 0: 
+    os.system("mv " + (WORK_DIR) + "tiles/" + (BUILD_MAP) + ".kml " + (WORK_DIR) + (dir1))
+  
+  ExitCode = os.system("test -f " + (WORK_DIR) + "gbasemap/mkgmap.log.* ")
+  if ExitCode == 0:
+    os.system("mv " + (WORK_DIR) + "gbasemap/mkgmap.log.* " + (WORK_DIR) + (dir2))
+    
+    
 """
   zipp the images and mv them to separate dirs
 
 """
 
 def zip_file():
-  os.chdir(WORK_DIR) 
+  
+  os.chdir(WORK_DIR)
+  
   os.chdir(dir2)
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (WORK_DIR) + (dir1))
-  os.system("mv " + (WORK_DIR) + "tiles/"+ (BUILD_MAP) + ".kml " + (WORK_DIR) + (dir1))
-  
 
-
-"""
-  one dircectory per day 
-"""  
-
-today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d') 
-dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
-dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
 
 
 basemap()
