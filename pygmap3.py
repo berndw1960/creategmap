@@ -425,7 +425,6 @@ ExitCode = os.system("test -f areas/" + (BUILD_MAP) + "_areas.list")
 if ExitCode == 0:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + 
-           " -Dlog.config=" + (WORK_DIR) + "log.conf " +
 	   " -jar " + (splitter) + 
            " --split-file=" + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list " +
            " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
@@ -439,7 +438,6 @@ if ExitCode == 0:
 else:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + 
-           " -Dlog.config=" + (WORK_DIR) + "log.conf " +
            " -jar " + (splitter) +
            " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
@@ -492,7 +490,7 @@ layer = "boundary"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + 
-          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+#          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
           " -jar " + (mkgmap) + 
           " -c " + (WORK_DIR) + "fixme_buglayer.conf " +
           " --style-file=" + (WORK_DIR) + (mapstyle) + "/boundary_style " +
@@ -510,7 +508,7 @@ layer = "fixme"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + 
-          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+#          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
           " -jar " + (mkgmap) +
           " -c " + (WORK_DIR) + "fixme_buglayer.conf " + 
           " --style-file=" + (WORK_DIR) + (mapstyle) + "/fixme_style " +
