@@ -192,7 +192,7 @@ parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='4G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='224')
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='231')
 parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
 args = parser.parse_args()
 
@@ -562,7 +562,7 @@ def mk_store():
 
   os.chdir(WORK_DIR)
 
-  for dir in [(dir1), (dir2)]:
+  for dir in [(dir1), (dir2), (dir3) ]:
     ExitCode = os.system("test -d " +  (dir))
     if ExitCode == 0:
       os.system("rm -Rf " + (dir)) 
@@ -600,7 +600,7 @@ def copy_parts():
   
   ExitCode = os.system("test -f " + (WORK_DIR) + "gbasemap/mkgmap.log.0 ")
   if ExitCode == 0:
-    os.system("mv " + (WORK_DIR) + "gbasemap/mkgmap.log.* " + (WORK_DIR) + (dir2))
+    os.system("mv " + (WORK_DIR) + "gbasemap/mkgmap.log.* " + (WORK_DIR) + (dir3))
     
     
 """
@@ -625,7 +625,7 @@ today = datetime.datetime.now()
 day = today.strftime('%Y_%m_%d') 
 dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
 dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
-
+dir3 = ("log/" + (BUILD_MAP) + "/" + (day))
 
 mk_store()  
 copy_parts()
