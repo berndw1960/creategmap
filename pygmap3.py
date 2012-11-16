@@ -337,7 +337,6 @@ def fetch():
                 "--complete-ways --complex-ways " +
                 " -b=9,47,14,49 " +
                 " -o=" + (BUILD_MAP) + ".o5m")    
-      use_typ = ".o5m"
       
     else:
       printerror("no poly or BBOX found... exit")
