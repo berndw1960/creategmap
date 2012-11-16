@@ -307,34 +307,30 @@ def fetch():
                 "--complete-ways --complex-ways " +
                 " -B=poly/" + (BUILD_MAP) + ".poly " +
                 " -o=" + (BUILD_MAP) + ".o5m")
-      use_typ = ".o5m"
       
     elif (BUILD_MAP) == "dach":
       os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -b=5,45,18,56 " +
                 " -o=" + (BUILD_MAP) + ".o5m")
-      use_typ    
+  
     elif (BUILD_MAP) == "benelux":  
       os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -b=1,49,8,54 " +
                 " -o=" + (BUILD_MAP) + ".o5m")    
-      use_typ = ".o5m"
       
     elif (BUILD_MAP) == "bonn":  
       os.system("osmconvert planet.o5m " + 
                 "--complete-ways --complex-ways " +
                 " -b=6.1,49.7,8.1,51.7 " +
                 " -o=" + (BUILD_MAP) + ".o5m")    
-      use_typ = ".o5m"
       
     elif (BUILD_MAP) == "th_sn":  
       os.system("osmconvert planet.o5m " + 
                 "--complete-ways --complex-ways " +
                 " -b=9.93,50.4,14.9,51.53 " +
                 " -o=" + (BUILD_MAP) + ".o5m") 
-      use_typ = ".o5m"
       
     elif (BUILD_MAP) == "voralpen":  
       os.system("osmconvert planet.o5m " + 
@@ -420,7 +416,7 @@ if ExitCode == 0:
            " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
-           (WORK_DIR) + (BUILD_MAP) + (use_typ))
+           (WORK_DIR) + (BUILD_MAP) + ".o5m")
 else:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + 
@@ -432,7 +428,7 @@ else:
            " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
-           (WORK_DIR) + (BUILD_MAP) + (use_typ))
+           (WORK_DIR) + (BUILD_MAP) + ".o5m")
   os.system("cp areas.list " + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list")
   
 os.chdir(WORK_DIR)
