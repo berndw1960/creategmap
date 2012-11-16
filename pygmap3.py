@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.34"
+__version__ = "0.9.37"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -189,10 +189,10 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
-parser.add_argument('-r', '--ramsize', dest='ramsize', default='4G')
+parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='231')
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='232')
 parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
 args = parser.parse_args()
 
@@ -219,29 +219,12 @@ checkdir((WORK_DIR), hint)
 
 os.chdir(WORK_DIR)
 
-hint = "Install: 7z to extract mkgmap's stylefiles"
-checkprg("7z", hint)
-
-hint = " osmconvert missed, needed to cut data from the planet.osm.pbf"
+hint = " osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
 
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
 checkfile("bounds.zip", hint)
 
-""" 
-  get the styles, 7z is needed to extract the styles
-
-"""   
-   
-ExitCode = os.system("test -d aiostyles")
-    
-if ExitCode == 0:
-  os.chdir(WORK_DIR)
-
-else:
-  os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
-  os.system("7z x aiostyles.7z -oaiostyles")
-  os.chdir(WORK_DIR)
 
 """
   get splitter and mkgmap 
@@ -316,45 +299,50 @@ target.close()
   
 """  
 def fetch():
-  ExitCode = os.system("test -f planet.osm.pbf")
+  ExitCode = os.system("test -f planet.o5m")
   if ExitCode == 0:
     ExitCode = os.system("test -f poly/" + (BUILD_MAP) + ".poly")
     if ExitCode == 0:                     
-      os.system("osmconvert planet.osm.pbf " +
+      os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -B=poly/" + (BUILD_MAP) + ".poly " +
-                " -o=" + (BUILD_MAP) + ".osm.pbf")
-
+                " -o=" + (BUILD_MAP) + ".o5m")
+      use_typ = ".o5m"
+      
     elif (BUILD_MAP) == "dach":
-      os.system("osmconvert planet.osm.pbf " +
+      os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -b=5,45,18,56 " +
-                " -o=" + (BUILD_MAP) + ".osm.pbf")
-    
+                " -o=" + (BUILD_MAP) + ".o5m")
+      use_typ    
     elif (BUILD_MAP) == "benelux":  
-      os.system("osmconvert planet.osm.pbf " +
+      os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -b=1,49,8,54 " +
-                " -o=" + (BUILD_MAP) + ".osm.pbf")    
-               
+                " -o=" + (BUILD_MAP) + ".o5m")    
+      use_typ = ".o5m"
+      
     elif (BUILD_MAP) == "bonn":  
-      os.system("osmconvert planet.osm.pbf " + 
+      os.system("osmconvert planet.o5m " + 
                 "--complete-ways --complex-ways " +
                 " -b=6.1,49.7,8.1,51.7 " +
-                " -o=" + (BUILD_MAP) + ".osm.pbf")    
-
+                " -o=" + (BUILD_MAP) + ".o5m")    
+      use_typ = ".o5m"
+      
     elif (BUILD_MAP) == "th_sn":  
-      os.system("osmconvert planet.osm.pbf " + 
+      os.system("osmconvert planet.o5m " + 
                 "--complete-ways --complex-ways " +
                 " -b=9.93,50.4,14.9,51.53 " +
-                " -o=" + (BUILD_MAP) + ".osm.pbf") 
-
+                " -o=" + (BUILD_MAP) + ".o5m") 
+      use_typ = ".o5m"
+      
     elif (BUILD_MAP) == "voralpen":  
-      os.system("osmconvert planet.osm.pbf " + 
+      os.system("osmconvert planet.o5m " + 
                 "--complete-ways --complex-ways " +
                 " -b=9,47,14,49 " +
-                " -o=" + (BUILD_MAP) + ".osm.pbf")    
-
+                " -o=" + (BUILD_MAP) + ".o5m")    
+      use_typ = ".o5m"
+      
     else:
       printerror("no poly or BBOX found... exit")
       quit()
@@ -362,27 +350,24 @@ def fetch():
   else:  
      os.system("wget -N http://download.geofabrik.de/openstreetmap/" + 
               (CONTINENT) + "/" + (BUILD_MAP) + ".osm.pbf")
+     os.system("osmconvert " + 
+	      (BUILD_MAP) + ".osm.pbf  --out-o5m > " + (BUILD_MAP) + ".o5m")  
+
 
 """
-is there a keep_pbf.lck, then use the old osm.pbf
+is there a keep_pbf.lck, then use the old data
 
 """
-
+  
 ExitCode = os.system("test -f keep_pbf.lck")
-if ExitCode == 0:
-  keep_pbf = 1
-  printwarning("keep_pbf switched on!")
-  ExitCode = os.system( "test -f " + (BUILD_MAP) + ".osm.pbf")
-  if ExitCode != 0:
-    printerror("no old " + (BUILD_MAP) + ".osm.pbf found, please fetch it")
-    quit()
-
-else:
-  keep_pbf = 0
+if ExitCode != 0:
   printinfo("keep_pbf switched off!")
   fetch()
+else:
+  ExitCode = os.system("test -f " +  (WORK_DIR) + (BUILD_MAP) + ".o5m")
+  if ExitCode != 0:
+    fetch()
   
-
 """
   create (WORK_DIR) for splitter
   
@@ -416,6 +401,7 @@ if ExitCode != 0:
 MAPID = random.randint(6301, 6399)
 
 
+
 """
   split rawdata
   
@@ -434,7 +420,7 @@ if ExitCode == 0:
            " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
-           (WORK_DIR) + (BUILD_MAP) + ".osm.pbf")
+           (WORK_DIR) + (BUILD_MAP) + (use_typ))
 else:
   os.chdir("tiles")
   os.system("java -ea " + (RAMSIZE) + 
@@ -446,7 +432,7 @@ else:
            " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
-           (WORK_DIR) + (BUILD_MAP) + ".osm.pbf")
+           (WORK_DIR) + (BUILD_MAP) + (use_typ))
   os.system("cp areas.list " + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list")
   
 os.chdir(WORK_DIR)
@@ -474,7 +460,8 @@ def style():
   if ExitCode == 0:
     mapstyle = "mystyles"
   else:
-    mapstyle = "aiostyles"
+    printerror("Where are the styles? ")
+    quit()
   
 def cleanup():  
   os.chdir((WORK_DIR) + "/g" + (layer))
@@ -562,7 +549,7 @@ def mk_store():
 
   os.chdir(WORK_DIR)
 
-  for dir in [(dir1), (dir2), (dir3) ]:
+  for dir in [(dir1), (dir2), (dir3)]:
     ExitCode = os.system("test -d " +  (dir))
     if ExitCode == 0:
       os.system("rm -Rf " + (dir)) 
@@ -637,6 +624,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.37 - use *.o5m as input for splitter
 
 v0.9.36 - simplify workprocess
 
