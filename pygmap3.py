@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.37"
+__version__ = "0.9.38"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -103,7 +103,7 @@ def checkfile(filetofind, solutionhint):
   else:
     printerror(filetofind + " not found")
     print(solutionhint)
-    quit()
+    
     
 def checkdir(dirtofind, solutionhint):
   """
@@ -119,10 +119,7 @@ def checkdir(dirtofind, solutionhint):
   else:
     printerror(dirtofind + " not found")
     print(solutionhint)
-    quit()
-
-
-
+    
 
 
 
@@ -159,12 +156,7 @@ parser = argparse.ArgumentParser(
                       
             
             Oder mit lokalem Planet möglich...
-            
-            ...als BBOX:
-            
-            Benelux	--> -b benelux  
-            Bonn	--> -b bonn
-            
+
             ...per poly:            
             
             Eigene poly-Dateien können im Verzeichnis 'poly' im Arbeitsverzeichnis
@@ -175,10 +167,10 @@ parser = argparse.ArgumentParser(
             Bayern      --> -b bayern
             Deutschland --> -b germany
             Europa	--> -b europe (nicht nutzbar wegen FAT, zu groß!)   
-            
+                                    
             Andere Einstellungen können bei Bedarf angepasst werden.
             
-            RAMSIZE = "3000M" or "4G" (default)
+            RAMSIZE = "3000M" or "3G" (default)
             MAXNODES = "1600000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
                              for available versions
@@ -191,8 +183,8 @@ parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
-parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='236')
+parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default='2381')
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='247')
 parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
 args = parser.parse_args()
 
@@ -235,7 +227,7 @@ target = http.client.HTTPConnection("www.mkgmap.org.uk")
 if SPLITTER_VERSION != 0:
   ExitCode = os.system("test -d splitter-r" + (SPLITTER_VERSION))
   if ExitCode != 0:
-    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/splitter-r") + 
+    os.system(("wget -N http://www.mkgmap.org.uk/download/splitter-r") + 
 	      (SPLITTER_VERSION) + (".tar.gz"))
     tar = tarfile.open((WORK_DIR) + "splitter-r" + 
                        (SPLITTER_VERSION) + (".tar.gz"))
@@ -245,7 +237,7 @@ if SPLITTER_VERSION != 0:
   splitter = ((WORK_DIR) + "splitter-r" + (SPLITTER_VERSION) + "/splitter.jar")
   
 else:    
-  target.request("GET", "/splitter/index.html")
+  target.request("GET", "/download/splitter.html")
   htmlcontent =  target.getresponse()
   print(htmlcontent.status, htmlcontent.reason)
   data = htmlcontent.read()
@@ -253,7 +245,7 @@ else:
   pattern = re.compile('splitter-r\d{3}')
   splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
   target.close()
-  os.system(("wget -N http://www.mkgmap.org.uk/splitter/") + 
+  os.system(("wget -N http://www.mkgmap.org.uk/download/") + 
             (splitter_rev) + (".tar.gz"))
   tar = tarfile.open((WORK_DIR) + (splitter_rev) + (".tar.gz"))
   tar.extractall()
@@ -264,7 +256,7 @@ else:
 if MKGMAP_VERSION != 0:
   ExitCode = os.system("test -d mkgmap-r" + (MKGMAP_VERSION))
   if ExitCode != 0:
-    os.system(("wget -N http://www.mkgmap.org.uk/snapshots/mkgmap-r") + 
+    os.system(("wget -N http://www.mkgmap.org.uk/download/mkgmap-r") + 
               (MKGMAP_VERSION) + (".tar.gz"))
     tar = tarfile.open((WORK_DIR) + "mkgmap-r" + 
                        (MKGMAP_VERSION) + (".tar.gz"))
@@ -275,7 +267,7 @@ if MKGMAP_VERSION != 0:
   
 
 else:
-  target.request("GET", "/snapshots/index.html")
+  target.request("GET", "/download/mkgmap.html")
   htmlcontent =  target.getresponse()
   print(htmlcontent.status, htmlcontent.reason)
   data = htmlcontent.read()
@@ -283,7 +275,7 @@ else:
   pattern = re.compile('mkgmap-r\d{4}')
   mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
   target.close()
-  os.system(("wget -N http://www.mkgmap.org.uk/snapshots/") + 
+  os.system(("wget -N http://www.mkgmap.org.uk/download/") + 
             (mkgmap_rev) + (".tar.gz"))
   tar = tarfile.open((WORK_DIR) + (mkgmap_rev) + (".tar.gz"))
   tar.extractall()
@@ -302,44 +294,14 @@ def fetch():
   ExitCode = os.system("test -f planet.o5m")
   if ExitCode == 0:
     ExitCode = os.system("test -f poly/" + (BUILD_MAP) + ".poly")
-    if ExitCode == 0:                     
+    if ExitCode == 0:
+      printinfo(" I'm now extracting " + (BUILD_MAP) + ".o5m from Planet")
       os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -B=poly/" + (BUILD_MAP) + ".poly " +
                 " -o=" + (BUILD_MAP) + ".o5m")
-      
-    elif (BUILD_MAP) == "dach":
-      os.system("osmconvert planet.o5m " +
-                "--complete-ways --complex-ways " +
-                " -b=5,45,18,56 " +
-                " -o=" + (BUILD_MAP) + ".o5m")
-  
-    elif (BUILD_MAP) == "benelux":  
-      os.system("osmconvert planet.o5m " +
-                "--complete-ways --complex-ways " +
-                " -b=1,49,8,54 " +
-                " -o=" + (BUILD_MAP) + ".o5m")    
-      
-    elif (BUILD_MAP) == "bonn":  
-      os.system("osmconvert planet.o5m " + 
-                "--complete-ways --complex-ways " +
-                " -b=6.1,49.7,8.1,51.7 " +
-                " -o=" + (BUILD_MAP) + ".o5m")    
-      
-    elif (BUILD_MAP) == "th_sn":  
-      os.system("osmconvert planet.o5m " + 
-                "--complete-ways --complex-ways " +
-                " -b=9.93,50.4,14.9,51.53 " +
-                " -o=" + (BUILD_MAP) + ".o5m") 
-      
-    elif (BUILD_MAP) == "voralpen":  
-      os.system("osmconvert planet.o5m " + 
-                "--complete-ways --complex-ways " +
-                " -b=9,47,14,49 " +
-                " -o=" + (BUILD_MAP) + ".o5m")    
-      
     else:
-      printerror("no poly or BBOX found... exit")
+      printerror("no poly found... exit")
       quit()
 
   else:  
@@ -361,10 +323,11 @@ if ExitCode != 0:
 else:
   ExitCode = os.system("test -f " +  (WORK_DIR) + (BUILD_MAP) + ".o5m")
   if ExitCode != 0:
+    printwarning(" " +(BUILD_MAP) + ".o5m not found, please wait...")
     fetch()
   
 """
-  create (WORK_DIR) for splitter
+  create dir for splitter
   
 """  
  
@@ -410,6 +373,7 @@ if ExitCode == 0:
            " --split-file=" + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list " +
            " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
+           " --output=o5m " +
            " --keep-complete " +
            " --write-kml=" +  (BUILD_MAP) + ".kml "
            " --max-areas=1024 " +
@@ -422,6 +386,7 @@ else:
            " -jar " + (splitter) +
            " --geonames-file=" + (WORK_DIR) + "cities15000.txt " +
            " --mapid=" + str(MAPID) + "0001 " +
+           " --output=o5m " +
            " --keep-complete " +
            " --write-kml=" +  (BUILD_MAP) + ".kml "
            " --max-areas=1024 " +
@@ -505,52 +470,48 @@ os.system("java -ea " + (RAMSIZE) +
           (WORK_DIR) + (mapstyle) + "/fixme_typ.txt")
   
 
-
-"""
-  some defs
-  
-"""  
-def basemap():
-  global layer
-  layer = "basemap"
-  style()
-  cleanup()
-  os.system("java -ea " + (RAMSIZE) + 
-            " -Dlog.config=" + (WORK_DIR) + "log.conf " +
-            " -jar " + (mkgmap) + 
-            " -c " + (WORK_DIR) + "map.conf " +
-            " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " + 
-            " --description='" + (BUILD_MAP) + " AIO-basemap' " +
-            " --bounds=" + (WORK_DIR) + "bounds.zip " +
-            " --family-id=4 --product-id=45 " + 
-            " --series-name=AIO-basemap " +
-            " --family-name=AIO-basemap " + 
-            " --mapname=" + str(MAPID) + "2001 " + 
-            " --draw-priority=10 " + 
-            " -c " + (WORK_DIR) + "tiles/template.args " + 
-            (WORK_DIR) + (mapstyle) + "/basemap_typ.txt")
-  os.chdir(WORK_DIR)
+layer = "basemap"
+style()
+cleanup()
+os.system("java -ea " + (RAMSIZE) + 
+          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+          " -jar " + (mkgmap) + 
+          " -c " + (WORK_DIR) + "map.conf " +
+          " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " + 
+          " --description='" + (BUILD_MAP) + " AIO-basemap' " +
+          " --bounds=" + (WORK_DIR) + "bounds.zip " +
+          " --family-id=4  " +
+          " --product-id=45 " + 
+          " --series-name=AIO-basemap " +
+          " --family-name=AIO-basemap " + 
+          " --mapname=" + str(MAPID) + "2001 " + 
+          " --draw-priority=10 " + 
+          " -c " + (WORK_DIR) + "tiles/template.args " + 
+          (WORK_DIR) + (mapstyle) + "/basemap_typ.txt")
+os.chdir(WORK_DIR)
   
 
 """
-  one dircectory per day 
+  one directory per day 
 """  
 
 
+today = datetime.datetime.now()
+day = today.strftime('%Y_%m_%d')
+BUILD_DAY = ((BUILD_MAP) + "/" + (day))
+dir1 = ("gps_ready/zipped/" + (BUILD_DAY))
+dir2 = ("gps_ready/unzipped/" + (BUILD_DAY))
+dir3 = ("log/" + (BUILD_DAY))
 
+os.chdir(WORK_DIR)
 
-
-def mk_store():
-
-  os.chdir(WORK_DIR)
-
-  for dir in [(dir1), (dir2), (dir3)]:
-    ExitCode = os.system("test -d " +  (dir))
-    if ExitCode == 0:
-      os.system("rm -Rf " + (dir)) 
-      os.makedirs(dir)
-    elif ExitCode != 0:
-      os.makedirs(dir)
+for dir in [(dir1), (dir2), (dir3)]:
+  ExitCode = os.system("test -d " +  (dir))
+  if ExitCode == 0:
+    os.system("rm -Rf " + (dir)) 
+    os.makedirs(dir)
+  elif ExitCode != 0:
+    os.makedirs(dir)
 
 
 
@@ -558,60 +519,43 @@ def mk_store():
   rename the images
 
 """  
-
-def copy_parts():
   
-  os.chdir(WORK_DIR)
+os.chdir(WORK_DIR)
   
-  for dir in ['gfixme', 'gboundary', 'gbasemap']:
-    os.system("cp " + (dir) + "/gmapsupp.img "  + 
-             (WORK_DIR) + "gps_ready/unzipped/" + (BUILD_MAP) + 
-             "/" + (day) + 
-             "/"  + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
+for dir in ['gfixme', 'gboundary', 'gbasemap']:
+  os.system("cp " + (dir) + "/gmapsupp.img "  + 
+           (WORK_DIR) + (dir2) + "/" +
+           (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
-  ExitCode = os.system("test -f hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
-  if ExitCode == 0:
-    os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
-             (WORK_DIR) + "gps_ready/unzipped/" + (BUILD_MAP) + 
-             "/" + (day) + 
-             "/"  + (BUILD_MAP) + "_gcontourlines_gmapsupp.img")
+ExitCode = os.system("test -f hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+if ExitCode == 0:
+  os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
+           (WORK_DIR) + (dir2) + "/" +
+             (BUILD_MAP) + "_gcontourlines_gmapsupp.img")
 
-  ExitCode = os.system("test -f " + (WORK_DIR) + "tiles/" + (BUILD_MAP) + ".kml ")
-  if ExitCode == 0: 
-    os.system("mv " + (WORK_DIR) + "tiles/" + (BUILD_MAP) + ".kml " + (WORK_DIR) + (dir1))
+ExitCode = os.system("test -f " + (WORK_DIR) + "tiles/" + (BUILD_MAP) + ".kml ")
+if ExitCode == 0: 
+  os.system("mv " + (WORK_DIR) + "tiles/" + 
+    (BUILD_MAP) + ".kml " + (WORK_DIR) + (dir1))
   
-  ExitCode = os.system("test -f " + (WORK_DIR) + "gbasemap/mkgmap.log.0 ")
-  if ExitCode == 0:
-    os.system("mv " + (WORK_DIR) + "gbasemap/mkgmap.log.* " + (WORK_DIR) + (dir3))
+ExitCode = os.system("test -f " + (WORK_DIR) + "gbasemap/mkgmap.log.0 ")
+if ExitCode == 0:
+  os.system("mv " + (WORK_DIR) + "gbasemap/mkgmap.log.* " + (WORK_DIR) + (dir3))
     
     
 """
   zipp the images and mv them to separate dirs
 
 """
-
-def zip_file():
   
-  os.chdir(WORK_DIR)
+os.chdir(WORK_DIR)
   
-  os.chdir(dir2)
-  os.system("for file in *.img; do zip $file.zip $file; done")
-  os.system("mv *.zip " + (WORK_DIR) + (dir1))
+os.chdir(dir2)
+os.system("for file in *.img; do zip $file.zip $file; done")
+os.system("mv *.zip " + (WORK_DIR) + (dir1))
 
 
 
-basemap()
-
-
-today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d') 
-dir1 = ("gps_ready/" + (BUILD_MAP) + "/" + (day))
-dir2 = ("gps_ready/unzipped/" + (BUILD_MAP) + "/" + (day))
-dir3 = ("log/" + (BUILD_MAP) + "/" + (day))
-
-mk_store()  
-copy_parts()
-zip_file()
 
 
 printinfo("Habe fertig!")
@@ -619,6 +563,8 @@ printinfo("Habe fertig!")
 """ 
 
 ## Changelog:
+
+v0.9.38 - mkgmap.org, sitestrcture is changed
 
 v0.9.37 - use *.o5m as input for splitter
 

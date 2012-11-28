@@ -69,9 +69,9 @@ def checkfile(filetofind, solutionhint):
   if ExitCode == 0:
      printinfo(filetofind + " found")
   else:
-    printerror(filetofind + " not found")
+    printwarning(filetofind + " not found")
     print(solutionhint)
-    quit()
+ 
   
 
 def checkdir(dirtofind, solutionhint):
@@ -86,9 +86,9 @@ def checkdir(dirtofind, solutionhint):
   if ExitCode == 0:
     printinfo(dirtofind + " found")
   else:
-    printerror(dirtofind + " not found")
+    printwarning(dirtofind + " not found")
     print(solutionhint)
-    quit()
+ 
 
 
 # defaults =============================================================================
@@ -104,7 +104,7 @@ os.chdir(work_dir)
 hint = " osmupdate missed, needed to update the planet.o5m"
 checkprg("osmupdate", hint)
 
-hint = (" No Planet-File found, download started. Size ~17+ Gigabytes ")
+hint = (" No Planet-File found! ")
 checkfile("planet.o5m", hint)
 
 
@@ -117,8 +117,8 @@ def update():
 
 ExitCode = os.system("test -f planet.o5m")
 if ExitCode == 0:
-  update() 
- 
+  update()
+  
   ExitCode = os.system("test -f planet_new.o5m")
   if ExitCode == 0:
     os.system("mv planet.o5m planet-" + (day) + ".o5m && \
@@ -128,8 +128,8 @@ if ExitCode == 0:
     quit()
 
 else:
-  os.system("wget \
-    http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
+  printinfo(" Download started. Size ~17+ Gigabytes... please wait! ")
+  os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
   os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
   update()
   
