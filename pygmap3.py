@@ -87,7 +87,7 @@ def checkprg(programmtofind, solutionhint):
   else:
     printerror(programmtofind + " not found")
     print(solutionhint)
-    quit()
+
 
 def checkfile(filetofind, solutionhint):
   """
@@ -174,7 +174,7 @@ parser = argparse.ArgumentParser(
             MAXNODES = "1600000" (default)
             MKGMAP_VERSION = use a defined mkgmap-version, 
                              for available versions
-                             http://www.mkgmap.org.uk/snapshots/
+                             http://www.mkgmap.org.uk/download/mkgmap
             SPLITTER_VERSION = same as before for splitter    
             
         '''))
@@ -184,7 +184,7 @@ parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
 parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
 parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default='2381')
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='247')
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='250')
 parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
 args = parser.parse_args()
 
@@ -213,6 +213,9 @@ os.chdir(WORK_DIR)
 
 hint = " osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
+
+hint = "Install: 7z to extract mkgmap's stylefiles"
+checkprg("7z", hint)
 
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
 checkfile("bounds.zip", hint)
@@ -310,6 +313,15 @@ def fetch():
      os.system("osmconvert " + 
 	      (BUILD_MAP) + ".osm.pbf  --out-o5m > " + (BUILD_MAP) + ".o5m")  
 
+"""
+  date 
+"""  
+
+today = datetime.datetime.now()
+DAY = today.strftime('%Y_%m_%d')
+BUILD_DAY = ((BUILD_MAP) + "/" + (DAY))
+
+
 
 """
 is there a keep_pbf.lck, then use the old data
@@ -376,7 +388,6 @@ if ExitCode == 0:
            " --output=o5m " +
            " --keep-complete " +
            " --write-kml=" +  (BUILD_MAP) + ".kml "
-           " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
            (WORK_DIR) + (BUILD_MAP) + ".o5m")
@@ -389,7 +400,6 @@ else:
            " --output=o5m " +
            " --keep-complete " +
            " --write-kml=" +  (BUILD_MAP) + ".kml "
-           " --max-areas=1024 " +
            " --max-nodes=" + (MAXNODES) + 
            " --overlap=0 " +
            (WORK_DIR) + (BUILD_MAP) + ".o5m")
@@ -407,6 +417,23 @@ for dir in ['gfixme', 'gbasemap', 'gboundary', 'gps_ready']:
   if ExitCode != 0:
     os.mkdir(dir)
 
+
+"""
+get the styles, 7z is needed to extract the styles
+
+"""
+   
+ExitCode = os.system("test -d aiostyles")
+    
+if ExitCode == 0:
+  os.chdir(WORK_DIR)
+
+else:
+  os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
+  os.system("7z x aiostyles.7z -oaiostyles")
+  os.chdir(WORK_DIR)
+
+
 """
   add your own styles in mystyles, as an example rrk_style and rrk_typ 
     
@@ -419,14 +446,22 @@ def style():
   global mapstyle
   if ExitCode == 0:
     mapstyle = "mystyles"
+ 
   else:
-    printerror("Where are the styles? ")
-    quit()
+    ExitCode = os.system("test -f " + (WORK_DIR) + "aiostyles/" + 
+                         (layer) + "_typ.txt") 
+    if ExitCode != 0:
+      printerror(" Please convert " 
+		  + (layer) + ".TYP to " + (layer) + "_typ.txt with TYPviewer!")
+      quit()
+
+    mapstyle = "aiostyles"
+         
   
 def cleanup():  
-  os.chdir((WORK_DIR) + "/g" + (layer))
-  print((layer) + "-layer build with " + (mapstyle))
+  os.chdir((WORK_DIR) + "g" + (layer))
   os.system("rm -Rf * ")
+  print((layer) + "-layer build with " + (mapstyle))
   
 """ 
  create Bugs- and FIXME-Layer 
@@ -437,36 +472,32 @@ layer = "boundary"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + 
-#          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
           " -jar " + (mkgmap) + 
           " -c " + (WORK_DIR) + "fixme_buglayer.conf " +
           " --style-file=" + (WORK_DIR) + (mapstyle) + "/boundary_style " +
-          " --description='" + (BUILD_MAP) + " OSM-boundary' " +
+          " --mapname=" + str(MAPID) + "5001  " +
           " --family-id=6 " +
           " --product-id=30 " +
-          " --series-name=OSM-boundary " +
-          " --family-name=OSM-boundary " + 
-          " --mapname=" + str(MAPID) + "5001  " +
+          " --description=" + (BUILD_DAY) +
+          " --family-name=OSM-Boundary " +
           " --draw-priority=14 " + 
-          " -c " + (WORK_DIR) + "tiles/template.args " +
+          (WORK_DIR) + "tiles/*.o5m " +
           (WORK_DIR) + (mapstyle) + "/boundary_typ.txt")
 
 layer = "fixme"
 style()
 cleanup()
 os.system("java -ea " + (RAMSIZE) + 
-#          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
           " -jar " + (mkgmap) +
           " -c " + (WORK_DIR) + "fixme_buglayer.conf " + 
           " --style-file=" + (WORK_DIR) + (mapstyle) + "/fixme_style " +
-          " --description='" + (BUILD_MAP) + " OSM-fixme' " +
+          " --mapname=" + str(MAPID) + "6001 " + 
           " --family-id=3 " +
           " --product-id=33 " + 
-          " --series-name=OSM-fixme " +
-          " --family-name=OSM-fixme " + 
-          " --mapname=" + str(MAPID) + "6001 " + 
+          " --description=" + (BUILD_DAY) +
+          " --family-name=OSM-Fixme " +
           " --draw-priority=16 " + 
-          " -c " + (WORK_DIR) + "tiles/template.args " + 
+          (WORK_DIR) + "tiles/*.o5m " + 
           (WORK_DIR) + (mapstyle) + "/fixme_typ.txt")
   
 
@@ -477,28 +508,20 @@ os.system("java -ea " + (RAMSIZE) +
           " -Dlog.config=" + (WORK_DIR) + "log.conf " +
           " -jar " + (mkgmap) + 
           " -c " + (WORK_DIR) + "map.conf " +
-          " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " + 
-          " --description='" + (BUILD_MAP) + " AIO-basemap' " +
+          " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " +
           " --bounds=" + (WORK_DIR) + "bounds.zip " +
+          " --mapname=" + str(MAPID) + "2001 " +
           " --family-id=4  " +
           " --product-id=45 " + 
-          " --series-name=AIO-basemap " +
-          " --family-name=AIO-basemap " + 
-          " --mapname=" + str(MAPID) + "2001 " + 
+          " --description=" + (BUILD_DAY) +
+          " --family-name=AIO-Basemap" +
           " --draw-priority=10 " + 
-          " -c " + (WORK_DIR) + "tiles/template.args " + 
+          (WORK_DIR) + "tiles/*.o5m " + 
           (WORK_DIR) + (mapstyle) + "/basemap_typ.txt")
 os.chdir(WORK_DIR)
   
 
-"""
-  one directory per day 
-"""  
 
-
-today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d')
-BUILD_DAY = ((BUILD_MAP) + "/" + (day))
 dir1 = ("gps_ready/zipped/" + (BUILD_DAY))
 dir2 = ("gps_ready/unzipped/" + (BUILD_DAY))
 dir3 = ("log/" + (BUILD_DAY))
@@ -564,7 +587,7 @@ printinfo("Habe fertig!")
 
 ## Changelog:
 
-v0.9.38 - mkgmap.org, sitestrcture is changed
+v0.9.38 - mkgmap.org, sitestructure is changed
 
 v0.9.37 - use *.o5m as input for splitter
 
