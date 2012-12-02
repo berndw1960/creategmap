@@ -21,38 +21,37 @@ def printerror(msg):
   print(("EE: " + msg))
 
 
-
-def checkdir(dirtofind, solutionhint):
+def is_there(find, solutionhint):
   """
-    test if a dir can be found  at a predefined place
+    test if a file or dir can be found at a predefined place
     raise message if fails and returns 1
     on success return 0
   """
 
-  ExitCode = os.system("test -d " + dirtofind)
+  ExitCode = os.path.exists(find)
     
-  if ExitCode == 0:
-    printinfo(dirtofind + " found")
+  if ExitCode == True:
+     printinfo(find + " found")
   else:
-    printerror(dirtofind + " not found")
+    printerror(find + " not found")
     print(solutionhint)
     quit()
     
-  return ExitCode
 
-work_dir = (os.environ['HOME'] + "/map_build/")
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
-hint = ("mkdir " + (work_dir))
-checkdir((work_dir), hint) 
+hint = ("mkdir " + (WORK_DIR))
+is_there((WORK_DIR), hint) 
 
-os.chdir(work_dir)
+os.chdir(WORK_DIR)
 
-ExitCode = os.system("test -f keep_pbf.lck")
-if ExitCode == 0:
-  os.system("rm -f keep_pbf.lck")
+ExitCode = os.path.exists("keep_pbf.lck")
+if ExitCode == True:
+  os.remove("keep_pbf.lck")
   printinfo("keep_pbf switched off!")
 else:
-  os.system("touch keep_pbf.lck")
+  datei = open("keep_pbf.lck", "w")
+  datei.close()
   printinfo("keep_pbf switched on!")
   
 quit()  
