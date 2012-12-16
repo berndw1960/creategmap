@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.40"
+__version__ = "0.9.41"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -140,32 +140,7 @@ def cleanup():
          
    
 
-"""
-  cut data from planet-file or get the raw map-extracts from the geofabrik 
-  
-"""  
 
-def fetch():
-  ExitCode = os.path.exists("planet.o5m")
-  if ExitCode == True:
-    ExitCode = os.path.exists("poly/" + (BUILD_MAP) + ".poly")
-    if ExitCode == True:
-      printinfo("I'm now extracting " + (BUILD_MAP) + ".o5m from Planet")
-      os.system("osmconvert planet.o5m " +
-                "--complete-ways --complex-ways " +
-                " -B=poly/" + (BUILD_MAP) + ".poly " +
-                " -o=" + (BUILD_MAP) + ".o5m")
-    else:
-      printerror("no poly found... exit")
-      quit()
-
-  else:  
-     os.system("wget -N http://download.geofabrik.de/openstreetmap/" + 
-              (CONTINENT) + "/" + (BUILD_MAP) + ".osm.pbf")
-     os.system("osmconvert " + 
-	      (BUILD_MAP) + ".osm.pbf  --out-o5m > " + (BUILD_MAP) + ".o5m")  
-         
-       
 
 """
   argparse
@@ -227,15 +202,16 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-c', '--continent', dest='continent', default='europe')
 parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
 parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
-parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1600000')
-parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default='2381')
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='250')
+parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1200000')
+parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default='2408')
+parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default='260')
 parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
 args = parser.parse_args()
 
 
 CONTINENT = (args.continent)
 BUILD_MAP = (args.build_map)
+BUILD_FROM_O5M = ("o5m/" +(args.build_map) + ".o5m")
 PREFIX = "-Xmx"
 RAMSIZE = ((PREFIX) + (args.ramsize))
 MAXNODES = (args.maxnodes)
@@ -268,7 +244,7 @@ is_there("bounds.zip", hint)
   
 """
 
-for dir in ['gfixme', 'gbasemap', 'gboundary', 'tiles']:
+for dir in ['gfixme', 'gbasemap', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
     os.mkdir(dir)
@@ -277,14 +253,13 @@ for dir in ['gfixme', 'gbasemap', 'gboundary', 'tiles']:
     cleanup()
 
 """
-  create dir for areas
+  create dir for areas. poly and splitter-output
   
 """  
- 
-ExitCode = os.path.exists("areas")
-
-if ExitCode == False:
-  os.mkdir("areas")
+for dir in ['o5m', 'areas', 'poly']: 
+  ExitCode = os.path.exists(dir)
+  if ExitCode == False:
+   os.mkdir(dir)
 
 
 """
@@ -371,6 +346,32 @@ DAY = today.strftime('%Y_%m_%d')
 BUILD_DAY = ((BUILD_MAP) + "/" + (DAY))
 
 
+"""
+  cut data from planet-file or get the raw map-extracts from the geofabrik 
+  
+""" 
+
+def fetch():
+  ExitCode = os.path.exists("planet.o5m")
+  if ExitCode == True:
+    ExitCode = os.path.exists("poly/" + (BUILD_MAP) + ".poly")
+    if ExitCode == True:
+      printinfo("I'm now extracting " + (BUILD_MAP) + ".o5m from Planet")      
+      os.system("osmconvert planet.o5m " +
+                "--complete-ways --complex-ways " +
+                " -B=poly/" + (BUILD_MAP) + ".poly " +
+                " -o=" + (BUILD_FROM_O5M))
+    else:
+      printerror("no poly found... exit")
+      quit()
+
+  else:  
+     os.system("wget -N http://download.geofabrik.de/openstreetmap/" + 
+              (CONTINENT) + "/" + (BUILD_MAP) + ".osm.pbf")
+     os.system("osmconvert " + 
+	      (BUILD_MAP) + ".osm.pbf  --out-o5m > " + (BUILD_FROM_O5M))  
+         
+       
 
 """
 is there a keep_pbf.lck, then use the old data
@@ -382,12 +383,10 @@ if ExitCode == False:
   printinfo("keep_pbf switched off!")
   fetch()
 else:
-  ExitCode = os.path.exists((BUILD_MAP) + ".o5m")
+  printwarning("keep_pbf switched on!")
+  ExitCode = os.path.exists(BUILD_FROM_O5M)
   if ExitCode == False:
-    printwarning((BUILD_MAP) + ".o5m not found, please wait...")
     fetch()
-  
-
 
     
 """
@@ -411,7 +410,7 @@ splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
 		 " --max-nodes=" + (MAXNODES) + 
 		 " --overlap=0 ")
 areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list ")
-map_data = ((WORK_DIR) + (BUILD_MAP) + ".o5m")
+map_data = ((WORK_DIR) + (BUILD_FROM_O5M))
 
 ExitCode = os.path.exists("areas/" + (BUILD_MAP) + "_areas.list")
 if ExitCode == True:
@@ -424,7 +423,6 @@ else:
   
 os.chdir(WORK_DIR)
 
-  
 """ 
  create the layers 
  
@@ -454,30 +452,6 @@ os.system("java -ea " + (RAMSIZE) +
           " --draw-priority=10 " + 
           (WORK_DIR) + "tiles/*.o5m " + 
           (WORK_DIR) + (mapstyle) + "/basemap_typ.txt")
-
-os.chdir(WORK_DIR)
-layer = "boundary"
-
-style()
-
-os.chdir("g" + (layer))
-printinfo("entered " + os.getcwd())
-
-
-
-printinfo((layer) + "-layer build with " + (mapstyle))
-os.system("java -ea " + (RAMSIZE) + 
-          " -jar " + (mkgmap) + 
-          " -c " + (WORK_DIR) + "/fixme_buglayer.conf " +
-          " --style-file=" + (WORK_DIR) + (mapstyle) + "/boundary_style " +
-          " --mapname=" + str(MAPID) + "3001 " +
-          " --family-id=6 " +
-          " --product-id=30 " +
-          " --description=" + (BUILD_DAY) +
-          " --family-name=OSM-Boundary " +
-          " --draw-priority=12 " + 
-          (WORK_DIR) + "tiles/*.o5m " +
-          (WORK_DIR) + (mapstyle) + "/boundary_typ.txt")
 
 
 os.chdir(WORK_DIR)
@@ -529,7 +503,7 @@ for dir in [(dir1), (dir2), (dir3)]:
   
 os.chdir(WORK_DIR)
   
-for dir in ['gfixme', 'gboundary', 'gbasemap']:
+for dir in ['gfixme', 'gbasemap']:
   os.system("cp " + (dir) + "/gmapsupp.img "  + 
            (dir2) + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
@@ -556,11 +530,15 @@ os.chdir(dir2)
 os.system("for file in *.img; do zip $file.zip $file; done")
 os.system("mv *.zip " + (dir1))
 
+
 printinfo("Habe fertig!")
+quit()
 
 """ 
 
 ## Changelog:
+
+v0.9.41 - dir for splitter-output
 
 v0.9.40 - more python, removed 'test -[f|d]'
 
