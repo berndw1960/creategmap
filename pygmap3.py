@@ -103,7 +103,7 @@ def is_there(find, solutionhint):
     
 
 """
-  add your own styles in mystyles, as an example rrk_style and rrk_typ 
+  add your own styles in mystyles
     
 """
 
@@ -256,7 +256,7 @@ for dir in ['gfixme', 'gbasemap', 'tiles']:
   create dir for areas. poly and splitter-output
   
 """  
-for dir in ['o5m', 'areas', 'poly']: 
+for dir in ['o5m', 'areas', 'poly', 'hoehenlinien']: 
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
    os.mkdir(dir)
