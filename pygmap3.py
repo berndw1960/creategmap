@@ -527,11 +527,12 @@ else:
                      " --start-node-id=1 " +
                      " --start-way-id=1 " +
                      " --max-nodes-per-tile=" + (MAXNODES) +
-                     " --max-nodes-per-way=250 " + 
+                     " --max-nodes-per-way=250 " +
+                     " --jobs=4 " +
                      " --pbf " +
                      " --no-zero-contour " +
-                     " -s 10 " +
-                     " -c 100,50 " +
+                     " -s 20 " +
+                     " -c 200,100 " +
                      " --polygon=poly/" + 
                      (BUILD_MAP) + ".poly " +
                      " -o " +(dir5) + (BUILD_MAP))
