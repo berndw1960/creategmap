@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.41"
+__version__ = "0.9.42"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -233,6 +233,10 @@ checkprg("osmconvert", hint)
 hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
 
+hint = "Install phyghtmap to create contourlines if needed"
+checkprg("phyghtmap", hint)
+
+
 os.chdir(WORK_DIR)
 
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
@@ -244,7 +248,7 @@ is_there("bounds.zip", hint)
   
 """
 
-for dir in ['gfixme', 'gbasemap', 'tiles']:
+for dir in ['fixme', 'basemap', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
     os.mkdir(dir)
@@ -256,7 +260,7 @@ for dir in ['gfixme', 'gbasemap', 'tiles']:
   create dir for areas. poly and splitter-output
   
 """  
-for dir in ['o5m', 'areas', 'poly', 'hoehenlinien']: 
+for dir in ['o5m', 'areas', 'poly', 'contourlines']: 
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
    os.mkdir(dir)
@@ -433,7 +437,7 @@ layer = "basemap"
 
 style()
 
-os.chdir("g" + (layer))
+os.chdir(layer)
 printinfo("entered " + os.getcwd())
 
 
@@ -459,7 +463,7 @@ layer = "fixme"
 
 style()
 
-os.chdir("g" + (layer))
+os.chdir(layer)
 printinfo("entered " + os.getcwd())
 
 
@@ -485,16 +489,23 @@ os.system("java -ea " + (RAMSIZE) +
 dir1 = ((WORK_DIR) + "gps_ready/zipped/" + (BUILD_DAY) + "/")
 dir2 = ((WORK_DIR) + "gps_ready/unzipped/" + (BUILD_DAY) + "/")
 dir3 = ((WORK_DIR) + "log/" + (BUILD_DAY) + "/")
+dir4 = ((WORK_DIR) + "contourlines/" + (BUILD_MAP) + "/")
+dir5 = ((WORK_DIR) + "contourlines/temp/")
+
 
 os.chdir(WORK_DIR)
 
-for dir in [(dir1), (dir2), (dir3)]:
+for dir in [(dir1), (dir2), (dir3), (dir5)]:
   ExitCode = os.path.exists(dir)
   if ExitCode == True:
     path = (dir) 
     cleanup()
   elif ExitCode == False:
     os.makedirs(dir)
+
+ExitCode = os.path.exists(dir4)
+if ExitCode == False:
+  os.makedirs(dir4)
 
 """
   rename the images
@@ -503,22 +514,56 @@ for dir in [(dir1), (dir2), (dir3)]:
   
 os.chdir(WORK_DIR)
   
-for dir in ['gfixme', 'gbasemap']:
+for dir in ['fixme', 'basemap']:
   os.system("cp " + (dir) + "/gmapsupp.img "  + 
            (dir2) + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
-ExitCode = os.path.exists("hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img")
+ExitCode = os.path.exists((dir4) + "gmapsupp.img")
 if ExitCode == True:
-  os.system("cp hoehenlinien/" + (BUILD_MAP) + "/gmapsupp.img " + 
-           (dir2) + (BUILD_MAP) + "_gcontourlines_gmapsupp.img")
+  os.system("cp " + (dir4) + "gmapsupp.img " + 
+           (dir2) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
+else:
+  os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " + 
+                     " --start-node-id=1 " +
+                     " --start-way-id=1 " +
+                     " --max-nodes-per-tile=" + (MAXNODES) +
+                     " --max-nodes-per-way=250 " + 
+                     " --pbf " +
+                     " --no-zero-contour " +
+                     " -s 10 " +
+                     " -c 100,50 " +
+                     " --polygon=poly/" + 
+                     (BUILD_MAP) + ".poly " +
+                     " -o " +(dir5) + (BUILD_MAP))
+                     
+  os.chdir(dir5)
+  printinfo("entered " + os.getcwd())
 
+  os.system("java -ea " + (RAMSIZE) + 
+             " -jar " + (mkgmap) +                    
+             " -c " + (WORK_DIR) + "contourlines.conf " +
+             " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
+             " --mapname=" + str(MAPID) + "8001 " +
+             " --description=" + (BUILD_DAY) +
+             " --family-name=Contourlines " +
+             " --draw-priority=12 " + 
+             " *.osm.pbf ")
+  
+  os.system("cp " + (dir5) + "gmapsupp.img " + (dir4)) 
+           
+  
+  os.chdir(WORK_DIR)
+
+  os.system("cp " + (dir4) + "gmapsupp.img " + 
+           (dir2) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
+           
 ExitCode = os.path.exists("tiles/" + (BUILD_MAP) + ".kml")
 if ExitCode == True: 
   os.system("mv tiles/" + (BUILD_MAP) + ".kml " + (dir1))
   
-ExitCode = os.path.exists("gbasemap/mkgmap.log.0")
+ExitCode = os.path.exists("basemap/mkgmap.log.0")
 if ExitCode == True:
-  os.system("mv gbasemap/mkgmap.log.* " + (dir3))
+  os.system("mv basemap/mkgmap.log.* " + (dir3))
     
     
 """
@@ -537,6 +582,8 @@ quit()
 """ 
 
 ## Changelog:
+
+v0.9.42 - create contourlines if needed
 
 v0.9.41 - dir for splitter-output
 
