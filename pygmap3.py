@@ -532,7 +532,7 @@ else:
                      " --pbf " +
                      " --no-zero-contour " +
                      " -s 20 " +
-                     " -c 200,100 " +
+                     " -c 500,100 " +
                      " --polygon=poly/" + 
                      (BUILD_MAP) + ".poly " +
                      " -o " +(dir5) + (BUILD_MAP))
