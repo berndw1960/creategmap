@@ -519,10 +519,7 @@ for dir in ['fixme', 'basemap']:
            (dir2) + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
 
 ExitCode = os.path.exists((dir4) + "gmapsupp.img")
-if ExitCode == True:
-  os.system("cp " + (dir4) + "gmapsupp.img " + 
-           (dir2) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
-else:
+if ExitCode == False:
   os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " + 
                      " --start-node-id=1 " +
                      " --start-way-id=1 " +
