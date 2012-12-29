@@ -553,10 +553,8 @@ else:
   os.system("cp " + (dir5) + "gmapsupp.img " + (dir4)) 
            
   
-  os.chdir(WORK_DIR)
+os.chdir(WORK_DIR)
 
-  os.system("cp " + (dir4) + "gmapsupp.img " + 
-           (dir2) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
            
 ExitCode = os.path.exists("tiles/" + (BUILD_MAP) + ".kml")
 if ExitCode == True: 
