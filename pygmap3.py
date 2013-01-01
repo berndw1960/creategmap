@@ -517,8 +517,9 @@ os.chdir(WORK_DIR)
 for dir in ['fixme', 'basemap']:
   os.system("cp " + (dir) + "/gmapsupp.img "  + 
            (dir2) + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
-
-ExitCode = os.path.exists((dir4) + "gmapsupp.img")
+           
+print("searching for " + (dir4) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
+ExitCode = os.path.exists((dir4) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
 if ExitCode == False:
   os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " + 
                      " --start-node-id=1 " +
@@ -530,8 +531,7 @@ if ExitCode == False:
                      " --no-zero-contour " +
                      " -s 20 " +
                      " -c 500,100 " +
-                     " --polygon=poly/" + 
-                     (BUILD_MAP) + ".poly " +
+                     " --polygon=poly/" + (BUILD_MAP) + ".poly " +
                      " -o " +(dir5) + (BUILD_MAP))
                      
   os.chdir(dir5)
@@ -547,8 +547,9 @@ if ExitCode == False:
              " --draw-priority=12 " + 
              " *.osm.pbf ")
   
-  os.system("cp " + (dir5) + "gmapsupp.img " + (dir4)) 
-           
+  os.system("cp " + (dir5) + "gmapsupp.img " + (dir4) + (BUILD_MAP) + "_contourlines_gmapsupp.img ") 
+else:
+  print("...found")
   
 os.chdir(WORK_DIR)
 
