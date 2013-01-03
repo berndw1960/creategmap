@@ -562,6 +562,8 @@ quit()
 
 ## Changelog:
 
+v0.9.43 - download from geofabrik removed
+
 v0.9.42 - create contourlines if needed
 
 v0.9.41 - dir for splitter-output
