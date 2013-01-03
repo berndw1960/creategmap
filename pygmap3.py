@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.42"
+__version__ = "0.9.43"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -166,19 +166,7 @@ parser = argparse.ArgumentParser(
             
             Das Copyright der Styles liegt bei den jeweiligen Autoren!
             The AIO-Style is PD
-            
-            
-            Als Basis können alle Dateien unter
-            http://download.geofabrik.de/openstreetmap/
-            verwendet werden.
-            
-            pygmap3 -b germany -c europe 
-                      
-            
-            Oder mit lokalem Planet möglich...
-
-            ...per poly:            
-            
+             
             Eigene poly-Dateien können im Verzeichnis 'poly' im Arbeitsverzeichnis
             abgelegt werden. 
             Der Namen muss identisch zur Karte sein mit der Endung '.poly'
@@ -351,7 +339,7 @@ BUILD_DAY = ((BUILD_MAP) + "/" + (DAY))
 
 
 """
-  cut data from planet-file or get the raw map-extracts from the geofabrik 
+  cut data from planet-file
   
 """ 
 
@@ -368,12 +356,6 @@ def fetch():
     else:
       printerror("no poly found... exit")
       quit()
-
-  else:  
-     os.system("wget -N http://download.geofabrik.de/openstreetmap/" + 
-              (CONTINENT) + "/" + (BUILD_MAP) + ".osm.pbf")
-     os.system("osmconvert " + 
-	      (BUILD_MAP) + ".osm.pbf  --out-o5m > " + (BUILD_FROM_O5M))  
          
        
 
@@ -382,19 +364,19 @@ is there a keep_pbf.lck, then use the old data
 
 """
   
-ExitCode = os.path.exists("keep_pbf.lck")
+ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == False:
-  printinfo("keep_pbf switched off!")
+  printinfo("keep_data switched off!")
   fetch()
 else:
-  printwarning("keep_pbf switched on!")
+  printwarning("keep_data switched on!")
   ExitCode = os.path.exists(BUILD_FROM_O5M)
   if ExitCode == False:
     fetch()
 
     
 """
-  random mapid, just fun, not really needed
+  random mapid, not really needed?
   
 """
 
