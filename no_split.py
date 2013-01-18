@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*- 
 """
-  keep_data on/off
+  no_split on/off
   no options - no harm
 """
 
@@ -45,14 +45,13 @@ is_there((WORK_DIR), hint)
 
 os.chdir(WORK_DIR)
 
-ExitCode = os.path.exists("keep_data.lck")
+ExitCode = os.path.exists("no_split.lck")
 if ExitCode == True:
-  os.remove("keep_data.lck")
   os.system("rm *split.lck")
-  printinfo("keep_data switched off!")
+  printinfo("no_split switched off!")
 else:
-  datei = open("keep_data.lck", "w")
+  datei = open("no_split.lck", "w")
   datei.close()
-  printinfo("keep_data switched on!")
+  printinfo("no_split switched on!")
   
 quit()  

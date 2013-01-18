@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.43"
+__version__ = "0.9.44"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -49,14 +49,66 @@ __status__ = "RC"
 
 import sys
 import os
-import http.client
-import re
-import tarfile
 import datetime
 import argparse
-import random
+import configparser
 
-# DEFs =============================================================================
+# own modules
+
+import clean_up
+import splitter_mkgmap
+import fetch
+
+
+
+"""
+  argparse
+  
+"""
+
+parser = argparse.ArgumentParser(
+        prog='PROG', 
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=('''\
+        
+            Zum Bauen diverser Karten für Garmin PNA
+            
+            AIO-Basemap (eingebaut)
+            AIO-FIXME (eingebaut)
+            RadReiseKarte by Aighes (möglich)
+            Contourlines (möglich)
+            
+            Das Copyright der Styles liegt bei den jeweiligen Autoren!
+            The AIO-Style is Public Domain
+            The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
+             
+            Eigene poly-Dateien können im Verzeichnis 'poly' im 
+            Arbeitsverzeichnis abgelegt werden. 
+            Der Namen muss identisch zur Karte sein mit der Endung '.poly'
+                          
+            Hamburg     --> -b hamburg  
+            Bayern      --> -b bayern
+            Deutschland --> -b germany
+            D_A_CH      --> -b dach (default)
+            Europa      --> -b europe (nicht nutzbar wegen FAT, zu groß!)   
+
+            Spezielle Einstellungen können in der 'pygmap3.cfg' gemacht werden.
+            
+            
+        '''))
+
+parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
+args = parser.parse_args()
+
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
+
+# Der letzte Slash muss sein!!!
+
+
+"""
+  needed programs und dirs
+  
+"""
 
 def printinfo(msg):
   print(("II: " + msg))
@@ -102,118 +154,6 @@ def is_there(find, solutionhint):
     print(solutionhint)
     
 
-"""
-  add your own styles in mystyles
-    
-"""
-
-def style():
-  ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
-  global mapstyle
-  if ExitCode == True:
-    mapstyle = "mystyles"
-  else:
-    ExitCode = os.path.exists("aiostyles")
-    if ExitCode == False:
-      os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
-      os.system("7z x aiostyles.7z -oaiostyles")
-    mapstyle = "aiostyles"
-    
-  ExitCode = os.path.exists((mapstyle) + "/" + (layer) + "_typ.txt") 
-  if ExitCode == False:
-    printerror(" Please convert " +
-        (WORK_DIR) + (mapstyle) + "/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
-    quit()  
-
-"""
-  remove old files
- 
-"""
-
-def cleanup():
-  for file in os.listdir(path):
-    if os.path.isfile(os.path.join(path, file)):
-      try:
-        os.remove(os.path.join(path, file))
-      except:
-         print('Could not delete', file, 'in', path)
-         
-   
-
-
-
-"""
-  argparse
-  
-"""
-
-parser = argparse.ArgumentParser(
-        prog='PROG', 
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=('''\
-        
-            Zum Bauen diverser Karten für Garmin PNA
-            Verfügbar aktuell:
-            AIO-Basemap
-            
-            ############################################################
-            # Work in progress, bitte beachten!                        #
-            # Prinzipiell funktioniert es, aber wenn was kaputt geht,  #
-            # lehnen wir jegliche Haftung ab                           #
-            ############################################################
-            
-            
-            
-            Das Copyright der Styles liegt bei den jeweiligen Autoren!
-            The AIO-Style is PD
-             
-            Eigene poly-Dateien können im Verzeichnis 'poly' im Arbeitsverzeichnis
-            abgelegt werden. 
-            Der Namen muss identisch zur Karte sein mit der Endung '.poly'
-                          
-            Hamburg     --> -b hamburg  
-            Bayern      --> -b bayern
-            Deutschland --> -b germany
-            Europa	--> -b europe (nicht nutzbar wegen FAT, zu groß!)   
-                                    
-            Andere Einstellungen können bei Bedarf angepasst werden.
-            
-            RAMSIZE = "3000M" or "3G" (default)
-            MAXNODES = "1600000" (default)
-            MKGMAP_VERSION = use a defined mkgmap-version, 
-                             for available versions
-                             http://www.mkgmap.org.uk/download/mkgmap
-            SPLITTER_VERSION = same as before for splitter    
-            
-        '''))
-
-parser.add_argument('-c', '--continent', dest='continent', default='europe')
-parser.add_argument('-b', '--buildmap', dest='build_map', default='dach')
-parser.add_argument('-r', '--ramsize', dest='ramsize', default='3G')
-parser.add_argument('-m', '--maxnodes', dest='maxnodes', default='1200000')
-parser.add_argument('-mkv', '--mkgmap_version', dest='mkgmap_version', default=0)
-parser.add_argument('-spv', '--splitter_version', dest='splitter_version', default=0)
-parser.add_argument('-w', '--work_dir', dest='work_dir', default='map_build')
-args = parser.parse_args()
-
-
-CONTINENT = (args.continent)
-BUILD_MAP = (args.build_map)
-BUILD_FROM_O5M = ("o5m/" +(args.build_map) + ".o5m")
-PREFIX = "-Xmx"
-RAMSIZE = ((PREFIX) + (args.ramsize))
-MAXNODES = (args.maxnodes)
-MKGMAP_VERSION = (args.mkgmap_version)
-SPLITTER_VERSION = (args.splitter_version)
-WORK_DIR = (os.environ['HOME'] + "/"  + (args.work_dir) + "/")
-
-# Der letzte Slash muss sein!!!
-
-
-"""
-  needed programs und dirs
-  
-"""
 
 hint = "osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
@@ -221,28 +161,130 @@ checkprg("osmconvert", hint)
 hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
 
-hint = "Install phyghtmap to create contourlines if needed"
-checkprg("phyghtmap", hint)
-
-
 os.chdir(WORK_DIR)
+
+ExitCode = os.path.exists((WORK_DIR) + "pygmap3.lck")
+if ExitCode == True:
+  printerror(" There's another instance of pygmap3.py running...")
+#  quit()
+
+datei = open((WORK_DIR) + "pygmap3.lck", "w")
+datei.close()   
+
 
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
 is_there("bounds.zip", hint)
 
+hint = "RRK-Style missed, get it from www.aighes.de"
+is_there("mystyles/rrk_typ.txt", hint)
+
+hint = ("No Planet-File found! ")
+is_there("planet.o5m", hint)
+
+ExitCode = os.path.exists("fixme_buglayer.conf")
+if ExitCode == True:
+  printerror(" Please rename 'fixme_buglayer.conf' to 'fixme.conf'")
+  quit()
+  
 
 """
-  dirs generate or wiped
+  configparser
+
+"""  
+def write_config():
+  with open('pygmap3.cfg', 'w') as configfile:
+    config.write(configfile)
+    
+    
+config = configparser.ConfigParser()
+ExitCode = os.path.exists((WORK_DIR) + "pygmap3.cfg")
+if ExitCode == False:
+  config['DEFAULT'] = {'ramsize': '-Xmx3G',
+                       'mapid': '6324', 
+                       'zip_img': 'yes',
+                       'buildmap': 'dach',}
+  
+  config['splitter'] = {}
+  config['splitter'] = {'version': 'latest', 
+                        'maxnodes': '1200000',}
+  
+  config['mkgmap'] = {}
+  config['mkgmap'] = {'version': 'latest'}
+  
+  config['basemap'] = {}
+  config['basemap'] = {'build': 'yes',
+                       'conf': 'map.conf',
+                       'family-id': '4', 
+                       'product-id': '45', 
+                       'family-name': 'AIO-Basemap', 
+                       'draw-priority': '10', 
+                       'mapid_ext': '1001',}
+                       
+  config['rrk'] = {}
+  config['rrk'] = {'build': 'no',
+                   'conf': 'map.conf',
+                   'family-id': '1', 
+                   'product-id': '1000', 
+                   'family-name': 'RadReiseKarte', 
+                   'draw-priority': '12', 
+                   'mapid_ext': '2001',}
+                   
+  config['fixme'] = {}
+  config['fixme'] = {'build': 'yes', 
+                       'conf': 'fixme.conf',
+                       'family-id': '3', 
+                       'product-id': '33', 
+                       'family-name': 'OSM-Fixme', 
+                       'draw-priority': '16', 
+                       'mapid_ext': '6001',}
+                       
+  config['contourlines'] = {}
+  config['contourlines'] = {'build': 'no'}
+  write_config()
+
+
+config.read('pygmap3.cfg')
+
+if ('runtime' in config) == True:
+  config.remove_section('runtime')
+  write_config()
+   
+config.add_section('runtime')
+
+""" 
+  set buildmap
   
 """
 
-for dir in ['fixme', 'basemap', 'tiles']:
-  ExitCode = os.path.exists(dir)
-  if ExitCode == False:
-    os.mkdir(dir)
-  else:
-    path = (dir)
-    cleanup()
+config.set('runtime', 'buildmap', (args.buildmap))
+
+write_config()
+buildmap = config.get('runtime', 'buildmap')
+
+
+"""
+  set buildday for info in PNA
+
+"""  
+
+today = datetime.datetime.now()
+DAY = today.strftime('%Y_%m_%d')
+buildday = ((buildmap) + "/" + (DAY))
+
+config.set('runtime', 'buildday', (buildday))
+
+write_config()
+buildday = config.get('runtime', 'buildday')
+
+
+
+"""
+  dirs generate or remove old files
+  
+"""
+         
+clean_up.clean_build_dirs()
+
 
 """
   create dir for areas. poly and splitter-output
@@ -258,66 +300,8 @@ for dir in ['o5m', 'areas', 'poly', 'contourlines']:
   get splitter and mkgmap 
   
 """  
-target = http.client.HTTPConnection("www.mkgmap.org.uk")
+splitter_mkgmap.get_tools()
 
-if SPLITTER_VERSION != 0:
-  ExitCode = os.path.exists("splitter-r" + (SPLITTER_VERSION))
-  if ExitCode == False:
-    os.system(("wget -N http://www.mkgmap.org.uk/download/splitter-r") + 
-	      (SPLITTER_VERSION) + (".tar.gz"))
-    tar = tarfile.open("splitter-r" + (SPLITTER_VERSION) + (".tar.gz"))
-    tar.extractall()
-    tar.close()   
-  
-  splitter = ((WORK_DIR) + "splitter-r" + (SPLITTER_VERSION) + "/splitter.jar")
-  
-else:    
-  target.request("GET", "/download/splitter.html")
-  htmlcontent =  target.getresponse()
-  print(htmlcontent.status, htmlcontent.reason)
-  data = htmlcontent.read()
-  data = data.decode('utf8')
-  pattern = re.compile('splitter-r\d{3}')
-  splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-  target.close()
-  os.system(("wget -N http://www.mkgmap.org.uk/download/") + 
-            (splitter_rev) + (".tar.gz"))
-  tar = tarfile.open((splitter_rev) + (".tar.gz"))
-  tar.extractall()
-  tar.close()    
-    
-  splitter = ((WORK_DIR) + (splitter_rev) + "/splitter.jar")
-
-if MKGMAP_VERSION != 0:
-  ExitCode = os.path.exists("mkgmap-r" + (MKGMAP_VERSION))
-  if ExitCode == False:
-    os.system(("wget -N http://www.mkgmap.org.uk/download/mkgmap-r") + 
-              (MKGMAP_VERSION) + (".tar.gz"))
-    tar = tarfile.open("mkgmap-r" + (MKGMAP_VERSION) + (".tar.gz"))
-    tar.extractall()
-    tar.close()
-  
-  mkgmap = (WORK_DIR) + "mkgmap-r" + (MKGMAP_VERSION) + "/mkgmap.jar"
-  
-
-else:
-  target.request("GET", "/download/mkgmap.html")
-  htmlcontent =  target.getresponse()
-  print(htmlcontent.status, htmlcontent.reason)
-  data = htmlcontent.read()
-  data = data.decode('utf8')
-  pattern = re.compile('mkgmap-r\d{4}')
-  mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-  target.close()
-  os.system(("wget -N http://www.mkgmap.org.uk/download/") + 
-            (mkgmap_rev) + (".tar.gz"))
-  tar = tarfile.open((mkgmap_rev) + (".tar.gz"))
-  tar.extractall()
-  tar.close()
-
-  mkgmap = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
-
-target.close()
 
 
 """
@@ -329,165 +313,84 @@ ExitCode = os.path.exists("cities15000.zip")
 if ExitCode == False:
   os.system("wget http://download.geonames.org/export/dump/cities15000.zip")
 
-"""
-  date 
-"""  
 
-today = datetime.datetime.now()
-DAY = today.strftime('%Y_%m_%d')
-BUILD_DAY = ((BUILD_MAP) + "/" + (DAY))
 
 
 """
-  cut data from planet-file
-  
-""" 
-
-def fetch():
-  ExitCode = os.path.exists("planet.o5m")
-  if ExitCode == True:
-    ExitCode = os.path.exists("poly/" + (BUILD_MAP) + ".poly")
-    if ExitCode == True:
-      printinfo("I'm now extracting " + (BUILD_MAP) + ".o5m from Planet")      
-      os.system("osmconvert planet.o5m " +
-                "--complete-ways --complex-ways " +
-                " -B=poly/" + (BUILD_MAP) + ".poly " +
-                " -o=" + (BUILD_FROM_O5M))
-    else:
-      printerror("no poly found... exit")
-      quit()
-         
-       
+is there a keep_data.lck, then use the old data
 
 """
-is there a keep_pbf.lck, then use the old data
-
-"""
-  
+BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")  
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == False:
   printinfo("keep_data switched off!")
-  fetch()
+  cut_off.fetch()
 else:
   printwarning("keep_data switched on!")
-  ExitCode = os.path.exists(BUILD_FROM_O5M)
+  ExitCode = os.path.exists(BUILD_O5M)
   if ExitCode == False:
-    fetch()
-
+    cut_off.fetch()
     
-"""
-  random mapid, not really needed?
-  
-"""
-
-MAPID = random.randint(6301, 6399)
-
-
+os.chdir(WORK_DIR)
+ 
 """
   split rawdata
   
 """
-java_opts = ("java -ea " + (RAMSIZE) + " -jar " + (splitter))
-splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
-		 " --mapid=" + str(MAPID) + "0001 " +
-		 " --output=o5m " +
-		 " --keep-complete " +
-		 " --write-kml=" + (BUILD_MAP) + ".kml "
-		 " --max-nodes=" + (MAXNODES) + 
-		 " --overlap=0 ")
-areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (BUILD_MAP) + "_areas.list ")
-map_data = ((WORK_DIR) + (BUILD_FROM_O5M))
 
-ExitCode = os.path.exists("areas/" + (BUILD_MAP) + "_areas.list")
-if ExitCode == True:
-  os.chdir("tiles")
-  os.system((java_opts) + (splitter_opts) + (areas_list) + (map_data))
-else:
-  os.chdir("tiles")
-  os.system((java_opts) + (splitter_opts) + (map_data))
-  os.system("cp areas.list ../areas/" + (BUILD_MAP) + "_areas.list")
-  
+
+ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
+if ExitCode == False:
+  clean_up.clean_build_dirs()
+  splitter_mkgmap.split()
+elif ExitCode == True:
+  ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
+  if ExitCode == False:
+    path = 'tiles'
+    clean_up.clean_build_dirs()
+    splitter_mkgmap.split()
+    
+    
+    
 os.chdir(WORK_DIR)
 
-""" 
- create the layers 
- 
-"""
 
-os.chdir(WORK_DIR)
-layer = "basemap"
-
-style()
-
-os.chdir(layer)
-printinfo("entered " + os.getcwd())
-
-
-printinfo((layer) + "-layer build with " + (mapstyle))
-os.system("java -ea " + (RAMSIZE) + 
-          " -Dlog.config=" + (WORK_DIR) + "log.conf " +
-          " -jar " + (mkgmap) + 
-          " -c " + (WORK_DIR) + "map.conf " +
-          " --style-file=" + (WORK_DIR) + (mapstyle) + "/basemap_style " +
-          " --bounds=" + (WORK_DIR) + "bounds.zip " +
-          " --mapname=" + str(MAPID) + "1001 " +
-          " --family-id=4  " +
-          " --product-id=45 " + 
-          " --description=" + (BUILD_DAY) +
-          " --family-name=AIO-Basemap " +
-          " --draw-priority=10 " + 
-          (WORK_DIR) + "tiles/*.o5m " + 
-          (WORK_DIR) + (mapstyle) + "/basemap_typ.txt")
-
-
-os.chdir(WORK_DIR)
-layer = "fixme"
-
-style()
-
-os.chdir(layer)
-printinfo("entered " + os.getcwd())
-
-
-printinfo((layer) + "-layer build with " + (mapstyle))
-os.system("java -ea " + (RAMSIZE) + 
-          " -jar " + (mkgmap) +
-          " -c " + (WORK_DIR) + "fixme_buglayer.conf " + 
-          " --style-file=" + (WORK_DIR) + (mapstyle) + "/fixme_style " +
-          " --mapname=" + str(MAPID) + "5001 " +
-          " --family-id=3 " +
-          " --product-id=33 " + 
-          " --description=" + (BUILD_DAY) +
-          " --family-name=OSM-Fixme " +
-          " --draw-priority=16 " + 
-          (WORK_DIR) + "tiles/*.o5m " + 
-          (WORK_DIR) + (mapstyle) + "/fixme_typ.txt")
-  
 """
   make the dirs to store the images
 
 """  
 
-dir1 = ((WORK_DIR) + "gps_ready/zipped/" + (BUILD_DAY) + "/")
-dir2 = ((WORK_DIR) + "gps_ready/unzipped/" + (BUILD_DAY) + "/")
-dir3 = ((WORK_DIR) + "log/" + (BUILD_DAY) + "/")
-dir4 = ((WORK_DIR) + "contourlines/" + (BUILD_MAP) + "/")
-dir5 = ((WORK_DIR) + "contourlines/temp/")
+zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildday) + "/")
+unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildday) + "/")
+
+cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
+cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
+
+for dir in [(zip_dir), (unzip_dir), (cltemp_dir)]:
+  ExitCode = os.path.exists(dir)
+  if ExitCode == True:
+    path = (dir) 
+    for file in os.listdir(path):
+      if os.path.isfile(os.path.join(path, file)):
+        try:
+          os.remove(os.path.join(path, file))
+        except:
+          print('Could not delete', file, 'in', path)
+            
+  elif ExitCode == False:
+    os.makedirs(dir)
+
+ExitCode = os.path.exists(cl_dir)
+if ExitCode == False:
+  os.makedirs(cl_dir)
+  
+
+splitter_mkgmap.mkgmap_render()
+
 
 
 os.chdir(WORK_DIR)
 
-for dir in [(dir1), (dir2), (dir3), (dir5)]:
-  ExitCode = os.path.exists(dir)
-  if ExitCode == True:
-    path = (dir) 
-    cleanup()
-  elif ExitCode == False:
-    os.makedirs(dir)
-
-ExitCode = os.path.exists(dir4)
-if ExitCode == False:
-  os.makedirs(dir4)
 
 """
   rename the images
@@ -496,71 +399,74 @@ if ExitCode == False:
   
 os.chdir(WORK_DIR)
   
-for dir in ['fixme', 'basemap']:
-  os.system("cp " + (dir) + "/gmapsupp.img "  + 
-           (dir2) + (BUILD_MAP) + "_" + (dir) + "_gmapsupp.img")
-           
-print("searching for " + (dir4) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
-ExitCode = os.path.exists((dir4) + (BUILD_MAP) + "_contourlines_gmapsupp.img")
-if ExitCode == False:
-  os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " + 
-                     " --start-node-id=1 " +
-                     " --start-way-id=1 " +
-                     " --max-nodes-per-tile=" + (MAXNODES) +
-                     " --max-nodes-per-way=250 " +
-                     " --jobs=4 " +
-                     " --pbf " +
-                     " --no-zero-contour " +
-                     " -s 20 " +
-                     " -c 500,100 " +
-                     " --polygon=poly/" + (BUILD_MAP) + ".poly " +
-                     " -o " +(dir5) + (BUILD_MAP))
+build = (config.get('contourlines', 'build'))
+if build == "yes":
+    
+  print("searching for " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
+  ExitCode = os.path.exists((cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
+  if ExitCode == False:
+    hint = "Install phyghtmap to create contourlines if needed"
+    checkprg("phyghtmap", hint)
+    
+    os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " + 
+              " --start-node-id=1 " +
+              " --start-way-id=1 " +
+              " --max-nodes-per-tile=" + (MAXNODES) +
+              " --max-nodes-per-way=250 " +
+              " --jobs=4 " +
+              " --pbf " +
+              " --no-zero-contour " +
+              " -s 20 " +
+              " -c 500,100 " +
+              " --polygon=poly/" + (buildmap) + ".poly " +
+              " -o " +(cltemp_dir) + (buildmap))
                      
-  os.chdir(dir5)
-  printinfo("entered " + os.getcwd())
+    os.chdir(cltemp_dir)
+    printinfo("entered " + os.getcwd())
 
-  os.system("java -ea " + (RAMSIZE) + 
-             " -jar " + (mkgmap) +                    
-             " -c " + (WORK_DIR) + "contourlines.conf " +
-             " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
-             " --mapname=" + str(MAPID) + "8001 " +
-             " --description=" + (BUILD_DAY) +
-             " --family-name=Contourlines " +
-             " --draw-priority=12 " + 
-             " *.osm.pbf ")
+    os.system("java -ea " + (config.get('DEFAULT', 'ramsize')) + 
+              " -jar " + (mkgmap) +                    
+              " -c " + (WORK_DIR) + "contourlines.conf " +
+              " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
+              " --mapname=" + str(MAPID) + "8001 " +
+              " --description=" + (buildday) +
+              " --family-name=Contourlines " +
+              " --draw-priority=16 " + 
+              " *.osm.pbf ")
   
-  os.system("cp " + (dir5) + "gmapsupp.img " + (dir4) + (BUILD_MAP) + "_contourlines_gmapsupp.img ") 
-else:
-  print("...found")
+    os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ") 
+  else:
+    print("...found")
   
 os.chdir(WORK_DIR)
 
            
-ExitCode = os.path.exists("tiles/" + (BUILD_MAP) + ".kml")
+ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
 if ExitCode == True: 
-  os.system("mv tiles/" + (BUILD_MAP) + ".kml " + (dir1))
-  
-ExitCode = os.path.exists("basemap/mkgmap.log.0")
-if ExitCode == True:
-  os.system("mv basemap/mkgmap.log.* " + (dir3))
-    
-    
+  os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir))
+
+
 """
   zipp the images and mv them to separate dirs
 
 """
-  
-os.chdir(dir2)
-os.system("for file in *.img; do zip $file.zip $file; done")
-os.system("mv *.zip " + (dir1))
+zip_img = (config.get('DEFAULT', 'zip_img'))
+if zip_img == "yes":  
+  os.chdir(unzip_dir)
+  os.system("for file in *.img; do zip $file.zip $file; done")
+  os.system("mv *.zip " + (zip_dir))
 
 
+config.remove_section('runtime')
+
+os.remove((WORK_DIR) + "pygmap3.lck")
 printinfo("Habe fertig!")
 quit()
 
 """ 
 
 ## Changelog:
+v0.9.44 - first steps for configparser
 
 v0.9.43 - download from geofabrik removed
 
@@ -581,3 +487,4 @@ v0.9.35 - some changes in workprocess
 
 
 """
+
