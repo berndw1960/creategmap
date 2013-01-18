@@ -262,6 +262,7 @@ write_config()
 buildmap = config.get('runtime', 'buildmap')
 
 
+
 """
   set buildday for info in PNA
 
@@ -277,6 +278,9 @@ write_config()
 buildday = config.get('runtime', 'buildday')
 
 
+print(buildday)
+
+
 
 """
   dirs generate or remove old files
@@ -290,7 +294,7 @@ clean_up.clean_build_dirs()
   create dir for areas. poly and splitter-output
   
 """  
-for dir in ['o5m', 'areas', 'poly', 'contourlines']: 
+for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']: 
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
    os.mkdir(dir)
@@ -320,6 +324,7 @@ if ExitCode == False:
 is there a keep_data.lck, then use the old data
 
 """
+
 BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")  
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == False:
@@ -332,22 +337,36 @@ else:
     cut_off.fetch()
     
 os.chdir(WORK_DIR)
+
+
+
  
 """
   split rawdata
   
 """
 
-
 ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
 if ExitCode == False:
-  clean_up.clean_build_dirs()
+  path = 'tiles'
+  for file in os.listdir(path):
+    if os.path.isfile(os.path.join(path, file)):
+      try:
+        os.remove(os.path.join(path, file))
+      except: 
+        print('Could not delete', file, 'in', path)
   splitter_mkgmap.split()
+  
 elif ExitCode == True:
   ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     path = 'tiles'
-    clean_up.clean_build_dirs()
+    for file in os.listdir(path):
+      if os.path.isfile(os.path.join(path, file)):
+        try:
+          os.remove(os.path.join(path, file))
+        except:
+          print('Could not delete', file, 'in', path)
     splitter_mkgmap.split()
     
     

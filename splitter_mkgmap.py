@@ -121,6 +121,7 @@ def split():
     os.chdir("tiles")
     os.system((java_opts) + (splitter_opts) + (map_data))
     os.system("cp areas.list ../areas/" + (buildmap) + "_areas.list")
+    
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready", "w")
   datei.close()
   os.remove((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck")
