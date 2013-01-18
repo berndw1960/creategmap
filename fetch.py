@@ -30,7 +30,8 @@ WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 
 def fetch():
-  buildmap = (config.get('runtime', 'buildmap'))
+  config.read('pygmap3.cfg')
+  buildmap = config.get('runtime', 'buildmap')
   BUILD_TEMP = ((WORK_DIR) + "o5m/" + (buildmap) + ".temp.o5m")
   BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
   BUILD_OLD = ((WORK_DIR) + "o5m/" + (buildmap) + ".old")
@@ -46,7 +47,9 @@ def fetch():
       ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck")
       while ExitCode == True:
         time.sleep(5)
-      os.rename((BUILD_O5M), (BUILD_OLD))
+      ExitCode = os.path,exists(BUILD_O5M) 
+      if ExitCode == True:
+        os.rename((BUILD_O5M), (BUILD_OLD))
       os.rename((BUILD_TEMP), (BUILD_O5M))
       os.remove(BUILD_OLD)
     else:

@@ -31,7 +31,7 @@ WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 
 config = configparser.ConfigParser()
-
+config.read('pygmap3.cfg')
 def get_tools():
   target = http.client.HTTPConnection("www.mkgmap.org.uk")
   config.read((WORK_DIR) + 'pygmap3.cfg')

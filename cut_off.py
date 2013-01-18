@@ -125,28 +125,17 @@ def fetch():
       ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (BUILDMAP) + "_split.lck")
       while ExitCode == True:
         time.sleep(5)
-      os.rename((BUILD_O5M), (BUILD_OLD))
+      ExitCode = os.path,exists(BUILD_O5M) 
+      if ExitCode == True:
+        os.rename((BUILD_O5M), (BUILD_OLD))
       os.rename((BUILD_TEMP), (BUILD_O5M))
       os.remove(BUILD_OLD)
     else:
       printerror((WORK_DIR) + "tiles/" + (BUILDMAP) + ".poly not found... exit")
       quit()
          
-       
+ 
+fetch()
 
-"""
-is there a keep_data.lck, then use the old data
-
-"""
-os.chdir(WORK_DIR)  
-ExitCode = os.path.exists("keep_data.lck")
-if ExitCode == False:
-  printinfo("keep_data switched off!")
-  fetch()
-else:
-  printwarning("keep_data switched on!")
-  ExitCode = os.path.exists(BUILD_O5M)
-  if ExitCode == False:
-    fetch()
-
+quit()
  

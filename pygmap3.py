@@ -52,13 +52,15 @@ import os
 import datetime
 import argparse
 import configparser
+import time
+
 
 # own modules
 
 import clean_up
 import splitter_mkgmap
 import fetch
-
+import contourlines
 
 
 """
@@ -166,11 +168,9 @@ os.chdir(WORK_DIR)
 ExitCode = os.path.exists((WORK_DIR) + "pygmap3.lck")
 if ExitCode == True:
   printerror(" There's another instance of pygmap3.py running...")
-#  quit()
 
 datei = open((WORK_DIR) + "pygmap3.lck", "w")
 datei.close()   
-
 
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
 is_there("bounds.zip", hint)
@@ -194,7 +194,6 @@ if ExitCode == True:
 def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
-    
     
 config = configparser.ConfigParser()
 ExitCode = os.path.exists((WORK_DIR) + "pygmap3.cfg")
@@ -277,8 +276,10 @@ config.set('runtime', 'buildday', (buildday))
 write_config()
 buildday = config.get('runtime', 'buildday')
 
-
+config.read('pygmap3.cfg')
 print(buildday)
+
+time.sleep(5)
 
 
 
@@ -329,12 +330,12 @@ BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == False:
   printinfo("keep_data switched off!")
-  cut_off.fetch()
+  fetch.fetch()
 else:
   printwarning("keep_data switched on!")
   ExitCode = os.path.exists(BUILD_O5M)
   if ExitCode == False:
-    cut_off.fetch()
+    fetch.fetch()
     
 os.chdir(WORK_DIR)
 
@@ -403,10 +404,7 @@ ExitCode = os.path.exists(cl_dir)
 if ExitCode == False:
   os.makedirs(cl_dir)
   
-
 splitter_mkgmap.mkgmap_render()
-
-
 
 os.chdir(WORK_DIR)
 
@@ -420,51 +418,19 @@ os.chdir(WORK_DIR)
   
 build = (config.get('contourlines', 'build'))
 if build == "yes":
-    
-  print("searching for " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
-  ExitCode = os.path.exists((cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
-  if ExitCode == False:
-    hint = "Install phyghtmap to create contourlines if needed"
-    checkprg("phyghtmap", hint)
-    
-    os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " + 
-              " --start-node-id=1 " +
-              " --start-way-id=1 " +
-              " --max-nodes-per-tile=" + (MAXNODES) +
-              " --max-nodes-per-way=250 " +
-              " --jobs=4 " +
-              " --pbf " +
-              " --no-zero-contour " +
-              " -s 20 " +
-              " -c 500,100 " +
-              " --polygon=poly/" + (buildmap) + ".poly " +
-              " -o " +(cltemp_dir) + (buildmap))
-                     
-    os.chdir(cltemp_dir)
-    printinfo("entered " + os.getcwd())
+  contourlines.create_cont()
 
-    os.system("java -ea " + (config.get('DEFAULT', 'ramsize')) + 
-              " -jar " + (mkgmap) +                    
-              " -c " + (WORK_DIR) + "contourlines.conf " +
-              " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
-              " --mapname=" + str(MAPID) + "8001 " +
-              " --description=" + (buildday) +
-              " --family-name=Contourlines " +
-              " --draw-priority=16 " + 
-              " *.osm.pbf ")
-  
-    os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ") 
-  else:
-    print("...found")
+"""
+ copy *kml to zipped-dirs
+ 
+"""
   
 os.chdir(WORK_DIR)
 
            
 ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
 if ExitCode == True: 
-  os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir))
-
-
+  os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir)) 
 """
   zipp the images and mv them to separate dirs
 
