@@ -68,15 +68,14 @@ parser = argparse.ArgumentParser(
         
             
              
-            Eigene poly-Dateien können im Verzeichnis 'poly' im 
-            Arbeitsverzeichnis abgelegt werden. 
-            Der Namen muss identisch zur Karte sein mit der Endung '.poly'
+            Place your own *-poly in WORK_DIR/poly,
+            example for dach, use dach.poly as name
                           
             Hamburg     --> -b hamburg  
             Bayern      --> -b bayern
-            Deutschland --> -b germany
+            Germany     --> -b germany
             D_A_CH      --> -b dach (default)
-            Europa      --> -b europe (nicht nutzbar wegen FAT, zu groß!)   
+              
 
                         
         '''))

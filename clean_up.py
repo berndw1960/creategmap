@@ -20,12 +20,10 @@ def clean_build_dirs():
       os.mkdir(dir)
     else:
       path = (dir)
-      
-  
-  for file in os.listdir(path):
-    if os.path.isfile(os.path.join(path, file)):
-      try:
-        os.remove(os.path.join(path, file))
-      except:
-        print('Could not delete', file, 'in', path)
+      for file in os.listdir(path):
+        if os.path.isfile(os.path.join(path, file)):
+          try:
+            os.remove(os.path.join(path, file))
+          except:
+            print('Could not delete', file, 'in', path)
         

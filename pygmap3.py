@@ -73,29 +73,26 @@ parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
         
-            Zum Bauen diverser Karten für Garmin PNA
+            To build maps for Garmin PNA
             
-            AIO-Basemap (eingebaut)
-            AIO-FIXME (eingebaut)
-            RadReiseKarte by Aighes (möglich)
-            Contourlines (möglich)
+            AIO-Basemap (embedded)
+            AIO-FIXME (embedded)
+            RadReiseKarte by Aighes (possible)
+            Contourlines (possible)
             
-            Das Copyright der Styles liegt bei den jeweiligen Autoren!
             The AIO-Style is Public Domain
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
              
-            Eigene poly-Dateien können im Verzeichnis 'poly' im 
-            Arbeitsverzeichnis abgelegt werden. 
-            Der Namen muss identisch zur Karte sein mit der Endung '.poly'
+            Place your own *-poly in WORK_DIR/poly,
+            example for dach, use dach.poly as name
+                                     
                           
             Hamburg     --> -b hamburg  
             Bayern      --> -b bayern
-            Deutschland --> -b germany
+            Germany     --> -b germany
             D_A_CH      --> -b dach (default)
-            Europa      --> -b europe (nicht nutzbar wegen FAT, zu groß!)   
-
-            Spezielle Einstellungen können in der 'pygmap3.cfg' gemacht werden.
-            
+   
+                  
             
         '''))
 
