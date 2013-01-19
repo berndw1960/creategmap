@@ -193,10 +193,19 @@ def mkgmap_render():
       os.chdir(WORK_DIR)
       style()
 
-      os.chdir(layer)
-      printinfo("entered " + os.getcwd())
+      path = ((WORK_DIR) + (layer)) 
+      for file in os.listdir(path):
+        if os.path.isfile(os.path.join(path, file)):
 
-      printinfo((layer) + "-layer build with " + (mapstyle)) 
+          try:
+            os.remove(os.path.join(path, file))
+          except:
+            print('Could not delete', file, 'in', path)
+      
+      os.chdir(path)     
+      printinfo("entered " + os.getcwd())
+      printinfo("Now building " + (layer) + "-layer with " + (mapstyle)) 
+     
       mkgmap_java()
       
       unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildday) + "/")

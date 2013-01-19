@@ -10,13 +10,11 @@ import mkgmap_download
   
 """
 
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
+config = configparser.ConfigParser()
+config.read((WORK_DIR) + 'pygmap3.cfg')
 
-
-def split():
-  WORK_DIR = (os.environ['HOME'] + "/map_build/")
-  config = configparser.ConfigParser()
-  config.read((WORK_DIR) + 'pygmap3.cfg')
-  
+def split():         
   os.chdir(WORK_DIR)
   datei = open((WORK_DIR) + "tiles/" + (config.get('DEFAULT', 'buildmap')) + "_split.lck", "w")
   datei.close()  

@@ -284,15 +284,6 @@ print(buildday)
 time.sleep(5)
 
 
-
-"""
-  dirs generate or remove old files
-  
-"""
-         
-clean_up.clean_build_dirs()
-
-
 """
   create dir for areas. poly and splitter-output
   
@@ -357,7 +348,8 @@ if ExitCode == False:
   splitter_mkgmap.split()
   
 elif ExitCode == True:
-  ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
+  ExitCode = os.path.exists((WORK_DIR) + 
+             "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     path = 'tiles'
     for file in os.listdir(path):
