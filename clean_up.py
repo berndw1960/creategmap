@@ -11,6 +11,8 @@ import os
 
 
 def clean_build_dirs():
+  WORK_DIR = os.environ['HOME'] + "/map_build/"
+  os.chdir(WORK_DIR)
   
   for dir in ['fixme', 'basemap', 'rrk']:
     ExitCode = os.path.exists(dir)

@@ -12,13 +12,13 @@ import time
 # DEFs =============================================================================
 
 def printinfo(msg):
-  print(("II: " + msg))
+  print("II: " + msg)
 
 def printwarning(msg):
-  print(("WW: " + msg))
+  print("WW: " + msg)
 
 def printerror(msg):
-  print(("EE: " + msg))
+  print("EE: " + msg)
 
 
 def checkprg(programmtofind, solutionhint):
@@ -78,9 +78,7 @@ parser = argparse.ArgumentParser(
             D_A_CH      --> -b dach (default)
             Europa      --> -b europe (nicht nutzbar wegen FAT, zu groß!)   
 
-            Spezielle Einstellungen können in der 'cut_off.cfg' gemacht werden.
-            Dorthin wird auch die gewählte Karte als neuer 'Default' geschrieben.
-            
+                        
         '''))
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
@@ -108,30 +106,35 @@ is_there("planet.o5m", hint)
   cut data from planet-file
   
 """ 
-BUILD_TEMP = ((WORK_DIR) + "o5m/" + (BUILDMAP) + ".temp.o5m")
-BUILD_O5M = ((WORK_DIR) + "o5m/" + (BUILDMAP) + ".o5m")
-BUILD_OLD = ((WORK_DIR) + "o5m/" + (BUILDMAP) + ".old")
+
 
 def fetch():
-  ExitCode = os.path.exists((WORK_DIR) + "planet.o5m")
+  BUILD_TEMP = ("o5m/" + (BUILDMAP) + ".temp.o5m")
+  BUILD_O5M = ("o5m/" + (BUILDMAP) + ".o5m")
+  BUILD_OLD = ("o5m/" + (BUILDMAP) + ".old")
+  
+  ExitCode = os.path.exists("planet.o5m")
   if ExitCode == True:
-    ExitCode = os.path.exists((WORK_DIR) + "poly/" + (BUILDMAP) + ".poly")
+    ExitCode = os.path.exists("poly/" + (BUILDMAP) + ".poly")
     if ExitCode == True:
       printinfo("I'm now extracting " + (BUILDMAP) + ".o5m from Planet")      
       os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -B=poly/" + (BUILDMAP) + ".poly " +
                 " -o=" + (BUILD_TEMP))
-      ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (BUILDMAP) + "_split.lck")
+      ExitCode = os.path.exists("tiles/" + (BUILDMAP) + "_split.lck")
       while ExitCode == True:
         time.sleep(5)
-      ExitCode = os.path,exists(BUILD_O5M) 
+        
+      ExitCode = os.path.exists(BUILD_O5M)
       if ExitCode == True:
         os.rename((BUILD_O5M), (BUILD_OLD))
+        
       os.rename((BUILD_TEMP), (BUILD_O5M))
       os.remove(BUILD_OLD)
+      
     else:
-      printerror((WORK_DIR) + "tiles/" + (BUILDMAP) + ".poly not found... exit")
+      printerror("tiles/" + (BUILDMAP) + ".poly not found... exit")
       quit()
          
  

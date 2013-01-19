@@ -102,7 +102,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
 args = parser.parse_args()
 
-WORK_DIR = (os.environ['HOME'] + "/map_build/")
+WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 # Der letzte Slash muss sein!!!
 
@@ -113,13 +113,13 @@ WORK_DIR = (os.environ['HOME'] + "/map_build/")
 """
 
 def printinfo(msg):
-  print(("II: " + msg))
+  print("II: " + msg)
 
 def printwarning(msg):
-  print(("WW: " + msg))
+  print("WW: " + msg)
 
 def printerror(msg):
-  print(("EE: " + msg))
+  print("EE: " + msg)
 
 
 def checkprg(programmtofind, solutionhint):
@@ -163,11 +163,16 @@ checkprg("osmconvert", hint)
 hint = "Install: 7z to extract mkgmap's stylefiles"
 checkprg("7z", hint)
 
+ExitCode = os.path.exists(WORK_DIR)
+if ExitCode == False:
+  printerror("Please create" + (WORK_DIR))
+  quit()
+
 os.chdir(WORK_DIR)
 
-ExitCode = os.path.exists((WORK_DIR) + "pygmap3.lck")
+ExitCode = os.path.exists("pygmap3.lck")
 if ExitCode == True:
-  printerror(" There's another instance of pygmap3.py running...")
+  printerror("Is there another instance of pygmap3.py running?")
 
 datei = open((WORK_DIR) + "pygmap3.lck", "w")
 datei.close()   
@@ -196,7 +201,7 @@ def write_config():
     config.write(configfile)
     
 config = configparser.ConfigParser()
-ExitCode = os.path.exists((WORK_DIR) + "pygmap3.cfg")
+ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
   config['DEFAULT'] = {'ramsize': '-Xmx3G',
                        'mapid': '6324', 
@@ -314,12 +319,9 @@ splitter_mkgmap.get_tools()
   
 """
 
-ExitCode = os.path.exists("cities15000.zip")
+ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
 if ExitCode == False:
   os.system("wget http://download.geonames.org/export/dump/cities15000.zip")
-
-
-
 
 """
 is there a keep_data.lck, then use the old data
@@ -336,16 +338,12 @@ else:
   ExitCode = os.path.exists(BUILD_O5M)
   if ExitCode == False:
     fetch.fetch()
-    
-os.chdir(WORK_DIR)
-
-
-
  
 """
   split rawdata
   
 """
+os.chdir(WORK_DIR)
 
 ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
 if ExitCode == False:
@@ -356,6 +354,9 @@ if ExitCode == False:
         os.remove(os.path.join(path, file))
       except: 
         print('Could not delete', file, 'in', path)
+        
+  os.chdir(WORK_DIR)      
+  
   splitter_mkgmap.split()
   
 elif ExitCode == True:
@@ -368,17 +369,17 @@ elif ExitCode == True:
           os.remove(os.path.join(path, file))
         except:
           print('Could not delete', file, 'in', path)
+          
+    os.chdir(WORK_DIR)   
+    
     splitter_mkgmap.split()
     
-    
-    
-os.chdir(WORK_DIR)
-
-
 """
   make the dirs to store the images
 
 """  
+os.chdir(WORK_DIR)
+
 
 zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildday) + "/")
 unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildday) + "/")
@@ -413,9 +414,6 @@ os.chdir(WORK_DIR)
   rename the images
 
 """  
-  
-os.chdir(WORK_DIR)
-  
 build = (config.get('contourlines', 'build'))
 if build == "yes":
   contourlines.create_cont()
@@ -426,11 +424,12 @@ if build == "yes":
 """
   
 os.chdir(WORK_DIR)
-
-           
+        
 ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
 if ExitCode == True: 
   os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir)) 
+  
+  
 """
   zipp the images and mv them to separate dirs
 
@@ -443,7 +442,6 @@ if zip_img == "yes":
 
 
 config.remove_section('runtime')
-
 os.remove((WORK_DIR) + "pygmap3.lck")
 printinfo("Habe fertig!")
 quit()
