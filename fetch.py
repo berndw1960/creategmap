@@ -53,7 +53,10 @@ def fetch():
         os.rename((BUILD_O5M), (BUILD_OLD))
         
       os.rename((BUILD_TEMP), (BUILD_O5M))
-      os.remove(BUILD_OLD)
+      
+      ExitCode = os.path.exists(BUILD_OLD) 
+      if ExitCode == True:
+        os.remove(BUILD_OLD)
       
     else:
       printerror("tiles/" + (buildmap) + ".poly not found... exit")
