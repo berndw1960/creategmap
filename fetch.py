@@ -48,7 +48,7 @@ def fetch():
       while ExitCode == True:
         time.sleep(5)
         
-      ExitCode = os.path,exists(BUILD_O5M) 
+      ExitCode = os.path.exists(BUILD_O5M) 
       if ExitCode == True:
         os.rename((BUILD_O5M), (BUILD_OLD))
         
