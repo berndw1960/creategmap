@@ -23,28 +23,28 @@ __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
 __status__ = "RC"
 
-""" 
-  
+"""
+
   pygmap3.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
   zu erzeugen, z.B. Garmin eTrex Vista Hcx
-    
+
   Work in progress, bitte beachten!
-  Prinzipiell funktioniert es, aber wenn was kaputt geht, 
+  Prinzipiell funktioniert es, aber wenn was kaputt geht,
   lehnen wir jegliche Haftung ab.
-  
-  
+
+
   Folgende Software wird benutzt:
-  
-  mkgmap from 
+
+  mkgmap from
   http://wiki.openstreetmap.org/wiki/Mkgmap
-  
+
   splitter from
   http://www.mkgmap.org.uk/page/tile-splitter
-  splitter.jar 
-  
+  splitter.jar
+
 
   osmconvert and osmupdate
- 
+
 """
 
 import sys
@@ -65,35 +65,35 @@ import contourlines
 
 """
   argparse
-  
+
 """
 
 parser = argparse.ArgumentParser(
-        prog='PROG', 
+        prog='PROG',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
-        
+
             To build maps for Garmin PNA
-            
+
             AIO-Basemap (embedded)
             AIO-FIXME (embedded)
             RadReiseKarte by Aighes (possible)
             Contourlines (possible)
-            
+
             The AIO-Style is Public Domain
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
-             
+
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
-                                     
-                          
-            Hamburg     --> -b hamburg  
+
+
+            Hamburg     --> -b hamburg
             Bayern      --> -b bayern
             Germany     --> -b germany
             D_A_CH      --> -b dach (default)
-   
-                  
-            
+
+
+
         '''))
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
@@ -106,7 +106,7 @@ WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 """
   needed programs und dirs
-  
+
 """
 
 def printinfo(msg):
@@ -121,7 +121,7 @@ def printerror(msg):
 
 def checkprg(programmtofind, solutionhint):
   """
-    test if an executable can be found by 
+    test if an executable can be found by
     following $PATH
     raise message if fails and returns 1
     on success return 0
@@ -129,7 +129,7 @@ def checkprg(programmtofind, solutionhint):
   """
 
   ExitCode = os.system("which " + programmtofind)
-    
+
   if ExitCode == 0:
     printinfo(programmtofind + " found")
   else:
@@ -145,13 +145,13 @@ def is_there(find, solutionhint):
   """
 
   ExitCode = os.path.exists(find)
-    
+
   if ExitCode == True:
      printinfo(find + " found")
   else:
     printerror(find + " not found")
     print(solutionhint)
-    
+
 
 
 hint = "osmconvert missed, needed to cut data from the planet.o5m"
@@ -172,7 +172,7 @@ if ExitCode == True:
   printerror("Is there another instance of pygmap3.py running?")
 
 datei = open((WORK_DIR) + "pygmap3.lck", "w")
-datei.close()   
+datei.close()
 
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
 is_there("bounds.zip", hint)
@@ -187,58 +187,58 @@ ExitCode = os.path.exists("fixme_buglayer.conf")
 if ExitCode == True:
   printerror(" Please rename 'fixme_buglayer.conf' to 'fixme.conf'")
   quit()
-  
+
 
 """
   configparser
 
-"""  
+"""
 def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
-    
+
 config = configparser.ConfigParser()
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
   config['DEFAULT'] = {'ramsize': '-Xmx3G',
-                       'mapid': '6324', 
+                       'mapid': '6324',
                        'zip_img': 'yes',
                        'buildmap': 'dach',}
-  
+
   config['splitter'] = {}
-  config['splitter'] = {'version': 'latest', 
+  config['splitter'] = {'version': 'latest',
                         'maxnodes': '1200000',}
-  
+
   config['mkgmap'] = {}
   config['mkgmap'] = {'version': 'latest'}
-  
+
   config['basemap'] = {}
   config['basemap'] = {'build': 'yes',
                        'conf': 'map.conf',
-                       'family-id': '4', 
-                       'product-id': '45', 
-                       'family-name': 'AIO-Basemap', 
-                       'draw-priority': '10', 
+                       'family-id': '4',
+                       'product-id': '45',
+                       'family-name': 'AIO-Basemap',
+                       'draw-priority': '10',
                        'mapid_ext': '1001',}
-                       
+
   config['rrk'] = {}
   config['rrk'] = {'build': 'no',
                    'conf': 'map.conf',
-                   'family-id': '1', 
-                   'product-id': '1000', 
-                   'family-name': 'RadReiseKarte', 
-                   'draw-priority': '12', 
+                   'family-id': '1',
+                   'product-id': '1000',
+                   'family-name': 'RadReiseKarte',
+                   'draw-priority': '12',
                    'mapid_ext': '2001',}
-                   
+
   config['fixme'] = {}
-  config['fixme'] = {'build': 'yes', 
+  config['fixme'] = {'build': 'yes',
                        'conf': 'fixme.conf',
-                       'family-id': '3', 
-                       'product-id': '33', 
-                       'family-name': 'OSM-Fixme', 
-                       'draw-priority': '16', 
+                       'family-id': '3',
+                       'product-id': '33',
+                       'family-name': 'OSM-Fixme',
+                       'draw-priority': '16',
                        'mapid_ext': '6001',}
-                       
+
   config['contourlines'] = {}
   config['contourlines'] = {'build': 'no'}
   write_config()
@@ -249,12 +249,12 @@ config.read('pygmap3.cfg')
 if ('runtime' in config) == True:
   config.remove_section('runtime')
   write_config()
-   
+
 config.add_section('runtime')
 
-""" 
+"""
   set buildmap
-  
+
 """
 
 config.set('runtime', 'buildmap', (args.buildmap))
@@ -267,7 +267,7 @@ buildmap = config.get('runtime', 'buildmap')
 """
   set buildday for info in PNA
 
-"""  
+"""
 
 today = datetime.datetime.now()
 DAY = today.strftime('%Y_%m_%d')
@@ -286,25 +286,25 @@ time.sleep(5)
 
 """
   create dir for areas. poly and splitter-output
-  
-"""  
-for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']: 
+
+"""
+for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
    os.mkdir(dir)
 
 
 """
-  get splitter and mkgmap 
-  
-"""  
+  get splitter and mkgmap
+
+"""
 splitter_mkgmap.get_tools()
 
 
 
 """
   get the geonames for splitter
-  
+
 """
 
 ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
@@ -316,7 +316,7 @@ is there a keep_data.lck, then use the old data
 
 """
 
-BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")  
+BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == False:
   printinfo("keep_data switched off!")
@@ -326,10 +326,10 @@ else:
   ExitCode = os.path.exists(BUILD_O5M)
   if ExitCode == False:
     fetch.fetch()
- 
+
 """
   split rawdata
-  
+
 """
 os.chdir(WORK_DIR)
 
@@ -340,15 +340,15 @@ if ExitCode == False:
     if os.path.isfile(os.path.join(path, file)):
       try:
         os.remove(os.path.join(path, file))
-      except: 
+      except:
         print('Could not delete', file, 'in', path)
-        
-  os.chdir(WORK_DIR)      
-  
+
+  os.chdir(WORK_DIR)
+
   splitter_mkgmap.split()
-  
+
 elif ExitCode == True:
-  ExitCode = os.path.exists((WORK_DIR) + 
+  ExitCode = os.path.exists((WORK_DIR) +
              "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     path = 'tiles'
@@ -358,15 +358,15 @@ elif ExitCode == True:
           os.remove(os.path.join(path, file))
         except:
           print('Could not delete', file, 'in', path)
-          
-    os.chdir(WORK_DIR)   
-    
+
+    os.chdir(WORK_DIR)
+
     splitter_mkgmap.split()
-    
+
 """
   make the dirs to store the images
 
-"""  
+"""
 os.chdir(WORK_DIR)
 
 
@@ -379,21 +379,21 @@ cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
 for dir in [(zip_dir), (unzip_dir), (cltemp_dir)]:
   ExitCode = os.path.exists(dir)
   if ExitCode == True:
-    path = (dir) 
+    path = (dir)
     for file in os.listdir(path):
       if os.path.isfile(os.path.join(path, file)):
         try:
           os.remove(os.path.join(path, file))
         except:
           print('Could not delete', file, 'in', path)
-            
+
   elif ExitCode == False:
     os.makedirs(dir)
 
 ExitCode = os.path.exists(cl_dir)
 if ExitCode == False:
   os.makedirs(cl_dir)
-  
+
 splitter_mkgmap.mkgmap_render()
 
 os.chdir(WORK_DIR)
@@ -402,40 +402,41 @@ os.chdir(WORK_DIR)
 """
   rename the images
 
-"""  
+"""
 build = (config.get('contourlines', 'build'))
 if build == "yes":
   contourlines.create_cont()
 
 """
  copy *kml to zipped-dirs
- 
+
 """
-  
+
 os.chdir(WORK_DIR)
-        
+
 ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
-if ExitCode == True: 
-  os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir)) 
-  
-  
+if ExitCode == True:
+  os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir))
+
+
 """
   zipp the images and mv them to separate dirs
 
 """
 zip_img = (config.get('DEFAULT', 'zip_img'))
-if zip_img == "yes":  
+if zip_img == "yes":
   os.chdir(unzip_dir)
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (zip_dir))
 
 
 config.remove_section('runtime')
+write_config()
 os.remove((WORK_DIR) + "pygmap3.lck")
 printinfo("Habe fertig!")
 quit()
 
-""" 
+"""
 
 ## Changelog:
 v0.9.44 - first steps for configparser
