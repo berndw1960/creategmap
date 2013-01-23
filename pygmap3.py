@@ -429,7 +429,7 @@ if zip_img == "yes":
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (zip_dir))
 
-
+os.chdir(WORK_DIR)
 config.remove_section('runtime')
 write_config()
 os.remove((WORK_DIR) + "pygmap3.lck")
