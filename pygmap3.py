@@ -14,7 +14,7 @@
 
 
 """
-__version__ = "0.9.44"
+__version__ = "0.9.45"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa"
@@ -177,9 +177,6 @@ datei.close()
 hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
 is_there("bounds.zip", hint)
 
-hint = "RRK-Style missed, get it from www.aighes.de"
-is_there("mystyles/rrk_typ.txt", hint)
-
 hint = ("No Planet-File found! ")
 is_there("planet.o5m", hint)
 
@@ -200,10 +197,13 @@ def write_config():
 config = configparser.ConfigParser()
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
-  config['DEFAULT'] = {'ramsize': '-Xmx3G',
-                       'mapid': '6324',
-                       'zip_img': 'yes',
-                       'buildmap': 'dach',}
+  config['DEFAULT'] = {}
+  
+  config['ramsize'] = {}
+  config['ramsize'] = {'ramsize': '-Xmx3G',}
+  
+  config['mapid'] = {}
+  config['mapid'] = {'mapid': '6324',}
 
   config['splitter'] = {}
   config['splitter'] = {'version': 'latest',
@@ -211,10 +211,14 @@ if ExitCode == False:
 
   config['mkgmap'] = {}
   config['mkgmap'] = {'version': 'latest'}
+  
+  config['map_styles'] = {}
+  config['map_styles'] = {'basemap': 'yes',
+                          'fixme': 'yes',
+                          'rrk': 'no',}
 
   config['basemap'] = {}
-  config['basemap'] = {'build': 'yes',
-                       'conf': 'map.conf',
+  config['basemap'] = {'conf': 'map.conf',
                        'family-id': '4',
                        'product-id': '45',
                        'family-name': 'AIO-Basemap',
@@ -222,8 +226,7 @@ if ExitCode == False:
                        'mapid_ext': '1001',}
 
   config['rrk'] = {}
-  config['rrk'] = {'build': 'no',
-                   'conf': 'map.conf',
+  config['rrk'] = {'conf': 'map.conf',
                    'family-id': '1',
                    'product-id': '1000',
                    'family-name': 'RadReiseKarte',
@@ -231,8 +234,7 @@ if ExitCode == False:
                    'mapid_ext': '2001',}
 
   config['fixme'] = {}
-  config['fixme'] = {'build': 'yes',
-                       'conf': 'fixme.conf',
+  config['fixme'] = {'conf': 'fixme.conf',
                        'family-id': '3',
                        'product-id': '33',
                        'family-name': 'OSM-Fixme',
@@ -241,8 +243,35 @@ if ExitCode == False:
 
   config['contourlines'] = {}
   config['contourlines'] = {'build': 'no'}
-  write_config()
+  
+  config['store_as'] = {}
+  config['store_as'] = {'zip_img': 'no',}
+ 
+  
+elif ExitCode == True: 
+  config.read('pygmap3.cfg')
+  
+  
+  """
+  change some options from older versions
+  """
+   
+  if ('DEFAULT' in config) == True:
+    config.remove_option('DEFAULT', 'mapid')
+    config.remove_option('DEFAULT', 'ramsize')
+    config.remove_option('DEFAULT', 'zip_img')
+    
+  if ('ramsize' in config) == False:    
+    config.add_section('ramsize')
+    config.set('ramsize','ramsize', '-Xmx3G')
+  if ('mapid' in config) == False:    
+    config.add_section('mapid')
+    config.set('mapid','mapid', '6324')    
+  if ('store_as' in config) == False:
+    config.add_section('store_as')
+    config.set('store_as', 'zip_img', 'no')
 
+write_config()
 
 config.read('pygmap3.cfg')
 
@@ -252,6 +281,7 @@ if ('runtime' in config) == True:
 
 config.add_section('runtime')
 
+
 """
   set buildmap
 
@@ -260,6 +290,7 @@ config.add_section('runtime')
 config.set('runtime', 'buildmap', (args.buildmap))
 
 write_config()
+
 buildmap = config.get('runtime', 'buildmap')
 
 
@@ -288,6 +319,7 @@ time.sleep(5)
   create dir for areas. poly and splitter-output
 
 """
+
 for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
@@ -298,6 +330,7 @@ for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
   get splitter and mkgmap
 
 """
+
 splitter_mkgmap.get_tools()
 
 
@@ -331,6 +364,7 @@ else:
   split rawdata
 
 """
+
 os.chdir(WORK_DIR)
 
 ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
@@ -348,9 +382,11 @@ if ExitCode == False:
   splitter_mkgmap.split()
 
 elif ExitCode == True:
+  printwarning("no_split switched on!")
   ExitCode = os.path.exists((WORK_DIR) +
              "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
+    printwarning("have to split once again!")
     path = 'tiles'
     for file in os.listdir(path):
       if os.path.isfile(os.path.join(path, file)):
@@ -367,6 +403,7 @@ elif ExitCode == True:
   make the dirs to store the images
 
 """
+
 os.chdir(WORK_DIR)
 
 
@@ -403,6 +440,7 @@ os.chdir(WORK_DIR)
   rename the images
 
 """
+
 build = (config.get('contourlines', 'build'))
 if build == "yes":
   contourlines.create_cont()
@@ -423,22 +461,32 @@ if ExitCode == True:
   zipp the images and mv them to separate dirs
 
 """
-zip_img = (config.get('DEFAULT', 'zip_img'))
+
+zip_img = (config.get('store_as', 'zip_img'))
 if zip_img == "yes":
   os.chdir(unzip_dir)
   os.system("for file in *.img; do zip $file.zip $file; done")
   os.system("mv *.zip " + (zip_dir))
 
 os.chdir(WORK_DIR)
+
 config.remove_section('runtime')
+
 write_config()
+
 os.remove((WORK_DIR) + "pygmap3.lck")
+
 printinfo("Habe fertig!")
+
 quit()
+
 
 """
 
-## Changelog:
+## Changelog
+
+v0.9.45 - more options to config
+
 v0.9.44 - first steps for configparser
 
 v0.9.43 - download from geofabrik removed

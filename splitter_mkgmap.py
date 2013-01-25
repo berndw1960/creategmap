@@ -110,10 +110,10 @@ def split():
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
   datei.close()
 
-  java_opts = ("java -ea " + (config.get('DEFAULT', 'ramsize')) + " -jar " + (splitter))
+  java_opts = ("java -ea " + (config.get('ramsize', 'ramsize')) + " -jar " + (splitter))
 
   splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
-                 " --mapid=" + (config.get('DEFAULT', 'mapid')) + "0001 " +
+                 " --mapid=" + (config.get('mapid', 'mapid')) + "0001 " +
                  " --output=o5m " +
                  " --keep-complete " +
                  " --write-kml=" + (buildmap) + ".kml "
@@ -175,13 +175,13 @@ def mkgmap_java():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('runtime', 'buildday')
-  os.system("java -ea " + (config.get('DEFAULT', 'ramsize')) +
+  os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             " -Dlog.config=" + (WORK_DIR) + "log.conf " +
             " -jar " + (mkgmap) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --bounds=" + (WORK_DIR) +"bounds.zip " +
-            " --mapname=" + (config.get('DEFAULT', 'mapid')) + (config.get((layer), 'mapid_ext')) +
+            " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
             " --description=" + (buildday) +
@@ -195,8 +195,8 @@ def mkgmap_render():
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('runtime', 'buildday')
   global layer
-  for layer in ['basemap', 'rrk', 'fixme']:
-    build = config.get((layer), 'build')
+  for layer in config['map_styles']:
+    build = (config['map_styles'][(layer)])
     if build == "yes":
       os.chdir(WORK_DIR)
       style()
