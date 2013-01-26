@@ -19,11 +19,11 @@ def printerror(msg):
 
 def checkprg(programmtofind, solutionhint):
   """
-    test if an executable can be found by
-    following $PATH
-    raise message if fails and returns 1
-    on success return 0
-    search follows $PATH
+  test if an executable can be found by
+  following $PATH
+  raise message if fails and returns 1
+  on success return 0
+  search follows $PATH
   """
 
   ExitCode = os.system("which " + programmtofind)
@@ -37,9 +37,9 @@ def checkprg(programmtofind, solutionhint):
 
 def is_there(find, solutionhint):
   """
-    test if a file or dir can be found at a predefined place
-    raise message if fails and returns 1
-    on success return 0
+  test if a file or dir can be found at a predefined place
+  raise message if fails and returns 1
+  on success return 0
   """
 
   ExitCode = os.path.exists(find)
@@ -55,6 +55,10 @@ WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 config = configparser.ConfigParser()
 
+
+"""
+create the contourlines
+"""
 
 def create_cont():
 
@@ -87,6 +91,10 @@ def create_cont():
     printerror("No contourlines_style found")
     quit()
 
+  """
+  use phyghtmap to get the raw-data from the internet,
+  downloaded files will be stored for later builds
+  """
   os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
               " --start-node-id=1 " +
               " --start-way-id=1 " +
@@ -100,18 +108,25 @@ def create_cont():
               " --polygon=poly/" + (buildmap) + ".poly " +
               " -o " +(cltemp_dir) + (buildmap))
 
+  """
+  contourlines-build with makgmap
+  """
   os.chdir(cltemp_dir)
   printinfo("entered " + os.getcwd())
 
-  os.system("java -ea " + (config.get('DEFAULT', 'ramsize')) +
+  os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
               " -jar " + (config.get('runtime', 'mkgmap_path')) +
               " -c " + (WORK_DIR) + "contourlines.conf " +
               " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
-              " --mapname=" + (config.get('DEFAULT', 'mapid')) + "8001 " +
+              " --mapname=" + (config.get('mapid', 'mapid')) + "8001 " +
               " --description=" + (buildday) +
               " --family-name=Contourlines " +
               " --draw-priority=16 " +
               " *.osm.pbf ")
+
+  """
+  store the ready contourlines in separated dirs for later use
+  """
 
   os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ")
 

@@ -19,18 +19,24 @@ def printerror(msg):
   print("EE: " + msg)
 
 
-"""
-  get splitter and mkgmap
 
-"""
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 config = configparser.ConfigParser()
 
+"""
+config writer
+"""
+
 def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
+
+"""
+get splitter and mkgmap
+
+"""
 
 def get_tools():
 
@@ -68,6 +74,7 @@ def get_tools():
   config.set('runtime', 'splitter_path', (splitter))
   write_config()
 
+
   global mkgmap
   if config.get('mkgmap', 'version') != "latest":
     ExitCode = os.path.exists("mkgmap-" + (config.get('mkgmap', 'version')))
@@ -102,6 +109,12 @@ def get_tools():
   target.close()
 
 
+
+"""
+split raw-data
+
+"""
+
 def split():
 
   config.read('pygmap3.cfg')
@@ -112,13 +125,16 @@ def split():
 
   java_opts = ("java -ea " + (config.get('ramsize', 'ramsize')) + " -jar " + (splitter))
 
+  """
+  splitter-options
+  """
   splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
-                 " --mapid=" + (config.get('mapid', 'mapid')) + "0001 " +
-                 " --output=o5m " +
-                 " --keep-complete " +
-                 " --write-kml=" + (buildmap) + ".kml "
-                 " --max-nodes=" + (config.get('splitter', 'maxnodes')) +
-                 " --overlap=0 ")
+                   " --mapid=" + (config.get('mapid', 'mapid')) + "0001 " +
+                   " --output=o5m " +
+                   " --keep-complete " +
+                   " --write-kml=" + (buildmap) + ".kml "
+                   " --max-nodes=" + (config.get('splitter', 'maxnodes')) +
+                   " --overlap=0 ")
   areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list ")
 
   BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
@@ -147,8 +163,8 @@ def split():
 
 
 """
- create the layers
- add your own styles in mystyles
+create the layers
+add your own styles in mystyles
 """
 
 def style():
@@ -164,12 +180,36 @@ def style():
       os.system("7z x aiostyles.7z -oaiostyles")
     mapstyle = "aiostyles"
 
+  """
+  if there is only a TYP-File
+  """
   ExitCode = os.path.exists((mapstyle) + "/" + (layer) + "_typ.txt")
   if ExitCode == False:
     printerror(" Please convert " +
         (mapstyle) + "/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
     quit()
 
+
+  """
+  Test for style-dir and remove old data from there
+  """
+
+  ExitCode = os.path.exists((WORK_DIR) + (layer))
+  if ExitCode == False:
+    os.mkdir((WORK_DIR) + (layer))
+  else:
+    path = ((WORK_DIR) + (layer))
+    for file in os.listdir(path):
+      if os.path.isfile(os.path.join(path, file)):
+        try:
+          os.remove(os.path.join(path, file))
+        except:
+          print('Could not delete', file, 'in', path)
+
+
+"""
+mkgmap-options
+"""
 
 def mkgmap_java():
   config.read('pygmap3.cfg')
@@ -190,6 +230,11 @@ def mkgmap_java():
             (WORK_DIR) + "tiles/*.o5m " +
             (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt")
 
+
+"""
+map-rendering
+"""
+
 def mkgmap_render():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
@@ -201,26 +246,26 @@ def mkgmap_render():
       os.chdir(WORK_DIR)
       style()
 
-      path = ((WORK_DIR) + (layer))
-      for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path, file)):
-
-          try:
-            os.remove(os.path.join(path, file))
-          except:
-            print('Could not delete', file, 'in', path)
-
-      os.chdir(path)
+      os.chdir(layer)
       printinfo("entered " + os.getcwd())
       printinfo("Now building " + (layer) + "-layer with " + (mapstyle))
 
       mkgmap_java()
+
+      """
+      mv the ready gmapsupp.img to destination (unzip_dir) and
+      rename it to (buildmap)_gmapsupp.img
+      """
 
       unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildday) + "/")
 
       os.system("cp gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
 
       log_dir = ((WORK_DIR) + "log/" + (buildday) + "/" + (layer) + "/")
+
+      """
+      save the mkgmap-log for errors
+      """
 
       ExitCode = os.path.exists(log_dir)
       if ExitCode == True:
@@ -231,6 +276,7 @@ def mkgmap_render():
               os.remove(os.path.join(path, file))
             except:
               print('Could not delete', file, 'in', path)
+
 
       elif ExitCode == False:
         os.makedirs(log_dir)

@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Affero General Public License
-  version 3 as published by the Free Software Foundation.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
-  You should have received a copy of this license along
-  with this program; if not, see http://www.gnu.org/licenses/.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU Affero General Public License
+version 3 as published by the Free Software Foundation.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of this license along
+with this program; if not, see http://www.gnu.org/licenses/.
 
 
 """
@@ -25,25 +25,33 @@ __status__ = "RC"
 
 """
 
-  pygmap3.py, das script um ein gmapsupp.img für GARMIN-Navigationsgeräte
-  zu erzeugen, z.B. Garmin eTrex Vista Hcx
+pygmap3.py, a script to build maps for GARMIN PNAs
 
-  Work in progress, bitte beachten!
-  Prinzipiell funktioniert es, aber wenn was kaputt geht,
-  lehnen wir jegliche Haftung ab.
-
-
-  Folgende Software wird benutzt:
-
-  mkgmap from
-  http://wiki.openstreetmap.org/wiki/Mkgmap
-
-  splitter from
-  http://www.mkgmap.org.uk/page/tile-splitter
-  splitter.jar
+Work in progress, be sure, that you ran it in
+the knowledge, that it can be harmful for your data,
+but i hope, it's safe.
 
 
-  osmconvert and osmupdate
+Following Software is needed.
+
+Please install them manually, they have to be
+compiled on your system:
+
+osmconvert
+http://wiki.openstreetmap.org/wiki/Osmconvert
+osmupdate
+http://wiki.openstreetmap.org/wiki/Osmconvert
+
+
+Tools wil be installed by the script:
+
+mkgmap from
+http://wiki.openstreetmap.org/wiki/Mkgmap
+
+splitter from
+http://www.mkgmap.org.uk/page/tile-splitter
+splitter.jar
+
 
 """
 
@@ -57,14 +65,13 @@ import time
 
 # own modules
 
-import clean_up
 import splitter_mkgmap
 import fetch
 import contourlines
 
 
 """
-  argparse
+argparse
 
 """
 
@@ -101,11 +108,11 @@ args = parser.parse_args()
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
-# Der letzte Slash muss sein!!!
+
 
 
 """
-  needed programs und dirs
+needed programs und dirs
 
 """
 
@@ -119,14 +126,17 @@ def printerror(msg):
   print("EE: " + msg)
 
 
+
+"""
+test if an executable can be found by
+following $PATH
+raise message if fails and returns 1
+on success return 0
+search follows $PATH
+"""
+
 def checkprg(programmtofind, solutionhint):
-  """
-    test if an executable can be found by
-    following $PATH
-    raise message if fails and returns 1
-    on success return 0
-    search follows $PATH
-  """
+
 
   ExitCode = os.system("which " + programmtofind)
 
@@ -137,13 +147,13 @@ def checkprg(programmtofind, solutionhint):
     print(solutionhint)
 
 
-def is_there(find, solutionhint):
-  """
-    test if a file or dir can be found at a predefined place
-    raise message if fails and returns 1
-    on success return 0
-  """
+"""
+test if a file or dir can be found at a predefined place
+raise message if fails and returns 1
+on success return 0
+"""
 
+def is_there(find, solutionhint):
   ExitCode = os.path.exists(find)
 
   if ExitCode == True:
@@ -187,7 +197,7 @@ if ExitCode == True:
 
 
 """
-  configparser
+configparser
 
 """
 def write_config():
@@ -198,10 +208,10 @@ config = configparser.ConfigParser()
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
   config['DEFAULT'] = {}
-  
+
   config['ramsize'] = {}
   config['ramsize'] = {'ramsize': '-Xmx3G',}
-  
+
   config['mapid'] = {}
   config['mapid'] = {'mapid': '6324',}
 
@@ -211,7 +221,7 @@ if ExitCode == False:
 
   config['mkgmap'] = {}
   config['mkgmap'] = {'version': 'latest'}
-  
+
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'yes',
                           'fixme': 'yes',
@@ -243,30 +253,32 @@ if ExitCode == False:
 
   config['contourlines'] = {}
   config['contourlines'] = {'build': 'no'}
-  
+
   config['store_as'] = {}
   config['store_as'] = {'zip_img': 'no',}
- 
-  
-elif ExitCode == True: 
+
+
+elif ExitCode == True:
   config.read('pygmap3.cfg')
-  
-  
+
+
   """
   change some options from older versions
   """
-   
+
   if ('DEFAULT' in config) == True:
     config.remove_option('DEFAULT', 'mapid')
     config.remove_option('DEFAULT', 'ramsize')
     config.remove_option('DEFAULT', 'zip_img')
-    
-  if ('ramsize' in config) == False:    
+
+  if ('ramsize' in config) == False:
     config.add_section('ramsize')
     config.set('ramsize','ramsize', '-Xmx3G')
-  if ('mapid' in config) == False:    
+
+  if ('mapid' in config) == False:
     config.add_section('mapid')
-    config.set('mapid','mapid', '6324')    
+    config.set('mapid','mapid', '6324')
+
   if ('store_as' in config) == False:
     config.add_section('store_as')
     config.set('store_as', 'zip_img', 'no')
@@ -283,7 +295,7 @@ config.add_section('runtime')
 
 
 """
-  set buildmap
+set buildmap
 
 """
 
@@ -296,7 +308,7 @@ buildmap = config.get('runtime', 'buildmap')
 
 
 """
-  set buildday for info in PNA
+set buildday for info in PNA
 
 """
 
@@ -316,7 +328,7 @@ time.sleep(5)
 
 
 """
-  create dir for areas. poly and splitter-output
+create dir for areas. poly and splitter-output
 
 """
 
@@ -327,7 +339,7 @@ for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
 
 
 """
-  get splitter and mkgmap
+get splitter and mkgmap
 
 """
 
@@ -336,7 +348,7 @@ splitter_mkgmap.get_tools()
 
 
 """
-  get the geonames for splitter
+get the geonames for splitter
 
 """
 
@@ -361,7 +373,7 @@ else:
     fetch.fetch()
 
 """
-  split rawdata
+split rawdata
 
 """
 
@@ -400,7 +412,7 @@ elif ExitCode == True:
     splitter_mkgmap.split()
 
 """
-  make the dirs to store the images
+make the dirs to store the images
 
 """
 
@@ -437,7 +449,7 @@ os.chdir(WORK_DIR)
 
 
 """
-  rename the images
+rename the images
 
 """
 
@@ -446,7 +458,7 @@ if build == "yes":
   contourlines.create_cont()
 
 """
- copy *kml to zipped-dirs
+copy *kml to zipped-dirs
 
 """
 
@@ -458,7 +470,7 @@ if ExitCode == True:
 
 
 """
-  zipp the images and mv them to separate dirs
+zipp the images and mv them to separate dirs
 
 """
 
@@ -469,8 +481,6 @@ if zip_img == "yes":
   os.system("mv *.zip " + (zip_dir))
 
 os.chdir(WORK_DIR)
-
-config.remove_section('runtime')
 
 write_config()
 
