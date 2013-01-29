@@ -5,6 +5,7 @@
 import sys
 import os
 import configparser
+import time
 
 
 def printinfo(msg):
