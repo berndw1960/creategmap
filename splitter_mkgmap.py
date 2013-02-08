@@ -211,6 +211,16 @@ def style():
 mkgmap-options
 """
 
+ExitCode = os.path.exists((WORK_DIR) + "precomp_sea")
+if ExitCode == False:
+  printwarning("No precomp_sea found, get it from navmap.eu ")
+  printwarning("example: http://www.navmaps.eu/wanmil/sea_20130205.zip ")
+  printwarning("store it extracted as 'precomp_sea' in " + (WORK_DIR))
+  option_generate_sea = " --generate-sea: extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+else:
+  printinfo("Use '--precomp_sea'! ")
+  option_generate_sea = " --precomp-sea=" + (WORK_DIR) +"precomp_sea --generate-sea "
+
 def mkgmap_java():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
@@ -221,6 +231,7 @@ def mkgmap_java():
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --bounds=" + (WORK_DIR) +"bounds.zip " +
+            (option_generate_sea) +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
