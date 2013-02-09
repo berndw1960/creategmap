@@ -83,7 +83,10 @@ parser = argparse.ArgumentParser(
             To build maps for Garmin PNA
 
             AIO-Basemap (embedded)
+            AIO-Bikemap (embedded)
             AIO-FIXME (embedded)
+            
+            additional maps
             RadReiseKarte by Aighes (possible)
             Contourlines (possible)
 
@@ -224,7 +227,8 @@ if ExitCode == False:
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'yes',
-                          'fixme': 'yes',
+			  'bikemap': 'yes',
+                          'fixme': 'no',
                           'rrk': 'no',}
 
   config['basemap'] = {}
@@ -235,13 +239,22 @@ if ExitCode == False:
                        'draw-priority': '10',
                        'mapid_ext': '1001',}
 
+  config['bikemap'] = {}
+  config['bikemap'] = {'conf': 'map.conf',
+                       'family-id': '4',
+                       'product-id': '45',
+                       'family-name': 'AIO-Bikemap',
+                       'draw-priority': '10',
+                       'mapid_ext': '2001',}
+                                              
+
   config['rrk'] = {}
   config['rrk'] = {'conf': 'map.conf',
                    'family-id': '1',
                    'product-id': '1000',
                    'family-name': 'RadReiseKarte',
                    'draw-priority': '12',
-                   'mapid_ext': '2001',}
+                   'mapid_ext': '4001',}
 
   config['fixme'] = {}
   config['fixme'] = {'conf': 'fixme.conf',

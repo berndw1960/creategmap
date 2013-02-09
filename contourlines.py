@@ -80,11 +80,7 @@ def create_cont():
   if ExitCode == True:
     mapstyle = "mystyles"
   else:
-    ExitCode = os.path.exists((WORK_DIR) + "aiostyles")
-    if ExitCode == False:
-      os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
-      os.system("7z x aiostyles.7z -oaiostyles")
-      mapstyle = "aiostyles"
+    printerror("contourlines_style not found, please disable it in pygmap3.cfg")
 
   ExitCode = os.path.exists((mapstyle) + "/contourlines_style/lines")
   if ExitCode == False:
