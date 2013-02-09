@@ -241,8 +241,8 @@ if ExitCode == False:
 
   config['bikemap'] = {}
   config['bikemap'] = {'conf': 'map.conf',
-                       'family-id': '4',
-                       'product-id': '45',
+                       'family-id': '5',
+                       'product-id': '46',
                        'family-name': 'AIO-Bikemap',
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
