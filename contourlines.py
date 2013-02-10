@@ -74,24 +74,23 @@ def create_cont():
   if ExitCode == False:
     hint = "Install phyghtmap to create contourlines if needed"
     checkprg("phyghtmap", hint)
+    ExitCode = os.path.exists((WORK_DIR) + "mystyles/contourlines_style")
+    global mapstyle
+    if ExitCode == True:
+      mapstyle = "mystyles"
+    else:
+      printerror("contourlines_style not found, please disable it in pygmap3.cfg")
 
-  ExitCode = os.path.exists((WORK_DIR) + "mystyles/contourlines_style")
-  global mapstyle
-  if ExitCode == True:
-    mapstyle = "mystyles"
-  else:
-    printerror("contourlines_style not found, please disable it in pygmap3.cfg")
+    ExitCode = os.path.exists((mapstyle) + "/contourlines_style/lines")
+    if ExitCode == False:
+      printerror("No contourlines_style found")
+      quit()
 
-  ExitCode = os.path.exists((mapstyle) + "/contourlines_style/lines")
-  if ExitCode == False:
-    printerror("No contourlines_style found")
-    quit()
-
-  """
-  use phyghtmap to get the raw-data from the internet,
-  downloaded files will be stored for later builds
-  """
-  os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
+    """
+    use phyghtmap to get the raw-data from the internet,
+    downloaded files will be stored for later builds
+    """
+    os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
               " --start-node-id=1 " +
               " --start-way-id=1 " +
               " --max-nodes-per-tile=" + (config.get('splitter', 'maxnodes')) +
@@ -104,13 +103,13 @@ def create_cont():
               " --polygon=poly/" + (buildmap) + ".poly " +
               " -o " +(cltemp_dir) + (buildmap))
 
-  """
-  contourlines-build with makgmap
-  """
-  os.chdir(cltemp_dir)
-  printinfo("entered " + os.getcwd())
+    """
+    contourlines-build with mkgmap
+    """
+    os.chdir(cltemp_dir)
+    printinfo("entered " + os.getcwd())
 
-  os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
+    os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
               " -jar " + (config.get('runtime', 'mkgmap_path')) +
               " -c " + (WORK_DIR) + "contourlines.conf " +
               " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
@@ -120,10 +119,10 @@ def create_cont():
               " --draw-priority=16 " +
               " *.osm.pbf ")
 
-  """
-  store the ready contourlines in separated dirs for later use
-  """
+    """
+    store the ready contourlines in separated dirs for later use
+    """
 
-  os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ")
+    os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ")
 
 
