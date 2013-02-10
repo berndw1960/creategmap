@@ -124,5 +124,7 @@ def create_cont():
     """
 
     os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ")
-
+    
+  else:
+    printinfo("...found")
 
