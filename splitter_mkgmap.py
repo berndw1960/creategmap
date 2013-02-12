@@ -227,10 +227,6 @@ def mkgmap_java():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('runtime', 'buildday')
-  if buildmap == "bikemap":
-    option_link_pois_to_ways = " --link-pois-to-ways "
-  else:
-    option_link_pois_to_ways = " "
     
   os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             " -Dlog.config=" + (WORK_DIR) + "log.conf " +
@@ -239,7 +235,6 @@ def mkgmap_java():
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --bounds=" + (WORK_DIR) +"bounds.zip " +
             (option_generate_sea) +
-            (option_link_pois_to_ways) +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
