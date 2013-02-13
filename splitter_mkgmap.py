@@ -227,7 +227,6 @@ def mkgmap_java():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('runtime', 'buildday')
-    
   os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             " -Dlog.config=" + (WORK_DIR) + "log.conf " +
             " -jar " + (mkgmap) +
