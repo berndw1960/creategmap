@@ -85,7 +85,7 @@ def get_tools():
       tar.extractall()
       tar.close()
 
-      mkgmap = (WORK_DIR) + "mkgmap-" + (config.get('mkgmap', 'version')) + "/mkgmap.jar"
+    mkgmap = (WORK_DIR) + "mkgmap-" + (config.get('mkgmap', 'version')) + "/mkgmap.jar"
   else:
     target.request("GET", "/download/mkgmap.html")
     htmlcontent =  target.getresponse()
