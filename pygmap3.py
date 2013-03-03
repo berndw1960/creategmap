@@ -85,7 +85,7 @@ parser = argparse.ArgumentParser(
             AIO-Basemap (embedded)
             AIO-Bikemap (embedded)
             AIO-FIXME (embedded)
-            
+
             additional maps
             RadReiseKarte by Aighes (possible)
             Contourlines (possible)
@@ -224,6 +224,7 @@ if ExitCode == False:
 
   config['mkgmap'] = {}
   config['mkgmap'] = {'version': 'latest'}
+  config['mkgmap'] = {'logging': 'no'}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'yes',
@@ -246,7 +247,7 @@ if ExitCode == False:
                        'family-name': 'AIO-Bikemap',
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
-                                              
+
 
   config['rrk'] = {}
   config['rrk'] = {'conf': 'map.conf',
@@ -295,6 +296,7 @@ elif ExitCode == True:
   if ('store_as' in config) == False:
     config.add_section('store_as')
     config.set('store_as', 'zip_img', 'no')
+
 
 write_config()
 

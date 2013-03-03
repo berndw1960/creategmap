@@ -227,8 +227,17 @@ def mkgmap_java():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('runtime', 'buildday')
+
+  logging = config.get('mkgmap', 'logging')
+  if logging == "yes":
+    printinfo("logging enabled")
+    option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "log.conf "
+  else:
+    printwarning("logging disabled")
+    option_mkgmap_logging = " "
+
   os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
-            " -Dlog.config=" + (WORK_DIR) + "log.conf " +
+            (option_mkgmap_logging) +
             " -jar " + (mkgmap) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
@@ -274,26 +283,31 @@ def mkgmap_render():
 
       os.system("cp gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
 
-      log_dir = ((WORK_DIR) + "log/" + (buildday) + "/" + (layer) + "/")
 
       """
       save the mkgmap-log for errors
       """
 
-      ExitCode = os.path.exists(log_dir)
-      if ExitCode == True:
-        path = (log_dir)
-        for file in os.listdir(path):
-          if os.path.isfile(os.path.join(path, file)):
-            try:
-              os.remove(os.path.join(path, file))
-            except:
-              print('Could not delete', file, 'in', path)
+      logging = config.get('mkgmap', 'logging')
+      if logging == "yes":
+
+        log_dir = ((WORK_DIR) + "log/" + (buildday) + "/" + (layer) + "/")
 
 
-      elif ExitCode == False:
-        os.makedirs(log_dir)
+        ExitCode = os.path.exists(log_dir)
+        if ExitCode == True:
+          path = (log_dir)
+          for file in os.listdir(path):
+            if os.path.isfile(os.path.join(path, file)):
+              try:
+                os.remove(os.path.join(path, file))
+              except:
+                print('Could not delete', file, 'in', path)
 
-      ExitCode = os.path.exists("mkgmap.log.0")
-      if ExitCode == True:
-        os.system("mv mkgmap.log.* " + (log_dir))
+
+        elif ExitCode == False:
+          os.makedirs(log_dir)
+
+        ExitCode = os.path.exists("mkgmap.log.0")
+        if ExitCode == True:
+          os.system("mv mkgmap.log.* " + (log_dir))
