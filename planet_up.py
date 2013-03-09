@@ -24,7 +24,7 @@ __status__ = "RC"
 import sys
 import os
 import datetime
-
+import configparser
 
 # DEFs =============================================================================
 
@@ -87,8 +87,20 @@ hint = ("No Planet-File found! ")
 is_there("planet.o5m", hint)
 
 
+    
+
+"""
+set date for info in PNA
+
+"""
+
 today = datetime.datetime.now()
-day = today.strftime('%Y_%m_%d')
+DATE = today.strftime('%Y_%m_%d')
+
+config = configparser.ConfigParser()
+config.set('mapdata', 'buildday', (DATE))
+with open('pygmap3.cfg', 'w') as configfile:
+  config.write(configfile)
 
 
 ExitCode = os.path.exists("planet.o5m")

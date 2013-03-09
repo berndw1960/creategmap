@@ -14,10 +14,10 @@ with this program; if not, see http://www.gnu.org/licenses/.
 
 
 """
-__version__ = "0.9.45"
+__version__ = "0.9.46"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
-__credits__ = "Dschuwa"
+__credits__ = "Dschuwa, Franco B."
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
@@ -215,14 +215,21 @@ if ExitCode == False:
 
   config['mapid'] = {}
   config['mapid'] = {'mapid': '6324',}
+  
+  config['mapdata'] = {}
+  config['mapdata'] = {'buildday': '2013_01_01'}
+
+  config['navmap_eu'] = {}
+  config['navmap_eu'] = {'sea_rev': 'first_run',
+                         'bounds_rev': 'first_run'}
 
   config['splitter'] = {}
-  config['splitter'] = {'version': 'latest',
+  config['splitter'] = {'version': 'first_run',
                         'maxnodes': '1200000',}
 
   config['mkgmap'] = {}
-  config['mkgmap'] = {'version': 'latest'}
-  config['mkgmap'] = {'logging': 'no'}
+  config['mkgmap'] = {'version': 'first_run',
+                      'logging': 'no'}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'yes',
@@ -294,7 +301,15 @@ elif ExitCode == True:
   if ('store_as' in config) == False:
     config.add_section('store_as')
     config.set('store_as', 'zip_img', 'no')
-
+    
+  if ('mapdata' in config) == False:
+    config.add_section('mapdata')
+    config.set('mapdata', 'buildday', '2013_01_01')
+  
+  if ('navmap_eu' in config) == False:
+    config.add_section('navmap_eu')
+    config.set('navmap_eu', 'sea_rev', 'first_run')
+    config.set('navmap_eu', 'bounds_rev', 'first_run')
 
 write_config()
 
@@ -316,28 +331,17 @@ config.set('runtime', 'buildmap', (args.buildmap))
 
 write_config()
 
-buildmap = config.get('runtime', 'buildmap')
-
-
-
-"""
-set buildday for info in PNA
-
-"""
-
-today = datetime.datetime.now()
-DAY = today.strftime('%Y_%m_%d')
-buildday = ((buildmap) + "/" + (DAY))
-
-config.set('runtime', 'buildday', (buildday))
-
-write_config()
-buildday = config.get('runtime', 'buildday')
-
 config.read('pygmap3.cfg')
-print(buildday)
 
-time.sleep(5)
+buildmap = config.get('runtime', 'buildmap')
+buildday = config.get('mapdata', 'buildday')
+
+description = ((buildmap) + "_" + (buildday))
+
+config.set('runtime', 'description', (description))
+write_config()
+
+printinfo(description)
 
 
 """
@@ -462,7 +466,7 @@ os.chdir(WORK_DIR)
 
 
 """
-rename the images
+create the contourlines
 
 """
 
@@ -507,6 +511,7 @@ quit()
 """
 
 ## Changelog
+v0.9.46 - boundaries and precomp_sea from navmap.eu
 
 v0.9.45 - more options to config
 

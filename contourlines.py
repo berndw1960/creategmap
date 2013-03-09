@@ -64,7 +64,6 @@ def create_cont():
 
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
-  buildday = config.get('runtime', 'buildday')
   cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
   cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
 
@@ -114,7 +113,7 @@ def create_cont():
               " -c " + (WORK_DIR) + "contourlines.conf " +
               " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
               " --mapname=" + (config.get('mapid', 'mapid')) + "8001 " +
-              " --description=" + (buildday) +
+              " --description="  + (config.get('runtime', 'description')) +
               " --family-name=Contourlines " +
               " --draw-priority=16 " +
               " *.osm.pbf ")
