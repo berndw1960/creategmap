@@ -436,8 +436,8 @@ make the dirs to store the images
 os.chdir(WORK_DIR)
 
 
-zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildday) + "/")
-unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildday) + "/")
+zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/" + (buildday) + "/")
+unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
 
 cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
 cltemp_dir = ((WORK_DIR) + "contourlines/temp/")

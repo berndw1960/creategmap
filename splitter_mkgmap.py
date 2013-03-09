@@ -299,7 +299,7 @@ def mkgmap_render():
       rename it to (buildmap)_gmapsupp.img
       """
 
-      unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildday) + "/")
+      unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
 
       os.system("cp gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
 
@@ -311,7 +311,7 @@ def mkgmap_render():
       logging = config.get('mkgmap', 'logging')
       if logging == "yes":
 
-        log_dir = ((WORK_DIR) + "log/" + (buildday) + "/" + (layer) + "/")
+        log_dir = ((WORK_DIR) + "log/" + (buildmap) + "/" + (buildday) + "/" + (layer) + "/")
 
 
         ExitCode = os.path.exists(log_dir)
