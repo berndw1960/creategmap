@@ -164,6 +164,7 @@ def is_there(find, solutionhint):
   else:
     printerror(find + " not found")
     print(solutionhint)
+    quit()
 
 
 
@@ -186,9 +187,6 @@ if ExitCode == True:
 
 datei = open((WORK_DIR) + "pygmap3.lck", "w")
 datei.close()
-
-hint = "get the bounds-*.zip from navmaps.eu and rename it to bounds.zip"
-is_there("bounds.zip", hint)
 
 hint = ("No Planet-File found! ")
 is_there("planet.o5m", hint)
