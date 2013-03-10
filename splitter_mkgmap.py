@@ -6,8 +6,6 @@ import http.client
 import re
 import tarfile
 import configparser
-import shutil
-
 
 
 def printinfo(msg):
@@ -309,7 +307,7 @@ def mkgmap_render():
 
       unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
 
-      shutil.move("gmapsupp.img, " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
+      os.system("cp gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
 
 
       """
