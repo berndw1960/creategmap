@@ -6,6 +6,7 @@ import http.client
 import re
 import tarfile
 import configparser
+import shutil
 
 
 
@@ -45,29 +46,28 @@ def get_tools():
   if config.get('splitter', 'version') != "first_run":
     splitter = (WORK_DIR) + (config.get('splitter', 'version')) + "/splitter.jar"
 
-  target.request("GET", "/download/splitter.html")
-  htmlcontent =  target.getresponse()
-
-  data = htmlcontent.read()
-  data = data.decode('utf8')
-  pattern = re.compile('splitter-r\d{3}')
-  splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-  target.close()
+  if config.get('splitter', 'latest') == "yes":
+    target.request("GET", "/download/splitter.html")
+    htmlcontent =  target.getresponse()
+    data = htmlcontent.read()
+    data = data.decode('utf8')
+    pattern = re.compile('splitter-r\d{3}')
+    splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
+    target.close()
 
   ExitCode = os.path.exists(splitter_rev)
   if ExitCode == False:
-    os.system("wget -N http://www.mkgmap.org.uk/download/" +
-                (splitter_rev) + ".tar.gz")
+    os.system("wget -N http://www.mkgmap.org.uk/download/" + (splitter_rev) + ".tar.gz")
 
     tar = tarfile.open((splitter_rev) + ".tar.gz")
     tar.extractall()
     tar.close()
-    print(splitter_rev)
-    config.set('splitter', 'version', (splitter_rev))
-    write_config()
-    
+
+  config.set('splitter', 'version', (splitter_rev))
+  write_config()
+
   splitter = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
-      
+
   config.set('runtime', 'splitter_path', (splitter))
   write_config()
 
@@ -75,29 +75,28 @@ def get_tools():
   if config.get('mkgmap', 'version') != "first_run":
     mkgmap = (WORK_DIR) + (config.get('mkgmap', 'version')) + "/mkgmap.jar"
 
-  target.request("GET", "/download/mkgmap.html")
-  htmlcontent =  target.getresponse()
-
-  data = htmlcontent.read()
-  data = data.decode('utf8')
-  pattern = re.compile('mkgmap-r\d{4}')
-  mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-  target.close()
+  if config.get('mkgmap', 'latest') == "yes":
+    target.request("GET", "/download/mkgmap.html")
+    htmlcontent =  target.getresponse()
+    data = htmlcontent.read()
+    data = data.decode('utf8')
+    pattern = re.compile('mkgmap-r\d{4}')
+    mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
+    target.close()
 
   ExitCode = os.path.exists(mkgmap_rev)
   if ExitCode == False:
-    os.system("wget -N http://www.mkgmap.org.uk/download/" +
-                  (mkgmap_rev) + (".tar.gz"))
+    os.system("wget -N http://www.mkgmap.org.uk/download/" + (mkgmap_rev) + (".tar.gz"))
 
     tar = tarfile.open((mkgmap_rev) + ".tar.gz")
     tar.extractall()
     tar.close()
-    
-    config.set('mkgmap', 'version', (mkgmap_rev))
-    write_config()
-    
+
+  config.set('mkgmap', 'version', (mkgmap_rev))
+  write_config()
+
   mkgmap = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
-       
+
   config.set('runtime', 'mkgmap_path', (mkgmap))
   write_config()
 
@@ -105,45 +104,48 @@ def get_tools():
   boundaries from navmap.eu
   """
 
-  os.system("wget http://www.navmaps.eu/wanmil/")
-
   global sea_rev
   if config.get('navmap_eu', 'sea_rev') != "first_run":
     sea_rev = config.get('navmap_eu', 'sea_rev')
 
-  ExitCode = os.path.exists("index.html")
-  if ExitCode == True:
-    data = open("index.html").readlines()
-    data = str(data)
-    pattern = re.compile('sea_\d{8}')
-    sea_rev = sorted(pattern.findall(data), reverse=True)[1]
+  if config.get('navmap_eu', 'latest') == "yes":
+    os.system("wget http://www.navmaps.eu/wanmil/")
 
-    ExitCode = os.path.exists((sea_rev) + (".zip"))
-    if ExitCode == False:
-      os.system("wget -N http://www.navmaps.eu/wanmil/" +
-              (sea_rev) + (".zip"))
-      config.set('navmap_eu', 'sea_rev', (sea_rev))
-      write_config()
+    ExitCode = os.path.exists("index.html")
+    if ExitCode == True:
+      data = open("index.html").readlines()
+      data = str(data)
+      pattern = re.compile('sea_\d{8}')
+      sea_rev = sorted(pattern.findall(data), reverse=True)[1]
+
+  ExitCode = os.path.exists((sea_rev) + (".zip"))
+  if ExitCode == False:
+    os.system("wget -N http://www.navmaps.eu/wanmil/" + (sea_rev) + (".zip"))
+
+  config.set('navmap_eu', 'sea_rev', (sea_rev))
+  write_config()
 
   global bounds_rev
   if config.get('navmap_eu', 'bounds_rev') != "first_run":
     bounds_rev = config.get('navmap_eu', 'bounds_rev')
 
-  ExitCode = os.path.exists("index.html")
-  if ExitCode == True:
-    data = open("index.html").readlines()
-    data = str(data)
-    pattern = re.compile('bounds_\d{8}')
-    bounds_rev = sorted(pattern.findall(data), reverse=True)[1]
+  if config.get('navmap_eu', 'latest') == "yes":
+    ExitCode = os.path.exists("index.html")
+    if ExitCode == True:
+      data = open("index.html").readlines()
+      data = str(data)
+      pattern = re.compile('bounds_\d{8}')
+      bounds_rev = sorted(pattern.findall(data), reverse=True)[1]
+      os.remove((WORK_DIR) + "index.html")
 
-    ExitCode = os.path.exists((bounds_rev) + (".zip"))
-    if ExitCode == False:
-      os.system("wget -N http://www.navmaps.eu/wanmil/" +
-              (bounds_rev) + (".zip"))
-      config.set('navmap_eu', 'bounds_rev', (bounds_rev))
-      write_config()
+  ExitCode = os.path.exists((bounds_rev) + (".zip"))
+  if ExitCode == False:
+    os.system("wget -N http://www.navmaps.eu/wanmil/" + (bounds_rev) + (".zip"))
 
-    os.remove((WORK_DIR) + "index.html")
+  config.set('navmap_eu', 'bounds_rev', (bounds_rev))
+  write_config()
+
+
 
 """
 split raw-data
@@ -251,7 +253,7 @@ mkgmap-options
 
 def mkgmap_java():
   config.read('pygmap3.cfg')
-  
+
   logging = config.get('mkgmap', 'logging')
   if logging == "yes":
     printinfo("logging enabled")
@@ -307,7 +309,7 @@ def mkgmap_render():
 
       unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
 
-      os.system("cp gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
+      shutil.move("gmapsupp.img, " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
 
 
       """

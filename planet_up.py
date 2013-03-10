@@ -86,8 +86,12 @@ checkprg("osmupdate", hint)
 hint = ("No Planet-File found! ")
 is_there("planet.o5m", hint)
 
-
-    
+ExitCode = os.path.exists("planet.o5m")
+if ExitCode == False:
+  printinfo("Download started. Size ~17+ Gigabytes... please wait! ")
+  os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
+  os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
+  os.remove("planet-latest.osm.pbf")
 
 """
 set date for info in PNA
@@ -95,22 +99,14 @@ set date for info in PNA
 """
 
 today = datetime.datetime.now()
-DATE = today.strftime('%Y_%m_%d')
+DATE = today.strftime('%Y%m%d_%H00')
 
 config = configparser.ConfigParser()
 config.read('pygmap3.cfg')
 config.set('mapdata', 'buildday', (DATE))
 with open('pygmap3.cfg', 'w') as configfile:
-  config.write(configfile)
-
-
-ExitCode = os.path.exists("planet.o5m")
-if ExitCode == False:
-  printinfo("Download started. Size ~17+ Gigabytes... please wait! ")
-  os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
-  os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
-  os.remove("planet-latest.osm.pbf")
- 
+  config.write(configfile)   
+  
 os.system("osmupdate -v --daily --hourly planet.o5m planet_new.o5m")
 
 ExitCode = os.path.exists("planet_new.o5m")

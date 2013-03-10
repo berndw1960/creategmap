@@ -215,20 +215,23 @@ if ExitCode == False:
 
   config['mapid'] = {}
   config['mapid'] = {'mapid': '6324',}
-  
+
   config['mapdata'] = {}
   config['mapdata'] = {'buildday': '2013_01_01'}
 
   config['navmap_eu'] = {}
   config['navmap_eu'] = {'sea_rev': 'first_run',
-                         'bounds_rev': 'first_run'}
+                         'bounds_rev': 'first_run',
+                         'latest': 'yes'}
 
   config['splitter'] = {}
   config['splitter'] = {'version': 'first_run',
+                        'latest': 'yes',
                         'maxnodes': '1200000',}
 
   config['mkgmap'] = {}
   config['mkgmap'] = {'version': 'first_run',
+                      'latest': 'yes',
                       'logging': 'no'}
 
   config['map_styles'] = {}
@@ -301,11 +304,11 @@ elif ExitCode == True:
   if ('store_as' in config) == False:
     config.add_section('store_as')
     config.set('store_as', 'zip_img', 'no')
-    
+
   if ('mapdata' in config) == False:
     config.add_section('mapdata')
     config.set('mapdata', 'buildday', '2013_01_01')
-  
+
   if ('navmap_eu' in config) == False:
     config.add_section('navmap_eu')
     config.set('navmap_eu', 'sea_rev', 'first_run')
