@@ -62,10 +62,12 @@ def get_tools():
     tar = tarfile.open((splitter_rev) + ".tar.gz")
     tar.extractall()
     tar.close()
-
+    print(splitter_rev)
+    config.set('splitter', 'version', (splitter_rev))
+    write_config()
+    
   splitter = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
-
-  config.set('splitter', 'version', (splitter_rev))
+      
   config.set('runtime', 'splitter_path', (splitter))
   write_config()
 
@@ -90,14 +92,18 @@ def get_tools():
     tar = tarfile.open((mkgmap_rev) + ".tar.gz")
     tar.extractall()
     tar.close()
-
+    
+    config.set('mkgmap', 'version', (mkgmap_rev))
+    write_config()
+    
   mkgmap = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
-
-  config.set('mkgmap', 'version', (mkgmap_rev))
+       
   config.set('runtime', 'mkgmap_path', (mkgmap))
   write_config()
 
-  ## boundaries from navmap.eu
+  """
+  boundaries from navmap.eu
+  """
 
   os.system("wget http://www.navmaps.eu/wanmil/")
 
@@ -116,8 +122,8 @@ def get_tools():
     if ExitCode == False:
       os.system("wget -N http://www.navmaps.eu/wanmil/" +
               (sea_rev) + (".zip"))
-    config.set('navmap_eu', 'sea_rev', (sea_rev))
-    write_config()
+      config.set('navmap_eu', 'sea_rev', (sea_rev))
+      write_config()
 
   global bounds_rev
   if config.get('navmap_eu', 'bounds_rev') != "first_run":
@@ -134,8 +140,8 @@ def get_tools():
     if ExitCode == False:
       os.system("wget -N http://www.navmaps.eu/wanmil/" +
               (bounds_rev) + (".zip"))
-    config.set('navmap_eu', 'bounds_rev', (bounds_rev))
-    write_config()
+      config.set('navmap_eu', 'bounds_rev', (bounds_rev))
+      write_config()
 
     os.remove((WORK_DIR) + "index.html")
 
