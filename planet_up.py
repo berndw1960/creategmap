@@ -98,6 +98,7 @@ today = datetime.datetime.now()
 DATE = today.strftime('%Y_%m_%d')
 
 config = configparser.ConfigParser()
+config.read('pygmap3.cfg')
 config.set('mapdata', 'buildday', (DATE))
 with open('pygmap3.cfg', 'w') as configfile:
   config.write(configfile)
