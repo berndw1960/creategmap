@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import http.client
-import re
-import tarfile
 import configparser
 
 
@@ -30,120 +27,6 @@ def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
-"""
-get splitter and mkgmap
-
-"""
-
-def get_tools():
-
-  target = http.client.HTTPConnection("www.mkgmap.org.uk")
-  config.read('pygmap3.cfg')
-
-  global splitter
-  if config.get('splitter', 'version') != "first_run":
-    splitter = (WORK_DIR) + (config.get('splitter', 'version')) + "/splitter.jar"
-
-  if config.get('splitter', 'latest') == "yes":
-    target.request("GET", "/download/splitter.html")
-    htmlcontent =  target.getresponse()
-    data = htmlcontent.read()
-    data = data.decode('utf8')
-    pattern = re.compile('splitter-r\d{3}')
-    splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
-    target.close()
-
-  ExitCode = os.path.exists(splitter_rev)
-  if ExitCode == False:
-    os.system("wget -N http://www.mkgmap.org.uk/download/" + (splitter_rev) + ".tar.gz")
-
-    tar = tarfile.open((splitter_rev) + ".tar.gz")
-    tar.extractall()
-    tar.close()
-
-  config.set('splitter', 'version', (splitter_rev))
-  write_config()
-
-  splitter = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
-
-  config.set('runtime', 'splitter_path', (splitter))
-  write_config()
-
-  global mkgmap
-  if config.get('mkgmap', 'version') != "first_run":
-    mkgmap = (WORK_DIR) + (config.get('mkgmap', 'version')) + "/mkgmap.jar"
-
-  if config.get('mkgmap', 'latest') == "yes":
-    target.request("GET", "/download/mkgmap.html")
-    htmlcontent =  target.getresponse()
-    data = htmlcontent.read()
-    data = data.decode('utf8')
-    pattern = re.compile('mkgmap-r\d{4}')
-    mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-    target.close()
-
-  ExitCode = os.path.exists(mkgmap_rev)
-  if ExitCode == False:
-    os.system("wget -N http://www.mkgmap.org.uk/download/" + (mkgmap_rev) + (".tar.gz"))
-
-    tar = tarfile.open((mkgmap_rev) + ".tar.gz")
-    tar.extractall()
-    tar.close()
-
-  config.set('mkgmap', 'version', (mkgmap_rev))
-  write_config()
-
-  mkgmap = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
-
-  config.set('runtime', 'mkgmap_path', (mkgmap))
-  write_config()
-
-  """
-  boundaries from navmap.eu
-  """
-
-  global sea_rev
-  if config.get('navmap_eu', 'sea_rev') != "first_run":
-    sea_rev = config.get('navmap_eu', 'sea_rev')
-
-  if config.get('navmap_eu', 'latest') == "yes":
-    os.system("wget http://www.navmaps.eu/wanmil/")
-
-    ExitCode = os.path.exists("index.html")
-    if ExitCode == True:
-      data = open("index.html").readlines()
-      data = str(data)
-      pattern = re.compile('sea_\d{8}')
-      sea_rev = sorted(pattern.findall(data), reverse=True)[1]
-
-  ExitCode = os.path.exists((sea_rev) + (".zip"))
-  if ExitCode == False:
-    os.system("wget -N http://www.navmaps.eu/wanmil/" + (sea_rev) + (".zip"))
-
-  config.set('navmap_eu', 'sea_rev', (sea_rev))
-  write_config()
-
-  global bounds_rev
-  if config.get('navmap_eu', 'bounds_rev') != "first_run":
-    bounds_rev = config.get('navmap_eu', 'bounds_rev')
-
-  if config.get('navmap_eu', 'latest') == "yes":
-    ExitCode = os.path.exists("index.html")
-    if ExitCode == True:
-      data = open("index.html").readlines()
-      data = str(data)
-      pattern = re.compile('bounds_\d{8}')
-      bounds_rev = sorted(pattern.findall(data), reverse=True)[1]
-      os.remove((WORK_DIR) + "index.html")
-
-  ExitCode = os.path.exists((bounds_rev) + (".zip"))
-  if ExitCode == False:
-    os.system("wget -N http://www.navmaps.eu/wanmil/" + (bounds_rev) + (".zip"))
-
-  config.set('navmap_eu', 'bounds_rev', (bounds_rev))
-  write_config()
-
-
 
 """
 split raw-data
@@ -158,11 +41,13 @@ def split():
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
   datei.close()
 
-  java_opts = ("java -ea " + (config.get('ramsize', 'ramsize')) + " -jar " + (splitter))
+  java_opts = ("java -ea " + (config.get('ramsize', 'ramsize')) +
+                  " -jar " + (config.get('runtime', 'splitter_path')))
 
   """
   splitter-options
   """
+  
   splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
                    " --mapid=" + (config.get('mapid', 'mapid')) + "0001 " +
                    " --output=o5m " +
@@ -262,7 +147,7 @@ def mkgmap_java():
 
   os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             (option_mkgmap_logging) +
-            " -jar " + (mkgmap) +
+            " -jar " + (config.get('runtime', 'mkgmap_path')) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --bounds=" + (WORK_DIR) + (bounds_rev) + ".zip " +

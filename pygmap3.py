@@ -64,9 +64,9 @@ import time
 
 
 # own modules
-
-import splitter_mkgmap
 import fetch
+import get_tools
+import splitter_mkgmap
 import contourlines
 
 
@@ -363,7 +363,7 @@ get splitter and mkgmap
 
 """
 
-splitter_mkgmap.get_tools()
+get_tools.get_tools()
 
 
 
