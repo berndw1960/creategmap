@@ -150,8 +150,8 @@ def mkgmap_java():
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
-            " --bounds=" + (WORK_DIR) + (bounds_rev) + ".zip " +
-            " --precomp-sea=" + (WORK_DIR) + (sea_rev) + ".zip " +
+            " --bounds=" + (config.get('runtime', 'bounds_rev_path')) +
+            " --precomp-sea=" + (config.get('runtime', 'sea_rev_path')) +
             " --generate-sea " +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +

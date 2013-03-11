@@ -116,7 +116,11 @@ def get_tools():
   if ExitCode == False:
     os.system("wget -N http://www.navmaps.eu/wanmil/" + (sea_rev) + (".zip"))
 
+  global sea_rev_path
+  sea_rev_path = ((WORK_DIR) + (sea_rev) + (".zip"))
+  
   config.set('navmap_eu', 'sea_rev', (sea_rev))
+  config.set('runtime', 'sea_rev_path', (sea_rev_path))
   write_config()
 
   global bounds_rev
@@ -132,7 +136,11 @@ def get_tools():
   ExitCode = os.path.exists((bounds_rev) + (".zip"))
   if ExitCode == False:
     os.system("wget -N http://www.navmaps.eu/wanmil/" + (bounds_rev) + (".zip"))
-
+    
+  global bounds_rev_path
+  bounds_rev_path = ((WORK_DIR) + (bounds_rev) + (".zip"))
+    
   config.set('navmap_eu', 'bounds_rev', (bounds_rev))
+  config.set('runtime', 'bounds_rev_path', (bounds_rev_path))
   write_config()
 
