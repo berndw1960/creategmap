@@ -48,11 +48,11 @@ def get_tools():
     pattern = re.compile('splitter-r\d{3}')
     splitter_rev = sorted(pattern.findall(data), reverse=True)[1]
     target.close()
-    
+
   else:
     splitter_rev = config.get('splitter', 'version')
 
-  
+
   ExitCode = os.path.exists(splitter_rev)
   if ExitCode == False:
     os.system("wget -N http://www.mkgmap.org.uk/download/" + (splitter_rev) + ".tar.gz")
@@ -61,27 +61,26 @@ def get_tools():
     tar.extractall()
     tar.close()
 
-  global splitter_path
   splitter_path = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
-  
+
   config.set('splitter', 'version', (splitter_rev))
   config.set('runtime', 'splitter_path', (splitter_path))
   write_config()
-  
+
   if config.get('mkgmap', 'latest') == "yes":
-    target = http.client.HTTPConnection("www.mkgmap.org.uk")  
+    target = http.client.HTTPConnection("www.mkgmap.org.uk")
     target.request("GET", "/download/mkgmap.html")
     htmlcontent =  target.getresponse()
     data = htmlcontent.read()
     data = data.decode('utf8')
     pattern = re.compile('mkgmap-r\d{4}')
     mkgmap_rev = sorted(pattern.findall(data), reverse=True)[1]
-    target.close()  
-    
+    target.close()
+
   else:
     mkgmap_rev = config.get('mkgmap', 'version')
 
-  
+
   ExitCode = os.path.exists(mkgmap_rev)
   if ExitCode == False:
     os.system("wget -N http://www.mkgmap.org.uk/download/" + (mkgmap_rev) + (".tar.gz"))
@@ -90,9 +89,8 @@ def get_tools():
     tar.extractall()
     tar.close()
 
-  global mkgmap_path
   mkgmap_path = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
-  
+
   config.set('mkgmap', 'version', (mkgmap_rev))
   config.set('runtime', 'mkgmap_path', (mkgmap_path))
   write_config()
@@ -101,7 +99,6 @@ def get_tools():
   boundaries from navmap.eu
   """
 
-  global sea_rev
   if config.get('navmap_eu', 'latest') == "yes":
     os.system("wget http://www.navmaps.eu/wanmil/")
 
@@ -116,14 +113,12 @@ def get_tools():
   if ExitCode == False:
     os.system("wget -N http://www.navmaps.eu/wanmil/" + (sea_rev) + (".zip"))
 
-  global sea_rev_path
   sea_rev_path = ((WORK_DIR) + (sea_rev) + (".zip"))
-  
+
   config.set('navmap_eu', 'sea_rev', (sea_rev))
   config.set('runtime', 'sea_rev_path', (sea_rev_path))
   write_config()
 
-  global bounds_rev
   if config.get('navmap_eu', 'latest') == "yes":
     ExitCode = os.path.exists("index.html")
     if ExitCode == True:
@@ -136,10 +131,9 @@ def get_tools():
   ExitCode = os.path.exists((bounds_rev) + (".zip"))
   if ExitCode == False:
     os.system("wget -N http://www.navmaps.eu/wanmil/" + (bounds_rev) + (".zip"))
-    
-  global bounds_rev_path
+
   bounds_rev_path = ((WORK_DIR) + (bounds_rev) + (".zip"))
-    
+
   config.set('navmap_eu', 'bounds_rev', (bounds_rev))
   config.set('runtime', 'bounds_rev_path', (bounds_rev_path))
   write_config()
