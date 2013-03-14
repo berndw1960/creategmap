@@ -66,7 +66,8 @@ import time
 # own modules
 import fetch
 import get_tools
-import splitter_mkgmap
+import splitter
+import mkgmap
 import contourlines
 
 
@@ -411,7 +412,7 @@ if ExitCode == False:
 
   os.chdir(WORK_DIR)
 
-  splitter_mkgmap.split()
+  splitter.split()
 
 elif ExitCode == True:
   printwarning("no_split switched on!")
@@ -429,7 +430,7 @@ elif ExitCode == True:
 
     os.chdir(WORK_DIR)
 
-    splitter_mkgmap.split()
+    splitter.split()
 
 """
 make the dirs to store the images
@@ -463,7 +464,7 @@ ExitCode = os.path.exists(cl_dir)
 if ExitCode == False:
   os.makedirs(cl_dir)
 
-splitter_mkgmap.mkgmap_render()
+mkgmap.render()
 
 os.chdir(WORK_DIR)
 
@@ -501,8 +502,6 @@ if zip_img == "yes":
   os.system("mv *.zip " + (zip_dir))
 
 os.chdir(WORK_DIR)
-
-write_config()
 
 os.remove((WORK_DIR) + "pygmap3.lck")
 

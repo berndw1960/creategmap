@@ -63,10 +63,6 @@ def get_tools():
 
   splitter_path = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
 
-  config.set('splitter', 'version', (splitter_rev))
-  config.set('runtime', 'splitter_path', (splitter_path))
-  write_config()
-
   if config.get('mkgmap', 'latest') == "yes":
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
     target.request("GET", "/download/mkgmap.html")
@@ -91,9 +87,6 @@ def get_tools():
 
   mkgmap_path = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
 
-  config.set('mkgmap', 'version', (mkgmap_rev))
-  config.set('runtime', 'mkgmap_path', (mkgmap_path))
-  write_config()
 
   """
   boundaries from navmap.eu
@@ -115,10 +108,6 @@ def get_tools():
 
   sea_rev_path = ((WORK_DIR) + (sea_rev) + (".zip"))
 
-  config.set('navmap_eu', 'sea_rev', (sea_rev))
-  config.set('runtime', 'sea_rev_path', (sea_rev_path))
-  write_config()
-
   if config.get('navmap_eu', 'latest') == "yes":
     ExitCode = os.path.exists("index.html")
     if ExitCode == True:
@@ -134,7 +123,21 @@ def get_tools():
 
   bounds_rev_path = ((WORK_DIR) + (bounds_rev) + (".zip"))
 
+  """
+  now write  to pygmap3.cfg
+  """
+
+  config.set('splitter', 'version', (splitter_rev))
+  config.set('runtime', 'splitter_path', (splitter_path))
+
+  config.set('mkgmap', 'version', (mkgmap_rev))
+  config.set('runtime', 'mkgmap_path', (mkgmap_path))
+
+  config.set('navmap_eu', 'sea_rev', (sea_rev))
+  config.set('runtime', 'sea_rev_path', (sea_rev_path))
+
   config.set('navmap_eu', 'bounds_rev', (bounds_rev))
   config.set('runtime', 'bounds_rev_path', (bounds_rev_path))
+
   write_config()
 
