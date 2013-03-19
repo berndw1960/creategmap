@@ -105,7 +105,7 @@ def render():
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
-#            " --bounds=" + (config.get('runtime', 'bounds_rev_path')) +
+            " --bounds=" + (config.get('runtime', 'bounds_rev_path')) +
             " --precomp-sea=" + (config.get('runtime', 'sea_rev_path')) +
             " --generate-sea " +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +

@@ -24,7 +24,6 @@ __email__ = "weigelt.bernd@web.de"
 __status__ = "RC"
 
 """
-
 pygmap3.py, a script to build maps for GARMIN PNAs
 
 Work in progress, be sure, that you ran it in
@@ -40,10 +39,13 @@ compiled on your system:
 osmconvert
 http://wiki.openstreetmap.org/wiki/Osmconvert
 osmupdate
-http://wiki.openstreetmap.org/wiki/Osmconvert
+http://wiki.openstreetmap.org/wiki/Osmupdate
+
+phyghtmap (to create the contourlines)
+http://katze.tfiu.de/projects/phyghtmap/
 
 
-Tools wil be installed by the script:
+Tools will be installed by the script:
 
 mkgmap from
 http://wiki.openstreetmap.org/wiki/Mkgmap
@@ -51,6 +53,13 @@ http://wiki.openstreetmap.org/wiki/Mkgmap
 splitter from
 http://www.mkgmap.org.uk/page/tile-splitter
 splitter.jar
+
+precomp_sea from navmap.eu
+boundaries from navmap_eu
+
+citynames from geonames.org
+
+and some other things
 
 
 """
@@ -69,7 +78,7 @@ import get_tools
 import splitter
 import mkgmap
 import contourlines
-
+import navmap
 
 """
 argparse
@@ -85,11 +94,12 @@ parser = argparse.ArgumentParser(
 
             AIO-Basemap (embedded)
             AIO-Bikemap (embedded)
-            AIO-FIXME (embedded)
+            AIO-FIXME (possible)
+            Contourlines (possible)
 
             additional maps
             RadReiseKarte by Aighes (possible)
-            Contourlines (possible)
+
 
             The AIO-Style is Public Domain
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
@@ -366,6 +376,11 @@ get splitter and mkgmap
 
 get_tools.get_tools()
 
+"""
+bounds and precomp_sea from navmap.eu
+
+"""
+navmap.get_bounds()
 
 
 """
