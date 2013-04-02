@@ -14,7 +14,7 @@ with this program; if not, see http://www.gnu.org/licenses/.
 
 
 """
-__version__ = "0.9.46"
+__version__ = "0.9.47"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __credits__ = "Dschuwa, Franco B."
@@ -230,10 +230,8 @@ if ExitCode == False:
   config['mapdata'] = {}
   config['mapdata'] = {'buildday': '2013_01_01'}
 
-  config['navmap_eu'] = {}
-  config['navmap_eu'] = {'sea_rev': 'first_run',
-                         'bounds_rev': 'first_run',
-                         'latest': 'yes'}
+  config['navmap'] = {}
+  config['navmap'] = {'bounds': 'yes',}
 
   config['splitter'] = {}
   config['splitter'] = {'version': 'first_run',
@@ -320,10 +318,10 @@ elif ExitCode == True:
     config.add_section('mapdata')
     config.set('mapdata', 'buildday', '2013_01_01')
 
-  if ('navmap_eu' in config) == False:
-    config.add_section('navmap_eu')
-    config.set('navmap_eu', 'sea_rev', 'first_run')
-    config.set('navmap_eu', 'bounds_rev', 'first_run')
+  if ('navmap_eu' in config) == True:
+    config.remove_section('navmap_eu')
+    config.add_section('navmap')
+    config.set('navmap', 'bounds', 'yes')
 
 write_config()
 
@@ -380,7 +378,7 @@ get_tools.get_tools()
 bounds and precomp_sea from navmap.eu
 
 """
-navmap.get_bounds()
+navmap.bounds()
 
 
 """
@@ -528,7 +526,9 @@ quit()
 """
 
 ## Changelog
-v0.9.46 - boundaries and precomp_sea from navmap.eu
+v0.9.47 - navmaps.eu is down, use navmaps.org manually
+
+v0.9.46 - boundaries and precomp_sea from navmaps.eu
 
 v0.9.45 - more options to config
 
