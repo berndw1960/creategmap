@@ -116,6 +116,7 @@ def render():
             " --draw-priority=" + (config.get((layer), 'draw-priority')) + " " +
             (WORK_DIR) + "tiles/*.o5m " +
             (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt")
+            
 
       """
       move the ready gmapsupp.img to destination (unzip_dir) and
