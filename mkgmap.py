@@ -104,6 +104,9 @@ def render():
             (option_mkgmap_logging) +
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
+            " --bounds=" + (WORK_DIR) + "bounds.zip " +
+            " --precomp-sea=" + (WORK_DIR) + "sea.zip " +
+            " --generate-sea " +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
