@@ -225,10 +225,10 @@ if ExitCode == False:
   config['ramsize'] = {'ramsize': '-Xmx3G',}
 
   config['mapid'] = {}
-  config['mapid'] = {'mapid': '6324',}
+  config['mapid'] = {'mapid': '6389',}
 
   config['mapdata'] = {}
-  config['mapdata'] = {'buildday': '2013_01_01'}
+  config['mapdata'] = {'buildday': '2013_xx_yy'}
 
   config['navmap'] = {}
   config['navmap'] = {'bounds': 'yes',}
@@ -291,37 +291,6 @@ if ExitCode == False:
 
 elif ExitCode == True:
   config.read('pygmap3.cfg')
-
-
-  """
-  change some options from older versions
-  """
-
-  if ('DEFAULT' in config) == True:
-    config.remove_option('DEFAULT', 'mapid')
-    config.remove_option('DEFAULT', 'ramsize')
-    config.remove_option('DEFAULT', 'zip_img')
-
-  if ('ramsize' in config) == False:
-    config.add_section('ramsize')
-    config.set('ramsize','ramsize', '-Xmx3G')
-
-  if ('mapid' in config) == False:
-    config.add_section('mapid')
-    config.set('mapid','mapid', '6324')
-
-  if ('store_as' in config) == False:
-    config.add_section('store_as')
-    config.set('store_as', 'zip_img', 'no')
-
-  if ('mapdata' in config) == False:
-    config.add_section('mapdata')
-    config.set('mapdata', 'buildday', '2013_01_01')
-
-  if ('navmap_eu' in config) == True:
-    config.remove_section('navmap_eu')
-    config.add_section('navmap')
-    config.set('navmap', 'bounds', 'yes')
 
 write_config()
 
@@ -477,6 +446,12 @@ ExitCode = os.path.exists(cl_dir)
 if ExitCode == False:
   os.makedirs(cl_dir)
 
+
+"""
+render the map-images
+
+"""
+
 mkgmap.render()
 
 os.chdir(WORK_DIR)
@@ -492,7 +467,7 @@ if build == "yes":
   contourlines.create_cont()
 
 """
-copy *kml to zipped-dirs
+copy *kml to zipp-dirs
 
 """
 

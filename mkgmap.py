@@ -100,13 +100,21 @@ def render():
         printwarning("logging disabled")
         option_mkgmap_logging = " "
 
+      bounds = config.get('navmap', 'bounds')
+      if bounds == "yes":
+        printinfo ("use precompiled bounds")
+        option_bounds = " --bounds=" + (WORK_DIR) + "bounds.zip "
+        option_sea = " --precomp-sea=" + (WORK_DIR) + "sea.zip  --generate-sea "
+      else:
+        option_bounds = " --location-autofill=is_in, nearest "
+        option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+
       os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             (option_mkgmap_logging) +
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
             " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
-            " --bounds=" + (WORK_DIR) + "bounds.zip " +
-            " --precomp-sea=" + (WORK_DIR) + "sea.zip " +
-            " --generate-sea " +
+            (option_bounds) +
+            (option_sea) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
@@ -116,7 +124,7 @@ def render():
             " --draw-priority=" + (config.get((layer), 'draw-priority')) + " " +
             (WORK_DIR) + "tiles/*.o5m " +
             (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt")
-            
+
 
       """
       move the ready gmapsupp.img to destination (unzip_dir) and
