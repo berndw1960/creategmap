@@ -45,10 +45,6 @@ def fetch():
                 " -B=poly/" + (buildmap) + ".poly " +
                 " -o=" + (BUILD_TEMP))
 
-      ExitCode = os.path.exists("tiles/" + (buildmap) + "_split.lck")
-      while ExitCode == True:
-        time.sleep(5)
-
       ExitCode = os.path.exists(BUILD_O5M)
       if ExitCode == True:
         os.rename((BUILD_O5M), (BUILD_OLD))

@@ -47,19 +47,15 @@ http://katze.tfiu.de/projects/phyghtmap/
 
 Tools will be installed by the script:
 
-mkgmap from
-http://wiki.openstreetmap.org/wiki/Mkgmap
-
-splitter from
-http://www.mkgmap.org.uk/page/tile-splitter
-splitter.jar
-
-precomp_sea from navmap.eu
-boundaries from navmap_eu
-
-citynames from geonames.org
-
+mkgmap and splitter from
+http://www.mkgmap.org.uk
 and some other things
+
+This files should downloaded manually
+precomp_sea from navmap.org
+boundaries from navmap.org
+
+
 
 
 """
