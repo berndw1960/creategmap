@@ -116,6 +116,7 @@ def render():
             (option_bounds) +
             (option_sea) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
+            " --list-styles=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
