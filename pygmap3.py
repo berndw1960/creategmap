@@ -237,7 +237,9 @@ if ExitCode == False:
   config['mkgmap'] = {}
   config['mkgmap'] = {'version': 'first_run',
                       'latest': 'yes',
-                      'logging': 'no'}
+                      'logging': 'no',
+                      'check_styles': 'yes',
+                      'list_styles': 'no',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'yes',

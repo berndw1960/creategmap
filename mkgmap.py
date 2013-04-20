@@ -109,6 +109,30 @@ def render():
         option_bounds = " --location-autofill=is_in, nearest "
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
+      check_styles = config.get('mkgmap', 'check_styles')
+      if check_styles == "yes":
+        printinfo("check_styles enabled")
+        option_1 = " --list-styles=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style "
+        option_check_styles = str(option_1)
+      else:
+        printwarning("check_styles disabled")
+        option_check_styles = " "
+
+      list_styles = config.get('mkgmap', 'list_styles')
+      if list_styles == "yes":
+        printinfo("list_styles enabled")
+        option_2 = " --list-styles=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style "
+        option_list_styles = str(option_2)
+      else:
+        printwarning("list_styles disabled")
+        option_list_styles = " "
+
+
+      """
+      map rendering
+
+      """
+
       os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             (option_mkgmap_logging) +
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
@@ -116,7 +140,8 @@ def render():
             (option_bounds) +
             (option_sea) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
-            " --list-styles=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
+            (option_check_styles) +
+            (option_list_styles) +
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
