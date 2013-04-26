@@ -112,7 +112,7 @@ def render():
       check_styles = config.get('mkgmap', 'check_styles')
       if check_styles == "yes":
         printinfo("check_styles enabled")
-        option_1 = " --check-styles=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style "
+        option_1 = " --check-styles "
         option_check_styles = str(option_1)
       else:
         printwarning("check_styles disabled")
@@ -121,7 +121,7 @@ def render():
       list_styles = config.get('mkgmap', 'list_styles')
       if list_styles == "yes":
         printinfo("list_styles enabled")
-        option_2 = " --list-styles=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style "
+        option_2 = " --list-styles "
         option_list_styles = str(option_2)
       else:
         printwarning("list_styles disabled")
