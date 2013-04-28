@@ -231,6 +231,7 @@ if ExitCode == False:
 
   config['splitter'] = {}
   config['splitter'] = {'version': 'first_run',
+			'logging': 'yes',
                         'latest': 'yes',
                         'maxnodes': '1200000',}
 
