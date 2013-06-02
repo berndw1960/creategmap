@@ -91,7 +91,9 @@ def render():
       """
       mkgmap-options
       """
-
+      option_mkgmap_options = " --read-config=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style/options "
+      
+      
       logging = config.get('mkgmap', 'logging')
       if logging == "yes":
         printinfo("logging enabled")
@@ -136,6 +138,7 @@ def render():
       os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             (option_mkgmap_logging) +
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
+            (option_mkgmap_options) +
             (option_bounds) +
             (option_sea) +
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " + 
