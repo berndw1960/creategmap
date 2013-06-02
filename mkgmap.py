@@ -144,7 +144,7 @@ def render():
             " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " + 
             (option_check_styles) +
             (option_list_styles) +
-            " --name-tag-list = name:de, name, name:en, int_name "
+            " --name-tag-list=name:de,name,name:en,int_name "
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
