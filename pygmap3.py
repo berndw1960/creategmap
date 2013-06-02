@@ -88,9 +88,9 @@ parser = argparse.ArgumentParser(
 
             To build maps for Garmin PNA
 
-            AIO-Basemap (embedded)
-            AIO-Bikemap (embedded)
-            AIO-FIXME (possible)
+            Basemap (embedded)
+            Bikemap (embedded)
+            FIXME (possible)
             Contourlines (possible)
 
             additional maps
@@ -99,6 +99,7 @@ parser = argparse.ArgumentParser(
 
             The AIO-Style is Public Domain
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
+            The FZK-Style is copyrighted by Klaus Tockloth
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
@@ -246,13 +247,14 @@ if ExitCode == False:
   config['map_styles'] = {'basemap': 'yes',
 			  'bikemap': 'yes',
                           'fixme': 'no',
-                          'rrk': 'no',}
+                          'rrk': 'no',
+                          'fzk': 'no',}
 
   config['basemap'] = {}
   config['basemap'] = {'conf': 'map.conf',
                        'family-id': '4',
                        'product-id': '45',
-                       'family-name': 'AIO-Basemap',
+                       'family-name': 'Basemap',
                        'draw-priority': '10',
                        'mapid_ext': '1001',}
 
@@ -260,10 +262,17 @@ if ExitCode == False:
   config['bikemap'] = {'conf': 'map.conf',
                        'family-id': '5',
                        'product-id': '46',
-                       'family-name': 'AIO-Bikemap',
+                       'family-name': 'Bikemap',
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
 
+  config['fzk'] = {}
+  config['fzk'] = {'conf': 'map.conf',
+                   'family-id': '6',
+                   'product-id': '47',
+                   'family-name': 'RadReiseKarte',
+                   'draw-priority': '12',
+                   'mapid_ext': '3001',}
 
   config['rrk'] = {}
   config['rrk'] = {'conf': 'map.conf',
@@ -272,6 +281,7 @@ if ExitCode == False:
                    'family-name': 'RadReiseKarte',
                    'draw-priority': '12',
                    'mapid_ext': '4001',}
+
 
   config['fixme'] = {}
   config['fixme'] = {'conf': 'fixme.conf',
