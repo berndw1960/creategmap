@@ -251,32 +251,28 @@ if ExitCode == False:
                           'fzk': 'no',}
 
   config['basemap'] = {}
-  config['basemap'] = {'conf': 'map.conf',
-                       'family-id': '4',
+  config['basemap'] = {'family-id': '4',
                        'product-id': '45',
                        'family-name': 'Basemap',
                        'draw-priority': '10',
                        'mapid_ext': '1001',}
 
   config['bikemap'] = {}
-  config['bikemap'] = {'conf': 'map.conf',
-                       'family-id': '5',
+  config['bikemap'] = {'family-id': '5',
                        'product-id': '46',
                        'family-name': 'Bikemap',
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
 
   config['fzk'] = {}
-  config['fzk'] = {'conf': 'map.conf',
-                   'family-id': '6',
+  config['fzk'] = {'family-id': '6',
                    'product-id': '47',
                    'family-name': 'RadReiseKarte',
                    'draw-priority': '12',
                    'mapid_ext': '3001',}
 
   config['rrk'] = {}
-  config['rrk'] = {'conf': 'map.conf',
-                   'family-id': '1',
+  config['rrk'] = {'family-id': '1',
                    'product-id': '1000',
                    'family-name': 'RadReiseKarte',
                    'draw-priority': '12',
@@ -284,12 +280,11 @@ if ExitCode == False:
 
 
   config['fixme'] = {}
-  config['fixme'] = {'conf': 'fixme.conf',
-                       'family-id': '3',
-                       'product-id': '33',
-                       'family-name': 'OSM-Fixme',
-                       'draw-priority': '16',
-                       'mapid_ext': '6001',}
+  config['fixme'] = {'family-id': '3',
+                     'product-id': '33',
+                     'family-name': 'OSM-Fixme',
+                     'draw-priority': '16',
+                     'mapid_ext': '6001',}
 
   config['contourlines'] = {}
   config['contourlines'] = {'build': 'no'}

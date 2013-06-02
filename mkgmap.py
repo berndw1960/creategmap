@@ -136,12 +136,12 @@ def render():
       os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
             (option_mkgmap_logging) +
             " -jar " + (config.get('runtime', 'mkgmap_path')) +
-            " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
+#            " -c "  + (WORK_DIR) + (config.get((layer), 'conf')) +
             (option_bounds) +
             (option_sea) +
-            " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
             (option_check_styles) +
             (option_list_styles) +
+            " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +            
             " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
