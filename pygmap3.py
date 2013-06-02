@@ -265,8 +265,8 @@ if ExitCode == False:
                        'mapid_ext': '2001',}
 
   config['fzk'] = {}
-  config['fzk'] = {'family-id': '6',
-                   'product-id': '47',
+  config['fzk'] = {'family-id': '6276',
+                   'product-id': '1',
                    'family-name': 'RadReiseKarte',
                    'draw-priority': '12',
                    'mapid_ext': '3001',}
