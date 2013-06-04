@@ -418,37 +418,6 @@ elif ExitCode == True:
 
     splitter.split()
 
-"""
-make the dirs to store the images
-
-"""
-
-os.chdir(WORK_DIR)
-
-
-zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/" + (buildday) + "/")
-unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
-
-cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
-cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
-
-for dir in [(zip_dir), (unzip_dir), (cltemp_dir)]:
-  ExitCode = os.path.exists(dir)
-  if ExitCode == True:
-    path = (dir)
-    for file in os.listdir(path):
-      if os.path.isfile(os.path.join(path, file)):
-        try:
-          os.remove(os.path.join(path, file))
-        except:
-          print('Could not delete', file, 'in', path)
-
-  elif ExitCode == False:
-    os.makedirs(dir)
-
-ExitCode = os.path.exists(cl_dir)
-if ExitCode == False:
-  os.makedirs(cl_dir)
 
 
 """
@@ -470,28 +439,7 @@ build = (config.get('contourlines', 'build'))
 if build == "yes":
   contourlines.create_cont()
 
-"""
-copy *kml to zipp-dirs
 
-"""
-
-os.chdir(WORK_DIR)
-
-ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
-if ExitCode == True:
-  os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir))
-
-
-"""
-zipp the images and mv them to separate dirs
-
-"""
-
-zip_img = (config.get('store_as', 'zip_img'))
-if zip_img == "yes":
-  os.chdir(unzip_dir)
-  os.system("for file in *.img; do zip $file.zip $file; done")
-  os.system("mv *.zip " + (zip_dir))
 
 os.chdir(WORK_DIR)
 
