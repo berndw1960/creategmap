@@ -66,13 +66,14 @@ def render():
         printerror(" Please convert " +
             (mapstyle) + "/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
         quit()
+        
+        
       """
-      make the dirs to store the images
+      create dirs to store the images
 
       """
 
       os.chdir(WORK_DIR)
-
 
       zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/" + (buildday) + "/")
       unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
@@ -80,15 +81,10 @@ def render():
       cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
       cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
 
-      for dir in [(zip_dir), (unzip_dir), (cltemp_dir)]:
+      for dir in [(zip_dir), (unzip_dir), (cltemp_dir), (cl_dir)]:
         ExitCode = os.path.exists(dir)
         if ExitCode == False:
           os.makedirs(dir)
-
-      ExitCode = os.path.exists(cl_dir)
-      if ExitCode == False:
-        os.makedirs(cl_dir)
-
 
       """
       Test for (layer)-dir and remove old data from there
@@ -168,7 +164,7 @@ def render():
             (option_check_styles) +
             (option_list_styles) +
             " --name-tag-list=name:de,name,name:en,int_name "
-            " --mapname=" + (config.get('mapid', 'mapid')) + (config.get((layer), 'mapid_ext')) +
+            " --mapname=" + (config.get('runtime', 'option_mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
             " --description=" + (config.get('runtime', 'description')) +
@@ -183,7 +179,6 @@ def render():
       rename it to (buildmap)_gmapsupp.img
       """
 
-      unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
       ExitCode = os.path.exists((unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
       if ExitCode == True:
         os.remove((unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")

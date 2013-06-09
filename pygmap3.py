@@ -223,7 +223,13 @@ if ExitCode == False:
 
   config['mapid'] = {}
   config['mapid'] = {'mapid': '6389',}
+  
+  config['dach'] = {}
+  config['dach'] = {'mapid': '6500',}
 
+  config['germany'] = {}
+  config['germany'] = {'mapid': '6501'}
+  
   config['mapdata'] = {}
   config['mapdata'] = {'buildday': '2013_xx_yy'}
 
@@ -313,7 +319,6 @@ set buildmap
 """
 
 config.set('runtime', 'buildmap', (args.buildmap))
-
 write_config()
 
 config.read('pygmap3.cfg')
@@ -328,6 +333,26 @@ write_config()
 
 printinfo(description)
 
+
+"""
+set mapid
+example:
+[dach]
+mapid = 6500
+
+or as default
+[mapid]
+mapid = 6389
+
+"""
+  
+if (config.has_option((buildmap), 'mapid')) == True:
+  option_mapid = config.get((buildmap), 'mapid')
+else:
+  option_mapid = config.get('mapid', 'mapid')
+
+config.set('runtime', 'option_mapid', (option_mapid))
+write_config() 
 
 """
 create dir for areas. poly and splitter-output

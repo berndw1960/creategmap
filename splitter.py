@@ -29,6 +29,7 @@ def split():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('mapdata', 'buildday')
+  option_mapid =  config.get('runtime', 'option_mapid')
   
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
   datei.close()
@@ -62,9 +63,9 @@ def split():
   """
   splitter-options
   """
-  
+
   splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
-                   " --mapid=" + (config.get('mapid', 'mapid')) + "0001 " +
+                   " --mapid=" + (option_mapid) + "0001 " +
                    " --output=o5m " +
                    " --keep-complete " +
                    " --write-kml=" + (buildmap) + ".kml "
