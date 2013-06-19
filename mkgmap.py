@@ -66,8 +66,8 @@ def render():
         printerror(" Please convert " +
             (mapstyle) + "/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
         quit()
-        
-        
+
+
       """
       create dirs to store the images
 
@@ -113,16 +113,14 @@ def render():
       option_mkgmap_options = " --read-config=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style/options "
 
 
-      logging = config.get('mkgmap', 'logging')
-      if logging == "yes":
+      if config.get('mkgmap', 'logging') == "yes":
         printinfo("logging enabled")
         option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "log.conf "
       else:
         printwarning("logging disabled")
         option_mkgmap_logging = " "
 
-      bounds = config.get('navmap', 'bounds')
-      if bounds == "yes":
+      if config.get('navmap', 'bounds') == "yes":
         printinfo ("use precompiled bounds")
         option_bounds = " --bounds=" + (WORK_DIR) + "bounds.zip "
         option_sea = " --precomp-sea=" + (WORK_DIR) + "sea.zip  --generate-sea "
@@ -130,8 +128,7 @@ def render():
         option_bounds = " --location-autofill=is_in, nearest "
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
-      check_styles = config.get('mkgmap', 'check_styles')
-      if check_styles == "yes":
+      if config.get('mkgmap', 'check_styles') == "yes":
         printinfo("check_styles enabled")
         option_1 = " --check-styles "
         option_check_styles = str(option_1)
@@ -139,8 +136,7 @@ def render():
         printwarning("check_styles disabled")
         option_check_styles = " "
 
-      list_styles = config.get('mkgmap', 'list_styles')
-      if list_styles == "yes":
+      if config.get('mkgmap', 'list_styles') == "yes":
         printinfo("list_styles enabled")
         option_2 = " --list-styles "
         option_list_styles = str(option_2)
@@ -182,15 +178,14 @@ def render():
       ExitCode = os.path.exists((unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
       if ExitCode == True:
         os.remove((unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
-      os.system("cp gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
+      os.system("mv gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
 
       """
       zipp the images and mv them to separate dirs
 
       """
 
-      zip_img = (config.get('store_as', 'zip_img'))
-      if zip_img == "yes":
+      if (config.get('store_as', 'zip_img')) == "yes":
         os.chdir(unzip_dir)
         os.system(("zip ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip " + (buildmap) + "_" + (layer) + "_gmapsupp.img")
         ExitCode = os.path.exists((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip")
@@ -198,14 +193,21 @@ def render():
           os.remove((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip")
         os.system(("mv ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip " + (zip_dir))
 
+      if (config.get('store_as', '7z_img')) == "yes":
+        os.chdir(unzip_dir)
+        os.system(("7z a  ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z " + (buildmap) + "_" + (layer) + "_gmapsupp.img")
+        ExitCode = os.path.exists((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z")
+        if ExitCode == True:
+          os.remove((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z")
+        os.system(("mv ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z " + (zip_dir))
+
       """
       save the mkgmap-log for errors
       """
       os.chdir(WORK_DIR)
-      logging = config.get('mkgmap', 'logging')
-      if logging == "yes":
-        log_dir = ((WORK_DIR) + "log/" + (buildmap) + "/" + (buildday) + "/" + (layer) + "/")
 
+      if config.get('mkgmap', 'logging') == "yes":
+        log_dir = ((WORK_DIR) + "log/" + (buildmap) + "/" + (buildday) + "/" + (layer) + "/")
 
         ExitCode = os.path.exists(log_dir)
         if ExitCode == True:
@@ -220,9 +222,9 @@ def render():
         elif ExitCode == False:
           os.makedirs(log_dir)
 
-      ExitCode = os.path.exists("mkgmap.log.0")
+      ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
       if ExitCode == True:
-        os.system("mv mkgmap.log.* " + (log_dir))
+        os.system("mv " + (layer) + "/mkgmap.log.* " + (log_dir))
 
       """
       copy *kml to zipp-dirs

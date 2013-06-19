@@ -30,10 +30,10 @@ def bounds():
   """
 
   if config.get('navmap', 'bounds') == "yes":
-   
+
     ExitCode = os.path.exists("sea.zip")
     if ExitCode == False:
-      printerror("precompiled sea_bound in sea.zip not found")
+      printerror("precompiled sea_bounds in sea.zip not found")
       printerror("please download the precompiled sea_bounds from")
       printerror("http://www.navmaps.org/boundaries")
       printerror("and store as sea.zip")
@@ -45,6 +45,5 @@ def bounds():
       printerror("please download the precompiled bounds from")
       printerror("http://www.navmaps.org/boundaries")
       printerror("and store as bounds.zip")
-      quit() 
-    
-    
+      quit()
+

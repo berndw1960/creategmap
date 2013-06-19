@@ -14,9 +14,9 @@ with this program; if not, see http://www.gnu.org/licenses/.
 
 
 """
-__version__ = "0.9.47"
+__version__ = "0.9.48"
 __author__ = "Bernd Weigelt"
-__copyright__ = "Copyright 2012 Bernd Weigelt"
+__copyright__ = "Copyright 2013 Bernd Weigelt"
 __credits__ = "Dschuwa, Franco B."
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
@@ -88,14 +88,13 @@ parser = argparse.ArgumentParser(
 
             To build maps for Garmin PNA
 
-            Basemap (embedded)
-            Bikemap (embedded)
+            Basemap
+            Bikemap
             FIXME (possible)
             Contourlines (possible)
 
             additional maps
             RadReiseKarte by Aighes (possible)
-
 
             The AIO-Style is Public Domain
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
@@ -179,7 +178,7 @@ def is_there(find, solutionhint):
 hint = "osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
 
-hint = "Install: 7z to extract mkgmap's stylefiles"
+hint = "Install: 7z to store the images"
 checkprg("7z", hint)
 
 ExitCode = os.path.exists(WORK_DIR)
@@ -216,6 +215,10 @@ def write_config():
 config = configparser.ConfigParser()
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
+  """
+  create a default config
+
+  """
   config['DEFAULT'] = {}
 
   config['ramsize'] = {}
@@ -223,13 +226,13 @@ if ExitCode == False:
 
   config['mapid'] = {}
   config['mapid'] = {'mapid': '6389',}
-  
+
   config['dach'] = {}
   config['dach'] = {'mapid': '6500',}
 
   config['germany'] = {}
   config['germany'] = {'mapid': '6501'}
-  
+
   config['mapdata'] = {}
   config['mapdata'] = {'buildday': '2013_xx_yy'}
 
@@ -284,7 +287,6 @@ if ExitCode == False:
                    'draw-priority': '12',
                    'mapid_ext': '4001',}
 
-
   config['fixme'] = {}
   config['fixme'] = {'family-id': '3',
                      'product-id': '33',
@@ -296,8 +298,8 @@ if ExitCode == False:
   config['contourlines'] = {'build': 'no'}
 
   config['store_as'] = {}
-  config['store_as'] = {'zip_img': 'no',}
-
+  config['store_as'] = {'zip_img': 'no',
+                        '7z_img': 'no',}
 
 elif ExitCode == True:
   config.read('pygmap3.cfg')
@@ -345,14 +347,14 @@ or as default
 mapid = 6389
 
 """
-  
+
 if (config.has_option((buildmap), 'mapid')) == True:
   option_mapid = config.get((buildmap), 'mapid')
 else:
   option_mapid = config.get('mapid', 'mapid')
 
 config.set('runtime', 'option_mapid', (option_mapid))
-write_config() 
+write_config()
 
 """
 create dir for areas. poly and splitter-output
@@ -402,6 +404,7 @@ else:
   printwarning("keep_data switched on!")
   ExitCode = os.path.exists(BUILD_O5M)
   if ExitCode == False:
+    printwarning("old mapdata not found, create O5M from Planet...!")
     fetch.fetch()
 
 """
@@ -460,11 +463,9 @@ create the contourlines
 
 """
 
-build = (config.get('contourlines', 'build'))
-if build == "yes":
+
+if (config.get('contourlines', 'build')) == "yes":
   contourlines.create_cont()
-
-
 
 os.chdir(WORK_DIR)
 
@@ -478,6 +479,10 @@ quit()
 """
 
 ## Changelog
+
+v0.9.48 - add 7z as output for the images
+        - mapid for DACH and germany
+
 v0.9.47 - navmaps.eu is down, use navmaps.org manually
 
 v0.9.46 - boundaries and precomp_sea from navmaps.eu

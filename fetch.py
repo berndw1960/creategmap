@@ -39,7 +39,7 @@ def fetch():
   if ExitCode == True:
     ExitCode = os.path.exists("poly/" + (buildmap) + ".poly")
     if ExitCode == True:
-      printinfo("I'm now extracting " + (buildmap) + ".o5m from Planet")
+      printinfo("I'm now extracting " + (buildmap) + ".o5m from Planet, please wait...")
       os.system("osmconvert planet.o5m " +
                 "--complete-ways --complex-ways " +
                 " -B=poly/" + (buildmap) + ".poly " +
