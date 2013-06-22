@@ -29,18 +29,18 @@ def split():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('mapdata', 'buildday')
-  
+
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
   datei.close()
 
   java_opts = ("java -ea " + (config.get('ramsize', 'ramsize')) +
                   " -jar " + (config.get('runtime', 'splitter_path')))
-  
+
   logging = config.get('splitter', 'logging')
   if logging == "yes":
-    
-    log_dir = ((WORK_DIR) + "log/" + (buildmap) + "/" + (buildday) + "/splitter/")
-    
+
+    log_dir = ((WORK_DIR) + "log/splitter/" + (buildday) + "/" + (buildmap))
+
     ExitCode = os.path.exists(log_dir)
     if ExitCode == True:
       path = (log_dir)
@@ -52,13 +52,13 @@ def split():
             print('Could not delete', file, 'in', path)
 
     elif ExitCode == False:
-      os.makedirs(log_dir)      
-      
-    log_opts = (" > " + (WORK_DIR) + "log/" + (buildmap) + "/" + (buildday) + "/splitter/splitter.log ")
-    
+      os.makedirs(log_dir)
+
+    log_opts = (" > " + (log_dir) + "/splitter.log ")
+
   else:
     log_opts = (" ")
-  
+
   """
   splitter-options
   """
@@ -70,7 +70,7 @@ def split():
                    " --write-kml=" + (buildmap) + ".kml "
                    " --max-nodes=" + (config.get('splitter', 'maxnodes')) +
                    " --overlap=0 ")
-  
+
   areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list ")
 
   BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")

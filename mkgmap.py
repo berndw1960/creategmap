@@ -75,11 +75,12 @@ def render():
 
       os.chdir(WORK_DIR)
 
-      zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/" + (buildday) + "/")
-      unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/" + (buildday) + "/")
+      zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/")
+      unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/")
 
       cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
       cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
+
 
       for dir in [(zip_dir), (unzip_dir), (cltemp_dir), (cl_dir)]:
         ExitCode = os.path.exists(dir)
@@ -172,13 +173,15 @@ def render():
 
       """
       move the ready gmapsupp.img to destination (unzip_dir) and
-      rename it to (buildmap)_gmapsupp.img
+      rename it to (buildmap)_(layer)_gmapsupp.img
       """
 
-      ExitCode = os.path.exists((unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
+      bl = ((buildmap) + "_" + (layer))
+
+      ExitCode = os.path.exists((unzip_dir) + (bl) + "_gmapsupp.img")
       if ExitCode == True:
-        os.remove((unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
-      os.system("mv gmapsupp.img " + (unzip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img")
+        os.remove((unzip_dir) + (bl) + "_gmapsupp.img")
+      os.system("mv gmapsupp.img " + (unzip_dir) + (bl) + "_gmapsupp.img")
 
       """
       zipp the images and mv them to separate dirs
@@ -187,19 +190,19 @@ def render():
 
       if (config.get('store_as', 'zip_img')) == "yes":
         os.chdir(unzip_dir)
-        os.system(("zip ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip " + (buildmap) + "_" + (layer) + "_gmapsupp.img")
-        ExitCode = os.path.exists((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip")
+        os.system(("zip ") + (bl) + "_gmapsupp.img.zip " + (bl) + "_gmapsupp.img")
+        ExitCode = os.path.exists((zip_dir) + (bl) + "_gmapsupp.img.zip")
         if ExitCode == True:
-          os.remove((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip")
-        os.system(("mv ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.zip " + (zip_dir))
+          os.remove((zip_dir) + (bl) + "_gmapsupp.img.zip")
+        os.system(("mv ") + (bl) + "_gmapsupp.img.zip " + (zip_dir))
 
       if (config.get('store_as', '7z_img')) == "yes":
         os.chdir(unzip_dir)
-        os.system(("7z a  ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z " + (buildmap) + "_" + (layer) + "_gmapsupp.img")
-        ExitCode = os.path.exists((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z")
+        os.system(("7z a  ") + (bl) + "_gmapsupp.img.7z " + (bl) + "_gmapsupp.img")
+        ExitCode = os.path.exists((zip_dir) + (bl) + "_gmapsupp.img.7z")
         if ExitCode == True:
-          os.remove((zip_dir) + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z")
-        os.system(("mv ") + (buildmap) + "_" + (layer) + "_gmapsupp.img.7z " + (zip_dir))
+          os.remove((zip_dir) + (bl) + "_gmapsupp.img.7z")
+        os.system(("mv ") + (bl) + "_gmapsupp.img.7z " + (zip_dir))
 
       """
       save the mkgmap-log for errors
@@ -207,7 +210,7 @@ def render():
       os.chdir(WORK_DIR)
 
       if config.get('mkgmap', 'logging') == "yes":
-        log_dir = ((WORK_DIR) + "log/" + (buildmap) + "/" + (buildday) + "/" + (layer) + "/")
+        log_dir = ((WORK_DIR) + "log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
 
         ExitCode = os.path.exists(log_dir)
         if ExitCode == True:
@@ -236,6 +239,7 @@ def render():
       ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
       if ExitCode == True:
         os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir))
+
 
 
 

@@ -276,15 +276,15 @@ if ExitCode == False:
   config['fzk'] = {}
   config['fzk'] = {'family-id': '6276',
                    'product-id': '1',
-                   'family-name': 'RadReiseKarte',
-                   'draw-priority': '12',
+                   'family-name': 'Freizeitkarte',
+                   'draw-priority': '10',
                    'mapid_ext': '3001',}
 
   config['rrk'] = {}
   config['rrk'] = {'family-id': '1',
                    'product-id': '1000',
                    'family-name': 'RadReiseKarte',
-                   'draw-priority': '12',
+                   'draw-priority': '10',
                    'mapid_ext': '4001',}
 
   config['fixme'] = {}
