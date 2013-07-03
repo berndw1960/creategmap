@@ -14,7 +14,7 @@ with this program; if not, see http://www.gnu.org/licenses/.
 
 
 """
-__version__ = "0.9.48"
+__version__ = "0.9.49"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2013 Bernd Weigelt"
 __credits__ = "Dschuwa, Franco B."
@@ -69,12 +69,14 @@ import time
 
 
 # own modules
-import fetch
+
 import get_tools
+import navmap
+import mapdata
 import splitter
 import mkgmap
 import contourlines
-import navmap
+
 
 """
 argparse
@@ -117,9 +119,6 @@ parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
 args = parser.parse_args()
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
-
-
-
 
 """
 needed programs und dirs
@@ -178,6 +177,9 @@ def is_there(find, solutionhint):
 hint = "osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
 
+hint = "osmupdate missed, needed to update the planet.o5m"
+checkprg("osmupdate", hint)
+
 hint = "Install: 7z to store the images"
 checkprg("7z", hint)
 
@@ -188,21 +190,23 @@ if ExitCode == False:
 
 os.chdir(WORK_DIR)
 
-ExitCode = os.path.exists("pygmap3.lck")
+ExitCode = os.path.exists("planet.o5m")
 if ExitCode == True:
-  printerror("Is there another instance of pygmap3.py running?")
-
-datei = open((WORK_DIR) + "pygmap3.lck", "w")
-datei.close()
-
-hint = ("No Planet-File found! ")
-is_there("planet.o5m", hint)
+  printerror("please move planet.o5m to " +(WORK_DIR) + "o5m/")
+  printerror("and start the script again!")
+  quit()
 
 ExitCode = os.path.exists("fixme_buglayer.conf")
 if ExitCode == True:
   printerror(" Please rename 'fixme_buglayer.conf' to 'fixme.conf'")
   quit()
 
+ExitCode = os.path.exists("pygmap3.lck")
+if ExitCode == True:
+  printwarning("Is there another instance of pygmap3.py running?")
+
+datei = open((WORK_DIR) + "pygmap3.lck", "w")
+datei.close()
 
 """
 configparser
@@ -232,9 +236,6 @@ if ExitCode == False:
 
   config['germany'] = {}
   config['germany'] = {'mapid': '6501'}
-
-  config['mapdata'] = {}
-  config['mapdata'] = {'buildday': '2013_xx_yy'}
 
   config['navmap'] = {}
   config['navmap'] = {'bounds': 'yes',}
@@ -311,6 +312,10 @@ config.read('pygmap3.cfg')
 if ('runtime' in config) == True:
   config.remove_section('runtime')
   write_config()
+  
+if ('planet' in config) == False:
+    config.add_section('planet')
+    write_config()
 
 config.add_section('runtime')
 
@@ -326,15 +331,12 @@ write_config()
 config.read('pygmap3.cfg')
 
 buildmap = config.get('runtime', 'buildmap')
-buildday = config.get('mapdata', 'buildday')
 
-description = ((buildmap) + "_" + (buildday))
-
-config.set('runtime', 'description', (description))
-write_config()
-
-printinfo(description)
-
+if ((buildmap) in config) == False:
+    config.add_section(buildmap)
+    write_config()
+    
+config.read('pygmap3.cfg')
 
 """
 set mapid
@@ -355,6 +357,8 @@ else:
 
 config.set('runtime', 'option_mapid', (option_mapid))
 write_config()
+
+config.read('pygmap3.cfg')
 
 """
 create dir for areas. poly and splitter-output
@@ -395,17 +399,54 @@ is there a keep_data.lck, then use the old data
 
 """
 
-BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == False:
-  printinfo("keep_data switched off!")
-  fetch.fetch()
+
+  buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
+
+  """
+  create mapdata if needed
+
+  """
+  ExitCode = os.path.exists(buildmap_o5m)
+  if ExitCode == False:
+    ExitCode = os.path.exists("o5m/planet.o5m")
+    if ExitCode == False:
+      printerror("No Planet-File found! A planet is needed, ")
+      printerror("if you don't have a " + (buildmap) + ".o5m O5M-File! ")
+      printerror("Please download one with 'planet_up'.")
+      printerror("")
+      printerror("The first planet will be updated by 'planet_up', ")
+      printerror("but the extracted mapdata can be updated with ")
+      printerror("'pygmap3', this function ist enabled by default ")
+      printerror("disable it with 'keep_data'. ")
+      printerror("'HINT: 'keep_data' is a FlipFlop. ")
+      quit()
+
+    
+    mapdata.create_o5m()
+
+  """
+  update mapdata
+
+  """
+
+  mapdata.update_o5m()
+
 else:
   printwarning("keep_data switched on!")
-  ExitCode = os.path.exists(BUILD_O5M)
+  ExitCode = os.path.exists(buildmap_o5m)
   if ExitCode == False:
-    printwarning("old mapdata not found, create O5M from Planet...!")
-    fetch.fetch()
+    printerror("no mapdata not found, " +
+	      "please run 'keep_data' to remove the lockfile!")
+    quit()
+    
+os.chdir(WORK_DIR)
+config.read('pygmap3.cfg')
+
+description = (buildmap) + "_" + (config.get((buildmap), 'buildday'))
+printinfo(description)
+
 
 """
 split rawdata
@@ -413,9 +454,7 @@ split rawdata
 """
 
 os.chdir(WORK_DIR)
-
-ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
-if ExitCode == False:
+def remove_old_tiles():
   path = 'tiles'
   for file in os.listdir(path):
     if os.path.isfile(os.path.join(path, file)):
@@ -423,6 +462,9 @@ if ExitCode == False:
         os.remove(os.path.join(path, file))
       except:
         print('Could not delete', file, 'in', path)
+ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
+if ExitCode == False:
+  remove_old_tiles()
 
   os.chdir(WORK_DIR)
 
@@ -434,13 +476,7 @@ elif ExitCode == True:
              "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     printwarning("have to split once again!")
-    path = 'tiles'
-    for file in os.listdir(path):
-      if os.path.isfile(os.path.join(path, file)):
-        try:
-          os.remove(os.path.join(path, file))
-        except:
-          print('Could not delete', file, 'in', path)
+    remove_old_tiles()
 
     os.chdir(WORK_DIR)
 
@@ -479,6 +515,9 @@ quit()
 """
 
 ## Changelog
+
+v0.9.49 - update only the needed mapdata with osmupdate
+          move planet to $WORK_DIR/o5m
 
 v0.9.48 - add 7z as output for the images
         - mapid for DACH and germany

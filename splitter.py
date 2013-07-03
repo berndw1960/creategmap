@@ -28,7 +28,7 @@ def split():
 
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
-  buildday = config.get('mapdata', 'buildday')
+  buildday = config.get((buildmap), 'buildday')
 
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
   datei.close()

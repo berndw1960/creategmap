@@ -28,7 +28,7 @@ def render():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
-  buildday = config.get('mapdata', 'buildday')
+  buildday = config.get((buildmap), 'buildday')
 
   global layer
   for layer in config['map_styles']:
@@ -164,7 +164,7 @@ def render():
             " --mapname=" + (config.get('runtime', 'option_mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
-            " --description=" + (config.get('runtime', 'description')) +
+            " --description=" + (buildmap) + (config.get((buildmap), 'buildday')) +
             " --family-name=" + (config.get((layer), 'family-name')) +
             " --draw-priority=" + (config.get((layer), 'draw-priority')) + " " +
             (WORK_DIR) + "tiles/*.o5m " +

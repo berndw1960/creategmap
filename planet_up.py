@@ -19,7 +19,7 @@ __copyright__ = "Copyright 2012 Bernd Weigelt"
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
-__status__ = "RC" 
+__status__ = "RC"
 
 import sys
 import os
@@ -40,7 +40,7 @@ def printerror(msg):
 
 def checkprg(programmtofind, solutionhint):
   """
-    test if an executable can be found by 
+    test if an executable can be found by
     following $PATH
     raise message if fails and returns 1
     on success return 0
@@ -48,14 +48,14 @@ def checkprg(programmtofind, solutionhint):
   """
 
   ExitCode = os.system("which " + programmtofind)
-    
+
   if ExitCode == 0:
     printinfo(programmtofind + " found")
   else:
     printerror(programmtofind + " not found")
     print(solutionhint)
     quit()
- 
+
 def is_there(find, solutionhint):
   """
     test if a file or dir can be found at a predefined place
@@ -64,59 +64,74 @@ def is_there(find, solutionhint):
   """
 
   ExitCode = os.path.exists(find)
-    
+
   if ExitCode == True:
      printinfo(find + " found")
   else:
     printerror(find + " not found")
     print(solutionhint)
+
+config = configparser.ConfigParser()    
+def write_config():
+  with open('pygmap3.cfg', 'w') as configfile:
+    config.write(configfile)
     
+
 # defaults =============================================================================
 
-work_dir = (os.environ['HOME'] + "/map_build/") 
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
-hint = ("mkdir " + (work_dir))
-is_there((work_dir), hint) 
+hint = ("mkdir " + (WORK_DIR))
+is_there((WORK_DIR), hint)
 
-os.chdir(work_dir)
+os.chdir(WORK_DIR)
 
 hint = "osmupdate missed, needed to update the planet.o5m"
 checkprg("osmupdate", hint)
 
-hint = ("No Planet-File found! ")
-is_there("planet.o5m", hint)
-
 ExitCode = os.path.exists("planet.o5m")
+if ExitCode == True:
+  printerror("please move planet.o5m to " +(WORK_DIR) + "o5m/")
+  quit()
+
+hint = ("No Planet-File found! ")
+is_there("o5m/planet.o5m", hint)
+
+
+ExitCode = os.path.exists("o5m/planet.o5m")
 if ExitCode == False:
-  printinfo("Download started. Size ~17+ Gigabytes... please wait! ")
+  os.chdir((WORK_DIR) +"o5m/")
+  printinfo("Download started. Size ~18 Gigabytes... please wait! ")
   os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
   os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
   os.remove("planet-latest.osm.pbf")
+  os.chdir(WORK_DIR)
 
 """
-set date for info in PNA
+set date for info 
 
 """
+	    
+if ('planet') in config) == False:
+    config.add_section('planet')
+    write_config()
 
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H00')
 
-config = configparser.ConfigParser()
-config.read('pygmap3.cfg')
-config.set('mapdata', 'buildday', (DATE))
-with open('pygmap3.cfg', 'w') as configfile:
-  config.write(configfile)   
+config.set('planet', 'buildday', (DATE))
+write_config()
   
-os.system("osmupdate -v --daily --hourly planet.o5m planet_new.o5m")
+os.system("osmupdate -v --daily --hourly --keep-tempfiles planet.o5m planet_new.o5m")
 
 ExitCode = os.path.exists("planet_new.o5m")
 if ExitCode == True:
   os.rename("planet.o5m", "planet_temp.o5m")
   os.rename("planet_new.o5m", "planet.o5m")
   ExitCode = os.path.exists("planet.o5m")
-  if ExitCode == True:      
-    os.remove("planet_temp.o5m") 
-  
+  if ExitCode == True:
+    os.remove("planet_temp.o5m")
+
 printinfo("Habe fertig!")
 quit()
 
