@@ -68,10 +68,8 @@ def create_o5m():
         os.remove(BUILD_OLD)
 
     else:
-      printerror((work_dir) + "tiles/" + (buildmap) + 
-		 ".poly not found... ")
-      printerror("please create or download "+ (buildmap) + 
-		 ".poly")
+      printerror((work_dir) + "poly/" + (buildmap) + ".poly not found... ")
+      printerror("please create or download "+ (buildmap) + ".poly")
       quit()
 
 
