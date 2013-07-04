@@ -121,7 +121,7 @@ args = parser.parse_args()
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 """
-needed programs und dirs
+set prefix for messages
 
 """
 
@@ -156,23 +156,6 @@ def checkprg(programmtofind, solutionhint):
     print(solutionhint)
 
 
-"""
-test if a file or dir can be found at a predefined place
-raise message if fails and returns 1
-on success return 0
-"""
-
-def is_there(find, solutionhint):
-  ExitCode = os.path.exists(find)
-
-  if ExitCode == True:
-     printinfo(find + " found")
-  else:
-    printerror(find + " not found")
-    print(solutionhint)
-    quit()
-
-
 
 hint = "osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
@@ -182,6 +165,13 @@ checkprg("osmupdate", hint)
 
 hint = "Install: 7z to store the images"
 checkprg("7z", hint)
+
+
+"""
+test if a file or dir can be found at a predefined place
+raise message if fails and returns 1
+on success return 0
+"""
 
 ExitCode = os.path.exists(WORK_DIR)
 if ExitCode == False:
@@ -217,6 +207,7 @@ def write_config():
     config.write(configfile)
 
 config = configparser.ConfigParser()
+
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
   """
