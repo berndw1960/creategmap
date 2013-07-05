@@ -55,9 +55,6 @@ This files should downloaded manually
 precomp_sea from navmap.org
 boundaries from navmap.org
 
-
-
-
 """
 
 import sys
@@ -66,16 +63,6 @@ import datetime
 import argparse
 import configparser
 import time
-
-
-# own modules
-
-import get_tools
-import navmap
-import mapdata
-import splitter
-import mkgmap
-import contourlines
 
 
 """
@@ -210,93 +197,8 @@ config = configparser.ConfigParser()
 
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
-  """
-  create a default config
-
-  """
-  config['DEFAULT'] = {}
-
-  config['ramsize'] = {}
-  config['ramsize'] = {'ramsize': '-Xmx3G',}
-
-  config['mapid'] = {}
-  config['mapid'] = {'mapid': '6389',}
-
-  config['dach'] = {}
-  config['dach'] = {'mapid': '6500',}
-
-  config['germany'] = {}
-  config['germany'] = {'mapid': '6501'}
-
-  config['navmap'] = {}
-  config['navmap'] = {'bounds': 'yes',}
-
-  config['splitter'] = {}
-  config['splitter'] = {'version': 'first_run',
-			'logging': 'yes',
-                        'latest': 'yes',
-                        'maxnodes': '1200000',}
-
-  config['mkgmap'] = {}
-  config['mkgmap'] = {'version': 'first_run',
-                      'latest': 'yes',
-                      'logging': 'no',
-                      'check_styles': 'yes',
-                      'list_styles': 'no',}
-
-  config['map_styles'] = {}
-  config['map_styles'] = {'basemap': 'yes',
-			  'bikemap': 'no',
-                          'fixme': 'no',
-                          'rrk': 'no',
-                          'fzk': 'no',}
-
-  config['basemap'] = {}
-  config['basemap'] = {'family-id': '4',
-                       'product-id': '45',
-                       'family-name': 'Basemap',
-                       'draw-priority': '10',
-                       'mapid_ext': '1001',}
-
-  config['bikemap'] = {}
-  config['bikemap'] = {'family-id': '5',
-                       'product-id': '46',
-                       'family-name': 'Bikemap',
-                       'draw-priority': '10',
-                       'mapid_ext': '2001',}
-
-  config['fzk'] = {}
-  config['fzk'] = {'family-id': '6276',
-                   'product-id': '1',
-                   'family-name': 'Freizeitkarte',
-                   'draw-priority': '10',
-                   'mapid_ext': '3001',}
-
-  config['rrk'] = {}
-  config['rrk'] = {'family-id': '1',
-                   'product-id': '1000',
-                   'family-name': 'RadReiseKarte',
-                   'draw-priority': '10',
-                   'mapid_ext': '4001',}
-
-  config['fixme'] = {}
-  config['fixme'] = {'family-id': '3',
-                     'product-id': '33',
-                     'family-name': 'OSM-Fixme',
-                     'draw-priority': '16',
-                     'mapid_ext': '6001',}
-
-  config['contourlines'] = {}
-  config['contourlines'] = {'build': 'no'}
-
-  config['store_as'] = {}
-  config['store_as'] = {'zip_img': 'no',
-                        '7z_img': 'no',}
-
-elif ExitCode == True:
-  config.read('pygmap3.cfg')
-
-write_config()
+  import default_config
+  default_config.create()
 
 config.read('pygmap3.cfg')
 
@@ -304,12 +206,7 @@ if ('runtime' in config) == True:
   config.remove_section('runtime')
   write_config()
 
-if ('planet' in config) == False:
-    config.add_section('planet')
-    write_config()
-
 config.add_section('runtime')
-
 
 """
 set buildmap
@@ -366,13 +263,14 @@ for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
 get splitter and mkgmap
 
 """
-
+import get_tools
 get_tools.get_tools()
 
 """
 bounds and precomp_sea from navmap.eu
 
 """
+import navmap
 navmap.bounds()
 
 
@@ -399,6 +297,8 @@ if ExitCode == False:
   create mapdata if needed
 
   """
+  import mapdata
+  
   ExitCode = os.path.exists(buildmap_o5m)
   if ExitCode == False:
     ExitCode = os.path.exists("o5m/planet.o5m")
@@ -413,7 +313,7 @@ if ExitCode == False:
       printerror("disable it with 'keep_data'. ")
       printerror("'HINT: 'keep_data' is a FlipFlop. ")
       quit()
-
+   
 
     mapdata.create_o5m()
 
@@ -458,7 +358,8 @@ if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
-
+  
+  import splitter
   splitter.split()
 
 elif ExitCode == True:
@@ -479,7 +380,7 @@ elif ExitCode == True:
 render the map-images
 
 """
-
+import mkgmap
 mkgmap.render()
 
 os.chdir(WORK_DIR)
@@ -492,6 +393,7 @@ create the contourlines
 
 
 if (config.get('contourlines', 'build')) == "yes":
+  import contourlines
   contourlines.create_cont()
 
 os.chdir(WORK_DIR)

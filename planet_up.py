@@ -23,8 +23,6 @@ __status__ = "RC"
 
 import sys
 import os
-import datetime
-import configparser
 
 # DEFs =============================================================================
 
@@ -71,11 +69,7 @@ def is_there(find, solutionhint):
     printerror(find + " not found")
     print(solutionhint)
 
-config = configparser.ConfigParser()    
-def write_config():
-  with open('pygmap3.cfg', 'w') as configfile:
-    config.write(configfile)
-    
+  
 
 # defaults =============================================================================
 
@@ -108,13 +102,33 @@ if ExitCode == False:
   os.chdir(WORK_DIR)
 
 """
+check for pygmap3.cfg
+"""
+
+import configparser
+
+config = configparser.ConfigParser()
+
+def write_config():
+  with open('pygmap3.cfg', 'w') as configfile:
+    config.write(configfile)
+
+ExitCode = os.path.exists("pygmap3.cfg")
+if ExitCode == False:
+  import default_config
+  default_config.create()
+
+config.read('pygmap3.cfg')
+
+if ('planet' in config) == False:
+  config.add_section('planet')
+  write_config() 
+
+"""
 set date for info 
 
 """
-	    
-if ('planet' in config) == False:
-    config.add_section('planet')
-    write_config()
+import datetime
 
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H00')
