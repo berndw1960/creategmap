@@ -304,14 +304,14 @@ if ExitCode == False:
     ExitCode = os.path.exists("o5m/planet.o5m")
     if ExitCode == False:
       printerror("No Planet-File found! A planet is needed, ")
-      printerror("if you don't have a " + (buildmap) + ".o5m O5M-File! ")
-      printerror("Please download one with 'planet_up'.")
+      printerror("because you didn't have a " + (buildmap) + ".o5m O5M-File! ")
+      printerror("Please download one with 'planet_up.py'.")
       printerror("")
-      printerror("The first planet will be updated by 'planet_up', ")
+      printerror("The first planet will be updated by 'planet_up.py', ")
       printerror("but the extracted mapdata can be updated with ")
-      printerror("'pygmap3', this function ist enabled by default ")
-      printerror("disable it with 'keep_data'. ")
-      printerror("'HINT: 'keep_data' is a FlipFlop. ")
+      printerror("'pygmap3.py', this function ist enabled by default ")
+      printerror("disable it with 'keep_data.py'. ")
+      printerror("'HINT: 'keep_data.py' is a FlipFlop. ")
       quit()
    
 
