@@ -246,7 +246,7 @@ if ExitCode == False:
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'yes',
-			  'bikemap': 'yes',
+			  'bikemap': 'no',
                           'fixme': 'no',
                           'rrk': 'no',
                           'fzk': 'no',}
@@ -303,7 +303,7 @@ config.read('pygmap3.cfg')
 if ('runtime' in config) == True:
   config.remove_section('runtime')
   write_config()
-  
+
 if ('planet' in config) == False:
     config.add_section('planet')
     write_config()
@@ -326,7 +326,7 @@ buildmap = config.get('runtime', 'buildmap')
 if ((buildmap) in config) == False:
     config.add_section(buildmap)
     write_config()
-    
+
 config.read('pygmap3.cfg')
 
 """
@@ -414,7 +414,7 @@ if ExitCode == False:
       printerror("'HINT: 'keep_data' is a FlipFlop. ")
       quit()
 
-    
+
     mapdata.create_o5m()
 
   """
@@ -431,7 +431,7 @@ else:
     printerror("no mapdata not found, " +
 	      "please run 'keep_data' to remove the lockfile!")
     quit()
-    
+
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
 
