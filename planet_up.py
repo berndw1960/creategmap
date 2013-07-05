@@ -112,7 +112,7 @@ set date for info
 
 """
 	    
-if ('planet') in config) == False:
+if ('planet' in config) == False:
     config.add_section('planet')
     write_config()
 
@@ -122,6 +122,7 @@ DATE = today.strftime('%Y%m%d_%H00')
 config.set('planet', 'buildday', (DATE))
 write_config()
   
+os.chdir((WORK_DIR) +"o5m/")
 os.system("osmupdate -v --daily --hourly --keep-tempfiles planet.o5m planet_new.o5m")
 
 ExitCode = os.path.exists("planet_new.o5m")
@@ -131,6 +132,8 @@ if ExitCode == True:
   ExitCode = os.path.exists("planet.o5m")
   if ExitCode == True:
     os.remove("planet_temp.o5m")
+
+os.chdir(WORK_DIR)
 
 printinfo("Habe fertig!")
 quit()
