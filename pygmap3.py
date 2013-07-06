@@ -236,7 +236,7 @@ if (config.has_option('mapid', 'mapid')) == True:
   config.remove_option('mapid', 'mapid')
   write_config()
 
-if (config.has_section((buildmap))) == True:
+if (config.has_section(buildmap)) == True:
   config.remove_section(buildmap)
   write_config()
 
