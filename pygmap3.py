@@ -178,13 +178,6 @@ if ExitCode == True:
   printerror(" Please rename 'fixme_buglayer.conf' to 'fixme.conf'")
   quit()
 
-ExitCode = os.path.exists("pygmap3.lck")
-if ExitCode == True:
-  printwarning("Is there another instance of pygmap3.py running?")
-
-datei = open((WORK_DIR) + "pygmap3.lck", "w")
-datei.close()
-
 """
 configparser
 
@@ -350,7 +343,7 @@ else:
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
 
-description = (buildmap) + "_" + (config.get((buildmap), 'buildday'))
+description = (buildmap) + "_" + (config.get('time_stamp', (buildmap)))
 printinfo(description)
 
 
@@ -412,8 +405,6 @@ if (config.get('contourlines', 'build')) == "yes":
   contourlines.create_cont()
 
 os.chdir(WORK_DIR)
-
-os.remove((WORK_DIR) + "pygmap3.lck")
 
 printinfo("Habe fertig!")
 
