@@ -108,12 +108,12 @@ def create_cont():
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
-              " -jar " + (config.get('runtime', 'mkgmap_path')) +
+    os.system("java -ea " + config.get('ramsize', 'ramsize') +
+              " -jar " + config.get('runtime', 'mkgmap_path') +
               " -c " + (WORK_DIR) + "contourlines.conf " +
               " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
-              " --mapname=" + (config.get('mapid', 'mapid')) + "8001 " +
-              " --description="  + (config.get('runtime', 'description')) +
+              " --mapname=" + config.get('mapid', (buildmap)) + "8001 " +
+              " --description=" (buildmap) + "_" + config.get('time_stamp', (buildmap)) +
               " --family-name=Contourlines " +
               " --draw-priority=16 " +
               " *.osm.pbf ")

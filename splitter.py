@@ -29,12 +29,12 @@ def split():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('time_stamp', (buildmap))
-
+  splitter_path = (WORK_DIR) + config.get('splitter', 'version') + "/splitter.jar "
   datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
   datei.close()
 
-  java_opts = ("java -ea " + (config.get('ramsize', 'ramsize')) +
-                  " -jar " + (config.get('runtime', 'splitter_path')))
+  java_opts = ("java -ea " + config.get('ramsize', 'ramsize') +
+                  " -jar " + (splitter_path))
 
   logging = config.get('splitter', 'logging')
   if logging == "yes":
@@ -57,18 +57,18 @@ def split():
     log_opts = (" > " + (log_dir) + "/splitter.log ")
 
   else:
-    log_opts = (" ")
+    log_opts = (" > /dev/null ")
 
   """
   splitter-options
   """
 
   splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
-                   " --mapid=" + config.get('runtime', 'option_mapid') + "0001 " +
+                   " --mapid=" + config.get('mapid', (buildmap)) + "0001 " +
                    " --output=o5m " +
                    " --keep-complete " +
                    " --write-kml=" + (buildmap) + ".kml "
-                   " --max-nodes=" + (config.get('splitter', 'maxnodes')) +
+                   " --max-nodes=" + config.get('splitter', 'maxnodes') +
                    " --overlap=0 ")
 
   areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list ")

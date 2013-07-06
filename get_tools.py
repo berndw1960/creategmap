@@ -89,14 +89,12 @@ def get_tools():
 
 
   """
-  now write  to pygmap3.cfg
+  now write to pygmap3.cfg
   """
 
   config.set('splitter', 'version', (splitter_rev))
-  config.set('runtime', 'splitter_path', (splitter_path))
 
   config.set('mkgmap', 'version', (mkgmap_rev))
-  config.set('runtime', 'mkgmap_path', (mkgmap_path))
 
   write_config()
 

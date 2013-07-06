@@ -75,11 +75,11 @@ def render():
 
       os.chdir(WORK_DIR)
 
-      zip_dir = ((WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/")
-      unzip_dir = ((WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/")
+      zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/"
+      unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/"
 
-      cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
-      cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
+      cl_dir = (WORK_DIR) + "contourlines/" + (buildmap) + "/"
+      cltemp_dir = (WORK_DIR) + "contourlines/temp/"
 
 
       for dir in [(zip_dir), (unzip_dir), (cltemp_dir), (cl_dir)]:
@@ -95,7 +95,7 @@ def render():
       if ExitCode == False:
         os.mkdir((WORK_DIR) + (layer))
       else:
-        path = ((WORK_DIR) + (layer))
+        path = (WORK_DIR) + (layer)
         for file in os.listdir(path):
           if os.path.isfile(os.path.join(path, file)):
             try:
@@ -131,16 +131,14 @@ def render():
 
       if config.get('mkgmap', 'check_styles') == "yes":
         printinfo("check_styles enabled")
-        option_1 = " --check-styles "
-        option_check_styles = str(option_1)
+        option_check_styles = " --check-styles "
       else:
         printwarning("check_styles disabled")
         option_check_styles = " "
 
       if config.get('mkgmap', 'list_styles') == "yes":
         printinfo("list_styles enabled")
-        option_2 = " --list-styles "
-        option_list_styles = str(option_2)
+        option_list_styles = " --list-styles "
       else:
         printwarning("list_styles disabled")
         option_list_styles = " "
@@ -150,10 +148,11 @@ def render():
       map rendering
 
       """
+      mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
 
-      os.system("java -ea " + (config.get('ramsize', 'ramsize')) +
+      os.system("java -ea " + config.get('ramsize', 'ramsize') +
             (option_mkgmap_logging) +
-            " -jar " + (config.get('runtime', 'mkgmap_path')) +
+            " -jar " + (mkgmap_path) +
             (option_mkgmap_options) +
             (option_bounds) +
             (option_sea) +
@@ -161,12 +160,12 @@ def render():
             (option_check_styles) +
             (option_list_styles) +
             " --name-tag-list=name:de,name,name:en,int_name "
-            " --mapname=" + (config.get('runtime', 'option_mapid')) + (config.get((layer), 'mapid_ext')) +
-            " --family-id=" + (config.get((layer), 'family-id')) +
-            " --product-id=" + (config.get((layer), 'product-id')) +
-            " --description=" + (buildmap) + (config.get('time_stamp', (buildmap))) +
-            " --family-name=" + (config.get((layer), 'family-name')) +
-            " --draw-priority=" + (config.get((layer), 'draw-priority')) + " " +
+            " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
+            " --family-id=" + config.get((layer), 'family-id') +
+            " --product-id=" + config.get((layer), 'product-id') +
+            " --description=" + (buildmap) + "_" + (buildday) +
+            " --family-name=" + config.get((layer), 'family-name') +
+            " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
             (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt")
 
@@ -176,7 +175,7 @@ def render():
       rename it to (buildmap)_(layer)_gmapsupp.img
       """
 
-      bl = ((buildmap) + "_" + (layer))
+      bl = (buildmap) + "_" + (layer)
 
       ExitCode = os.path.exists((unzip_dir) + (bl) + "_gmapsupp.img")
       if ExitCode == True:
@@ -188,7 +187,7 @@ def render():
 
       """
 
-      if (config.get('store_as', 'zip_img')) == "yes":
+      if config.get('store_as', 'zip_img') == "yes":
         os.chdir(unzip_dir)
         os.system(("zip ") + (bl) + "_gmapsupp.img.zip " + (bl) + "_gmapsupp.img")
         ExitCode = os.path.exists((zip_dir) + (bl) + "_gmapsupp.img.zip")
@@ -196,7 +195,7 @@ def render():
           os.remove((zip_dir) + (bl) + "_gmapsupp.img.zip")
         os.system(("mv ") + (bl) + "_gmapsupp.img.zip " + (zip_dir))
 
-      if (config.get('store_as', '7z_img')) == "yes":
+      if config.get('store_as', '7z_img') == "yes":
         os.chdir(unzip_dir)
         os.system(("7z a  ") + (bl) + "_gmapsupp.img.7z " + (bl) + "_gmapsupp.img")
         ExitCode = os.path.exists((zip_dir) + (bl) + "_gmapsupp.img.7z")

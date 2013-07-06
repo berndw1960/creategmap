@@ -213,10 +213,6 @@ config.read('pygmap3.cfg')
 
 buildmap = config.get('runtime', 'buildmap')
 
-if ((buildmap) in config) == False:
-    config.add_section(buildmap)
-    write_config()
-
 config.read('pygmap3.cfg')
 
 """
@@ -228,21 +224,21 @@ dach = 6500
 ...
 
 """
-if (config.has_section('mapid')) == False:
+if config.has_section('mapid') == False:
   config['mapid'] = {'next_mapid': '6500',}
   write_config()
 
-if (config.has_option('mapid', 'mapid')) == True:
+if config.has_option('mapid', 'mapid') == True:
   config.remove_option('mapid', 'mapid')
   write_config()
 
-if (config.has_section(buildmap)) == True:
+if config.has_section(buildmap) == True:
   config.remove_section(buildmap)
   write_config()
 
 config.read('pygmap3.cfg')
 
-if (config.has_option('mapid', (buildmap))) == True:
+if config.has_option('mapid', (buildmap)) == True:
   option_mapid = config.get('mapid', (buildmap))
 else:
   option_mapid = config.get('mapid', 'next_mapid')
@@ -251,7 +247,6 @@ else:
   config.set('mapid', 'next_mapid', (next_mapid))
   write_config()
 
-config.set('runtime', 'option_mapid', (option_mapid))
 write_config()
 
 config.read('pygmap3.cfg')
@@ -264,7 +259,7 @@ create dir for areas. poly and splitter-output
 for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
-   os.mkdir(dir)
+    os.mkdir(dir)
 
 
 """
@@ -343,7 +338,7 @@ else:
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
 
-description = (buildmap) + "_" + (config.get('time_stamp', (buildmap)))
+description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
 printinfo(description)
 
 
@@ -400,7 +395,7 @@ create the contourlines
 """
 
 
-if (config.get('contourlines', 'build')) == "yes":
+if config.get('contourlines', 'build') == "yes":
   import contourlines
   contourlines.create_cont()
 
