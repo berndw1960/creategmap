@@ -24,7 +24,7 @@ __status__ = "RC"
 import sys
 import os
 
-# DEFs =============================================================================
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 def printinfo(msg):
   print(("II: " + msg))
@@ -69,11 +69,6 @@ def is_there(find, solutionhint):
     printerror(find + " not found")
     print(solutionhint)
 
-
-
-# defaults =============================================================================
-
-WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 hint = ("mkdir " + (WORK_DIR))
 is_there((WORK_DIR), hint)

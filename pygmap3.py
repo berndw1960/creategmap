@@ -64,6 +64,7 @@ import argparse
 import configparser
 import time
 
+WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 """
 argparse
@@ -105,7 +106,6 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
 args = parser.parse_args()
 
-WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 """
 set prefix for messages

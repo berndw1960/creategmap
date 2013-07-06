@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 """
   keep_data on/off
   no options - no harm
 """
 
-
 import os
 import sys
 
-# DEFs =============================================================================
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 def printinfo(msg):
   print(("II: " + msg))
@@ -29,19 +28,18 @@ def is_there(find, solutionhint):
   """
 
   ExitCode = os.path.exists(find)
-    
+
   if ExitCode == True:
      printinfo(find + " found")
   else:
     printerror(find + " not found")
     print(solutionhint)
     quit()
-    
 
-WORK_DIR = (os.environ['HOME'] + "/map_build/")
+
 
 hint = ("mkdir " + (WORK_DIR))
-is_there((WORK_DIR), hint) 
+is_there((WORK_DIR), hint)
 
 os.chdir(WORK_DIR)
 
@@ -54,5 +52,5 @@ else:
   datei = open("keep_data.lck", "w")
   datei.close()
   printinfo("keep_data switched on!")
-  
-quit()  
+
+quit()

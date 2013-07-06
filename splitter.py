@@ -4,6 +4,7 @@
 import os
 import configparser
 
+WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 def printinfo(msg):
   print("II: " + msg)
@@ -14,8 +15,6 @@ def printwarning(msg):
 def printerror(msg):
   print("EE: " + msg)
 
-
-WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 config = configparser.ConfigParser()
 

@@ -6,11 +6,7 @@ import os
 import datetime
 import configparser
 
-
-# defaults =============================================================================
-
 work_dir = (os.environ['HOME'] + "/map_build/")
-
 
 def printinfo(msg):
   print("II: " + msg)
