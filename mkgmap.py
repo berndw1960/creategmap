@@ -164,7 +164,7 @@ def render():
             " --mapname=" + (config.get('runtime', 'option_mapid')) + (config.get((layer), 'mapid_ext')) +
             " --family-id=" + (config.get((layer), 'family-id')) +
             " --product-id=" + (config.get((layer), 'product-id')) +
-            " --description=" + (buildmap) + (config.get((buildmap), 'buildday')) +
+            " --description=" + (buildmap) + (config.get('time_stamp', (buildmap))) +
             " --family-name=" + (config.get((layer), 'family-name')) +
             " --draw-priority=" + (config.get((layer), 'draw-priority')) + " " +
             (WORK_DIR) + "tiles/*.o5m " +
