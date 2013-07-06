@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
- 
+
 
 def create():
 
@@ -8,28 +8,19 @@ def create():
   create a default config
 
   """
-  
+
   import configparser
-  
+
   config = configparser.ConfigParser()
-  
+
   config['DEFAULT'] = {}
 
   config['ramsize'] = {}
   config['ramsize'] = {'ramsize': '-Xmx3G',}
 
   config['mapid'] = {}
-  config['mapid'] = {'mapid': '6389',}
+  config['mapid'] = {'next_mapid': '6500',}
 
-  config['dach'] = {}
-  config['dach'] = {'mapid': '6500',}
-
-  config['germany'] = {}
-  config['germany'] = {'mapid': '6501'}
-  
-  config['bayern'] = {}
-  config['bayern'] = {'mapid': '6502',}
-  
   config['navmap'] = {}
   config['navmap'] = {'bounds': 'yes',}
 
@@ -92,9 +83,8 @@ def create():
   config['store_as'] = {}
   config['store_as'] = {'zip_img': 'no',
                         '7z_img': 'no',}
-  
+
   with open('pygmap3.cfg', 'w') as configfile:
-    config.write(configfile)  
+    config.write(configfile)
 
 
-  

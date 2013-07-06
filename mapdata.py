@@ -47,10 +47,10 @@ def create_o5m():
   ExitCode = os.path.exists("o5m/planet.o5m")
 
   if ExitCode == True:
-    ExitCode = os.path.exists("poly/" + (buildmap) + 
+    ExitCode = os.path.exists("poly/" + (buildmap) +
 			      ".poly")
     if ExitCode == True:
-      printinfo("now extracting " + (buildmap) + 
+      printinfo("now extracting " + (buildmap) +
 		".o5m from Planet, please wait...")
       os.system("osmconvert o5m/planet.o5m " +
                 "--complete-ways --complex-ways " +
@@ -77,21 +77,22 @@ def update_o5m():
   os.chdir(work_dir)
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
-  """
-  set date for info in PNA
 
-  """
+  if config.has_section('time_stamp') == False:
+    config.add_section('time_stamp')
+    write_config()
 
   today = datetime.datetime.now()
   DATE = today.strftime('%Y%m%d_%H00')
 
-  config.set((buildmap), 'buildday', (DATE))
-  write_config()
-  
+  config.set('time_stamp', (buildmap), (DATE))
+
   printinfo("now updating " + (buildmap) + ".o5m, please wait...")
-  os.system("osmupdate --daily --hourly -B=poly/" + (buildmap) + 
-	    ".poly --keep-tempfiles o5m/" + (buildmap) + 
+  os.system("osmupdate --daily --hourly -B=poly/" + (buildmap) +
+	    ".poly --keep-tempfiles o5m/" + (buildmap) +
 	    ".o5m  o5m/" + (buildmap) +  "_new.o5m")
+
+  write_config()
 
   os.chdir((work_dir) + "o5m")
 

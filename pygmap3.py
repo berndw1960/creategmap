@@ -229,19 +229,34 @@ config.read('pygmap3.cfg')
 """
 set mapid
 example:
-[dach]
-mapid = 6500
 
-or as default
 [mapid]
-mapid = 6389
+dach = 6500
+...
 
 """
+if (config.has_section('mapid')) == False:
+  config['mapid'] = {'next_mapid': '6500',}
+  write_config()
 
-if (config.has_option((buildmap), 'mapid')) == True:
-  option_mapid = config.get((buildmap), 'mapid')
+if (config.has_option('mapid', 'mapid')) == True:
+  config.remove_option('mapid', 'mapid')
+  write_config()
+
+if (config.has_section((buildmap))) == True:
+  config.remove_section(buildmap)
+  write_config()
+
+config.read('pygmap3.cfg')
+
+if (config.has_option('mapid', (buildmap))) == True:
+  option_mapid = config.get('mapid', (buildmap))
 else:
-  option_mapid = config.get('mapid', 'mapid')
+  option_mapid = config.get('mapid', 'next_mapid')
+  next_mapid = str(int(option_mapid)+1)
+  config.set('mapid', (buildmap), (option_mapid))
+  config.set('mapid', 'next_mapid', (next_mapid))
+  write_config()
 
 config.set('runtime', 'option_mapid', (option_mapid))
 write_config()
@@ -298,7 +313,7 @@ if ExitCode == False:
 
   """
   import mapdata
-  
+
   ExitCode = os.path.exists(buildmap_o5m)
   if ExitCode == False:
     ExitCode = os.path.exists("o5m/planet.o5m")
@@ -313,7 +328,7 @@ if ExitCode == False:
       printerror("disable it with 'keep_data.py'. ")
       printerror("'HINT: 'keep_data.py' is a FlipFlop. ")
       quit()
-   
+
 
     mapdata.create_o5m()
 
@@ -358,7 +373,7 @@ if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
-  
+
   import splitter
   splitter.split()
 
