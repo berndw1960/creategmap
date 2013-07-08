@@ -327,13 +327,6 @@ if ExitCode == False:
 
   mapdata.update_o5m()
 
-else:
-  printwarning("keep_data switched on!")
-  ExitCode = os.path.exists(buildmap_o5m)
-  if ExitCode == False:
-    printerror("no mapdata not found, " +
-	      "please run 'keep_data' to remove the lockfile!")
-    quit()
 
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
