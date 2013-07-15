@@ -63,6 +63,7 @@ import datetime
 import argparse
 import configparser
 import time
+import shutil
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
@@ -177,6 +178,14 @@ ExitCode = os.path.exists("fixme_buglayer.conf")
 if ExitCode == True:
   printerror(" Please rename 'fixme_buglayer.conf' to 'fixme.conf'")
   quit()
+
+ExitCode = os.path.exists("pygmap3.cfg")
+if ExitCode == True:
+  ExitCode = os.path.exists("pygmap3.cfg.bak")
+  if ExitCode == True:
+    os.remove("pygmap3.cfg.bak")
+
+  shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
 
 """
 configparser
