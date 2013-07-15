@@ -418,31 +418,6 @@ v0.9.49 - update only the needed mapdata with osmupdate
 v0.9.48 - add 7z as output for the images
         - mapid for DACH and germany
 
-v0.9.47 - navmaps.eu is down, use navmaps.org manually
-
-v0.9.46 - boundaries and precomp_sea from navmaps.eu
-
-v0.9.45 - more options to config
-
-v0.9.44 - first steps for configparser
-
-v0.9.43 - download from geofabrik removed
-
-v0.9.42 - create contourlines if needed
-
-v0.9.41 - dir for splitter-output
-
-v0.9.40 - more python, removed 'test -[f|d]'
-
-v0.9.38 - mkgmap.org, sitestructure is changed
-
-v0.9.37 - use *.o5m as input for splitter
-
-v0.9.36 - simplify workprocess
-
-v0.9.35 - some changes in workprocess
-          some changes at mkgmap-options
-
 
 """
 
