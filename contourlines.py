@@ -82,7 +82,7 @@ def create_cont():
     if ExitCode == False:
       os.makedirs(dir)
 
-  path = (cl_temp_dir)
+  path = (cltemp_dir)
   for file in os.listdir(path):
     if os.path.isfile(os.path.join(path, file)):
       try:
