@@ -177,23 +177,22 @@ def render():
       move the ready gmapsupp.img to destination (unzip_dir) and
       rename it to (buildmap)_(layer)_gmapsupp.img
       """
+      os.chdir(WORK_DIR)
 
       bl = (buildmap) + "_" + (layer)
       move_img = (bl) + "_gmapsupp.img"
-      move_zip = (bl) + "_gmapsupp.img.zip"
-      move_7z = (bl) + "_gmapsupp.img.7z"
 
       ExitCode = os.path.exists(move_img)
       if ExitCode == True:
         os.remove(move_img)
-      shutil.move('gmapsupp.img', (move_img))
+      shutil.move((layer) +"/gmapsupp.img", (unzip_dir) + (move_img))
 
       """
       zipp the images and mv them to separate dirs
-
       """
-
+      
       if config.get('store_as', 'zip_img') == "yes":
+        move_zip = (bl) + "_gmapsupp.img.zip"
         os.chdir(unzip_dir)
         os.system(("zip ") + (move_zip) + " " + (move_img))
         ExitCode = os.path.exists((zip_dir) + (move_zip))
@@ -202,6 +201,7 @@ def render():
         shutil.move((move_zip), (zip_dir))
 
       if config.get('store_as', '7z_img') == "yes":
+        move_7z = (bl) + "_gmapsupp.img.7z"
         os.chdir(unzip_dir)
         os.system(("7z a  ") + (move_7z) + " " + (move_img))
         ExitCode = os.path.exists((zip_dir) + (move_7z))
