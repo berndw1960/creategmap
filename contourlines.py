@@ -5,13 +5,13 @@
 import sys
 import os
 import configparser
+import shutil
 
 
 def printinfo(msg):
   print("II: " + msg)
 
-def printwarning(msg):
-  print("WW: " + msg)
+def printwarning(msg):  print("WW: " + msg)
 
 def printerror(msg):
   print("EE: " + msg)
@@ -62,18 +62,43 @@ create the contourlines
 
 def create_cont():
 
+  ExitCode = os.path.exists("contourlines/temp/")
+  if ExitCode == True:
+    printerror(" Please move " + (WORK_DIR) + "'contourlines/temp/' to '" + (WORK_DIR) + "cl_temp/'...")
+    quit()
+
+  os.chdir(WORK_DIR)
+
   config.read('pygmap3.cfg')
+
   buildmap = config.get('runtime', 'buildmap')
-  cl_dir = ((WORK_DIR) + "contourlines/" + (buildmap) + "/")
-  cltemp_dir = ((WORK_DIR) + "contourlines/temp/")
+  mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
+
+  cl_dir = ("contourlines/" + (buildmap) + "/")
+  cltemp_dir = ("cl_temp/")
+
+  for dir in [(cltemp_dir), (cl_dir)]:
+    ExitCode = os.path.exists(dir)
+    if ExitCode == False:
+      os.makedirs(dir)
+
+  path = (cl_temp_dir)
+  for file in os.listdir(path):
+    if os.path.isfile(os.path.join(path, file)):
+      try:
+        os.remove(os.path.join(path, file))
+      except:
+        print('Could not delete', file, 'in', path)
 
   print("searching for " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
 
   ExitCode = os.path.exists((cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
   if ExitCode == False:
+
     hint = "Install phyghtmap to create contourlines if needed"
     checkprg("phyghtmap", hint)
-    ExitCode = os.path.exists((WORK_DIR) + "mystyles/contourlines_style")
+
+    ExitCode = os.path.exists("mystyles/contourlines_style")
     global mapstyle
     if ExitCode == True:
       mapstyle = "mystyles"
@@ -89,40 +114,40 @@ def create_cont():
     use phyghtmap to get the raw-data from the internet,
     downloaded files will be stored for later builds
     """
-    os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
-              " --start-node-id=1 " +
-              " --start-way-id=1 " +
-              " --max-nodes-per-tile=" + (config.get('splitter', 'maxnodes')) +
-              " --max-nodes-per-way=250 " +
-              " --jobs=4 " +
-              " --pbf " +
-              " --no-zero-contour " +
-              " -s 50 " +
-              " -c 500,100 " +
-              " --polygon=poly/" + (buildmap) + ".poly " +
-              " -o " +(cltemp_dir) + (buildmap))
+    os.system("phyghtmap --source=view1,view3,srtm1,srtm3" +
+              " --start-node-id=1" +
+              " --start-way-id=1" +
+              " --max-nodes-per-tile=" + config.get('splitter', 'maxnodes') +
+              " --max-nodes-per-way=250" +
+              " --jobs=4" +
+              " --pbf" +
+              " --no-zero-contour" +
+              " -s 50" +
+              " -c 500,100" +
+              " --polygon=poly/" + (buildmap) + ".poly" +
+              " -o " + (cltemp_dir) + (buildmap))
 
     """
     contourlines-build with mkgmap
     """
+
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + config.get('ramsize', 'ramsize') +
-              " -jar " + config.get('runtime', 'mkgmap_path') +
-              " -c " + (WORK_DIR) + "contourlines.conf " +
-              " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style " +
-              " --mapname=" + config.get('mapid', (buildmap)) + "8001 " +
-              " --description=" (buildmap) + "_" + config.get('time_stamp', (buildmap)) +
-              " --family-name=Contourlines " +
-              " --draw-priority=16 " +
+    os.system("java -ea " + config.get('ramsize', 'ramsize') + " -jar " + (mkgmap_path) +
+              " --read-config=" + (WORK_DIR) + (mapstyle) + "/contourlines_style/options" +
+              " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style" +
+              " --mapname=" + config.get('mapid', (buildmap)) + "8001" +
+              " --description=" + (buildmap) + "_" + config.get('time_stamp', (buildmap)) +
+              " --family-name=Contourlines" +
+              " --draw-priority=" + config.get('contourlines', 'draw-priority') +
               " *.osm.pbf ")
 
     """
     store the ready contourlines in separated dirs for later use
     """
-
-    os.system("cp " + (cltemp_dir) + "gmapsupp.img " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img ")
+    os.chdir(WORK_DIR)
+    shutil.move((cltemp_dir) + "gmapsupp.img", (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
 
   else:
     printinfo("...found")

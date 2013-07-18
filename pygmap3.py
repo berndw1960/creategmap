@@ -170,8 +170,7 @@ os.chdir(WORK_DIR)
 
 ExitCode = os.path.exists("planet.o5m")
 if ExitCode == True:
-  printerror("please move planet.o5m to " +(WORK_DIR) + "o5m/")
-  printerror("and start the script again!")
+  printerror("please move planet.o5m to " + (WORK_DIR) + "o5m/")
   quit()
 
 ExitCode = os.path.exists("fixme_buglayer.conf")
@@ -191,16 +190,18 @@ if ExitCode == True:
 configparser
 
 """
+
 def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
 config = configparser.ConfigParser()
 
+import build_config
+
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
-  import default_config
-  default_config.create()
+  build_config.create()
 
 config.read('pygmap3.cfg')
 
@@ -214,7 +215,6 @@ config.add_section('runtime')
 set buildmap
 
 """
-
 config.set('runtime', 'buildmap', (args.buildmap))
 write_config()
 
@@ -222,29 +222,24 @@ config.read('pygmap3.cfg')
 
 buildmap = config.get('runtime', 'buildmap')
 
-config.read('pygmap3.cfg')
+ExitCode = os.path.exists("poly/" + (buildmap) + ".poly")
+if ExitCode == False:
+  printerror((WORK_DIR) + "poly/" + (buildmap) + ".poly not found... ")
+  printerror("please create or download "+ (buildmap) + ".poly")
+  quit()
 
 """
-set mapid
-example:
-
-[mapid]
-dach = 6500
-...
+update the config
 
 """
-if config.has_section('mapid') == False:
-  config['mapid'] = {'next_mapid': '6500',}
-  write_config()
 
-if config.has_option('mapid', 'mapid') == True:
-  config.remove_option('mapid', 'mapid')
-  write_config()
+build_config.update()
 
-if config.has_section(buildmap) == True:
-  config.remove_section(buildmap)
-  write_config()
 
+"""
+read the config and set or create the mapid
+
+"""
 config.read('pygmap3.cfg')
 
 if config.has_option('mapid', (buildmap)) == True:
@@ -259,6 +254,7 @@ else:
 write_config()
 
 config.read('pygmap3.cfg')
+
 
 """
 create dir for areas. poly and splitter-output
@@ -358,6 +354,7 @@ def remove_old_tiles():
         os.remove(os.path.join(path, file))
       except:
         print('Could not delete', file, 'in', path)
+
 ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
 if ExitCode == False:
   remove_old_tiles()
@@ -369,16 +366,15 @@ if ExitCode == False:
 
 elif ExitCode == True:
   printwarning("no_split switched on!")
-  ExitCode = os.path.exists((WORK_DIR) +
-             "tiles/" + (buildmap) + "_split.ready")
+  ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     printwarning("have to split once again!")
     remove_old_tiles()
 
     os.chdir(WORK_DIR)
 
+    import splitter
     splitter.split()
-
 
 
 """

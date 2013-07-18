@@ -3,6 +3,7 @@
 
 import os
 import configparser
+import shutil
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
@@ -41,21 +42,27 @@ def render():
 
       """
 
-      ExitCode = os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_style")
+      ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
       global mapstyle
       if ExitCode == True:
         mapstyle = "mystyles"
       else:
-        ExitCode = os.path.exists((WORK_DIR) + "aiostyles")
+        printerror("no " + (layer) + "_style found!")
+        quit()
+
+      """
+        Use of AIO-Styles disabled, while unusable and outdated
+
+        ExitCode = os.path.exists("aiostyles")
         if ExitCode == False:
-          ExitCode = os.path.exists((WORK_DIR) + "aiostyles.7z")
+          ExitCode = os.path.exists("aiostyles.7z")
           if ExitCode == False:
             os.system("wget -N http://dev.openstreetmap.de/aio/aiostyles.7z")
 
           os.system("7z x aiostyles.7z -oaiostyles")
 
         mapstyle = "aiostyles"
-
+      """
       """
       if there is only a TYP-File
 
@@ -77,11 +84,8 @@ def render():
       zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/"
       unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/"
 
-      cl_dir = (WORK_DIR) + "contourlines/" + (buildmap) + "/"
-      cltemp_dir = (WORK_DIR) + "contourlines/temp/"
 
-
-      for dir in [(zip_dir), (unzip_dir), (cltemp_dir), (cl_dir)]:
+      for dir in [(zip_dir), (unzip_dir)]:
         ExitCode = os.path.exists(dir)
         if ExitCode == False:
           os.makedirs(dir)
@@ -90,11 +94,11 @@ def render():
       Test for (layer)-dir and remove old data from there
       """
 
-      ExitCode = os.path.exists((WORK_DIR) + (layer))
+      ExitCode = os.path.exists(layer)
       if ExitCode == False:
-        os.mkdir((WORK_DIR) + (layer))
+        os.mkdir(layer)
       else:
-        path = (WORK_DIR) + (layer)
+        path = (layer)
         for file in os.listdir(path):
           if os.path.isfile(os.path.join(path, file)):
             try:
@@ -175,11 +179,14 @@ def render():
       """
 
       bl = (buildmap) + "_" + (layer)
+      move_img = (bl) + "_gmapsupp.img"
+      move_zip = (bl) + "_gmapsupp.img.zip"
+      move_7z = (bl) + "_gmapsupp.img.7z"
 
-      ExitCode = os.path.exists((unzip_dir) + (bl) + "_gmapsupp.img")
+      ExitCode = os.path.exists(move_img)
       if ExitCode == True:
-        os.remove((unzip_dir) + (bl) + "_gmapsupp.img")
-      os.system("mv gmapsupp.img " + (unzip_dir) + (bl) + "_gmapsupp.img")
+        os.remove(move_img)
+      shutil.move('gmapsupp.img', (move_img))
 
       """
       zipp the images and mv them to separate dirs
@@ -188,19 +195,19 @@ def render():
 
       if config.get('store_as', 'zip_img') == "yes":
         os.chdir(unzip_dir)
-        os.system(("zip ") + (bl) + "_gmapsupp.img.zip " + (bl) + "_gmapsupp.img")
-        ExitCode = os.path.exists((zip_dir) + (bl) + "_gmapsupp.img.zip")
+        os.system(("zip ") + (move_zip) + " " + (move_img))
+        ExitCode = os.path.exists((zip_dir) + (move_zip))
         if ExitCode == True:
-          os.remove((zip_dir) + (bl) + "_gmapsupp.img.zip")
-        os.system(("mv ") + (bl) + "_gmapsupp.img.zip " + (zip_dir))
+          os.remove((zip_dir) + (move_zip))
+        shutil.move((move_zip), (zip_dir))
 
       if config.get('store_as', '7z_img') == "yes":
         os.chdir(unzip_dir)
-        os.system(("7z a  ") + (bl) + "_gmapsupp.img.7z " + (bl) + "_gmapsupp.img")
-        ExitCode = os.path.exists((zip_dir) + (bl) + "_gmapsupp.img.7z")
+        os.system(("7z a  ") + (move_7z) + " " + (move_img))
+        ExitCode = os.path.exists((zip_dir) + (move_7z))
         if ExitCode == True:
-          os.remove((zip_dir) + (bl) + "_gmapsupp.img.7z")
-        os.system(("mv ") + (bl) + "_gmapsupp.img.7z " + (zip_dir))
+          os.remove((zip_dir) + (move_7z))
+        shutil.move((move_7z), (zip_dir))
 
       """
       save the mkgmap-log for errors
@@ -208,7 +215,7 @@ def render():
       os.chdir(WORK_DIR)
 
       if config.get('mkgmap', 'logging') == "yes":
-        log_dir = ((WORK_DIR) + "log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
+        log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
 
         ExitCode = os.path.exists(log_dir)
         if ExitCode == True:
@@ -225,18 +232,7 @@ def render():
 
       ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
       if ExitCode == True:
-        os.system("mv " + (layer) + "/mkgmap.log.* " + (log_dir))
-
-      """
-      copy *kml to zipp-dirs
-
-      """
-
-      os.chdir(WORK_DIR)
-
-      ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
-      if ExitCode == True:
-        os.system("mv tiles/" + (buildmap) + ".kml " + (zip_dir))
+        shutil.move((layer) + "/mkgmap.log.*", (log_dir))
 
 
 

@@ -3,6 +3,7 @@
 
 import os
 import configparser
+import shutil
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
@@ -25,6 +26,7 @@ split raw-data
 
 def split():
 
+  os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('time_stamp', (buildmap))
@@ -74,21 +76,33 @@ def split():
 
   BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
 
-  ExitCode = os.path.exists((WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
+  ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
   if ExitCode == True:
-    os.chdir((WORK_DIR) + "tiles")
+    os.chdir("tiles")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
   else:
-    os.chdir((WORK_DIR) + "tiles")
+    os.chdir("tiles")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (BUILD_O5M))
-    os.system("cp areas.list " + (WORK_DIR) + "/areas/" + (buildmap) + "_areas.list")
+    shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
 
-  ExitCode = os.path.exists((WORK_DIR) + "tiles/template.args")
+  os.chdir(WORK_DIR)
+
+  ExitCode = os.path.exists("tiles/template.args")
   if ExitCode == True:
-    datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready", "w")
+    datei = open("tiles/" + (buildmap) + "_split.ready", "w")
     datei.close()
   else:
     printerror("Splitter-Error!")
     quit()
-  os.remove((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck")
+  os.remove("tiles/" + (buildmap) + "_split.lck")
+
+  zip_dir = "gps_ready/zipped/" + (buildmap) + "/"
+
+  ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
+  if ExitCode == True:
+    ExitCode = os.path.exists((zip_dir) + (buildmap) + ".kml")
+    if ExitCode == True:
+      os.remove((zip_dir) + (buildmap) + ".kml")
+    shutil.move("tiles/" + (buildmap) + ".kml", (zip_dir))
+
 

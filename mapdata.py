@@ -6,7 +6,7 @@ import os
 import datetime
 import configparser
 
-work_dir = (os.environ['HOME'] + "/map_build/")
+WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 def printinfo(msg):
   print("II: " + msg)
@@ -33,7 +33,7 @@ cut data from planet-file
 """
 
 def create_o5m():
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   BUILD_TEMP = ("o5m/" + (buildmap) + ".temp.o5m")
@@ -41,36 +41,29 @@ def create_o5m():
   BUILD_OLD = ("o5m/" + (buildmap) + ".old")
 
   ExitCode = os.path.exists("o5m/planet.o5m")
-
   if ExitCode == True:
-    ExitCode = os.path.exists("poly/" + (buildmap) +
-			      ".poly")
+    printinfo("now extracting " + (buildmap) + ".o5m from Planet, please wait...")
+    os.system("osmconvert o5m/planet.o5m " +
+              "--complete-ways --complex-ways " +
+              " -B=poly/" + (buildmap) + ".poly " +
+              " -o=" + (BUILD_TEMP))
+
+    ExitCode = os.path.exists(BUILD_O5M)
     if ExitCode == True:
-      printinfo("now extracting " + (buildmap) +
-		".o5m from Planet, please wait...")
-      os.system("osmconvert o5m/planet.o5m " +
-                "--complete-ways --complex-ways " +
-                " -B=poly/" + (buildmap) + ".poly " +
-                " -o=" + (BUILD_TEMP))
+      os.rename((BUILD_O5M), (BUILD_OLD))
 
-      ExitCode = os.path.exists(BUILD_O5M)
-      if ExitCode == True:
-        os.rename((BUILD_O5M), (BUILD_OLD))
+    os.rename((BUILD_TEMP), (BUILD_O5M))
 
-      os.rename((BUILD_TEMP), (BUILD_O5M))
-
-      ExitCode = os.path.exists(BUILD_OLD)
-      if ExitCode == True:
-        os.remove(BUILD_OLD)
-
-    else:
-      printerror((work_dir) + "poly/" + (buildmap) + ".poly not found... ")
-      printerror("please create or download "+ (buildmap) + ".poly")
-      quit()
-
+    ExitCode = os.path.exists(BUILD_OLD)
+    if ExitCode == True:
+      os.remove(BUILD_OLD)
+  else:
+    printerror((WORK_DIR) + "o5m/planet.o5m not found... ")
+    printerror("please download with 'planet_up.py'")
+    quit()
 
 def update_o5m():
-  os.chdir(work_dir)
+  os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
 
@@ -90,7 +83,7 @@ def update_o5m():
 
   write_config()
 
-  os.chdir((work_dir) + "o5m")
+  os.chdir("o5m")
 
   ExitCode = os.path.exists((buildmap) +  "_new.o5m")
   if ExitCode == True:
