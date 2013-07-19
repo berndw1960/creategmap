@@ -156,85 +156,25 @@ def render():
             (WORK_DIR) + "tiles/*.o5m " +
             (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt")
 
-
-      """
-      move the ready gmapsupp.img to destination (unzip_dir) and
-      rename it to (buildmap)_(layer)_gmapsupp.img
-      """
-      os.chdir(WORK_DIR)
-
-      zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap)
-      unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/"
-      bl = (buildmap) + "_" + (layer)
-      move_img = (bl) + "_gmapsupp.img"
-
-      """
-      create dirs to store the images
-
-      """
-
-      for dir in [(zip_dir), (unzip_dir)]:
-        ExitCode = os.path.exists(dir)
-        if ExitCode == False:
-          os.makedirs(dir)
-
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
       """
 
+      os.chdir(WORK_DIR)
+
+      unzip_dir = "gps_ready/unzipped/" + (buildmap)
+
+      bl = (buildmap) + "_" + (layer)
+      move_img = (unzip_dir) + "/" + (bl) + "_gmapsupp.img"
+
+      ExitCode = os.path.exists(unzip_dir)
+      if ExitCode == False:
+        os.makedirs(unzip_dir)
+
       ExitCode = os.path.exists(move_img)
       if ExitCode == True:
         os.remove(move_img)
-      shutil.move((layer) +"/gmapsupp.img", (unzip_dir) + (move_img))
-
-      """
-      zipp the images and mv them to separate dirs
-      """
-
-      if config.get('store_as', 'zip_img') == "yes":
-        move_zip = (bl) + "_gmapsupp.img.zip"
-        os.chdir(unzip_dir)
-        os.system(("zip ") + (move_zip) + " " + (move_img))
-        ExitCode = os.path.exists((zip_dir) + "/" + (move_zip))
-        if ExitCode == True:
-          os.remove((zip_dir) + "/" + (move_zip))
-        shutil.move((move_zip), (zip_dir))
-
-      if config.get('store_as', '7z_img') == "yes":
-        move_7z = (bl) + "_gmapsupp.img.7z"
-        os.chdir(unzip_dir)
-        os.system(("7z a  ") + (move_7z) + " " + (move_img))
-        ExitCode = os.path.exists((zip_dir) + "/" + (move_7z))
-        if ExitCode == True:
-          os.remove((zip_dir) + "/" + (move_7z))
-        shutil.move((move_7z), (zip_dir))
-
-      """
-      save the mkgmap-log for errors
-      """
-      os.chdir(WORK_DIR)
-
-      if config.get('mkgmap', 'logging') == "yes":
-        log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
-
-        ExitCode = os.path.exists(log_dir)
-        if ExitCode == True:
-          path = (log_dir)
-          for file in os.listdir(path):
-            if os.path.isfile(os.path.join(path, file)):
-              try:
-                os.remove(os.path.join(path, file))
-              except:
-                print('Could not delete', file, 'in', path)
-
-        elif ExitCode == False:
-          os.makedirs(log_dir)
-
-      ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
-      if ExitCode == True:
-        shutil.move((layer) + "/mkgmap.log.*", (log_dir))
-
-
+      shutil.move((layer) +"/gmapsupp.img", (move_img))
 
 
 

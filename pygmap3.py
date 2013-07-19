@@ -215,6 +215,7 @@ config.add_section('runtime')
 set buildmap
 
 """
+
 config.set('runtime', 'buildmap', (args.buildmap))
 write_config()
 
@@ -261,7 +262,7 @@ create dir for areas. poly and splitter-output
 
 """
 
-for dir in ['o5m', 'areas', 'poly', 'contourlines', 'tiles']:
+for dir in ['o5m', 'areas', 'poly', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
     os.mkdir(dir)
@@ -384,20 +385,15 @@ render the map-images
 import mkgmap
 mkgmap.render()
 
-os.chdir(WORK_DIR)
-
 
 """
 create the contourlines
 
 """
 
-
 if config.get('contourlines', 'build') == "yes":
   import contourlines
   contourlines.create_cont()
-
-os.chdir(WORK_DIR)
 
 printinfo("Habe fertig!")
 

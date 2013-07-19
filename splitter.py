@@ -96,13 +96,5 @@ def split():
     quit()
   os.remove("tiles/" + (buildmap) + "_split.lck")
 
-  zip_dir = "gps_ready/zipped/" + (buildmap)
-
-  ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
-  if ExitCode == True:
-    ExitCode = os.path.exists((zip_dir) + (buildmap) + ".kml")
-    if ExitCode == True:
-      os.remove((zip_dir) + (buildmap) + ".kml")
-    shutil.move("tiles/" + (buildmap) + ".kml", (zip_dir))
 
 
