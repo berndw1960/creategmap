@@ -346,7 +346,7 @@ split rawdata
 
 """
 
-os.chdir(WORK_DIR)
+
 def remove_old_tiles():
   path = 'tiles'
   for file in os.listdir(path):
@@ -356,13 +356,14 @@ def remove_old_tiles():
       except:
         print('Could not delete', file, 'in', path)
 
+import splitter
+
 ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
 if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
 
-  import splitter
   splitter.split()
 
 elif ExitCode == True:
@@ -374,7 +375,6 @@ elif ExitCode == True:
 
     os.chdir(WORK_DIR)
 
-    import splitter
     splitter.split()
 
 
@@ -384,7 +384,6 @@ render the map-images
 """
 import mkgmap
 mkgmap.render()
-
 
 """
 create the contourlines
