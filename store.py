@@ -88,22 +88,23 @@ def log():
 
   if config.get('mkgmap', 'logging') == "yes":
     for layer in config['map_styles']:
-      os.chdir(WORK_DIR)
+      if config['map_styles'][(layer)]== "yes":
+        os.chdir(WORK_DIR)
 
-      buildmap = config.get('runtime', 'buildmap')
-      buildday = config.get('time_stamp', (buildmap))
-      log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
+        buildmap = config.get('runtime', 'buildmap')
+        buildday = config.get('time_stamp', (buildmap))
+        log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
 
-      ExitCode = os.path.exists(log_dir)
-      if ExitCode == True:
-        shutil.rmtree(log_dir)
+        ExitCode = os.path.exists(log_dir)
+        if ExitCode == True:
+          shutil.rmtree(log_dir)
 
-      os.chdir(WORK_DIR)
+        .chdir(WORK_DIR)
 
-      ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
-      if ExitCode == True:
-        from shutil import copytree, ignore_patterns
-        copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
+        ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
+        if ExitCode == True:
+          from shutil import copytree, ignore_patterns
+          copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
 
 
 
