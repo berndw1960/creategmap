@@ -385,6 +385,16 @@ render the map-images
 import mkgmap
 mkgmap.render()
 
+
+"""
+zip the images, kml and log
+"""
+
+import store
+store.zipp()
+store.kml()
+store.log()
+
 """
 create the contourlines
 

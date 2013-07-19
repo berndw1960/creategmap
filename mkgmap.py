@@ -32,8 +32,8 @@ def render():
 
   global layer
   for layer in config['map_styles']:
-    build = (config['map_styles'][(layer)])
-    if build == "yes":
+
+    if config['map_styles'][(layer)] == "yes":
       os.chdir(WORK_DIR)
 
       """
@@ -165,16 +165,17 @@ def render():
       unzip_dir = "gps_ready/unzipped/" + (buildmap)
 
       bl = (buildmap) + "_" + (layer)
-      move_img = (unzip_dir) + "/" + (bl) + "_gmapsupp.img"
+      img = (unzip_dir) + "/" + (bl) + "_gmapsupp.img"
 
       ExitCode = os.path.exists(unzip_dir)
       if ExitCode == False:
         os.makedirs(unzip_dir)
 
-      ExitCode = os.path.exists(move_img)
+      ExitCode = os.path.exists(img)
       if ExitCode == True:
-        os.remove(move_img)
-      shutil.move((layer) +"/gmapsupp.img", (move_img))
+        os.remove(img)
+        
+      shutil.move((layer) +"/gmapsupp.img", (img))
 
 
 
