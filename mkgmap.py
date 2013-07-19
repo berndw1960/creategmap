@@ -75,22 +75,6 @@ def render():
 
 
       """
-      create dirs to store the images
-
-      """
-
-      os.chdir(WORK_DIR)
-
-      zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap) + "/"
-      unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/"
-
-
-      for dir in [(zip_dir), (unzip_dir)]:
-        ExitCode = os.path.exists(dir)
-        if ExitCode == False:
-          os.makedirs(dir)
-
-      """
       Test for (layer)-dir and remove old data from there
       """
 
@@ -179,8 +163,24 @@ def render():
       """
       os.chdir(WORK_DIR)
 
+      zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap)
+      unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap) + "/"
       bl = (buildmap) + "_" + (layer)
       move_img = (bl) + "_gmapsupp.img"
+
+      """
+      create dirs to store the images
+
+      """
+
+      for dir in [(zip_dir), (unzip_dir)]:
+        ExitCode = os.path.exists(dir)
+        if ExitCode == False:
+          os.makedirs(dir)
+
+      """
+      move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
+      """
 
       ExitCode = os.path.exists(move_img)
       if ExitCode == True:
@@ -190,23 +190,23 @@ def render():
       """
       zipp the images and mv them to separate dirs
       """
-      
+
       if config.get('store_as', 'zip_img') == "yes":
         move_zip = (bl) + "_gmapsupp.img.zip"
         os.chdir(unzip_dir)
         os.system(("zip ") + (move_zip) + " " + (move_img))
-        ExitCode = os.path.exists((zip_dir) + (move_zip))
+        ExitCode = os.path.exists((zip_dir) + "/" + (move_zip))
         if ExitCode == True:
-          os.remove((zip_dir) + (move_zip))
+          os.remove((zip_dir) + "/" + (move_zip))
         shutil.move((move_zip), (zip_dir))
 
       if config.get('store_as', '7z_img') == "yes":
         move_7z = (bl) + "_gmapsupp.img.7z"
         os.chdir(unzip_dir)
         os.system(("7z a  ") + (move_7z) + " " + (move_img))
-        ExitCode = os.path.exists((zip_dir) + (move_7z))
+        ExitCode = os.path.exists((zip_dir) + "/" + (move_7z))
         if ExitCode == True:
-          os.remove((zip_dir) + (move_7z))
+          os.remove((zip_dir) + "/" + (move_7z))
         shutil.move((move_7z), (zip_dir))
 
       """

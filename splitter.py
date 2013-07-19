@@ -96,7 +96,7 @@ def split():
     quit()
   os.remove("tiles/" + (buildmap) + "_split.lck")
 
-  zip_dir = "gps_ready/zipped/" + (buildmap) + "/"
+  zip_dir = "gps_ready/zipped/" + (buildmap)
 
   ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
   if ExitCode == True:
