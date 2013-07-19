@@ -25,7 +25,6 @@ def zipp():
 
   config.read('pygmap3.cfg')
 
-
   """
   zipp the images and mv them to separate dirs
   """
@@ -85,7 +84,6 @@ def log():
   save the mkgmap-log for errors
   """
 
-
   if config.get('mkgmap', 'logging') == "yes":
     for layer in config['map_styles']:
       if config['map_styles'][(layer)]== "yes":
@@ -99,7 +97,7 @@ def log():
         if ExitCode == True:
           shutil.rmtree(log_dir)
 
-        .chdir(WORK_DIR)
+        os.chdir(WORK_DIR)
 
         ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
         if ExitCode == True:
