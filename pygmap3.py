@@ -391,9 +391,13 @@ zip the images, kml and log
 """
 
 import store
+
 store.zipp()
+
 store.kml()
-store.log()
+
+if config.get('mkgmap', 'logging') == "yes":
+  store.log()
 
 """
 create the contourlines

@@ -67,16 +67,20 @@ def kml():
   os.chdir(WORK_DIR)
 
   buildmap = config.get('runtime', 'buildmap')
-  zip_dir = "gps_ready/zipped/" + (buildmap)
+  kml_dir = "gps_ready/zipped/kml/"
+
+  ExitCode = os.path.exists(kml_dir)
+  if ExitCode == False:
+    os.makedirs(kml_dir)
 
   ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
   if ExitCode == True:
-    kml = (zip_dir) + "/" + (buildmap) + ".kml"
+    kml = (kml_dir) + "/" + (buildmap) + ".kml"
     ExitCode = os.path.exists(kml)
     if ExitCode == True:
       os.remove(kml)
 
-    shutil.move("tiles/" + (buildmap) + ".kml", (zip_dir))
+    shutil.move("tiles/" + (buildmap) + ".kml", (kml_dir))
 
 def log():
 
@@ -84,25 +88,24 @@ def log():
   save the mkgmap-log for errors
   """
 
-  if config.get('mkgmap', 'logging') == "yes":
-    for layer in config['map_styles']:
-      if config['map_styles'][(layer)]== "yes":
-        os.chdir(WORK_DIR)
+  for layer in config['map_styles']:
+    if config['map_styles'][(layer)]== "yes":
+      os.chdir(WORK_DIR)
 
-        buildmap = config.get('runtime', 'buildmap')
-        buildday = config.get('time_stamp', (buildmap))
-        log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
+      buildmap = config.get('runtime', 'buildmap')
+      buildday = config.get('time_stamp', (buildmap))
+      log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
 
-        ExitCode = os.path.exists(log_dir)
-        if ExitCode == True:
-          shutil.rmtree(log_dir)
+      ExitCode = os.path.exists(log_dir)
+      if ExitCode == True:
+        shutil.rmtree(log_dir)
 
-        os.chdir(WORK_DIR)
+      os.chdir(WORK_DIR)
 
-        ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
-        if ExitCode == True:
-          from shutil import copytree, ignore_patterns
-          copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
+      ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
+      if ExitCode == True:
+        from shutil import copytree, ignore_patterns
+        copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
 
 
 
