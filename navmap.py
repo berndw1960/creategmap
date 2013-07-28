@@ -35,7 +35,7 @@ def bounds():
     if ExitCode == False:
       printerror("precompiled sea_bounds in sea.zip not found")
       printerror("please download the precompiled sea_bounds from")
-      printerror("http://www.navmaps.org/boundaries")
+      printerror("http://www.navmaps.eu/boundaries")
       printerror("and store as sea.zip")
       quit()
 
@@ -43,7 +43,7 @@ def bounds():
     if ExitCode == False:
       printerror("precompiled bounds in bounds.zip not found")
       printerror("please download the precompiled bounds from")
-      printerror("http://www.navmaps.org/boundaries")
+      printerror("http://www.navmaps.eu/boundaries")
       printerror("and store as bounds.zip")
       quit()
 

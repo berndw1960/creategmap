@@ -133,27 +133,18 @@ search follows $PATH
 """
 
 def checkprg(programmtofind, solutionhint):
-
-
   ExitCode = os.system("which " + programmtofind)
-
   if ExitCode == 0:
     printinfo(programmtofind + " found")
   else:
     printerror(programmtofind + " not found")
     print(solutionhint)
 
-
-
 hint = "osmconvert missed, needed to cut data from the planet.o5m"
 checkprg("osmconvert", hint)
 
 hint = "osmupdate missed, needed to update the planet.o5m"
 checkprg("osmupdate", hint)
-
-hint = "Install: 7z to store the images"
-checkprg("7z", hint)
-
 
 """
 test if a file or dir can be found at a predefined place

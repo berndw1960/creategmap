@@ -52,7 +52,6 @@ def get_tools():
   else:
     splitter_rev = config.get('splitter', 'version')
 
-
   ExitCode = os.path.exists(splitter_rev)
   if ExitCode == False:
     os.system("wget -N http://www.mkgmap.org.uk/download/" + (splitter_rev) + ".tar.gz")
