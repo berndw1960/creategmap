@@ -61,6 +61,7 @@ def get_tools():
     tar.close()
 
   splitter_path = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
+  printinfo("using " + (splitter_rev))
 
   if config.get('mkgmap', 'latest') == "yes":
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
@@ -85,7 +86,7 @@ def get_tools():
     tar.close()
 
   mkgmap_path = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
-
+  printinfo("using " + (mkgmap_rev))
 
   """
   now write to pygmap3.cfg
