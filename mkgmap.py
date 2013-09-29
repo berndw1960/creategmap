@@ -113,7 +113,7 @@ def render():
         option_bounds = " --bounds=" + (WORK_DIR) + "bounds.zip "
         option_sea = " --precomp-sea=" + (WORK_DIR) + "sea.zip  --generate-sea "
       else:
-        option_bounds = " --location-autofill=is_in,nearest "
+        option_bounds = " --location-autofill=bounds,is_in,nearest "
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
       if config.get('mkgmap', 'check_styles') == "yes":
