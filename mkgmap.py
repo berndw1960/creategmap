@@ -150,7 +150,7 @@ def render():
             " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
             " --family-id=" + config.get((layer), 'family-id') +
             " --product-id=" + config.get((layer), 'product-id') +
-            " --description=" + (buildmap) + "_" + (buildday) +
+            " --description=" + (buildmap) + "_" + (buildday) + " " + config.get('mkgmap', 'version') +
             " --family-name=" + config.get((layer), 'family-name') +
             " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
@@ -174,7 +174,7 @@ def render():
       ExitCode = os.path.exists(img)
       if ExitCode == True:
         os.remove(img)
-        
+
       shutil.move((layer) +"/gmapsupp.img", (img))
 
 
