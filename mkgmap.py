@@ -150,7 +150,7 @@ def render():
             " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
             " --family-id=" + config.get((layer), 'family-id') +
             " --product-id=" + config.get((layer), 'product-id') +
-            " --description=" + (buildmap) + "_" + (buildday) + " " + config.get('mkgmap', 'version') +
+            " --description=" + (buildmap) + "_" + (buildday) + "_" + config.get('mkgmap', 'version') +
             " --family-name=" + config.get((layer), 'family-name') +
             " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
