@@ -39,6 +39,7 @@ def create():
   config['map_styles'] = {'basemap': 'yes',
 			  'bikemap': 'no',
                           'fixme': 'no',
+                          'default': 'no',
                           'rrk': 'no',
                           'fzk': 'no',}
 
@@ -55,6 +56,13 @@ def create():
                        'family-name': 'Bikemap',
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
+
+  config['defaultmap'] = {}
+  config['defaultmap'] = {'family-id': '6',
+                          'product-id': '47',
+                          'family-name': 'defaultmap',
+                          'draw-priority': '10',
+                          'mapid_ext': '5001',}
 
   config['fzk'] = {}
   config['fzk'] = {'family-id': '6276',
@@ -104,10 +112,18 @@ def update():
   if config.has_section('mapid') == False:
     config['mapid'] = {'next_mapid': '6500',}
 
-
   if config.has_option('mapid', 'mapid') == True:
     config.remove_option('mapid', 'mapid')
 
+  if config.has_option('map_styles', 'defaultmap') == False:
+    config.set('map_styles', 'defaultmap', 'no',)
+
+  if config.has_section('defaultmap') == False:
+    config['defaultmap'] = {'family-id': '6',
+                          'product-id': '47',
+                          'family-name': 'defaultmap',
+                          'draw-priority': '10',
+                          'mapid_ext': '5001',}
 
   if config.has_section('contourlines') == True:
     if config.has_option('contourlines', 'draw-priority') == False:

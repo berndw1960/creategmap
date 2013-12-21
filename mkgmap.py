@@ -69,9 +69,11 @@ def render():
       """
       ExitCode = os.path.exists((mapstyle) + "/" + (layer) + "_typ.txt")
       if ExitCode == False:
-        printerror(" Please convert " +
+        ExitCode = os.path.exists((mapstyle) + "/" + (layer) + "_typ")
+        if ExitCode == True:
+          printerror(" Please convert " +
             (mapstyle) + "/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
-        quit()
+          quit()
 
 
       """
@@ -100,6 +102,10 @@ def render():
       """
       option_mkgmap_options = " --read-config=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style/options "
 
+      if config.get('map_styles', 'defaultmap') == "yes":
+        option_map_stylefile = " "
+      else:
+        option_map_stylefile = (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt"
 
       if config.get('mkgmap', 'logging') == "yes":
         printinfo("logging enabled")
@@ -154,7 +160,7 @@ def render():
             " --family-name=" + config.get((layer), 'family-name') +
             " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
-            (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt")
+            (option_map_stylefile))
 
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
