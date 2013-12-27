@@ -102,7 +102,7 @@ def render():
       """
       option_mkgmap_options = " --read-config=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style/options "
 
-      if config.get('map_styles', 'defaultmap') == "yes":
+      if layer ==  'defaultmap':
         option_map_stylefile = " "
       else:
         option_map_stylefile = (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt"
