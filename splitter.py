@@ -68,6 +68,7 @@ def split():
                    " --mapid=" + config.get('mapid', (buildmap)) + "0001 " +
                    " --output=o5m " +
                    " --keep-complete " +
+                   " --precomp-sea=" + (WORK_DIR) + "sea.zip "
                    " --write-kml=" + (buildmap) + ".kml "
                    " --max-nodes=" + config.get('splitter', 'maxnodes') +
                    " --overlap=0 ")
@@ -75,16 +76,24 @@ def split():
   areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list ")
 
   BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
-
-  ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
-  if ExitCode == True:
-    os.chdir("tiles")
-    os.system((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
+  
+  use_areas = config.get('splitter', 'use_areas')
+  if use_areas == "yes":
+    ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
+    if ExitCode == True:
+      os.chdir("tiles")
+      printinfo("splitting the mapdata with areas.list...")
+      os.system((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
+    else:
+      os.chdir("tiles")
+      printwarning("create areas.list and splitting the mapdata...")
+      os.system((java_opts) + (log_opts) + (splitter_opts) + (BUILD_O5M))
+      shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
   else:
     os.chdir("tiles")
+    printwarning("no areas.list enabled, splitting the mapdata without it...")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (BUILD_O5M))
-    shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
-
+    
   os.chdir(WORK_DIR)
 
   ExitCode = os.path.exists("tiles/template.args")

@@ -27,7 +27,8 @@ def create():
   config['splitter'] = {}
   config['splitter'] = {'logging': 'yes',
                         'latest': 'yes',
-                        'maxnodes': '1200000',}
+                        'maxnodes': '1200000',
+                        'use_areas': 'no',}
 
   config['mkgmap'] = {}
   config['mkgmap'] = {'latest': 'yes',
@@ -114,6 +115,9 @@ def update():
 
   if config.has_option('mapid', 'mapid') == True:
     config.remove_option('mapid', 'mapid')
+
+  if config.has_option('splitter', 'use_areas') == False:
+    config['splitter'] = {'use_areas': 'no',}
 
   if config.has_option('map_styles', 'defaultmap') == False:
     config.set('map_styles', 'defaultmap', 'no',)
