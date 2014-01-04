@@ -37,10 +37,10 @@ def create():
                       'list_styles': 'no',}
 
   config['map_styles'] = {}
-  config['map_styles'] = {'basemap': 'yes',
+  config['map_styles'] = {'basemap': 'no',
 			  'bikemap': 'no',
                           'fixme': 'no',
-                          'default': 'no',
+                          'default': 'yes',
                           'rrk': 'no',
                           'fzk': 'no',}
 
@@ -135,7 +135,6 @@ def update():
 
   else:
     config['contourlines'] = {'draw-priority': '16', 'build': 'no',}
-
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)

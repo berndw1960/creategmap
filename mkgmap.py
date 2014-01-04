@@ -41,26 +41,23 @@ def render():
       add your own styles in mystyles
 
       """
-
-      ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
-      global mapstyle
-      if ExitCode == True:
-        mapstyle = "mystyles"
-      else:
-        printerror("no " + (layer) + "_style found!")
-        quit()
-
-      """
-      if there is only a TYP-File
-
-      """
-      ExitCode = os.path.exists((mapstyle) + "/" + (layer) + "_typ.txt")
-      if ExitCode == False:
-        ExitCode = os.path.exists((mapstyle) + "/" + (layer) + "_typ")
-        if ExitCode == True:
-          printerror(" Please convert " +
-            (mapstyle) + "/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
+      if layer !=  'defaultmap':
+        ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
+        if ExitCode == False:
+          printerror("no " + (layer) + "_style found!")
           quit()
+
+        """
+        if there is only a TYP-File
+
+        """
+        ExitCode = os.path.exists("mystyles/" + (layer) + "_typ.txt")
+        if ExitCode == False:
+          ExitCode = os.path.exists("mystyles/" + (layer) + "_typ")
+          if ExitCode == True:
+            printerror(" Please convert " +
+              "mystyles/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
+            quit()
 
 
       """
@@ -80,19 +77,13 @@ def render():
              print('Could not delete', file, 'in', path)
 
       os.chdir(layer)
-      printinfo("entered " + os.getcwd())
-      printinfo("Now building " + (layer) + "-layer with " + (mapstyle))
-
+      printinfo("Now building " + (layer))
 
       """
       mkgmap-options
       """
-      option_mkgmap_options = " --read-config=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style/options "
+      option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
 
-      if layer ==  'defaultmap':
-        option_map_stylefile = " "
-      else:
-        option_map_stylefile = (WORK_DIR) + (mapstyle) + "/" + (layer) + "_typ.txt"
 
       if config.get('mkgmap', 'logging') == "yes":
         printinfo("logging enabled")
@@ -108,6 +99,15 @@ def render():
       else:
         option_bounds = " --location-autofill=bounds,is_in,nearest "
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+
+      if layer == "defaultmap":
+        printwarning("defaultmap has no typ_file")
+        typ_file = " "
+        style_file = " "
+      else:
+        printinfo((layer) + " build with typ_file")
+        typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
+        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
 
       if config.get('mkgmap', 'check_styles') == "yes":
         printinfo("check_styles enabled")
@@ -136,10 +136,10 @@ def render():
             (option_mkgmap_options) +
             (option_bounds) +
             (option_sea) +
-            " --style-file=" + (WORK_DIR) + (mapstyle) + "/" + (layer) + "_style " +
+            (style_file) +
             (option_check_styles) +
             (option_list_styles) +
-            " --name-tag-list=name:de,name,name:en,int_name "
+            " --name-tag-list=name:de,name,name:en,int_name " +
             " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
             " --family-id=" + config.get((layer), 'family-id') +
             " --product-id=" + config.get((layer), 'product-id') +
@@ -147,7 +147,8 @@ def render():
             " --family-name=" + config.get((layer), 'family-name') +
             " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
-            (option_map_stylefile))
+            (typ_file))
+
 
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
