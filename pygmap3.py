@@ -63,6 +63,7 @@ import datetime
 import argparse
 import configparser
 import time
+import urllib.request
 import shutil
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
@@ -84,12 +85,14 @@ parser = argparse.ArgumentParser(
             FIXME (possible)
             Contourlines (possible)
 
-            additional maps
-            RadReiseKarte by Aighes (possible)
-
             The AIO-Style is Public Domain
+            
+            ############################
+            These Mapstyles are not included, they have to installed manually:
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
             The FZK-Style is copyrighted by Klaus Tockloth
+            ############################
+            
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
@@ -281,8 +284,13 @@ get the geonames for splitter
 
 ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
 if ExitCode == False:
-  os.system("wget http://download.geonames.org/export/dump/cities15000.zip")
-
+  url = "http://download.geonames.org/export/dump/cities15000.zip"
+  file_name = "cities15000.zip"
+   
+  # Download the file from `url` and save it locally under `file_name`:
+  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+    shutil.copyfileobj(response, out_file)
+    
 """
 is there a keep_data.lck, then use the old data
 
