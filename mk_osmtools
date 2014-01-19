@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd ~/bin
+
+echo " create osmfilter"
+wget -O - http://m.m.i24.cc/osmupdate.c | cc -x c - -o osmupdate
+echo " create osmfilter"
+wget -O - http://m.m.i24.cc/osmfilter.c |cc -x c - -O3 -o osmfilter
+echo " create osmconvert"
+wget -O - http://m.m.i24.cc/osmconvert.c | cc -x c - -lz -O3 -o osmconvert
+
+exit 0
