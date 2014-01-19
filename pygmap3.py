@@ -143,11 +143,13 @@ def checkprg(programmtofind, solutionhint):
     printerror(programmtofind + " not found")
     print(solutionhint)
 
-hint = "osmconvert missed, needed to cut data from the planet.o5m"
+
+hint = "osmconvert missed, please use mk_osmtools to build it from sources"
 checkprg("osmconvert", hint)
 
-hint = "osmupdate missed, needed to update the planet.o5m"
+hint = "osmupdate missed, please use mk_osmtools to build it from sources"
 checkprg("osmupdate", hint)
+
 
 """
 test if a file or dir can be found at a predefined place
