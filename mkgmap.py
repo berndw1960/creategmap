@@ -92,14 +92,23 @@ def render():
         printwarning("logging disabled")
         option_mkgmap_logging = " "
 
-      if config.get('navmap', 'bounds') == "yes":
-        printinfo ("use precompiled bounds")
-        option_bounds = " --bounds=" + (WORK_DIR) + "bounds.zip "
-        option_sea = " --precomp-sea=" + (WORK_DIR) + "sea.zip  --generate-sea "
+      if config.get('navmap', 'pre_comp') == "yes":
+        if config.get('navmap', 'use_bounds') == "yes":
+          printinfo ("use precompiled bounds")
+          option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
+        else:
+          option_bounds = " --location-autofill=bounds,is_in,nearest "
+          
+        if config.get('navmap', 'use_sea') == "yes":  
+          printinfo ("use precompiled sea_tiles")
+          option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
+        else:
+          option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+
       else:
         option_bounds = " --location-autofill=bounds,is_in,nearest "
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
-
+        
       if layer == "defaultmap":
         printwarning("defaultmap has no typ_file")
         typ_file = " "
