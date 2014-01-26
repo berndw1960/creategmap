@@ -68,7 +68,7 @@ def split():
                    " --mapid=" + config.get('mapid', (buildmap)) + "0001 " +
                    " --output=o5m " +
                    " --keep-complete " +
-                   " --precomp-sea=" + (WORK_DIR) + "sea.zip "
+                   " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip "
                    " --write-kml=" + (buildmap) + ".kml "
                    " --max-nodes=" + config.get('splitter', 'maxnodes') +
                    " --overlap=0 ")
