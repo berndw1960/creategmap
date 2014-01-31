@@ -62,7 +62,7 @@ def get_tools():
     if ExitCode == False:
       url = "http://www.mkgmap.org.uk/download/" + (splitter_rev) + ".tar.gz"
       file_name = (splitter_rev) + ".tar.gz"
-   
+
       # Download the file from `url` and save it locally under `file_name`:
       with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
@@ -72,7 +72,8 @@ def get_tools():
     tar.close()
 
   splitter_path = (WORK_DIR) + (splitter_rev) + "/splitter.jar"
-
+  
+  printinfo("using " + (splitter_rev))
 
   if config.get('mkgmap', 'latest') == "yes":
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
@@ -95,22 +96,18 @@ def get_tools():
     if ExitCode == False:
       url = "http://www.mkgmap.org.uk/download/" + (mkgmap_rev) + ".tar.gz"
       file_name = (mkgmap_rev) + ".tar.gz"
-   
+
       # Download the file from `url` and save it locally under `file_name`:
       with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
-    
+
     tar = tarfile.open((mkgmap_rev) + ".tar.gz")
     tar.extractall()
     tar.close()
 
   mkgmap_path = (WORK_DIR) + (mkgmap_rev) + "/mkgmap.jar"
 
-  """
-  some infos
-  """
-  
-  printinfo("using " + (splitter_rev))
+
   printinfo("using " + (mkgmap_rev))
 
   """
