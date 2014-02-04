@@ -95,13 +95,13 @@ def render():
       if config.get('navmap', 'pre_comp') == "yes":
         if config.get('navmap', 'use_bounds') == "yes":
           printinfo ("use precompiled bounds")
-          option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
+          option_bounds = " --bounds=" + (WORK_DIR) + "bounds_" + config.get('navmap', 'bounds_rev') + ".zip "
         else:
           option_bounds = " --location-autofill=bounds,is_in,nearest "
           
         if config.get('navmap', 'use_sea') == "yes":  
           printinfo ("use precompiled sea_tiles")
-          option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
+          option_sea = " --precomp-sea=" + (WORK_DIR) + "sea_" + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
         else:
           option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 

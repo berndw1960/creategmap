@@ -67,7 +67,7 @@ def split():
   splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
                    " --mapid=" + config.get('mapid', (buildmap)) + "0001 " +
                    " --output=o5m " +
-                   " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip "
+                   " --precomp-sea=" + (WORK_DIR) + "sea_" + config.get('navmap', 'sea_rev') + ".zip "
                    " --write-kml=" + (buildmap) + ".kml "
                    " --max-nodes=" + config.get('splitter', 'maxnodes') +
                    " --keep-complete " +
