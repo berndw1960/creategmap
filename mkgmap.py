@@ -90,7 +90,8 @@ def render():
           printinfo("logging enabled")
         option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "log.conf "
       else:
-        printwarning("logging disabled")
+        if config.get('verbose', 'verbose') == "yes":
+          printwarning("logging disabled")
         option_mkgmap_logging = " "
 
       if config.get('navmap', 'pre_comp') == "yes":
@@ -127,7 +128,8 @@ def render():
           printinfo("check_styles enabled")
         option_check_styles = " --check-styles "
       else:
-        printwarning("check_styles disabled")
+        if config.get('verbose', 'verbose') == "yes":
+          printwarning("check_styles disabled")
         option_check_styles = " "
 
       if config.get('mkgmap', 'list_styles') == "yes":
@@ -135,7 +137,8 @@ def render():
           printinfo("list_styles enabled")
         option_list_styles = " --list-styles "
       else:
-        printwarning("list_styles disabled")
+        if config.get('verbose', 'verbose') == "yes":
+          printwarning("list_styles disabled")
         option_list_styles = " "
 
 
