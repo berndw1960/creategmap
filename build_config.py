@@ -17,7 +17,10 @@ def create():
 
   config['ramsize'] = {}
   config['ramsize'] = {'ramsize': '-Xmx3G',}
-
+  
+  config['verbose'] = {}
+  config['verbose'] = {'verbose': 'yes',}
+  
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
@@ -114,9 +117,13 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
+   
+  if config.has_section('verbose') == False:
+    config['verbose'] = {'verbose': 'no',}
+    
   if config.has_section('mapid') == False:
     config['mapid'] = {'next_mapid': '6500',}
-
+ 
   if config.has_option('mapid', 'mapid') == True:
     config.remove_option('mapid', 'mapid')
 
