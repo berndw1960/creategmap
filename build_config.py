@@ -17,16 +17,19 @@ def create():
 
   config['ramsize'] = {}
   config['ramsize'] = {'ramsize': '-Xmx3G',}
-  
+
+  config['osmtools'] = {}
+  config['osmtools'] = {'check': 'yes',}
+
   config['verbose'] = {}
   config['verbose'] = {'verbose': 'yes',}
-  
+
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
   config['navmap'] = {}
   config['navmap'] = {'pre_comp': 'yes',
-                      'use_sea': 'yes',      
+                      'use_sea': 'yes',
                       'use_bounds': 'yes',
                       'sea':  'latest',
                       'bounds':  'latest',}
@@ -34,7 +37,7 @@ def create():
   config['splitter'] = {}
   config['splitter'] = {'logging': 'yes',
                         'latest': 'yes',
-                        'maxnodes': '1200000',
+                        'maxnodes': '1600000',
                         'use_areas': 'no',}
 
   config['mkgmap'] = {}
@@ -117,34 +120,36 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
-   
+  if config.has_section('osmtools') == False:
+    config['osmtools'] = {'check': 'yes',}
+
   if config.has_section('verbose') == False:
     config['verbose'] = {'verbose': 'no',}
-    
+
   if config.has_section('mapid') == False:
     config['mapid'] = {'next_mapid': '6500',}
- 
+
   if config.has_option('mapid', 'mapid') == True:
     config.remove_option('mapid', 'mapid')
 
   if config.has_option('splitter', 'use_areas') == False:
     config.set('splitter', 'use_areas', 'no',)
-  
+
   if config.has_section('navmap') == False:
     config['navmap'] = {'pre_comp': 'yes',
                         'use_sea':  'yes',
                         'use_bounds': 'yes',
                         'sea': 'latest',
                         'bounds': 'latest',}
-    
+
   if config.has_option('navmap', 'pre_comp') == False:
-    config.set('navmap', 'pre_comp', 'yes',)    
+    config.set('navmap', 'pre_comp', 'yes',)
 
   if config.has_option('navmap', 'use_bounds') == False:
     config.set('navmap', 'use_bounds', 'yes',)
-    
+
   if config.has_option('navmap', 'use_sea') == False:
-    config.set('navmap', 'use_sea', 'yes',)    
+    config.set('navmap', 'use_sea', 'yes',)
 
   if config.has_option('navmap', 'sea') == False:
     config.set('navmap', 'sea', 'latest',)

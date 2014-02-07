@@ -27,6 +27,39 @@ def write_config():
 
 config = configparser.ConfigParser()
 
+
+"""
+test if an executable can be found by
+following $PATH
+raise message if fails and returns 1
+on success return 0
+search follows $PATH
+"""
+os.chdir(WORK_DIR)
+config.read('pygmap3.cfg')
+
+if config.get('osmtools', 'check') == "yes":
+  def checkprg(programmtofind, solutionhint):
+    ExitCode = os.system("which " + programmtofind)
+    if ExitCode == 0:
+      printinfo(programmtofind + " found")
+    else:
+      printerror(programmtofind + " not found")
+      print(solutionhint)
+
+
+  hint = "osmconvert missed, please use mk_osmtools to build it from sources"
+  checkprg("osmconvert", hint)
+
+  hint = "osmupdate missed, please use mk_osmtools to build it from sources"
+  checkprg("osmupdate", hint)
+
+  config.set('osmtools', 'check', 'no')
+
+  write_config()
+
+
+
 """
 cut data from planet-file
 

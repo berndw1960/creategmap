@@ -85,14 +85,16 @@ parser = argparse.ArgumentParser(
             FIXME (possible)
             Contourlines (possible)
 
-            The AIO-Style is Public Domain
-            
+            This Style, based and inspired by the AIO-Style,
+            is Public Domain, do what you want with it.
+
+
             ############################
             These Mapstyles are not included, they have to installed manually:
             The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
             The FZK-Style is copyrighted by Klaus Tockloth
             ############################
-            
+
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
@@ -124,31 +126,6 @@ def printwarning(msg):
 
 def printerror(msg):
   print("EE: " + msg)
-
-
-
-"""
-test if an executable can be found by
-following $PATH
-raise message if fails and returns 1
-on success return 0
-search follows $PATH
-"""
-
-def checkprg(programmtofind, solutionhint):
-  ExitCode = os.system("which " + programmtofind)
-  if ExitCode == 0:
-    printinfo(programmtofind + " found")
-  else:
-    printerror(programmtofind + " not found")
-    print(solutionhint)
-
-
-hint = "osmconvert missed, please use mk_osmtools to build it from sources"
-checkprg("osmconvert", hint)
-
-hint = "osmupdate missed, please use mk_osmtools to build it from sources"
-checkprg("osmupdate", hint)
 
 
 """
@@ -289,11 +266,11 @@ ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
 if ExitCode == False:
   url = "http://download.geonames.org/export/dump/cities15000.zip"
   file_name = "cities15000.zip"
-   
+
   # Download the file from `url` and save it locally under `file_name`:
   with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
     shutil.copyfileobj(response, out_file)
-    
+
 """
 is there a keep_data.lck, then use the old data
 

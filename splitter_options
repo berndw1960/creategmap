@@ -1,87 +1,51 @@
 Usage: java [JAVA_OPTIONS] -jar splitter.jar [OPTIONS] input_file (*.osm or *.pbf or *.o5m)
 Options:
- --boundary-tags   	A comma separated list of tag values for relations.
-			Used to filter multipolygon and boundary relations for
-			problem-list processing.
-			Default is use-exclude-list.
-
- --cache           	Deprecated, now does nothing
-
- --description     	A default description to give to each area.
-
- --geonames-file   	The name of a GeoNames file to use for determining tile
-			names.
-			Typically cities15000.zip from
-			http://download.geonames.org/export/dump/
-
- --keep-complete   	Write complete ways and relations if possible (requires
-			more time and more heap memory).
-			This should be used with --overlap=0
-			Default is true.
-
- --mapid           	The starting map ID.
-			Default is 63240001.
-
- --max-areas       	The maximum number of areas to process in a single pass.
-			More areas require more memory, but less time.
-			Values: 1-4096.
-			Default is 512.
-
- --max-nodes       	A threshold value that is used when no split-file is
-			given. Splitting is done so that no tile has more than
-			maxNodes nodes inside the bounding box of the tile.
-			Nodes added by overlap or keep-complete are not taken
-			into account.
-			Default is 1600000.
-
- --max-threads     	The maximum number of threads used by splitter.
-			Default is auto.
-
- --mixed           	Specify this if the input osm file has nodes, ways and
-			relations intermingled.
-
- --no-trim         	Don't trim empty space off the edges of tiles.
-
- --output          	The output type, either pbf, o5m, or xml.
-			Default is pbf.
-
- --output-dir      	The path to the output directory.
-			Defaults to the current working directory.
-
- --overlap         	Deprecated.
-			Nodes/ways/rels that fall outside an area will still be
-			included if they are within this many map units.
-			Default is auto.
-
- --polygon-file    	The name of a file containing a bounding polygon in
-			osmosis polygon file format.
-
- --precomp-sea     	The name of a directory containing precompiled sea tiles.
-
- --problem-file    	The name of a file containing ways and relations that
-			are known to cause problems in the split process.
-
- --problem-report  	The name of a file to write the generated problem list
-			created with --keep-complete.
-
- --resolution      	The resolution of the overview map to be produced by
-			mkgmap.
-			Default is 13.
-
- --split-file      	The name of a file containing the areas definitions.
-			Can be .list or .kml. Providing such a file will save
-			processing time.
-
- --status-freq     	Displays the amount of memory used by the JVM every
-			--status-freq seconds. Set =0 to disable.
-			Default is 120.
-
- --stop-after      	Debugging: stop after the program phase.
-			Can be split, gen-problem-list, or handle-problem-list
-			Default is dist.
-
- --write-kml       	The name of a kml file to write out the areas to.
-			This is in addition to areas.list (which is always
-			written out).
-
-			
+ --boundary-tags   A comma separated list of tag values for relations. Used 
+                   to filter multipolygon and boundary relations for 
+                   problem-list processing. Default is use-exclude-list. 
+ --cache           Deprecated, now does nothing 
+ --description     A default description to give to each area. 
+ --geonames-file   The name of a GeoNames file to use for determining tile 
+                   names. Typically cities15000.zip from 
+                   http://download.geonames.org/export/dump/ 
+ --keep-complete   Write complete ways and relations if possible (requires 
+                   more time and more heap memory). This should be used with 
+                   --overlap=0 Default is true. 
+ --mapid           The starting map ID. Default is 63240001. 
+ --max-areas       The maximum number of areas to process in a single pass. 
+                   More areas require more memory, but less time. Values: 
+                   1-4096. Default is 512. 
+ --max-nodes       A threshold value that is used when no split-file is 
+                   given. Splitting is done so that no tile has more than 
+                   maxNodes nodes inside the bounding box of the tile. Nodes 
+                   added by overlap or keep-complete are not taken into 
+                   account. Default is 1600000. 
+ --max-threads     The maximum number of threads used by splitter. Default is 
+                   auto. 
+ --mixed           Specify this if the input osm file has nodes, ways and 
+                   relations intermingled. 
+ --no-trim         Don't trim empty space off the edges of tiles. 
+ --output          The output type, either pbf, o5m, or xml. Default is pbf. 
+ --output-dir      The path to the output directory. Defaults to the current 
+                   working directory. 
+ --overlap         Deprecated. Nodes/ways/rels that fall outside an area will 
+                   still be included if they are within this many map units.  
+                   Default is auto. 
+ --polygon-file    The name of a file containing a bounding polygon in 
+                   osmosis polygon file format. 
+ --precomp-sea     The name of a directory containing precompiled sea tiles. 
+ --problem-file    The name of a file containing ways and relations that are 
+                   known to cause problems in the split process. 
+ --problem-report  The name of a file to write the generated problem list 
+                   created with --keep-complete. 
+ --resolution      The resolution of the overview map to be produced by 
+                   mkgmap. Default is 13. 
+ --split-file      The name of a file containing the areas definitions. Can 
+                   be .list or .kml. Providing such a file will save 
+                   processing time. 
+ --status-freq     Displays the amount of memory used by the JVM every 
+                   --status-freq seconds. Set =0 to disable. Default is 120. 
+ --stop-after      Debugging: stop after the program phase. Can be split, 
+                   gen-problem-list, or handle-problem-list Default is dist. 
+ --write-kml       The name of a kml file to write out the areas to. This is 
+                   in addition to areas.list (which is always written out). 

@@ -31,8 +31,6 @@ def split():
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('time_stamp', (buildmap))
   splitter_path = (WORK_DIR) + config.get('splitter', 'version') + "/splitter.jar "
-  datei = open((WORK_DIR) + "tiles/" + (buildmap) + "_split.lck", "w")
-  datei.close()
 
   java_opts = ("java -ea " + config.get('ramsize', 'ramsize') +
                   " -jar " + (splitter_path))
@@ -74,14 +72,16 @@ def split():
                    " --mapid=" + config.get('mapid', (buildmap)) + "0001 " +
                    " --output=o5m " +
                    (pre_comp) +
-                   " --write-kml=" + (buildmap) + ".kml "
-                   " --max-nodes=" + config.get('splitter', 'maxnodes') +
+                   " --write-kml=" + (buildmap) + ".kml " +
                    " --keep-complete " +
                    " --overlap=0 ")
 
-  areas_list = (" --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list ")
+  ## split with
+  areas_list = " --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list "
+  ## or
+  max_nodes = (" --max-nodes=" + config.get('splitter', 'maxnodes') + " ")
 
-  BUILD_O5M = ((WORK_DIR) + "o5m/" + (buildmap) + ".o5m")
+  BUILD_O5M = (WORK_DIR) + "o5m/" + (buildmap) + ".o5m"
 
   use_areas = config.get('splitter', 'use_areas')
   if use_areas == "yes":
@@ -93,20 +93,17 @@ def split():
     else:
       os.chdir("tiles")
       printwarning("create areas.list and splitting the mapdata...")
-      os.system((java_opts) + (log_opts) + (splitter_opts) + (BUILD_O5M))
+      os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
       shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
   else:
     os.chdir("tiles")
     printwarning("no areas.list enabled, splitting the mapdata without it...")
-    os.system((java_opts) + (log_opts) + (splitter_opts) + (BUILD_O5M))
+    os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
 
   os.chdir(WORK_DIR)
 
   ExitCode = os.path.exists("tiles/template.args")
-  if ExitCode == True:
-    datei = open("tiles/" + (buildmap) + "_split.ready", "w")
-    datei.close()
-  else:
+  if ExitCode == False:
     ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
     if ExitCode == True:
       os.remove("areas/" + (buildmap) + "_areas.list")
@@ -114,8 +111,3 @@ def split():
     printerror("Splitter-Error!")
     printerror("Please restart the buildprocess for " + (buildmap))
     quit()
-
-  os.remove("tiles/" + (buildmap) + "_split.lck")
-
-
-
