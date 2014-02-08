@@ -75,11 +75,9 @@ is_there((WORK_DIR), hint)
 
 os.chdir(WORK_DIR)
 
-hint = "osmconvert missed, please use mk_osmtools to build it from sources"
-checkprg("osmconvert", hint)
-
-hint = "osmupdate missed, please use mk_osmtools to build it from sources"
-checkprg("osmupdate", hint)
+for tool in ['osmconvert', 'osmfilter']:
+  hint = (tool) + " missed, please use mk_osmtools to build it from sources"
+  checkprg((tool), hint)
 
 ExitCode = os.path.exists("planet.o5m")
 if ExitCode == True:
