@@ -45,7 +45,7 @@ os.chdir(WORK_DIR)
 
 ExitCode = os.path.exists("no_split.lck")
 if ExitCode == True:
-  os.system("rm *split.lck")
+  os.remove("no_split.lck")
   printinfo("no_split switched off!")
 else:
   datei = open("no_split.lck", "w")

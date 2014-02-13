@@ -46,7 +46,9 @@ os.chdir(WORK_DIR)
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == True:
   os.remove("keep_data.lck")
-  os.system("rm *split.lck")
+  ExitCode2 = os.path.exists((WORK_DIR) + "no_split.lck")
+  if ExitCode2 == True:
+    os.remove("no_split.lck")
   printinfo("keep_data switched off!")
 else:
   datei = open("keep_data.lck", "w")
