@@ -146,11 +146,6 @@ if ExitCode == True:
   printerror("please move planet.o5m to " + (WORK_DIR) + "o5m/")
   quit()
 
-ExitCode = os.path.exists("fixme_buglayer.conf")
-if ExitCode == True:
-  printerror(" Please rename 'fixme_buglayer.conf' to 'fixme.conf'")
-  quit()
-
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == True:
   ExitCode = os.path.exists("pygmap3.cfg.bak")

@@ -28,20 +28,19 @@ def pre_comp():
   config.read('pygmap3.cfg')
 
   """
-  boundaries from navmap.eu
+  boundaries from osm2.pleiades.uni-wuppertal.de
   """
 
   if config.get('navmap', 'pre_comp') == "yes":
     if config.get('navmap', 'sea') == "latest":
-      target = http.client.HTTPConnection("www.mkgmap.org.uk")
-      target.request("GET", "/download/mkgmap.html")
+      target = http.client.HTTPConnection("osm2.pleiades.uni-wuppertal.de")
+      target.request("GET", "/sea/")
       htmlcontent =  target.getresponse()
       data = htmlcontent.read()
       data = data.decode('utf8')
-      pattern = re.compile('sea_201\d{5}.zip')
-      sea_rev_pre = sorted(pattern.findall(data), reverse=True)[1]
-      sea_rev = os.path.splitext(os.path.basename(sea_rev_pre))[0]
-      sea_date = re.sub('sea_{1}', '', (sea_rev))
+      pattern = re.compile('201\d{5}')
+      sea_date = sorted(pattern.findall(data), reverse=True)[1]
+      sea_rev = "sea_" + (sea_date)
       target.close()
       config.set('navmap', 'sea_rev', (sea_rev))
 
@@ -79,15 +78,14 @@ def pre_comp():
           config.write(configfile)
 
     if config.get('navmap', 'bounds') == "latest":
-      target = http.client.HTTPConnection("www.mkgmap.org.uk")
-      target.request("GET", "/download/mkgmap.html")
+      target = http.client.HTTPConnection("osm2.pleiades.uni-wuppertal.de")
+      target.request("GET", "/bounds/")
       htmlcontent =  target.getresponse()
       data = htmlcontent.read()
       data = data.decode('utf8')
-      pattern = re.compile('bounds_201\d{5}.zip')
-      bounds_rev_pre = sorted(pattern.findall(data), reverse=True)[1]
-      bounds_rev = os.path.splitext(os.path.basename(bounds_rev_pre))[0]
-      bounds_date = re.sub('bounds_{1}', '', (bounds_rev))
+      pattern = re.compile('201\d{5}')
+      bounds_date = sorted(pattern.findall(data), reverse=True)[1]
+      bounds_rev =  "bounds_" + (bounds_date)
       target.close()
 
       config.set('navmap', 'bounds_rev', (bounds_rev))
@@ -126,3 +124,5 @@ def pre_comp():
           config.write(configfile)
   else:
     printwarning("use_bounds in pygmap3.cfg is disabled!")
+
+
