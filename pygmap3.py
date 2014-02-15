@@ -249,7 +249,7 @@ bounds and precomp_sea from navmap.eu
 """
 
 import navmap
-navmap.pre_comp()
+#navmap.pre_comp()
 
 
 """
