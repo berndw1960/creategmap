@@ -57,4 +57,4 @@ for i in ['sea', 'bounds']:
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
-quit()
+#quit()
