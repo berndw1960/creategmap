@@ -30,9 +30,7 @@ def create():
   config['navmap'] = {}
   config['navmap'] = {'pre_comp': 'yes',
                       'use_sea': 'yes',
-                      'use_bounds': 'yes',
-                      'sea':  'latest',
-                      'bounds':  'latest',}
+                      'use_bounds': 'yes',}
 
   config['splitter'] = {}
   config['splitter'] = {'logging': 'yes',
@@ -138,9 +136,13 @@ def update():
   if config.has_section('navmap') == False:
     config['navmap'] = {'pre_comp': 'yes',
                         'use_sea':  'yes',
-                        'use_bounds': 'yes',
-                        'sea': 'latest',
-                        'bounds': 'latest',}
+                        'use_bounds': 'yes',}
+
+  if config.has_option('navmap', 'bounds') == True:
+    config.remove_option('navmap', 'bounds')
+
+  if config.has_option('navmap', 'sea') == True:
+    config.remove_option('navmap', 'sea')
 
   if config.has_option('navmap', 'pre_comp') == False:
     config.set('navmap', 'pre_comp', 'yes',)
@@ -150,12 +152,6 @@ def update():
 
   if config.has_option('navmap', 'use_sea') == False:
     config.set('navmap', 'use_sea', 'yes',)
-
-  if config.has_option('navmap', 'sea') == False:
-    config.set('navmap', 'sea', 'latest',)
-
-  if config.has_option('navmap', 'bounds') == False:
-    config.set('navmap', 'bounds', 'latest',)
 
   if config.has_option('map_styles', 'defaultmap') == False:
     config.set('map_styles', 'defaultmap', 'no',)

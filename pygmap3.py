@@ -243,13 +243,14 @@ get splitter and mkgmap
 import get_tools
 get_tools.get_tools()
 
+
+
 """
 bounds and precomp_sea from navmap.eu
 
 """
-
-import navmap
-#navmap.pre_comp()
+if config.get('navmap', 'pre_comp') == "yes":
+  import navmap
 
 
 """
