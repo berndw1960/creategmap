@@ -240,15 +240,15 @@ for dir in ['o5m', 'areas', 'poly', 'tiles']:
 get splitter and mkgmap
 
 """
-import get_tools
-get_tools.get_tools()
 
+import get_tools
 
 
 """
 bounds and precomp_sea from navmap.eu
 
 """
+
 if config.get('navmap', 'pre_comp') == "yes":
   import navmap
 

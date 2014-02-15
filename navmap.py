@@ -42,8 +42,8 @@ for i in ['sea', 'bounds']:
   if ExitCode == False:
     url = "http://" + (www_path) + (path) + (date) + "/" + (i) + "_" + (date) + ".zip"
     file_name = (i) + "_" + (date) + ".zip"
-
-    # Download the file from `url` and save it locally under `file_name`:
+    printinfo("download " + (url))
+   
     with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
       shutil.copyfileobj(response, out_file)
 
