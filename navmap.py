@@ -43,15 +43,18 @@ for i in ['sea', 'bounds']:
     url = "http://" + (www_path) + (path) + (date) + "/" + (i) + "_" + (date) + ".zip"
     file_name = (i) + "_" + (date) + ".zip"
     printinfo("download " + (url))
-   
+
     with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
       shutil.copyfileobj(response, out_file)
 
   ExitCode = os.path.exists((rev) + ".zip")
   if ExitCode == True:
+    if config.get('navmap', "use_" + (i)) == "no":
+      config.set('navmap', "use_" + (i), 'yes',)
     printinfo("using " + (rev) + ".zip")
   else:
-    config.set('navmap', "use_" + (i), 'no',)
+    if config.get('navmap', "use_" + (i)) == "yes":
+      config.set('navmap', "use_" + (i), 'no',)
     printwarning("pre_comp " + (i) + " disabled, needed file(s) not found")
 
   with open('pygmap3.cfg', 'w') as configfile:

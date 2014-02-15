@@ -84,7 +84,6 @@ def render():
       """
       option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
 
-
       if config.get('mkgmap', 'logging') == "yes":
         if config.get('verbose', 'verbose') == "yes":
           printinfo("logging enabled")
@@ -94,24 +93,27 @@ def render():
           printwarning("logging disabled")
         option_mkgmap_logging = " "
 
+      option_bounds_default = " --location-autofill=bounds,is_in,nearest "
+      option_sea_default = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+
       if config.get('navmap', 'pre_comp') == "yes":
         if config.get('navmap', 'use_bounds') == "yes":
           if config.get('verbose', 'verbose') == "yes":
             printinfo ("use precompiled bounds")
           option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
         else:
-          option_bounds = " --location-autofill=bounds,is_in,nearest "
+          option_bounds = (option_bounds_default)
 
         if config.get('navmap', 'use_sea') == "yes":
           if config.get('verbose', 'verbose') == "yes":
             printinfo ("use precompiled sea_tiles")
           option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
         else:
-          option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+          option_sea = (option_sea_default)
 
       else:
-        option_bounds = " --location-autofill=bounds,is_in,nearest "
-        option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+        option_bounds = (option_bounds_default)
+        option_sea = (option_sea_default)
 
       if layer == "defaultmap":
         printwarning("defaultmap has no typ_file")
