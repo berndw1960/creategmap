@@ -50,6 +50,9 @@ for i in ['sea', 'bounds']:
   ExitCode = os.path.exists((rev) + ".zip")
   if ExitCode == True:
     printinfo("using " + (rev) + ".zip")
+  else:
+    config.set('navmap', "use_" + (i), 'no',)
+    printwarning("pre_comp " + (i) + " disabled, needed file(s) not found")
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
