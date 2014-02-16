@@ -129,7 +129,7 @@ for buildmap in config['mapset']:
 
 printinfo("")
 printinfo("")
-printinfo("###### all mapsets successful build! #######")
+printinfo("###### all mapsets successfully build! #######")
 printinfo("")
 printinfo("")
    
