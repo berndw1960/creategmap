@@ -106,7 +106,7 @@ parser = argparse.ArgumentParser(
             D_A_CH      --> -b dach (default)
 
 
-
+            
         '''))
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
@@ -165,11 +165,24 @@ def write_config():
 
 config = configparser.ConfigParser()
 
+"""
+create a new config if needed
+
+"""
+
 import build_config
 
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == False:
   build_config.create()
+
+"""
+update the config if needed
+
+"""
+
+build_config.update()
+
 
 config.read('pygmap3.cfg')
 
@@ -179,13 +192,14 @@ if ('runtime' in config) == True:
 
 config.add_section('runtime')
 
+
 """
 set buildmap
 
-"""
-
+"""  
 config.set('runtime', 'buildmap', (args.buildmap))
 write_config()
+
 
 config.read('pygmap3.cfg')
 
@@ -196,13 +210,6 @@ if ExitCode == False:
   printerror((WORK_DIR) + "poly/" + (buildmap) + ".poly not found... ")
   printerror("please create or download "+ (buildmap) + ".poly")
   quit()
-
-"""
-update the config
-
-"""
-
-build_config.update()
 
 
 """
@@ -252,20 +259,6 @@ bounds and precomp_sea from navmap.eu
 if config.get('navmap', 'pre_comp') == "yes":
   import navmap
 
-
-"""
-get the geonames for splitter
-
-"""
-
-ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
-if ExitCode == False:
-  url = "http://download.geonames.org/export/dump/cities15000.zip"
-  file_name = "cities15000.zip"
-
-  # Download the file from `url` and save it locally under `file_name`:
-  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-    shutil.copyfileobj(response, out_file)
 
 """
 is there a keep_data.lck, then use the old data
@@ -382,8 +375,13 @@ create the contourlines
 if config.get('contourlines', 'build') == "yes":
   import contourlines
   contourlines.create_cont()
-
-printinfo("Habe fertig!")
+  
+  
+printinfo("")
+printinfo("")
+printinfo("############### " + (buildmap) + " ready! ###############")
+printinfo("")
+printinfo("")
 
 quit()
 

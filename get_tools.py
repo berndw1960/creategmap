@@ -75,6 +75,22 @@ for i in ['splitter', 'mkgmap']:
     tar.close()
 
   printinfo("using " + (i_rev))
+  
+  
+
+"""
+get the geonames for splitter
+
+"""
+
+ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
+if ExitCode == False:
+  url = "http://download.geonames.org/export/dump/cities15000.zip"
+  file_name = "cities15000.zip"
+  printinfo("download " + (url))
+  # Download the file from `url` and save it locally under `file_name`:
+  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+    shutil.copyfileobj(response, out_file)
 
 #quit()
 

@@ -23,7 +23,9 @@ def create():
 
   config['verbose'] = {}
   config['verbose'] = {'verbose': 'yes',}
-
+  
+  config['mapset'] = {}
+  
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
@@ -123,7 +125,10 @@ def update():
 
   if config.has_section('verbose') == False:
     config['verbose'] = {'verbose': 'no',}
-
+    
+  if config.has_section('mapset') == False:
+    config['mapset'] = {}
+    
   if config.has_section('mapid') == False:
     config['mapid'] = {'next_mapid': '6500',}
 
