@@ -280,8 +280,11 @@ if ExitCode == False:
   if ExitCode == False:
     ExitCode = os.path.exists("o5m/planet.o5m")
     if ExitCode == False:
-      printerror("No Planet-File found! A planet is needed, ")
-      printerror("because you didn't have a " + (buildmap) + ".o5m O5M-File! ")
+      printerror("")
+      printerror("No Planet-File found!  ")
+      printerror("")
+      printerror("A planet is needed,because you didn't have ")
+      printerror("a " + (buildmap) + ".o5m O5M-File! ")
       printerror("Please download one with 'planet_up.py'.")
       printerror("")
       printerror("The first planet will be updated by 'planet_up.py', ")
