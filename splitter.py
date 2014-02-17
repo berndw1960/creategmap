@@ -105,7 +105,10 @@ def split():
   os.chdir(WORK_DIR)
 
   ExitCode = os.path.exists("tiles/template.args")
-  if ExitCode == False:
+  if ExitCode == True:
+    datei = open("tiles/" + (buildmap) + "_split.ready", "w")
+    datei.close() 
+  elif ExitCode == False:
     ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
     if ExitCode == True:
       os.remove("areas/" + (buildmap) + "_areas.list")
