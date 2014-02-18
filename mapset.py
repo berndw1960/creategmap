@@ -33,15 +33,20 @@ parser = argparse.ArgumentParser(
         prog='PROG',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
-          
-          to create mapsets of often build maps, you can edit the mapset list with
-            
-                                    
+
+          This Program create mapsets for different regions for Garmin PNA
+
+          pygmap3.py creates only 'one' mapset, as example the default map for DACH
+
+          with mapset.py, it is possible to create mapsets from a list
+
+          You can edit the mapset list with
+
             'mapset.py -b dach -m add'          add 'dach' to the mapset list
             'mapset.py -b dach -m remove'       remove 'dach' from the mapset list
             'mapset.py -m list'                 print out the mapset list
             'mapset.py -m delete'               deletes the whole list
-            
+
         '''))
 parser.add_argument('-m', '--mapset', dest='mapset', default='no')
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
@@ -85,8 +90,8 @@ config.read('pygmap3.cfg')
 if config.has_section('mapset') == False:
     config['mapset'] = {}
     write_config()
-    
-config.read('pygmap3.cfg')   
+
+config.read('pygmap3.cfg')
 
 """
 set, edit or delete mapset list
@@ -115,14 +120,14 @@ elif (args.mapset) == "list":
   else:
     printwarning("mapset list not found")
   quit()
-  
+
 elif (args.mapset) == "delete":
   if config.has_section('mapset') == True:
     config.remove_section('mapset')
     write_config()
   printwarning("mapset list deleted")
-  quit()                         
- 
+  quit()
+
 for buildmap in config['mapset']:
   if config['mapset'][(buildmap)] == "yes":
     os.system("pygmap3 -b " + (buildmap))
@@ -132,5 +137,5 @@ printinfo("")
 printinfo("###### all mapsets successfully build! #######")
 printinfo("")
 printinfo("")
-   
-quit()    
+
+quit()
