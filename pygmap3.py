@@ -100,16 +100,25 @@ parser = argparse.ArgumentParser(
             example for dach, use dach.poly as name
 
 
-            Hamburg     --> -b hamburg
-            Bayern      --> -b bayern
-            Germany     --> -b germany
-            D_A_CH      --> -b dach (default)
+            -b hamburg
+            -b bayern
+            -b germany
+            -b dach (default)
 
+            to create different Mapstyles
 
-            
+            -m bikemap          enable/disbale bikemap style
+            -m list             list the possible map_styles
+            -a $NEW_STYLE       add a new style to list
+            -r $STYLE           remove style from list
+
         '''))
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
+parser.add_argument('-m', '--map_style', dest='map_style', default='no')
+parser.add_argument('-a', '--add_style', dest='add_style', default='no')
+parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
+
 args = parser.parse_args()
 
 
@@ -183,6 +192,52 @@ update the config if needed
 
 build_config.update()
 
+config.read('pygmap3.cfg')
+
+"""
+edit map_styles list
+
+"""
+
+if (args.map_style) == "list":
+  if config.has_section('map_styles') == True:
+    printinfo("map_styles list includes: ")
+    for key in (config['map_styles']):
+      print ("  " + (key) + " = " + config['map_styles'][(key)])
+  else:
+    printwarning("map_styles list not found")
+  quit()
+
+if (args.add_style) != "no":
+  if config.has_option('map_styles', (args.add_style)) == False:
+    config.set('map_styles', (args.add_style), 'yes')
+    write_config()
+  printinfo((args.add_style) + " added to map_styles list")
+  quit()
+
+if (args.rm_style) != "no":
+  if config.has_option('map_styles', (args.rm_style)) == True:
+    config.remove_option('map_styles', (args.rm_style))
+    write_config()
+  printwarning((args.rm_style) + " removed from map_styles list")
+  quit()
+
+if (args.map_style) != "no":
+  if config.has_option('map_styles', (args.map_style)) == True:
+    if config.get('map_styles', (args.map_style)) == "yes":
+      config.set('map_styles', (args.map_style), 'no')
+      printwarning((args.map_style) + " style disabled")
+    elif config.get('map_styles', (args.map_style)) == "no":
+      config.set('map_styles', (args.map_style), 'yes')
+      printinfo((args.map_style) + " style enabled")
+    write_config()
+    quit()
+
+if config.has_option('map_styles', (args.map_style)) == False:
+  config.set('map_styles', (args.map_style), 'yes')
+  printwarning((args.map_style) + " added to map_styles list")
+  write_config()
+  quit()
 
 config.read('pygmap3.cfg')
 
@@ -196,7 +251,7 @@ config.add_section('runtime')
 """
 set buildmap
 
-"""  
+"""
 config.set('runtime', 'buildmap', (args.buildmap))
 write_config()
 
@@ -378,8 +433,8 @@ create the contourlines
 if config.get('contourlines', 'build') == "yes":
   import contourlines
   contourlines.create_cont()
-  
-  
+
+
 printinfo("")
 printinfo("")
 printinfo("############### " + (buildmap) + " ready! ###############")
