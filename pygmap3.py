@@ -198,6 +198,9 @@ config.read('pygmap3.cfg')
 edit map_styles list
 
 """
+#print("map_style = " + (args.map_style))
+#print("add_style = " + (args.add_style))
+#print("rm_style = " + (args.rm_style))
 
 if (args.map_style) == "list":
   if config.has_section('map_styles') == True:
@@ -239,6 +242,7 @@ if config.has_option('map_styles', (args.map_style)) == False:
   write_config()
   quit()
 
+#quit()
 config.read('pygmap3.cfg')
 
 if ('runtime' in config) == True:
