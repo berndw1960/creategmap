@@ -42,14 +42,16 @@ parser = argparse.ArgumentParser(
 
           You can edit the mapset list with
 
-            'mapset.py -b dach -m add'          add 'dach' to the mapset list
-            'mapset.py -b dach -m remove'       remove 'dach' from the mapset list
-            'mapset.py -m list'                 print out the mapset list
-            'mapset.py -m delete'               deletes the whole list
+            'mapset.py -a dach'        add 'dach' to the mapset list
+            'mapset.py -r dach'        remove 'dach' from the mapset list
+            'mapset.py -l yes'         print out the mapset list
+            'mapset.py -d yes'         deletes the whole list
 
         '''))
-parser.add_argument('-m', '--mapset', dest='mapset', default='no')
-parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
+parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
+parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
+parser.add_argument('-l', '--list_mapset', dest='list_mapset', default='no')
+parser.add_argument('-d', '--del_mapset', dest='del_mapset', default='no')
 args = parser.parse_args()
 
 
@@ -97,22 +99,27 @@ config.read('pygmap3.cfg')
 set, edit or delete mapset list
 
 """
-if (args.mapset) == "add":
-  if config.has_option('mapset', (args.buildmap)) == False:
-    config.set('mapset', (args.buildmap), 'yes')
+if (args.add_mapset) != "no":
+  if config.has_option('mapset', (args.add_mapset)) == False:
+    ExitCode = os.path.exists("poly/" + (args.add_mapset) + ".poly")
+    if ExitCode == False:
+      printerror((WORK_DIR) + "poly/" + (args.add_mapset) + ".poly not found... ")
+      printerror("please create or download "+ (args.add_mapset) + ".poly")
+      quit()
+    config.set('mapset', (args.add_mapset), 'yes')
     write_config()
 
-  printinfo((args.buildmap) + " added to mapset list")
+  printinfo((args.add_mapset) + " added to mapset list")
   quit()
 
-elif (args.mapset) == "remove":
+elif (args.rm_mapset) != "no":
   if config.has_section('mapset') == True:
-    config.remove_option('mapset', (args.buildmap))
+    config.remove_option('mapset', (args.rm_mapset))
     write_config()
-  printwarning((args.buildmap) + " removed from mapset list")
+  printwarning((args.rm_mapset) + " removed from mapset list")
   quit()
 
-elif (args.mapset) == "list":
+elif (args.list_mapset) != "no":
   if config.has_section('mapset') == True:
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
@@ -121,7 +128,7 @@ elif (args.mapset) == "list":
     printwarning("mapset list not found")
   quit()
 
-elif (args.mapset) == "delete":
+elif (args.del_mapset) != "no":
   if config.has_section('mapset') == True:
     config.remove_section('mapset')
     write_config()
@@ -129,8 +136,9 @@ elif (args.mapset) == "delete":
   quit()
 
 for buildmap in config['mapset']:
-  if config['mapset'][(buildmap)] == "yes":
-    os.system("pygmap3 -b " + (buildmap))
+  if (buildmap) != "default":
+    if config['mapset'][(buildmap)] == "yes":
+      os.system("pygmap3 -b " + (buildmap))
 
 printinfo("")
 printinfo("")

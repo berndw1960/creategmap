@@ -68,59 +68,6 @@ import shutil
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
-"""
-argparse
-
-"""
-
-parser = argparse.ArgumentParser(
-        prog='PROG',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=('''\
-
-            To build maps for Garmin PNA
-
-            Basemap
-            Bikemap
-            FIXME (possible)
-            Contourlines (possible)
-
-            This Style, based and inspired by the AIO-Style,
-            is Public Domain, do what you want with it.
-
-
-            ############################
-            These Mapstyles are not included, they have to installed manually:
-            The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
-            The FZK-Style is copyrighted by Klaus Tockloth
-            ############################
-
-
-            Place your own *-poly in WORK_DIR/poly,
-            example for dach, use dach.poly as name
-
-
-            -b hamburg
-            -b bayern
-            -b germany
-            -b dach (default)
-
-            to create different Mapstyles
-
-            -m bikemap          enable/disbale bikemap style
-            -m list             list the possible map_styles
-            -a $NEW_STYLE       add a new style to list
-            -r $STYLE           remove style from list
-
-        '''))
-
-parser.add_argument('-b', '--buildmap', dest='buildmap', default='dach')
-parser.add_argument('-m', '--map_style', dest='map_style', default='no')
-parser.add_argument('-a', '--add_style', dest='add_style', default='no')
-parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
-
-args = parser.parse_args()
-
 
 """
 set prefix for messages
@@ -194,13 +141,66 @@ build_config.update()
 
 config.read('pygmap3.cfg')
 
+
+"""
+argparse
+
+"""
+
+parser = argparse.ArgumentParser(
+        prog='PROG',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=('''\
+
+            To build maps for Garmin PNA
+
+            Basemap
+            Bikemap
+            FIXME (possible)
+            Contourlines (possible)
+
+            This Style, based and inspired by the AIO-Style,
+            is Public Domain, do what you want with it.
+
+
+            ############################
+            These Mapstyles are not included, they have to installed manually:
+            The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
+            The FZK-Style is copyrighted by Klaus Tockloth
+            ############################
+
+
+            Place your own *-poly in WORK_DIR/poly,
+            example for dach, use dach.poly as name
+
+
+            -b hamburg
+            -b bayern
+            -b germany
+            -b dach (default)
+            -s $MAPSET          set $MAPSET as new default
+
+            to create different Mapstyles
+
+            -m bikemap          enable/disbale bikemap style
+            -m list             list the possible map_styles
+            -a $NEW_STYLE       add a new style to list
+            -r $STYLE           remove style from list
+
+        '''))
+
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
+parser.add_argument('-s', '--map_set', dest='map_set', default='no')
+parser.add_argument('-m', '--map_style', dest='map_style', default='no')
+parser.add_argument('-a', '--add_style', dest='add_style', default='no')
+parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
+
+args = parser.parse_args()
+
 """
 edit map_styles list
 
 """
-#print("map_style = " + (args.map_style))
-#print("add_style = " + (args.add_style))
-#print("rm_style = " + (args.rm_style))
 
 if (args.map_style) == "list":
   if config.has_section('map_styles') == True:
@@ -236,13 +236,17 @@ if (args.map_style) != "no":
     write_config()
     quit()
 
-if config.has_option('map_styles', (args.map_style)) == False:
-  config.set('map_styles', (args.map_style), 'yes')
-  printwarning((args.map_style) + " added to map_styles list")
+if (args.map_set) != "no":
+  ExitCode = os.path.exists("poly/" + (args.map_set) + ".poly")
+  if ExitCode == False:
+    printerror((WORK_DIR) + "poly/" + (args.map_set) + ".poly not found... ")
+    printerror("please create or download "+ (args.map_set) + ".poly")
+    quit()
+  config.set('mapset', 'default', (args.map_set))
+  print((args.map_set) + " set as new default mapset")
   write_config()
   quit()
 
-#quit()
 config.read('pygmap3.cfg')
 
 if ('runtime' in config) == True:
@@ -250,7 +254,6 @@ if ('runtime' in config) == True:
   write_config()
 
 config.add_section('runtime')
-
 
 """
 set buildmap
