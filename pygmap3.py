@@ -225,7 +225,7 @@ if (args.map_style) != "no":
       config.set('map_styles', (args.map_style), 'yes')
       printinfo((args.map_style) + " style enabled")
     write_config()
-    quit()
+  quit()
 
 if (args.map_set) != "no":
   ExitCode = os.path.exists("poly/" + (args.map_set) + ".poly")

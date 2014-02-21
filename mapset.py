@@ -102,14 +102,14 @@ if (args.add_mapset) != "no":
   printinfo((args.add_mapset) + " added to mapset list")
   quit()
 
-elif (args.rm_mapset) != "no":
+if (args.rm_mapset) != "no":
   if config.has_section('mapset') == True:
     config.remove_option('mapset', (args.rm_mapset))
     write_config()
   printwarning((args.rm_mapset) + " removed from mapset list")
   quit()
 
-elif (args.list_mapset):
+if (args.list_mapset):
   if config.has_section('mapset') == True:
     print("")
     printinfo("mapset list includes: ")
@@ -118,17 +118,18 @@ elif (args.list_mapset):
     print("")
   quit()
 
-elif (args.del_mapset):
+if (args.del_mapset):
   if config.has_section('mapset') == True:
     config.remove_section('mapset')
     write_config()
   printwarning("mapset list deleted")
   quit()
 
+
 for buildmap in config['mapset']:
   if (buildmap) != "default":
     if config['mapset'][(buildmap)] == "yes":
-      os.system("pygmap3 -b " + (buildmap))
+      os.system("pygmap3.py -b " + (buildmap))
 
 print("")
 print("")
