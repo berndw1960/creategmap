@@ -66,21 +66,6 @@ def zipp():
 
         shutil.move((zip_img), (zip_dir))
 
-      if config.get('store_as', '7z_img') == "yes":
-
-        hint = "Install: 7z to store the images"
-        checkprg("7z", hint)
-
-        sevenz_img = (bl) + "_gmapsupp.img.7z"
-
-        os.system("7z a " + (sevenz_img) + " " + (img))
-
-        ExitCode = os.path.exists((zip_dir) + "/" + (sevenz_img))
-        if ExitCode == True:
-          os.remove((zip_dir) + "/" + (sevenz_img))
-
-        shutil.move((sevenz_img), (zip_dir))
-
       os.chdir(WORK_DIR)
 
 def kml():
