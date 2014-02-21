@@ -173,7 +173,7 @@ parser = argparse.ArgumentParser(
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
 
-            -b dach (default)
+            -b dach
             -s $MAPSET
 
             -l
