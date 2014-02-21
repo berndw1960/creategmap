@@ -111,11 +111,11 @@ elif (args.rm_mapset) != "no":
 
 elif (args.list_mapset):
   if config.has_section('mapset') == True:
+    print("")
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
       print ("  " + (key) + " = " + config['mapset'][(key)])
-  else:
-    printwarning("mapset list not found")
+    print("")
   quit()
 
 elif (args.del_mapset):
@@ -130,10 +130,10 @@ for buildmap in config['mapset']:
     if config['mapset'][(buildmap)] == "yes":
       os.system("pygmap3 -b " + (buildmap))
 
-printinfo("")
-printinfo("")
-printinfo("###### all mapsets successfully build! #######")
-printinfo("")
-printinfo("")
+print("")
+print("")
+print("###### all mapsets successfully build! #######")
+print("")
+print("")
 
 quit()

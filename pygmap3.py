@@ -167,6 +167,8 @@ parser = argparse.ArgumentParser(
         '''))
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
+parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
+parser.add_argument('-z', '--zip_img', action="store_true", help="en/disable zipping the images")
 parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
 parser.add_argument('-l', '--list_mapstyle', action="store_true")
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
@@ -183,11 +185,15 @@ edit map_styles list
 
 if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
+    print("")
     printinfo("map_styles list includes: ")
     for key in (config['map_styles']):
       print ("  " + (key) + " = " + config['map_styles'][(key)])
-  else:
-    printwarning("map_styles list not found")
+    print("")
+    printinfo("mapset list includes: ")
+    for key in (config['mapset']):
+      print ("  " + (key) + " = " + config['mapset'][(key)])
+    print("")
   quit()
 
 if (args.add_style) != "no":
@@ -232,11 +238,14 @@ if (args.map_set) != "no":
   write_config()
   quit()
 
-if (args.verbose):
-  if config.get('verbose', 'verbose') == "no":
-    config.set('verbose', 'verbose', 'yes')
-    write_config()
-    printinfo("verbosity turned on")
+if (args.zip_img):
+  if config.get('store_as', 'zip_img') == "no":
+    config.set('store_as', 'zip_img', 'yes')
+    printinfo("images zipping turned on")
+  elif config.get('store_as', 'zip_img') == "yes":
+    config.set('store_as', 'zip_img', 'no')
+    printinfo("images zipping turned off")
+  write_config()
 
 config.read('pygmap3.cfg')
 
@@ -251,6 +260,10 @@ set buildmap
 
 """
 config.set('runtime', 'buildmap', (args.buildmap))
+if (args.verbose):
+  config.set('runtime', 'verbose', 'yes')
+  printinfo("verbosity turned on")
+
 write_config()
 
 
@@ -428,20 +441,19 @@ create the contourlines
 
 """
 
-if config.get('contourlines', 'build') == "yes":
-  import contourlines
-  contourlines.create_cont()
+if (args.contourlines):
+    ExitCode = os.path.exists("mystyles/contourlines_style")
+    if ExitCode == True:
+      import contourlines
+      contourlines.create_cont()
+    else:
+      printwarning("dir mystyles/contourlines_style not found")
 
-if config.get('verbose', 'verbose') == "yes":
-  config.set('verbose', 'verbose', 'no')
-  write_config()
-
-
-printinfo("")
-printinfo("")
-printinfo("############### " + (buildmap) + " ready! ###############")
-printinfo("")
-printinfo("")
+print("")
+print("")
+print("############### " + (buildmap) + " ready! ###############")
+print("")
+print("")
 
 quit()
 

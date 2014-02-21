@@ -85,11 +85,11 @@ def render():
       option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
 
       if config.get('mkgmap', 'logging') == "yes":
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printinfo("logging enabled")
         option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "log.conf "
       else:
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printwarning("logging disabled")
         option_mkgmap_logging = " "
 
@@ -98,14 +98,14 @@ def render():
 
       if config.get('navmap', 'pre_comp') == "yes":
         if config.get('navmap', 'use_bounds') == "yes":
-          if config.get('verbose', 'verbose') == "yes":
+          if config.get('runtime', 'verbose') == "yes":
             printinfo ("use precompiled bounds")
           option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
         else:
           option_bounds = (option_bounds_default)
 
         if config.get('navmap', 'use_sea') == "yes":
-          if config.get('verbose', 'verbose') == "yes":
+          if config.get('runtime', 'verbose') == "yes":
             printinfo ("use precompiled sea_tiles")
           option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
         else:
@@ -120,26 +120,26 @@ def render():
         typ_file = " "
         style_file = " "
       else:
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printinfo((layer) + " build with typ_file")
         typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
 
       if config.get('mkgmap', 'check_styles') == "yes":
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printinfo("check_styles enabled")
         option_check_styles = " --check-styles "
       else:
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printwarning("check_styles disabled")
         option_check_styles = " "
 
       if config.get('mkgmap', 'list_styles') == "yes":
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printinfo("list_styles enabled")
         option_list_styles = " --list-styles "
       else:
-        if config.get('verbose', 'verbose') == "yes":
+        if config.get('runtime', 'verbose') == "yes":
           printwarning("list_styles disabled")
         option_list_styles = " "
 
