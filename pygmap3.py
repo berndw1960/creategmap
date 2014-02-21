@@ -159,8 +159,8 @@ parser = argparse.ArgumentParser(
             FIXME (possible)
             Contourlines (possible)
 
-            This Style, based and inspired by the AIO-Style,
-            is Public Domain, do what you want with it.
+            These Styles, based and inspired by the AIO-Style,
+            are Public Domain, do what you want with them.
 
 
             ############################
