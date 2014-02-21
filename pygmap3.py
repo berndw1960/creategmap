@@ -260,9 +260,17 @@ set buildmap
 
 """
 config.set('runtime', 'buildmap', (args.buildmap))
+
+"""
+verbosity
+
+"""
+
 if (args.verbose):
   config.set('runtime', 'verbose', 'yes')
   printinfo("verbosity turned on")
+else:
+  config.set('runtime', 'verbose', 'no')
 
 write_config()
 
