@@ -162,26 +162,8 @@ parser = argparse.ArgumentParser(
             These Styles, based and inspired by the AIO-Style,
             are Public Domain, do what you want with them.
 
-
-            ############################
-            These Mapstyles are not included, they have to installed manually:
-            The RRK-Style is CC-BY 2.0 --> http://www.aighes.de/OSM/index.php
-            The FZK-Style is copyrighted by Klaus Tockloth
-            ############################
-
-
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
-
-            -b dach
-            -s $MAPSET
-
-            -l
-            -m bikemap
-            -a $NEW_STYLE
-            -r $STYLE
-
-            -v
 
         '''))
 
