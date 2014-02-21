@@ -164,15 +164,14 @@ parser = argparse.ArgumentParser(
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
-
         '''))
 
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set the map region with poly")
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
 parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
-parser.add_argument('-l', '--list_mapstyle', action="store_true", help="list the possible map_styles")
-parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disbale $MAPSTYLE style")
-parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style to list")
-parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove style from list")
+parser.add_argument('-l', '--list_mapstyle', action="store_true")
+parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
+parser.add_argument('-a', '--add_style', dest='add_style', default='no')
+parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 
 args = parser.parse_args()
@@ -428,7 +427,7 @@ if config.get('contourlines', 'build') == "yes":
   contourlines.create_cont()
 
 if config.get('verbose', 'verbose') == "yes":
-  config.set('verbose', 'verbose') == "no"
+  config.set('verbose', 'verbose', 'no')
   write_config()
 
 

@@ -35,23 +35,13 @@ parser = argparse.ArgumentParser(
         description=('''\
 
           This Program create mapsets for different regions for Garmin PNA
-
-          pygmap3.py creates only 'one' mapset, as example the default map for DACH
-
-          with mapset.py, it is possible to create mapsets from a list
-
-          You can edit the mapset list with
-
-            'mapset.py -a dach'        add 'dach' to the mapset list
-            'mapset.py -r dach'        remove 'dach' from the mapset list
-            'mapset.py -l yes'         print out the mapset list
-            'mapset.py -d yes'         deletes the whole list
-
+          pygmap3.py creates only 'one' mapset, with mapset.py, it is possible
+          to create mapsets from a list
         '''))
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
-parser.add_argument('-l', '--list_mapset', action="store_true")
-parser.add_argument('-d', '--del_mapset', action="store_true" )
+parser.add_argument('-l', '--list_mapset', action="store_true", help="print out the mapset list")
+parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
 args = parser.parse_args()
 
 
