@@ -173,27 +173,25 @@ parser = argparse.ArgumentParser(
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
 
-
-            -b hamburg
-            -b bayern
-            -b germany
             -b dach (default)
-            -s $MAPSET          set $MAPSET as new default
+            -s $MAPSET
 
-            to create different Mapstyles
+            -l
+            -m bikemap
+            -a $NEW_STYLE
+            -r $STYLE
 
-            -m bikemap          enable/disbale bikemap style
-            -m list             list the possible map_styles
-            -a $NEW_STYLE       add a new style to list
-            -r $STYLE           remove style from list
+            -v
 
         '''))
 
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
-parser.add_argument('-s', '--map_set', dest='map_set', default='no')
-parser.add_argument('-m', '--map_style', dest='map_style', default='no')
-parser.add_argument('-a', '--add_style', dest='add_style', default='no')
-parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set the map region with poly")
+parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
+parser.add_argument('-l', '--list_mapstyle', action="store_true", help="list the possible map_styles")
+parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disbale $MAPSTYLE style")
+parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style to list")
+parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove style from list")
+parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 
 args = parser.parse_args()
 
@@ -202,7 +200,7 @@ edit map_styles list
 
 """
 
-if (args.map_style) == "list":
+if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
     printinfo("map_styles list includes: ")
     for key in (config['map_styles']):
@@ -246,6 +244,12 @@ if (args.map_set) != "no":
   print((args.map_set) + " set as new default mapset")
   write_config()
   quit()
+
+if (args.verbose):
+  if config.get('verbose', 'verbose') == "no":
+    config.set('verbose', 'verbose', 'yes')
+    write_config()
+    printinfo("verbosity turned on")
 
 config.read('pygmap3.cfg')
 
@@ -440,6 +444,10 @@ create the contourlines
 if config.get('contourlines', 'build') == "yes":
   import contourlines
   contourlines.create_cont()
+
+if config.get('verbose', 'verbose') == "yes":
+  config.set('verbose', 'verbose') == "no"
+  write_config()
 
 
 printinfo("")

@@ -50,8 +50,8 @@ parser = argparse.ArgumentParser(
         '''))
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
-parser.add_argument('-l', '--list_mapset', dest='list_mapset', default='no')
-parser.add_argument('-d', '--del_mapset', dest='del_mapset', default='no')
+parser.add_argument('-l', '--list_mapset', action="store_true")
+parser.add_argument('-d', '--del_mapset', action="store_true" )
 args = parser.parse_args()
 
 
@@ -119,7 +119,7 @@ elif (args.rm_mapset) != "no":
   printwarning((args.rm_mapset) + " removed from mapset list")
   quit()
 
-elif (args.list_mapset) != "no":
+elif (args.list_mapset):
   if config.has_section('mapset') == True:
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
@@ -128,7 +128,7 @@ elif (args.list_mapset) != "no":
     printwarning("mapset list not found")
   quit()
 
-elif (args.del_mapset) != "no":
+elif (args.del_mapset):
   if config.has_section('mapset') == True:
     config.remove_section('mapset')
     write_config()
