@@ -138,7 +138,7 @@ def create_cont():
               " --read-config=" + (WORK_DIR) + (mapstyle) + "/contourlines_style/options" +
               " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style" +
               " --mapname=" + config.get('mapid', (buildmap)) + "8001" +
-              " --description=" + (buildmap) + "_" + config.get('time_stamp', (buildmap)) +
+              " --description=" + (buildmap) + "_contourlines " +
               " --family-name=Contourlines" +
               " --draw-priority=" + config.get('contourlines', 'draw-priority') +
               " *.osm.pbf ")

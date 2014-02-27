@@ -42,6 +42,7 @@ parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
 parser.add_argument('-l', '--list_mapset', action="store_true", help="print out the mapset list")
 parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
+parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
 args = parser.parse_args()
 
 
@@ -125,11 +126,15 @@ if (args.del_mapset):
   printwarning("mapset list deleted")
   quit()
 
+if (args.contourlines):
+  cl = " -c "
+else:
+  cl = " "
 
 for buildmap in config['mapset']:
   if (buildmap) != "default":
     if config['mapset'][(buildmap)] == "yes":
-      os.system("pygmap3.py -b " + (buildmap))
+      os.system("pygmap3.py " + (cl) + "-b " + (buildmap))
 
 print("")
 print("")
