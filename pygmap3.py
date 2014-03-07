@@ -168,13 +168,19 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
-parser.add_argument('-z', '--zip_img', action="store_true", help="en/disable zipping the images")
-parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
+
+parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
+
 parser.add_argument('-l', '--list_mapstyle', action="store_true")
-parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
+
+parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
+
 parser.add_argument('-a', '--add_style', dest='add_style', default='no')
+parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
+
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
+parser.add_argument('-z', '--zip_img', action="store_true", help="en/disable zipping the images")
 
 args = parser.parse_args()
 
@@ -237,6 +243,11 @@ if (args.map_set) != "no":
   print((args.map_set) + " set as new default mapset")
   write_config()
   quit()
+
+if (args.check_styles):
+  if config.get('mkgmap', 'check_styles') == "no":
+    config.set('mkgmap', 'check_styles', 'yes')
+    write_config()
 
 if (args.zip_img):
   if config.get('store_as', 'zip_img') == "no":
@@ -430,6 +441,9 @@ render the map-images
 import mkgmap
 mkgmap.render()
 
+if config.get('mkgmap', 'check_styles') == "yes":
+  config.set('mkgmap', 'check_styles', 'no')
+  write_config()
 
 """
 zip the images, kml and log

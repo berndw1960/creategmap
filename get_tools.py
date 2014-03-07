@@ -47,11 +47,10 @@ for i in ['splitter', 'mkgmap']:
     data = htmlcontent.read()
     data = data.decode('utf8')
     if (i) == "splitter":
-      pattern = re.compile('splitter-r\d{3}.zip')
+      pattern = re.compile('splitter-r\d{3}')
     elif (i) == "mkgmap":
-      pattern = re.compile('mkgmap-r\d{4}.zip')
-    i_rev_pre = sorted(pattern.findall(data), reverse=True)[1]
-    i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+      pattern = re.compile('mkgmap-r\d{4}')
+    i_rev = sorted(pattern.findall(data), reverse=True)[1]
     target.close()
     config.set((i), 'version', (i_rev))
     write_config()
@@ -75,8 +74,6 @@ for i in ['splitter', 'mkgmap']:
     tar.close()
 
   printinfo("using " + (i_rev))
-  
-  
 
 """
 get the geonames for splitter
