@@ -245,10 +245,10 @@ if (args.map_set) != "no":
   quit()
 
 if (args.check_styles):
-  if config.get('mkgmap', 'check_styles') == "no":
-    config.set('mkgmap', 'check_styles', 'yes')
-    write_config()
-
+  import check_styles
+  check_styles.check()
+  quit()
+  
 if (args.zip_img):
   if config.get('store_as', 'zip_img') == "no":
     config.set('store_as', 'zip_img', 'yes')

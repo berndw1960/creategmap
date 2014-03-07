@@ -125,25 +125,6 @@ def render():
         typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
 
-      if config.get('mkgmap', 'check_styles') == "yes":
-        if config.get('runtime', 'verbose') == "yes":
-          printinfo("check_styles enabled")
-        option_check_styles = " --check-styles "
-      else:
-        if config.get('runtime', 'verbose') == "yes":
-          printwarning("check_styles disabled")
-        option_check_styles = " "
-
-      if config.get('mkgmap', 'list_styles') == "yes":
-        if config.get('runtime', 'verbose') == "yes":
-          printinfo("list_styles enabled")
-        option_list_styles = " --list-styles "
-      else:
-        if config.get('runtime', 'verbose') == "yes":
-          printwarning("list_styles disabled")
-        option_list_styles = " "
-
-
       """
       map rendering
 
@@ -157,8 +138,6 @@ def render():
             (option_bounds) +
             (option_sea) +
             (style_file) +
-            (option_check_styles) +
-            (option_list_styles) +
             " --name-tag-list=name:de,name,name:en,int_name " +
             " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
             " --family-id=" + config.get((layer), 'family-id') +

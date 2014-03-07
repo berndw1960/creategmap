@@ -40,9 +40,7 @@ def create():
 
   config['mkgmap'] = {}
   config['mkgmap'] = {'latest': 'yes',
-                      'logging': 'no',
-                      'check_styles': 'yes',
-                      'list_styles': 'no',}
+                      'logging': 'no',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -108,6 +106,12 @@ def update():
 
   if config.has_option('mapset', 'default') == False:
     config['mapset'] = {'default': 'dach',}
+    
+  if config.has_option('mkgmap', 'check_styles') == True:
+    config.remove_option('mkgmap', 'check_styles')
+    
+  if config.has_option('mkgmap', 'list_styles') == True:
+    config.remove_option('mkgmap', 'list_styles')
 
   if config.has_option('contourlines', 'build') == True:
     config.remove_option('contourlines', 'build')

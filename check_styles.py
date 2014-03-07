@@ -28,17 +28,16 @@ def check():
   
   for layer in config['map_styles']:
     print()
-    print()
-    print(layer)
     if config['map_styles'][(layer)] == "yes":
+      
+      print(layer)
+      
       if layer != "defaultmap":
         typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
         print()
-        print()
         print(typ_file)
         print(style_file)
-        print()
         print()
         
         os.system("java -jar " + (mkgmap_path) + (style_file) + " --check-styles " + (typ_file))
