@@ -46,16 +46,14 @@ if config.get('osmtools', 'check') == "yes":
     else:
       printerror(programmtofind + " not found")
       print(solutionhint)
-      
-  for tool in ['osmconvert', 'osmfilter']:
+
+  for tool in ['osmconvert', 'osmupdate']:
     hint = (tool) + " missed, please use mk_osmtools to build it from sources"
     checkprg((tool), hint)
 
   config.set('osmtools', 'check', 'no')
 
   write_config()
-
-
 
 """
 cut data from planet-file

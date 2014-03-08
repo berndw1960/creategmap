@@ -169,9 +169,3 @@ def render():
         os.remove(img)
 
       shutil.move((layer) +"/gmapsupp.img", (img))
-
-
-
-
-
-

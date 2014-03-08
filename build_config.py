@@ -79,9 +79,6 @@ def create():
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
 
-  config['store_as'] = {}
-  config['store_as'] = {'zip_img': 'no',}
-
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
@@ -104,12 +101,15 @@ def update():
   if config.has_section('mapset') == False:
     config['mapset'] = {}
 
+  if config.has_section('store_as') == True:
+    config.remove_section('store_as')
+
   if config.has_option('mapset', 'default') == False:
     config['mapset'] = {'default': 'dach',}
-    
+
   if config.has_option('mkgmap', 'check_styles') == True:
     config.remove_option('mkgmap', 'check_styles')
-    
+
   if config.has_option('mkgmap', 'list_styles') == True:
     config.remove_option('mkgmap', 'list_styles')
 

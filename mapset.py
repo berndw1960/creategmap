@@ -134,7 +134,7 @@ else:
 for buildmap in config['mapset']:
   if (buildmap) != "default":
     if config['mapset'][(buildmap)] == "yes":
-      os.system("pygmap3.py " + (cl) + "-b " + (buildmap))
+      os.system("pygmap3.py " + (cl) + "-z -b " + (buildmap))
 
 print("")
 print("")

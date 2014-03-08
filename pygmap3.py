@@ -180,7 +180,7 @@ parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="e
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
 
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
-parser.add_argument('-z', '--zip_img', action="store_true", help="en/disable zipping the images")
+parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
 args = parser.parse_args()
 
@@ -248,15 +248,6 @@ if (args.check_styles):
   import check_styles
   check_styles.check()
   quit()
-  
-if (args.zip_img):
-  if config.get('store_as', 'zip_img') == "no":
-    config.set('store_as', 'zip_img', 'yes')
-    printinfo("images zipping turned on")
-  elif config.get('store_as', 'zip_img') == "yes":
-    config.set('store_as', 'zip_img', 'no')
-    printinfo("images zipping turned off")
-  write_config()
 
 config.read('pygmap3.cfg')
 
@@ -441,19 +432,15 @@ render the map-images
 import mkgmap
 mkgmap.render()
 
-if config.get('mkgmap', 'check_styles') == "yes":
-  config.set('mkgmap', 'check_styles', 'no')
-  write_config()
-
 """
 zip the images, kml and log
 """
 
 import store
 
-store.zipp()
-
-store.kml()
+if (args.zip_img):
+  store.zip_img()
+  store.kml()
 
 if config.get('mkgmap', 'logging') == "yes":
   store.log()
@@ -473,7 +460,7 @@ if (args.contourlines):
 
 print("")
 print("")
-print("############### " + (buildmap) + " ready! ###############")
+print("  ---------- " + (buildmap) + " ready! ----------")
 print("")
 print("")
 

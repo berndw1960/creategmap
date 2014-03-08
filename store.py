@@ -27,7 +27,7 @@ def checkprg(programmtofind, solutionhint):
 
 config = configparser.ConfigParser()
 
-def zipp():
+def zip_img():
 
   os.chdir(WORK_DIR)
 
@@ -37,36 +37,45 @@ def zipp():
   zipp the images and mv them to separate dirs
   """
 
+  buildmap = config.get('runtime', 'buildmap')
+  unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap)
+  zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap)
+
+  ExitCode = os.path.exists(zip_dir)
+  if ExitCode == False:
+    os.makedirs(zip_dir)
+
+  os.chdir(unzip_dir)
+
+  import zipfile
+
+  try:
+    import zlib
+    compression = zipfile.ZIP_DEFLATED
+  except:
+    compression = zipfile.ZIP_STORED
+    
   for layer in config['map_styles']:
 
     if config['map_styles'][(layer)]== "yes":
 
-      buildmap = config.get('runtime', 'buildmap')
       bl = (buildmap) + "_" + (layer)
-      unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap)
-      zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap)
-      img = (unzip_dir) + "/" + (bl) + "_gmapsupp.img"
 
-      ExitCode = os.path.exists(zip_dir)
-      if ExitCode == False:
-        os.makedirs(zip_dir)
+      img = (bl) + "_gmapsupp.img"
 
-      os.chdir(unzip_dir)
+      zip_img = (img) + ".zip"
 
-      if config.get('store_as', 'zip_img') == "yes":
-        import zipfile
+      my_zip_img = zipfile.ZipFile((zip_img), 'w')
 
-        zip_img = (bl) + "_gmapsupp.img.zip"
+      my_zip_img.write((img), compress_type=(compression))
 
-        os.system("zip "+ (zip_img) + " " + (img))
+      my_zip_img.close()
 
-        ExitCode = os.path.exists((zip_dir) + "/" + (zip_img))
-        if ExitCode == True:
-          os.remove((zip_dir) + "/" + (zip_img))
+      ExitCode = os.path.exists((zip_dir) + "/" + (zip_img))
+      if ExitCode == True:
+        os.remove((zip_dir) + "/" + (zip_img))
 
-        shutil.move((zip_img), (zip_dir))
-
-      os.chdir(WORK_DIR)
+      shutil.move((zip_img), (zip_dir))
 
 def kml():
 
