@@ -54,7 +54,7 @@ def zip_img():
     compression = zipfile.ZIP_DEFLATED
   except:
     compression = zipfile.ZIP_STORED
-    
+
   for layer in config['map_styles']:
 
     if config['map_styles'][(layer)]== "yes":
@@ -65,7 +65,7 @@ def zip_img():
 
       zip_img = (img) + ".zip"
 
-      my_zip_img = zipfile.ZipFile((zip_img), 'w')
+      my_zip_img = zipfile.ZipFile((zip_img), 'w', allowZip64=True)
 
       my_zip_img.write((img), compress_type=(compression))
 
@@ -102,10 +102,11 @@ def log():
   """
   save the mkgmap-log for errors
   """
+  os.chdir(WORK_DIR)
+  config.read('pygmap3.cfg')
 
   for layer in config['map_styles']:
     if config['map_styles'][(layer)]== "yes":
-      os.chdir(WORK_DIR)
 
       buildmap = config.get('runtime', 'buildmap')
       buildday = config.get('time_stamp', (buildmap))
@@ -114,8 +115,6 @@ def log():
       ExitCode = os.path.exists(log_dir)
       if ExitCode == True:
         shutil.rmtree(log_dir)
-
-      os.chdir(WORK_DIR)
 
       ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
       if ExitCode == True:
