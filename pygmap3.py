@@ -168,7 +168,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
-
+parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
 
 parser.add_argument('-l', '--list_mapstyle', action="store_true")
@@ -178,7 +178,8 @@ parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $
 parser.add_argument('-a', '--add_style', dest='add_style', default='no')
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
-
+parser.add_argument('-p', '--print_config', action="store_true", help="printout the config sections  and exit")
+parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout the a config section and exit")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
@@ -189,6 +190,28 @@ edit map_styles list
 
 """
 
+if (args.print_config):
+  print("")
+  printinfo("this are the sections of pygmap3.cfg: ")
+  print("")
+  config.read('pygmap3.cfg')
+  sections = config.sections()
+  for i in (sections):
+    print("  " + (i))
+  print("")
+  print("")
+  printinfo("to get more infos about a section use")
+  printinfo("    pygmap3.py -ps $SECTION   ")
+  quit()
+
+if (args.print_section) != "no":
+  print("")
+  printinfo("this is the " + (args.print_section) +  " section of pygmap3.cfg: ")
+  print("")
+  for key in (config[(args.print_section)]):
+    print ("  " + (key) + " = " + config[(args.print_section)][(key)])
+  print("")  
+  quit()
 if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
     print("")
@@ -410,7 +433,15 @@ if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
-
+  
+  if (args.areas_list):
+    if config.get('splitter', 'use_areas') == "no":
+      config.set('splitter', 'use_areas', 'yes')
+      print("")
+      printinfo("use_areas enabled in config file")
+      print("")
+      write_config()
+      
   splitter.split()
 
 elif ExitCode == True:
