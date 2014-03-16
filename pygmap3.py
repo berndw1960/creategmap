@@ -179,7 +179,7 @@ parser.add_argument('-a', '--add_style', dest='add_style', default='no')
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
 parser.add_argument('-p', '--print_config', action="store_true", help="printout the config sections  and exit")
-parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout the a config section and exit")
+parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout a config section and exit")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
