@@ -34,13 +34,11 @@ def create():
 
   config['splitter'] = {}
   config['splitter'] = {'logging': 'yes',
-                        'latest': 'yes',
                         'maxnodes': '1600000',
                         'use_areas': 'no',}
 
   config['mkgmap'] = {}
-  config['mkgmap'] = {'latest': 'yes',
-                      'logging': 'no',}
+  config['mkgmap'] = {'logging': 'no',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -94,27 +92,12 @@ def update():
 
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
-
-  if config.has_section('verbose') == True:
-    config.remove_section('verbose')
-
-  if config.has_section('mapset') == False:
-    config['mapset'] = {}
-
-  if config.has_section('store_as') == True:
-    config.remove_section('store_as')
-
-  if config.has_option('mapset', 'default') == False:
-    config['mapset'] = {'default': 'dach',}
-
-  if config.has_option('mkgmap', 'check_styles') == True:
-    config.remove_option('mkgmap', 'check_styles')
-
-  if config.has_option('mkgmap', 'list_styles') == True:
-    config.remove_option('mkgmap', 'list_styles')
-
-  if config.has_option('contourlines', 'build') == True:
-    config.remove_option('contourlines', 'build')
+    
+  if config.has_option('mkgmap', 'latest') == True:
+    config.remove_option('mkgmap', 'latest') 
+    
+  if config.has_option('splitter', 'latest') == True:
+    config.remove_option('splitter', 'latest')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)

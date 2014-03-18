@@ -170,11 +170,9 @@ parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('map
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-
-parser.add_argument('-l', '--list_mapstyle', action="store_true")
-
+parser.add_argument('-l', '--log', action="store_true", help="enable mkgmaps log")
+parser.add_argument('-lm', '--list_mapstyle', action="store_true")
 parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
-
 parser.add_argument('-a', '--add_style', dest='add_style', default='no')
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
@@ -212,6 +210,7 @@ if (args.print_section) != "no":
     print ("  " + (key) + " = " + config[(args.print_section)][(key)])
   print("")  
   quit()
+  
 if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
     print("")
@@ -349,7 +348,6 @@ get splitter and mkgmap
 
 import get_tools
 
-
 """
 bounds and precomp_sea from navmap.eu
 
@@ -357,7 +355,6 @@ bounds and precomp_sea from navmap.eu
 
 if config.get('navmap', 'pre_comp') == "yes":
   import navmap
-
 
 """
 is there a keep_data.lck, then use the old data
@@ -460,9 +457,17 @@ elif ExitCode == True:
 render the map-images
 
 """
+if (args.log):
+  config.set('mkgmap', 'logging', 'yes')
+  write_config()
+  
 import mkgmap
 mkgmap.render()
 
+if config.get('mkgmap', 'logging') == "yes":
+  config.set('mkgmap', 'logging', 'no')
+  write_config()
+  
 """
 zip the images, kml and log
 """

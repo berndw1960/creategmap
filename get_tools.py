@@ -40,7 +40,7 @@ get splitter and mkgmap
 
 for i in ['splitter', 'mkgmap']:
   config.read('pygmap3.cfg')
-  if config.get((i), 'latest') == "yes":
+  try:
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
     target.request("GET", "/download/" + (i) + ".html")
     htmlcontent =  target.getresponse()
@@ -55,25 +55,48 @@ for i in ['splitter', 'mkgmap']:
     config.set((i), 'version', (i_rev))
     write_config()
 
-  else:
-    i_rev = config.get((i), 'version')
+  except:
+    if config.has_option((i), 'version'):
+      i_rev = config.get((i), 'version')
+    else:
+      print("")
+      printerror((i) + "_rev not set in config")
+      print("")
+      quit() 
 
   ExitCode = os.path.exists(i_rev)
   if ExitCode == False:
     ExitCode = os.path.isfile((i_rev) + ".tar.gz")
     if ExitCode == False:
-      url = "http://www.mkgmap.org.uk/download/" + (i_rev) + ".tar.gz"
-      file_name = (i_rev) + ".tar.gz"
-      printinfo("download " + (url))
-      # Download the file from `url` and save it locally under `file_name`:
-      with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-        shutil.copyfileobj(response, out_file)
-
-    tar = tarfile.open((i_rev) + ".tar.gz")
-    tar.extractall()
-    tar.close()
-
-  printinfo("using " + (i_rev))
+      try:
+        url = "http://www.mkgmap.org.uk/download/" + (i_rev) + ".tar.gz"
+        file_name = (i_rev) + ".tar.gz"
+        print("")
+        printinfo("download " + (url))
+        print("")
+        # Download the file from `url` and save it locally under `file_name`:
+        with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+          shutil.copyfileobj(response, out_file)
+          
+        tar = tarfile.open((i_rev) + ".tar.gz")
+        tar.extractall()
+        tar.close()
+        
+      except:
+        print("")
+        printerror("failed download " + (i) + ".tar.gz")
+        print("")
+        quit()
+    
+  ExitCode = os.path.exists(i_rev)
+  if ExitCode == True:
+    printinfo("using " + (i_rev))
+    
+  else:
+    print("")
+    printerror((i_rev) + " didn't exist")
+    print("")
+    quit()     
 
 """
 get the geonames for splitter
@@ -82,14 +105,21 @@ get the geonames for splitter
 
 ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
 if ExitCode == False:
-  url = "http://download.geonames.org/export/dump/cities15000.zip"
-  file_name = "cities15000.zip"
-  printinfo("download " + (url))
-  # Download the file from `url` and save it locally under `file_name`:
-  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-    shutil.copyfileobj(response, out_file)
+  try:
+    url = "http://download.geonames.org/export/dump/cities15000.zip"
+    file_name = "cities15000.zip"
+    print("")
+    printinfo("download " + (url))
+    print("")
+    # Download the file from `url` and save it locally under `file_name`:
+    with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+      shutil.copyfileobj(response, out_file)
+  except:
+    print("")
+    printerror("failed download cities15000.zip")
+    print("")
+    quit()    
 
-#quit()
 
 
 
