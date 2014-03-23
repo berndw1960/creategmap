@@ -71,7 +71,9 @@ for i in ['splitter', 'mkgmap']:
       quit() 
 
   ExitCode = os.path.exists(i_rev)
-  if ExitCode == False:
+  if ExitCode == True:
+    printinfo("using " + (i_rev))
+  else:  
     ExitCode = os.path.isfile((i_rev) + ".tar.gz")
     if ExitCode == True:
       try:
@@ -104,10 +106,7 @@ for i in ['splitter', 'mkgmap']:
         quit()
     
   ExitCode = os.path.exists(i_rev)
-  if ExitCode == True:
-    printinfo("using " + (i_rev))
-    
-  else:
+  if ExitCode == False:
     print("")
     printerror((i_rev) + " didn't exist")
     print("")
