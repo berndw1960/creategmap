@@ -32,6 +32,11 @@ def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
+def tar_extract():
+  tar = tarfile.open((i_rev) + ".tar.gz")
+  tar.extractall()
+  tar.close()
+  
 """
 get splitter and mkgmap
 
@@ -47,10 +52,11 @@ for i in ['splitter', 'mkgmap']:
     data = htmlcontent.read()
     data = data.decode('utf8')
     if (i) == "splitter":
-      pattern = re.compile('splitter-r\d{3}')
+      pattern = re.compile('splitter-r\d{3}.zip')
     elif (i) == "mkgmap":
-      pattern = re.compile('mkgmap-r\d{4}')
-    i_rev = sorted(pattern.findall(data), reverse=True)[1]
+      pattern = re.compile('mkgmap-r\d{4}.zip')
+    i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
+    i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
     target.close()
     config.set((i), 'version', (i_rev))
     write_config()
@@ -67,7 +73,14 @@ for i in ['splitter', 'mkgmap']:
   ExitCode = os.path.exists(i_rev)
   if ExitCode == False:
     ExitCode = os.path.isfile((i_rev) + ".tar.gz")
-    if ExitCode == False:
+    if ExitCode == True:
+      try:
+        tar_extract()
+      except:
+        printerror(" couldn't extract " + (i_rev) + " from local file")
+        quit()
+        
+    else:  
       try:
         url = "http://www.mkgmap.org.uk/download/" + (i_rev) + ".tar.gz"
         file_name = (i_rev) + ".tar.gz"
@@ -78,13 +91,15 @@ for i in ['splitter', 'mkgmap']:
         with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
           shutil.copyfileobj(response, out_file)
           
-        tar = tarfile.open((i_rev) + ".tar.gz")
-        tar.extractall()
-        tar.close()
+        try:
+          tar_extract()
+        except:
+          printerror(" couldn't extract " + (i_rev) + " from downloaded file")
+          quit()
         
       except:
         print("")
-        printerror("failed download " + (i) + ".tar.gz")
+        printerror("failed download " + (i_rev) + ".tar.gz")
         print("")
         quit()
     
@@ -119,7 +134,6 @@ if ExitCode == False:
     printerror("failed download cities15000.zip")
     print("")
     quit()    
-
 
 
 

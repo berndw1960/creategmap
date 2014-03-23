@@ -116,3 +116,4 @@ def split():
     printerror("Splitter-Error!")
     printerror("Please restart the buildprocess for " + (buildmap))
     quit()
+    
