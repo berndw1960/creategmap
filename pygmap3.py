@@ -314,6 +314,7 @@ if ExitCode == False:
 read the config and set or create the mapid
 
 """
+
 config.read('pygmap3.cfg')
 
 if config.has_option('mapid', (buildmap)) == True:
@@ -390,9 +391,8 @@ if ExitCode == False:
       printerror("'HINT: 'keep_data.py' is a FlipFlop. ")
       quit()
 
-
     mapdata.create_o5m()
-
+   
   """
   update mapdata
 
@@ -400,12 +400,18 @@ if ExitCode == False:
 
   mapdata.update_o5m()
 
-
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
 
-description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
-printinfo(description)
+ExitCode = os.path.exists("keep_data.lck")
+if ExitCode == True:
+  try:
+    description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
+    printinfo(description)
+  except:
+    printerror("keep_data.lck found, please remove it with'keep_data.py'")
+    printerror("")
+    quit()
 
 
 """

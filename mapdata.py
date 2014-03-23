@@ -103,13 +103,12 @@ def update_o5m():
   DATE = today.strftime('%Y%m%d_%H00')
 
   config.set('time_stamp', (buildmap), (DATE))
+  write_config()
 
   printinfo("now updating " + (buildmap) + ".o5m, please wait...")
   os.system("osmupdate --daily --hourly -B=poly/" + (buildmap) +
 	    ".poly --keep-tempfiles o5m/" + (buildmap) +
 	    ".o5m  o5m/" + (buildmap) +  "_new.o5m")
-
-  write_config()
 
   os.chdir("o5m")
 
