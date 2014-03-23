@@ -363,8 +363,19 @@ is there a keep_data.lck, then use the old data
 """
 
 ExitCode = os.path.exists("keep_data.lck")
-if ExitCode == False:
-
+if ExitCode == True:
+  try:
+    description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
+    printinfo(description)
+  except:
+    printerror("")
+    printerror("") 
+    printerror("keep_data.lck found and no older time_stamp for " + (buildmap) + " is set in config")
+    printerror("please remove keep_data.lck with 'keep_data.py'")
+    printerror("")
+    quit()
+    
+else:    
   buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
 
   """
@@ -402,16 +413,6 @@ if ExitCode == False:
 
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
-
-ExitCode = os.path.exists("keep_data.lck")
-if ExitCode == True:
-  try:
-    description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
-    printinfo(description)
-  except:
-    printerror("keep_data.lck found, please remove it with'keep_data.py'")
-    printerror("")
-    quit()
 
 
 """
