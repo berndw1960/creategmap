@@ -37,7 +37,7 @@ for i in ['sea', 'bounds']:
 
     rev = (i) + "_" + (date)
     config.set('navmap', (i) + "_rev", (rev))
-    
+
   except:
     if config.has_option('navmap', (i) + "_rev"):
       rev = config.get('navmap', (i) + "_rev")
@@ -46,7 +46,7 @@ for i in ['sea', 'bounds']:
       printerror((i) + "_rev not set in config")
       print("")
       quit()
-      
+
   ExitCode = os.path.exists((rev) + ".zip")
   if ExitCode == False:
     try:
@@ -55,24 +55,26 @@ for i in ['sea', 'bounds']:
       print("")
       printinfo("download " + (url))
       print("")
-      
+
       with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
-        
+
     except:
       print("")
       printerror("failed download " + (i))
       print("")
-      quit()        
-    
+      quit()
+
   ExitCode = os.path.exists((rev) + ".zip")
   if ExitCode == True:
     if config.get('navmap', "use_" + (i)) == "no":
       config.set('navmap', "use_" + (i), 'yes',)
+    print("")
     printinfo("using " + (rev) + ".zip")
   else:
     if config.get('navmap', "use_" + (i)) == "yes":
       config.set('navmap', "use_" + (i), 'no',)
+    print("")
     printwarning("pre_comp " + (i) + " disabled, needed file(s) not found")
 
   with open('pygmap3.cfg', 'w') as configfile:

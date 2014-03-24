@@ -94,12 +94,13 @@ if (args.add_mapset) != "no":
   if config.has_option('mapset', (args.add_mapset)) == False:
     ExitCode = os.path.exists("poly/" + (args.add_mapset) + ".poly")
     if ExitCode == False:
+      print("")
       printerror((WORK_DIR) + "poly/" + (args.add_mapset) + ".poly not found... ")
       printerror("please create or download "+ (args.add_mapset) + ".poly")
       quit()
     config.set('mapset', (args.add_mapset), 'yes')
     write_config()
-
+  print("")
   printinfo((args.add_mapset) + " added to mapset list")
   quit()
 
@@ -107,6 +108,7 @@ if (args.rm_mapset) != "no":
   if config.has_section('mapset') == True:
     config.remove_option('mapset', (args.rm_mapset))
     write_config()
+  print("")
   printwarning((args.rm_mapset) + " removed from mapset list")
   quit()
 
@@ -137,9 +139,8 @@ for buildmap in config['mapset']:
       os.system("pygmap3.py " + (cl) + "-z -b " + (buildmap))
 
 print("")
-print("")
 print("###### all mapsets successfully build! #######")
 print("")
-print("")
+
 
 quit()

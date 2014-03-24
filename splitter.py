@@ -90,15 +90,18 @@ def split():
     ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
     if ExitCode == True:
       os.chdir("tiles")
+      print("")
       printinfo("splitting the mapdata with areas.list...")
       os.system((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
     else:
       os.chdir("tiles")
+      print("")
       printwarning("create areas.list and splitting the mapdata...")
       os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
       shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
   else:
     os.chdir("tiles")
+    print("")
     printwarning("no areas.list enabled, splitting the mapdata without it...")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
 
@@ -107,13 +110,14 @@ def split():
   ExitCode = os.path.exists("tiles/template.args")
   if ExitCode == True:
     datei = open("tiles/" + (buildmap) + "_split.ready", "w")
-    datei.close() 
+    datei.close()
   elif ExitCode == False:
     ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
     if ExitCode == True:
       os.remove("areas/" + (buildmap) + "_areas.list")
+      print("")
       printwarning((buildmap) + "_areas.list removed, next build creates a new one")
+    print("")
     printerror("Splitter-Error!")
     printerror("Please restart the buildprocess for " + (buildmap))
     quit()
-    

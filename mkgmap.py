@@ -44,6 +44,7 @@ def render():
       if layer !=  'defaultmap':
         ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
         if ExitCode == False:
+          print("")
           printerror("no " + (layer) + "_style found!")
           quit()
 
@@ -55,6 +56,7 @@ def render():
         if ExitCode == False:
           ExitCode = os.path.exists("mystyles/" + (layer) + "_typ")
           if ExitCode == True:
+            print("")
             printerror(" Please convert " +
               "mystyles/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
             quit()
@@ -74,9 +76,11 @@ def render():
             try:
               os.remove(os.path.join(path, file))
             except:
-             print('Could not delete', file, 'in', path)
+              print("")
+              print('Could not delete', file, 'in', path)
 
       os.chdir(layer)
+      print("")
       printinfo("Now building " + (layer))
 
       """
@@ -86,10 +90,12 @@ def render():
 
       if config.get('mkgmap', 'logging') == "yes":
         if config.get('runtime', 'verbose') == "yes":
+          print("")
           printinfo("logging enabled")
         option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "log.conf "
       else:
         if config.get('runtime', 'verbose') == "yes":
+          print("")
           printwarning("logging disabled")
         option_mkgmap_logging = " "
 
@@ -99,6 +105,7 @@ def render():
       if config.get('navmap', 'pre_comp') == "yes":
         if config.get('navmap', 'use_bounds') == "yes":
           if config.get('runtime', 'verbose') == "yes":
+            print("")
             printinfo ("use precompiled bounds")
           option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
         else:
@@ -106,6 +113,7 @@ def render():
 
         if config.get('navmap', 'use_sea') == "yes":
           if config.get('runtime', 'verbose') == "yes":
+            print("")
             printinfo ("use precompiled sea_tiles")
           option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
         else:
@@ -116,11 +124,13 @@ def render():
         option_sea = (option_sea_default)
 
       if layer == "defaultmap":
+        print("")
         printwarning("defaultmap has no typ_file")
         typ_file = " "
         style_file = " "
       else:
         if config.get('runtime', 'verbose') == "yes":
+          print("")
           printinfo((layer) + " build with typ_file")
         typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "

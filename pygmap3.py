@@ -192,11 +192,9 @@ if (args.print_config):
   print("")
   printinfo("this are the sections of pygmap3.cfg: ")
   print("")
-  config.read('pygmap3.cfg')
   sections = config.sections()
   for i in (sections):
     print("  " + (i))
-  print("")
   print("")
   printinfo("to get more infos about a section use")
   printinfo("    pygmap3.py -ps $SECTION   ")
@@ -208,9 +206,9 @@ if (args.print_section) != "no":
   print("")
   for key in (config[(args.print_section)]):
     print ("  " + (key) + " = " + config[(args.print_section)][(key)])
-  print("")  
+  print("")
   quit()
-  
+
 if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
     print("")
@@ -271,7 +269,6 @@ if (args.check_styles):
   check_styles.check()
   quit()
 
-config.read('pygmap3.cfg')
 
 if ('runtime' in config) == True:
   config.remove_section('runtime')
@@ -298,13 +295,11 @@ else:
 
 write_config()
 
-
-config.read('pygmap3.cfg')
-
 buildmap = config.get('runtime', 'buildmap')
 
 ExitCode = os.path.exists("poly/" + (buildmap) + ".poly")
 if ExitCode == False:
+  print("")
   printerror((WORK_DIR) + "poly/" + (buildmap) + ".poly not found... ")
   printerror("please create or download "+ (buildmap) + ".poly")
   quit()
@@ -314,8 +309,6 @@ if ExitCode == False:
 read the config and set or create the mapid
 
 """
-
-config.read('pygmap3.cfg')
 
 if config.has_option('mapid', (buildmap)) == True:
   option_mapid = config.get('mapid', (buildmap))
@@ -328,7 +321,6 @@ else:
 
 write_config()
 
-config.read('pygmap3.cfg')
 
 
 """
@@ -369,13 +361,13 @@ if ExitCode == True:
     printinfo(description)
   except:
     printerror("")
-    printerror("") 
+    printerror("")
     printerror("keep_data.lck found and no older time_stamp for " + (buildmap) + " is set in config")
     printerror("please remove keep_data.lck with 'keep_data.py'")
     printerror("")
     quit()
-    
-else:    
+
+else:
   buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
 
   """
@@ -403,7 +395,7 @@ else:
       quit()
 
     mapdata.create_o5m()
-   
+
   """
   update mapdata
 
@@ -437,7 +429,7 @@ if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
-  
+
   if (args.areas_list):
     if config.get('splitter', 'use_areas') == "no":
       config.set('splitter', 'use_areas', 'yes')
@@ -445,7 +437,7 @@ if ExitCode == False:
       printinfo("use_areas enabled in config file")
       print("")
       write_config()
-      
+
   splitter.split()
 
 elif ExitCode == True:
@@ -467,14 +459,14 @@ render the map-images
 if (args.log):
   config.set('mkgmap', 'logging', 'yes')
   write_config()
-  
+
 import mkgmap
 mkgmap.render()
 
 if config.get('mkgmap', 'logging') == "yes":
   config.set('mkgmap', 'logging', 'no')
   write_config()
-  
+
 """
 zip the images, kml and log
 """
