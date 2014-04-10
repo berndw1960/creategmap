@@ -111,7 +111,9 @@ def update_o5m():
     ExitCode = os.path.exists((buildmap) + ".o5m")
     if ExitCode == True:
       os.remove((buildmap) + "_temp.o5m")
-
+      
+  os.chdir(WORK_DIR)
+  
   if config.has_section('time_stamp') == False:
     config.add_section('time_stamp')
     write_config()
