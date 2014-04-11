@@ -92,13 +92,7 @@ def update():
 
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
-    
-  if config.has_option('mkgmap', 'latest') == True:
-    config.remove_option('mkgmap', 'latest') 
-    
-  if config.has_option('splitter', 'latest') == True:
-    config.remove_option('splitter', 'latest')
-
+  
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 

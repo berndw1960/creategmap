@@ -51,18 +51,28 @@ for i in ['splitter', 'mkgmap']:
     htmlcontent =  target.getresponse()
     data = htmlcontent.read()
     data = data.decode('utf8')
-    if (i) == "splitter":
-      pattern = re.compile('splitter-r\d{3}.zip')
-    elif (i) == "mkgmap":
-      pattern = re.compile('mkgmap-r\d{4}.zip')
-    i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-    i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+
+    if config.has_option('runtime', 'svn') == True:
+      if (i) == "splitter":
+        pattern = re.compile('splitter-r\d{3}')
+      elif (i) == "mkgmap":
+        pattern = re.compile('mkgmap-r\d{4}')
+      i_rev = sorted(pattern.findall(data), reverse=True)[0]
+
+    else:
+      if (i) == "splitter":
+        pattern = re.compile('splitter-r\d{3}.zip')
+      elif (i) == "mkgmap":
+        pattern = re.compile('mkgmap-r\d{4}.zip')
+      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
+      i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+
     target.close()
 
   except:
     print("")
     printwarning("can't get a new " + (i) + "-rev from mkgmap.org")
-    printwarning("trying to use a older locally one")
+    printwarning("trying to use another one")
     print("")
 
     try:

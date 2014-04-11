@@ -176,10 +176,11 @@ parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $
 parser.add_argument('-a', '--add_style', dest='add_style', default='no')
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
-parser.add_argument('-p', '--print_config', action="store_true", help="printout the config sections  and exit")
-parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout a config section and exit")
+parser.add_argument('--print_config', action="store_true", help="printout the config sections  and exit")
+parser.add_argument('--print_section', dest='print_section', default='no', help="printout a config section and exit")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
+parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 
 args = parser.parse_args()
 
@@ -334,12 +335,17 @@ for dir in ['o5m', 'areas', 'poly', 'tiles']:
   if ExitCode == False:
     os.mkdir(dir)
 
-
 """
 get splitter and mkgmap
 
 """
-
+if (args.svn):
+  config.set('runtime', 'svn', 'yes')
+  print("")
+  printwarning("using svn versions of splitter and mkgmap")
+  
+  write_config()
+  
 import get_tools
 
 """
