@@ -135,10 +135,10 @@ else:
   cl = " "
 
 if (args.svn):
-  svn = " --svn"
-else:  
+  svn = " --svn "
+else:
   svn = " "
-  
+
 for buildmap in config['mapset']:
   if (buildmap) != "default":
     if config['mapset'][(buildmap)] == "yes":
