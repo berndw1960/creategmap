@@ -172,7 +172,7 @@ parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
 parser.add_argument('-l', '--log', action="store_true", help="enable mkgmaps log")
 parser.add_argument('-lm', '--list_mapstyle', action="store_true")
-parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAPSET as new default")
+parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAP_SET as new default")
 parser.add_argument('-a', '--add_style', dest='add_style', default='no')
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
@@ -225,10 +225,10 @@ if (args.list_mapstyle):
 
 if (args.add_style) != "no":
   if config.has_option('map_styles', (args.add_style)) == False:
+    if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
+      printerror((args.add_style) + "_style - dir not found")
+      quit()
     if (args.add_style) != "defaultmap":
-      if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
-        printerror((args.add_style) + "_style - dir not found")
-        quit()
       if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
         printerror((args.add_style) + "_typ.txt not found")
         quit()
@@ -245,7 +245,21 @@ if (args.rm_style) != "no":
   quit()
 
 if (args.map_style) != "no":
+  if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
+    print("")
+    printerror((args.map_style) + "_style - dir not found")
+    printerror("possible styles are: ")
+    print("")
+    printerror("    basemap")
+    printerror("    bikemap")
+    printerror("    fixme")
+    printerror("    defaultmap")
+    quit()
   if config.has_option('map_styles', (args.map_style)) == True:
+    if (args.add_style) != "defaultmap":
+      if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
+        printerror((args.add_style) + "_typ.txt not found")
+        quit()
     if config.get('map_styles', (args.map_style)) == "yes":
       config.set('map_styles', (args.map_style), 'no')
       printwarning((args.map_style) + " style disabled")
@@ -343,9 +357,9 @@ if (args.svn):
   config.set('runtime', 'svn', 'yes')
   print("")
   printwarning("using svn versions of splitter and mkgmap")
-  
+
   write_config()
-  
+
 import get_tools
 
 """
