@@ -224,16 +224,15 @@ if (args.list_mapstyle):
   quit()
 
 if (args.add_style) != "no":
-  if config.has_option('map_styles', (args.add_style)) == False:
-    if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
-      printerror((args.add_style) + "_style - dir not found")
+  if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
+    printerror((args.add_style) + "_style - dir not found")
+    quit()
+  if (args.add_style) != "defaultmap":
+    if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
+      printerror((args.add_style) + "_typ.txt not found")
       quit()
-    if (args.add_style) != "defaultmap":
-      if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
-        printerror((args.add_style) + "_typ.txt not found")
-        quit()
-    config.set('map_styles', (args.add_style), 'yes')
-    write_config()
+  config.set('map_styles', (args.add_style), 'yes')
+  write_config()
   printinfo((args.add_style) + " added to map_styles list")
   quit()
 
@@ -245,7 +244,7 @@ if (args.rm_style) != "no":
   quit()
 
 if (args.map_style) != "no":
-  if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
+  if os.path.exists("mystyles/" + (args.map_style) + "_style") == False:
     print("")
     printerror((args.map_style) + "_style - dir not found")
     printerror("possible styles are: ")
@@ -256,9 +255,9 @@ if (args.map_style) != "no":
     printerror("    defaultmap")
     quit()
   if config.has_option('map_styles', (args.map_style)) == True:
-    if (args.add_style) != "defaultmap":
-      if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
-        printerror((args.add_style) + "_typ.txt not found")
+    if (args.map_style) != "defaultmap":
+      if os.path.exists("mystyles/" + (args.map_style) + "_typ.txt") == False:
+        printerror((args.map_style) + "_typ.txt not found")
         quit()
     if config.get('map_styles', (args.map_style)) == "yes":
       config.set('map_styles', (args.map_style), 'no')
