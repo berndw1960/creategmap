@@ -265,7 +265,11 @@ if (args.map_style) != "no":
     elif config.get('map_styles', (args.map_style)) == "no":
       config.set('map_styles', (args.map_style), 'yes')
       printinfo((args.map_style) + " style enabled")
-    write_config()
+  else:
+     config.set('map_styles', (args.map_style), 'yes')
+     printinfo((args.map_style) + " style added and enabled")
+
+  write_config()
   quit()
 
 if (args.map_set) != "no":
