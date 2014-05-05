@@ -60,8 +60,8 @@ def create():
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
 
-  config['basemap'] = {}
-  config['basemap'] = {'family-id': '2',
+  config['carmap'] = {}
+  config['carmap'] = {'family-id': '2',
                        'product-id': '48',
                        'family-name': 'Carmap',
                        'draw-priority': '10',
