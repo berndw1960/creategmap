@@ -19,8 +19,9 @@ mapset.py -     if you want to build more then one mapset, as example dach and
 pygmap3.py -    the main script, start it without any option to create map
                 for DACH with the default style of mkgmap
 
-                you need a poly file of the region you want to build.
-                search fpr osm2poly and poly2osm in the web, if you want to
+                you need a poly file of the region, if you want to build your
+                choice of region
+                search for osm2poly and poly2osm in the web, if you want to
                 create a poly file from scratch.
 
                 if you want to create your maps with your own styles,
