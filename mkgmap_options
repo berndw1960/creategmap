@@ -1,4 +1,4 @@
-Time started: Fri Feb 07 11:25:33 CET 2014
+Time started: Mon Apr 14 17:17:04 CEST 2014
 Note that option order is significant:  An option only applies to
 subsequent input files.  (So if you are using splitter, you probably
 want to put most of your options before '-c template.args'.)
@@ -373,6 +373,10 @@ Miscellaneous options:
 	problems. Default value is 0 (disabled) because it's not a
 	completely reliable heuristic.
 
+--ignore-maxspeeds
+	Now ignored, former usage:
+	When reading OSM files, ignore any "maxspeed" tags.
+
 --ignore-builtin-relations
 	When reading OSM files, skip the built-in processing of
 	relations. This speeds up the processing non-routable map
@@ -393,6 +397,7 @@ Miscellaneous options:
 	the order in which the elements are processed is not defined.
 
 --remove-short-arcs[=MinLength]
+  	Now ignored, former usage:	
 	Merge nodes to remove short arcs that can cause routing
 	problems. If MinLength is specified (in metres), arcs shorter
 	than that length will be removed. If a length is not
@@ -545,6 +550,7 @@ Miscellaneous options:
 	(NSIS) to create a Windows Mapsource Installer.
 
 --make-all-cycleways
+  Deprecated, use --make-opposite-cycleways instead. Former meaning: 
 	Turn on all of the options that make cycleways.
 
 --make-opposite-cycleways
@@ -553,6 +559,7 @@ Miscellaneous options:
 	the original that allows bicycle traffic (in both directions).
 
 --make-cycleways
+  Now ignored, former meaning:
 	Some streets have a separate cycleway track/lane just for
 	bicycle traffic and this option makes a way with the same
 	points as the original that allows bicycle traffic. Also,
@@ -560,16 +567,22 @@ Miscellaneous options:
 	(unless that way's bicycle access has been defined).
 
 --link-pois-to-ways
-    This option copies some specific attributes of a POI to a 
-    small part of the way the POI is located on. This can be used
+    This option may copy some specific attributes of a POI 
+    to a small part of the way the POI is located on. This can be used
     to let barriers block a way or to lower the calculated speed
     around traffic signals.
     POIs with the tags highway=* (e.g. highway=traffic_signals)  
     or barrier=* (e.g. barrier=cycle_barrier) are supported.
     The style developer must add at least one of the access tags
     (mkgmap:foot, mkgmap:car etc.), mkgmap:road-speed and/or 
-    mkgmap:road-class to the POI. These tags are copied to a small
-    part of the way around the POI. 
+    mkgmap:road-class to the POI. 
+    The access tags are ignored if they have no effect for the way, 
+    else a route restriction is added at the POI so that only 
+    allowed vehicles are routed through it. 
+    The tags mkgmap:road-speed and/or mkgmap:road-class are 
+    applied to a small part of the way around the POI, typically
+    to the next junction or a length of ~25 m. The tags
+    are ignored for pedestrian-only ways.      
 
 --process-destination
 	Splits all motorway_link and trunk_link ways tagged with 
@@ -630,5 +643,5 @@ Miscellaneous options:
 
 --verbose
 	Makes some operations more verbose. Mostly used with --list-styles.
-Time finished: Fri Feb 07 11:25:34 CET 2014
-Total time taken: 134ms
+Time finished: Mon Apr 14 17:17:04 CEST 2014
+Total time taken: 222ms

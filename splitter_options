@@ -25,6 +25,10 @@ Options:
  --mixed           Specify this if the input osm file has nodes, ways and 
                    relations intermingled. 
  --no-trim         Don't trim empty space off the edges of tiles. 
+ --num-tiles       A target value that is used when no split-file is given. 
+                   Splitting is done so that the given number of tiles is 
+                   produced. The max-nodes value is ignored if this option is 
+                   given. 
  --output          The output type, either pbf, o5m, or xml. Default is pbf. 
  --output-dir      The path to the output directory. Defaults to the current 
                    working directory. 

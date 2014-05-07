@@ -5,22 +5,45 @@ tested with
 eTrex Vista Hcx
 eTrex Legend
 Oregon 450
+Oregon 650
 some Nüvis
 
 
 Description:
 
-pygmap3.py - the main script, start it without any option to create a basemap
-             for DACH
-             pygmap3.py -h shows a help
+mapset.py -     if you want to build more then one mapset, as example dach and
+                germany.
 
-planet_up.py - download  a complete planet from openstreetmap.org or update it
+                mapset.py-h shows a help
 
-keep_data.py - needed, if you want to build a map with older mapdata
-               keep_data.py is a FlipFlop to stop some functions in pygmap3.py
-               start it with 'keep_data.py', there are no options needed
+pygmap3.py -    the main script, start it without any option to create map
+                for DACH with the default style of mkgmap
 
-no_split.py - like 'keep_data.py, but it do this only for the split-function in
-              'mkgmap.py'
+                you need a poly file of the region you want to build.
+                search fpr osm2poly and poly2osm in the web, if you want to
+                create a poly file from scratch.
 
-all other *.py are helper for 'pygmap3.py'
+                if you want to create your maps with your own styles,
+                you have to do some work
+
+                add a folder named {your_map}_style and a textbased file
+                named {your_map}_typ.txt to the folder
+                mystyles
+
+                you can also use our fork of the AIO, copy the complete
+                repository to my styles
+
+                pygmap3.py -h shows a help
+                pygmap3.py -m basemap enable the build of our basemap style
+
+planet_up.py -  download  a complete planet from openstreetmap.org or update it
+
+keep_data.py -   needed, if you want to build a map with older mapdata
+                keep_data.py is a FlipFlop to stop some functions in pygmap3.py
+                start it with 'keep_data.py', there are no options needed
+
+no_split.py -   like 'keep_data.py, but it do this only for the split-function
+                in
+                'mkgmap.py'
+
+all other *.py are helper for 'pygmap3.py', they must be in the same folder!

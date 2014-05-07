@@ -475,7 +475,6 @@ elif ExitCode == True:
 
     splitter.split()
 
-
 """
 render the map-images
 
