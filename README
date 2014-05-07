@@ -14,7 +14,7 @@ Description:
 mapset.py -     if you want to build more then one mapset, as example dach and
                 germany.
 
-                mapset.py-h shows a help
+                mapset.py -h shows a help
 
 pygmap3.py -    the main script, start it without any option to create map
                 for DACH with the default style of mkgmap
