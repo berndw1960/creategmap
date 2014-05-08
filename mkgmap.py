@@ -141,7 +141,8 @@ def render():
       """
       mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
 
-      os.system("java -ea " + config.get('ramsize', 'ramsize') +
+      os.system("java -ea -XX:StringTableSize=100003 " + 
+            config.get('ramsize', 'ramsize') +
             (option_mkgmap_logging) +
             " -jar " + (mkgmap_path) +
             (option_mkgmap_options) +
