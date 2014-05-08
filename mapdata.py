@@ -72,7 +72,7 @@ def create_o5m():
   if ExitCode == True:
     printinfo("now extracting " + (buildmap) + ".o5m from Planet, please wait...")
     os.system("osmconvert o5m/planet.o5m " +
-              "--complete-ways --complex-ways " +
+              "--complete-ways --complex-ways --drop-version " +
               " -B=poly/" + (buildmap) + ".poly " +
               " -o=" + (BUILD_TEMP))
 
@@ -111,9 +111,9 @@ def update_o5m():
     ExitCode = os.path.exists((buildmap) + ".o5m")
     if ExitCode == True:
       os.remove((buildmap) + "_temp.o5m")
-      
+
   os.chdir(WORK_DIR)
-  
+
   if config.has_section('time_stamp') == False:
     config.add_section('time_stamp')
     write_config()
