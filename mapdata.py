@@ -86,7 +86,7 @@ def create_o5m():
     if ExitCode == True:
       os.remove(BUILD_OLD)
   else:
-    print("")
+    print()
     printerror((WORK_DIR) + "o5m/planet.o5m not found... ")
     printerror("please download with 'planet_up.py'")
     quit()
@@ -96,7 +96,7 @@ def update_o5m():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
 
-  print("")
+  print()
   printinfo("now updating " + (buildmap) + ".o5m, please wait...")
   os.system("osmupdate --daily --hourly -B=poly/" + (buildmap) +
 	    ".poly --keep-tempfiles o5m/" + (buildmap) +

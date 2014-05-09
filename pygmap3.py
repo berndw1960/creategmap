@@ -190,37 +190,37 @@ edit map_styles list
 """
 
 if (args.print_config):
-  print("")
+  print()
   printinfo("this are the sections of pygmap3.cfg: ")
-  print("")
+  print()
   sections = config.sections()
   for i in (sections):
     print("  " + (i))
-  print("")
+  print()
   printinfo("to get more infos about a section use")
   printinfo("    pygmap3.py -ps $SECTION   ")
   quit()
 
 if (args.print_section) != "no":
-  print("")
+  print()
   printinfo("this is the " + (args.print_section) +  " section of pygmap3.cfg: ")
-  print("")
+  print()
   for key in (config[(args.print_section)]):
     print ("  " + (key) + " = " + config[(args.print_section)][(key)])
-  print("")
+  print()
   quit()
 
 if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
-    print("")
+    print()
     printinfo("map_styles list includes: ")
     for key in (config['map_styles']):
       print ("  " + (key) + " = " + config['map_styles'][(key)])
-    print("")
+    print()
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
       print ("  " + (key) + " = " + config['mapset'][(key)])
-    print("")
+    print()
   quit()
 
 if (args.add_style) != "no":
@@ -245,10 +245,10 @@ if (args.rm_style) != "no":
 
 if (args.map_style) != "no":
   if os.path.exists("mystyles/" + (args.map_style) + "_style") == False:
-    print("")
+    print()
     printerror((args.map_style) + "_style - dir not found")
     printerror("possible styles are: ")
-    print("")
+    print()
     printerror("    basemap")
     printerror("    bikemap")
     printerror("    fixme")
@@ -318,7 +318,7 @@ buildmap = config.get('runtime', 'buildmap')
 
 ExitCode = os.path.exists("poly/" + (buildmap) + ".poly")
 if ExitCode == False:
-  print("")
+  print()
   printerror((WORK_DIR) + "poly/" + (buildmap) + ".poly not found... ")
   printerror("please create or download "+ (buildmap) + ".poly")
   quit()
@@ -358,7 +358,7 @@ get splitter and mkgmap
 """
 if (args.svn):
   config.set('runtime', 'svn', 'yes')
-  print("")
+  print()
   printwarning("using svn versions of splitter and mkgmap")
 
   write_config()
@@ -384,11 +384,11 @@ if ExitCode == True:
     description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
     printinfo(description)
   except:
-    printerror("")
-    printerror("")
+    printerror()
+    printerror()
     printerror("keep_data.lck found and no older time_stamp for " + (buildmap) + " is set in config")
     printerror("please remove keep_data.lck with 'keep_data.py'")
-    printerror("")
+    printerror()
     quit()
 
 else:
@@ -404,13 +404,13 @@ else:
   if ExitCode == False:
     ExitCode = os.path.exists("o5m/planet.o5m")
     if ExitCode == False:
-      printerror("")
+      printerror()
       printerror("No Planet-File found!  ")
-      printerror("")
+      printerror()
       printerror("A planet is needed,because you didn't have ")
       printerror("a " + (buildmap) + ".o5m O5M-File! ")
       printerror("Please download one with 'planet_up.py'.")
-      printerror("")
+      printerror()
       printerror("The first planet will be updated by 'planet_up.py', ")
       printerror("but the extracted mapdata can be updated with ")
       printerror("'pygmap3.py', this function ist enabled by default ")
@@ -457,9 +457,9 @@ if ExitCode == False:
   if (args.areas_list):
     if config.get('splitter', 'use_areas') == "no":
       config.set('splitter', 'use_areas', 'yes')
-      print("")
+      print()
       printinfo("use_areas enabled in config file")
-      print("")
+      print()
       write_config()
 
   splitter.split()
@@ -516,11 +516,11 @@ if (args.contourlines):
     else:
       printwarning("dir mystyles/contourlines_style not found")
 
-print("")
-print("")
+print()
+print()
 print("  ---------- " + (buildmap) + " ready! ----------")
-print("")
-print("")
+print()
+print()
 
 quit()
 

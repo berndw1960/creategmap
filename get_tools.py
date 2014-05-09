@@ -70,23 +70,23 @@ for i in ['splitter', 'mkgmap']:
     target.close()
 
   except:
-    print("")
+    print()
     printwarning("can't get a new " + (i) + "-rev from mkgmap.org")
     printwarning("trying to use another one")
-    print("")
+    print()
 
     try:
       i_rev = config.get((i), 'version')
     except:
-      print("")
+      print()
       printerror((i) + "_rev not set in config")
       printerror("i don't know, which version should i use!")
-      print("")
+      print()
       quit()
 
   ExitCode = os.path.exists(i_rev)
   if ExitCode == True:
-    print("")
+    print()
     printinfo("using " + (i_rev))
   else:
     ExitCode = os.path.isfile((i_rev) + ".tar.gz")
@@ -94,16 +94,16 @@ for i in ['splitter', 'mkgmap']:
       try:
         tar_extract()
       except:
-        print("")
+        print()
         printerror(" couldn't extract " + (i_rev) + " from local file")
-        print("")
+        print()
         quit()
 
     else:
       try:
         url = "http://www.mkgmap.org.uk/download/" + (i_rev) + ".tar.gz"
         file_name = (i_rev) + ".tar.gz"
-        print("")
+        print()
         printinfo("download " + (url))
 
         # Download the file from `url` and save it locally under `file_name`:
@@ -113,22 +113,22 @@ for i in ['splitter', 'mkgmap']:
         try:
           tar_extract()
         except:
-          print("")
+          print()
           printerror(" couldn't extract " + (i_rev) + " from downloaded file")
-          print("")
+          print()
           quit()
 
       except:
-        print("")
+        print()
         printerror("failed download " + (i_rev) + ".tar.gz")
-        print("")
+        print()
         quit()
 
   ExitCode = os.path.exists(i_rev)
   if ExitCode == False:
-    print("")
+    print()
     printerror((i_rev) + " didn't exist")
-    print("")
+    print()
     quit()
 
   config.set((i), 'version', (i_rev))
@@ -144,15 +144,15 @@ if ExitCode == False:
   try:
     url = "http://download.geonames.org/export/dump/cities15000.zip"
     file_name = "cities15000.zip"
-    print("")
+    print()
     printinfo("download " + (url))
-    print("")
+    print()
     # Download the file from `url` and save it locally under `file_name`:
     with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
       shutil.copyfileobj(response, out_file)
   except:
-    print("")
+    print()
     printerror("failed download cities15000.zip")
-    print("")
+    print()
     quit()
 
