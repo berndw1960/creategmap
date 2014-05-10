@@ -256,7 +256,7 @@ if (args.map_style) != "no":
     print("    bikemap")
     print("    fixme")
     print("    defaultmap")
-    print("    carmpp")
+    print("    carmap")
     print()
     print()
     quit()
