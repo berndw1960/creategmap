@@ -154,8 +154,11 @@ parser = argparse.ArgumentParser(
 
             To build maps for Garmin PNA
 
-            Basemap
-            Bikemap
+            basemap - to route  motorvehicle, bicycle and foot
+            bikemap - better visibiltity of cycleroute and -ways
+            carmpap - only for motorvehicle, no routing for bicycle and foot
+
+
             FIXME (possible)
             Contourlines (possible)
 
@@ -249,10 +252,13 @@ if (args.map_style) != "no":
     printerror((args.map_style) + "_style - dir not found")
     printerror("possible styles are: ")
     print()
-    printerror("    basemap")
-    printerror("    bikemap")
-    printerror("    fixme")
-    printerror("    defaultmap")
+    print("    basemap")
+    print("    bikemap")
+    print("    fixme")
+    print("    defaultmap")
+    print("    carmpp")
+    print()
+    print()
     quit()
   if config.has_option('map_styles', (args.map_style)) == True:
     if (args.map_style) != "defaultmap":
