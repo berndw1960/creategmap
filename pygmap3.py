@@ -181,16 +181,12 @@ parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="e
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
 parser.add_argument('--print_config', action="store_true", help="printout the config sections  and exit")
 parser.add_argument('--print_section', dest='print_section', default='no', help="printout a config section and exit")
+parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 
 args = parser.parse_args()
-
-"""
-edit map_styles list
-
-"""
 
 if (args.print_config):
   print()
@@ -400,6 +396,12 @@ if ExitCode == True:
 else:
   buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
 
+if (args.stop_after) == "tests":
+  print()
+  printwarning(" Tests successful finished")
+  print()
+  quit()
+
   """
   create mapdata if needed
 
@@ -436,6 +438,11 @@ else:
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
 
+if (args.stop_after) == "create":
+  print()
+  printwarning(" Mapdata for " + (buildmap) + " successful extracted/updated")
+  print()
+  quit()
 
 """
 split rawdata
@@ -481,6 +488,12 @@ elif ExitCode == True:
 
     splitter.split()
 
+if (args.stop_after) == "splitter":
+  print()
+  printwarning(" Mapdata for " + (buildmap) + " successful splitted")
+  print()
+  quit()
+
 """
 render the map-images
 
@@ -495,6 +508,13 @@ mkgmap.render()
 if config.get('mkgmap', 'logging') == "yes":
   config.set('mkgmap', 'logging', 'no')
   write_config()
+
+
+if (args.stop_after) == "mkgmap":
+  print()
+  printwarning(" Mapset for " + (buildmap) + " successful created")
+  print()
+  quit()
 
 """
 zip the images, kml and log
