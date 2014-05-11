@@ -375,10 +375,18 @@ bounds and precomp_sea from navmap.eu
 if config.get('navmap', 'pre_comp') == "yes":
   import navmap
 
+if (args.stop_after) == "tests":
+  print()
+  printwarning(" Tests successful finished")
+  print()
+  quit()
+
+
 """
 is there a keep_data.lck, then use the old data
 
 """
+
 
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == True:
@@ -395,12 +403,6 @@ if ExitCode == True:
 
 else:
   buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
-
-if (args.stop_after) == "tests":
-  print()
-  printwarning(" Tests successful finished")
-  print()
-  quit()
 
   """
   create mapdata if needed
