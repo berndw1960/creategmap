@@ -156,7 +156,7 @@ parser = argparse.ArgumentParser(
 
             basemap - to route  motorvehicle, bicycle and foot
             bikemap - better visibiltity of cycleroute and -ways
-            carmpap - only for motorvehicle, no routing for bicycle and foot
+            carmap - only for motorvehicle, no routing for bicycle and foot
 
 
             FIXME (possible)
@@ -226,10 +226,21 @@ if (args.add_style) != "no":
   if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
     printerror((args.add_style) + "_style - dir not found")
     quit()
+    
   if (args.add_style) != "defaultmap":
     if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
+      print()
       printerror((args.add_style) + "_typ.txt not found")
+      print()
       quit()
+    for style in ['basemap', 'bikemap', 'carmap']:
+      if (style) == (args.add_style):
+        if os.path.exists("mystyles/pygmap3_typ.txt") == False:
+          print()
+          printerror("pygmap3_typ.txt not found")
+          print()
+          quit()
+      
   config.set('map_styles', (args.add_style), 'yes')
   write_config()
   printinfo((args.add_style) + " added to map_styles list")

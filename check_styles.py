@@ -41,15 +41,3 @@ def check():
         print()
         
         os.system("java -jar " + (mkgmap_path) + (style_file) + " --check-styles " + (typ_file))
-       
-"""
-     if config.get('runtime', 'verbose') == "yes":
-          printinfo("list_styles enabled")
-        option_list_styles = " --list-styles "
-      else:
-        if config.get('runtime', 'verbose') == "yes":
-          printwarning("list_styles disabled")
-        option_list_styles = " "
-
-
-"""

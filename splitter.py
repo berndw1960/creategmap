@@ -125,5 +125,4 @@ def split():
     printerror("  " + (WORK_DIR) + "o5m/"  + (buildmap) + ".o5m")
     printerror("this file is possible damaged")
     print()
-    print()
     quit()

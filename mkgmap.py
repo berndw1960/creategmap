@@ -41,7 +41,7 @@ def render():
       add your own styles in mystyles
 
       """
-      if layer !=  'defaultmap':
+      if (layer != "defaultmap") or (layer != "basemap") or (layer != "bikemap") or (layer != "carmap"):
         ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
         if ExitCode == False:
           print()
@@ -124,10 +124,11 @@ def render():
         option_sea = (option_sea_default)
 
       if layer == "defaultmap":
-        print()
-        printwarning("defaultmap has no typ_file")
         typ_file = " "
         style_file = " "
+      elif (layer == "basemap") or (layer == "bikemap") or (layer == "carmap"):
+        typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
+        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
       else:
         if config.get('runtime', 'verbose') == "yes":
           print()
