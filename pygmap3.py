@@ -156,34 +156,49 @@ parser = argparse.ArgumentParser(
 
             basemap - to route  motorvehicle, bicycle and foot
             bikemap - better visibiltity of cycleroute and -ways
-            carmap - only for motorvehicle, no routing for bicycle and foot
+            carmap  - only for motorvehicle, no routing for bicycle and foot
 
 
             FIXME (possible)
             Contourlines (possible)
 
-            These Styles, based and inspired by the AIO-Style,
-            are Public Domain, do what you want with them.
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
         '''))
+        
+# style handling        
+parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style to the build list")
+parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style on the build list")
+parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
+parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style from the build list ")
 
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'))
+# mapset handling
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set map region to build")
+parser.add_argument('-sd', '--map_set', dest='map_set', default='no', help="set $MAP_SET as new default")
+
+# image handling
+parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
+
+# contourlines
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
+
+# config
+parser.add_argument('-pc', '--print_config', action="store_true", help="printout the config sections  and exit")
+parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout a config section and exit")
+
+# splitter options
 parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
+
+# mkgmap options
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-parser.add_argument('-l', '--log', action="store_true", help="enable mkgmaps log")
-parser.add_argument('-lm', '--list_mapstyle', action="store_true")
-parser.add_argument('-s', '--map_set', dest='map_set', default='no', help="set $MAP_SET as new default")
-parser.add_argument('-a', '--add_style', dest='add_style', default='no')
-parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
-parser.add_argument('-r', '--rm_style', dest='rm_style', default='no')
-parser.add_argument('--print_config', action="store_true", help="printout the config sections  and exit")
-parser.add_argument('--print_section', dest='print_section', default='no', help="printout a config section and exit")
+
+# debugging
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
-parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
+parser.add_argument('-l', '--log', action="store_true", help="enable mkgmaps log")
+
+# development
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 
 args = parser.parse_args()
@@ -222,24 +237,26 @@ if (args.list_mapstyle):
     print()
   quit()
 
-if (args.add_style) != "no":
+def pygmap3_typ():
+  if os.path.exists("mystyles/pygmap3_typ.txt") == False:
+    print()
+    printerror("pygmap3_typ.txt not found")
+    print()
+    quit()
+     
+if (args.add_style) != "no" and (args.add_style) != "defaultmap":
   if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
     printerror((args.add_style) + "_style - dir not found")
     quit()
-
-  if (args.add_style) != "defaultmap":
+  
+  if ((args.add_style) == "basemap") or ((args.add_style) == "bikemap") or ((args.add_style) == "carmap"):
+    pygmap3_typ()
+  else:    
     if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
       print()
       printerror((args.add_style) + "_typ.txt not found")
       print()
       quit()
-    for style in ['basemap', 'bikemap', 'carmap']:
-      if (style) == (args.add_style):
-        if os.path.exists("mystyles/pygmap3_typ.txt") == False:
-          print()
-          printerror("pygmap3_typ.txt not found")
-          print()
-          quit()
 
   config.set('map_styles', (args.add_style), 'yes')
   write_config()
@@ -268,12 +285,14 @@ if (args.map_style) != "no" and (args.map_style) != "defaultmap":
     print()
     quit()
 
-if (args.map_style) != "no":
   if config.has_option('map_styles', (args.map_style)) == True:
-    if (args.map_style) != "defaultmap":
+    if ((args.map_style) == "basemap") or ((args.map_style) == "bikemap") or ((args.map_style) == "carmap"):
+      pygmap3_typ()
+    else:
       if os.path.exists("mystyles/" + (args.map_style) + "_typ.txt") == False:
         printerror((args.map_style) + "_typ.txt not found")
         quit()
+        
     if config.get('map_styles', (args.map_style)) == "yes":
       config.set('map_styles', (args.map_style), 'no')
       printwarning((args.map_style) + " style disabled")
