@@ -258,16 +258,10 @@ if (args.add_style) != "no" and (args.add_style) != "defaultmap":
       print()
       quit()
 
+if (args.add_style) != "no":
   config.set('map_styles', (args.add_style), 'yes')
   write_config()
   printinfo((args.add_style) + " added to map_styles list")
-  quit()
-
-if (args.rm_style) != "no":
-  if config.has_option('map_styles', (args.rm_style)) == True:
-    config.remove_option('map_styles', (args.rm_style))
-    write_config()
-  printwarning((args.rm_style) + " removed from map_styles list")
   quit()
 
 if (args.map_style) != "no" and (args.map_style) != "defaultmap":
@@ -293,12 +287,13 @@ if (args.map_style) != "no" and (args.map_style) != "defaultmap":
         printerror((args.map_style) + "_typ.txt not found")
         quit()
         
-    if config.get('map_styles', (args.map_style)) == "yes":
-      config.set('map_styles', (args.map_style), 'no')
-      printwarning((args.map_style) + " style disabled")
-    elif config.get('map_styles', (args.map_style)) == "no":
-      config.set('map_styles', (args.map_style), 'yes')
-      printinfo((args.map_style) + " style enabled")
+if (args.map_style) != "no":       
+  if config.get('map_styles', (args.map_style)) == "yes":
+    config.set('map_styles', (args.map_style), 'no')
+    printwarning((args.map_style) + " style disabled")
+  elif config.get('map_styles', (args.map_style)) == "no":
+    config.set('map_styles', (args.map_style), 'yes')
+    printinfo((args.map_style) + " style enabled")
   else:
      config.set('map_styles', (args.map_style), 'yes')
      printinfo((args.map_style) + " style added and enabled")
@@ -306,7 +301,12 @@ if (args.map_style) != "no" and (args.map_style) != "defaultmap":
   write_config()
   quit()
 
-
+if (args.rm_style) != "no":
+  if config.has_option('map_styles', (args.rm_style)) == True:
+    config.remove_option('map_styles', (args.rm_style))
+    write_config()
+  printwarning((args.rm_style) + " removed from map_styles list")
+  quit()
 
 if (args.map_set) != "no":
   ExitCode = os.path.exists("poly/" + (args.map_set) + ".poly")
