@@ -114,6 +114,8 @@ def render():
         style_file = " "
 
       elif os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == False:
+        print()
+        printwarning((layer) + " build without a typ_file")
         typ_file = " "
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
 
