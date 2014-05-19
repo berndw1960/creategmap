@@ -37,32 +37,6 @@ def render():
       os.chdir(WORK_DIR)
 
       """
-      create the layers
-      add your own styles in mystyles
-
-      """
-      if (layer != "defaultmap") or (layer != "basemap") or (layer != "bikemap") or (layer != "carmap"):
-        ExitCode = os.path.exists("mystyles/" + (layer) + "_style")
-        if ExitCode == False:
-          print()
-          printerror("no " + (layer) + "_style found!")
-          quit()
-
-        """
-        if there is only a TYP-File
-
-        """
-        ExitCode = os.path.exists("mystyles/" + (layer) + "_typ.txt")
-        if ExitCode == False:
-          ExitCode = os.path.exists("mystyles/" + (layer) + "_typ")
-          if ExitCode == True:
-            print()
-            printerror(" Please convert " +
-              "mystyles/" + (layer) + ".TYP to " + (layer) + "_typ.txt!")
-            quit()
-
-
-      """
       Test for (layer)-dir and remove old data from there
       """
 
@@ -123,18 +97,31 @@ def render():
         option_bounds = (option_bounds_default)
         option_sea = (option_sea_default)
 
-      if layer == "defaultmap":
-        typ_file = " "
-        style_file = " "
-      elif (layer == "basemap") or (layer == "bikemap") or (layer == "carmap"):
-        typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
-        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
-      else:
+
+      if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
         if config.get('runtime', 'verbose') == "yes":
           print()
           printinfo((layer) + " build with typ_file")
         typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
+
+      elif (layer == "basemap") or (layer == "bikemap") or (layer == "carmap"):
+        typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
+        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
+
+      elif (layer == "defaultmap"):
+        typ_file = " "
+        style_file = " "
+
+      elif os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == False:
+        typ_file = " "
+        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
+
+      else:
+        print()
+        printerror(" Oops, something going wrong, please check your stylefiles" )
+        quit()
+
 
       """
       map rendering
