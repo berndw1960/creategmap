@@ -60,7 +60,12 @@ def render():
       """
       mkgmap-options
       """
-      option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
+      mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
+
+      if (layer) == "defaultmap":
+        option_mkgmap_options = " --route --gmapsupp --read-config=" + (WORK_DIR) + config.get('mkgmap', 'version') + "/examples/styles/default/options "
+      else:
+        option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
 
       if config.get('mkgmap', 'logging') == "yes":
         if config.get('runtime', 'verbose') == "yes":
@@ -148,7 +153,6 @@ def render():
             " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
             (typ_file))
-
 
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
