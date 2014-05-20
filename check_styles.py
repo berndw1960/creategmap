@@ -17,21 +17,17 @@ def printerror(msg):
 
 
 config = configparser.ConfigParser()
- 
- 
+
+
 def check():
-  
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
-  
   mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
-  
+
   for layer in config['map_styles']:
-    print()
     if config['map_styles'][(layer)] == "yes":
-      
+      print()
       print(layer)
-      
       if layer != "defaultmap":
         if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
           typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
@@ -44,5 +40,5 @@ def check():
         print("typ_file = " + typ_file)
         print("style_file = " + style_file)
         print()
-        
         os.system("java -jar " + (mkgmap_path) + (style_file) + " --check-styles " + (typ_file))
+        print()
