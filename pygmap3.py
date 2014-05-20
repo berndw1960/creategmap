@@ -166,8 +166,8 @@ parser = argparse.ArgumentParser(
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
         '''))
-        
-# style handling        
+
+# style handling
 parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style to the build list")
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style on the build list")
 parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
@@ -237,24 +237,6 @@ if (args.list_mapstyle):
     print()
   quit()
 
-def pygmap3_typ():
-  if os.path.exists("mystyles/pygmap3_typ.txt") == False:
-    print()
-    printerror("pygmap3_typ.txt not found")
-    print()
-    quit()
-     
-if (args.add_style) != "no" and (args.add_style) != "defaultmap":
-  if os.path.exists("mystyles/" + (args.add_style) + "_style") == False:
-    printerror((args.add_style) + "_style - dir not found")
-    quit()
-  
-  if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
-    print()
-    printinfo((args.add_style) + "_typ.txt not found")
-    print()
-    pygmap3_typ()
-
 if (args.add_style) != "no":
   config.set('map_styles', (args.add_style), 'yes')
   write_config()
@@ -272,18 +254,10 @@ if (args.map_style) != "no" and (args.map_style) != "defaultmap":
     print("    carmap")
     print("    fixme")
     print("    defaultmap")
-    print()
+    print("    or your own style!")
     print()
     quit()
 
-  if config.has_option('map_styles', (args.map_style)) == True:
-    if ((args.map_style) == "basemap") or ((args.map_style) == "bikemap") or ((args.map_style) == "carmap"):
-      pygmap3_typ()
-    else:
-      if os.path.exists("mystyles/" + (args.map_style) + "_typ.txt") == False:
-        printerror((args.map_style) + "_typ.txt not found")
-        quit()
-        
 if (args.map_style) != "no":
   if config.has_option('map_styles', (args.map_style)) == True:
     if config.get('map_styles', (args.map_style)) == "yes":
