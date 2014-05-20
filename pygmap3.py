@@ -249,14 +249,11 @@ if (args.add_style) != "no" and (args.add_style) != "defaultmap":
     printerror((args.add_style) + "_style - dir not found")
     quit()
   
-  if ((args.add_style) == "basemap") or ((args.add_style) == "bikemap") or ((args.add_style) == "carmap"):
+  if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
+    print()
+    printinfo((args.add_style) + "_typ.txt not found")
+    print()
     pygmap3_typ()
-  else:    
-    if os.path.exists("mystyles/" + (args.add_style) + "_typ.txt") == False:
-      print()
-      printerror((args.add_style) + "_typ.txt not found")
-      print()
-      quit()
 
 if (args.add_style) != "no":
   config.set('map_styles', (args.add_style), 'yes')

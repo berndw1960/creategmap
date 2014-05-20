@@ -103,20 +103,23 @@ def render():
         option_sea = (option_sea_default)
 
 
-      if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
+      if (layer == "defaultmap"):
+        typ_file = " "
+        style_file = " "
+
+      elif os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
         if config.get('runtime', 'verbose') == "yes":
           print()
           printinfo((layer) + " build with typ_file")
         typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
 
-      elif (layer == "basemap") or (layer == "bikemap") or (layer == "carmap"):
+      elif os.path.exists((WORK_DIR) + "mystyles/pygmap3_typ.txt") == True:
+        if config.get('runtime', 'verbose') == "yes":
+          print()
+          printinfo((layer) + " build with pygmap3_typ_file")
         typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
-
-      elif (layer == "defaultmap"):
-        typ_file = " "
-        style_file = " "
 
       elif os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == False:
         print()

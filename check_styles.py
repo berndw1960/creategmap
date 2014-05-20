@@ -33,11 +33,16 @@ def check():
       print(layer)
       
       if layer != "defaultmap":
-        typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
+        if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
+          typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
+        elif os.path.exists((WORK_DIR) + "mystyles/pygmap3_typ.txt") == True:
+          typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
+        else:
+          typ_file = " "
         style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
         print()
-        print(typ_file)
-        print(style_file)
+        print("typ_file = " + typ_file)
+        print("style_file = " + style_file)
         print()
         
         os.system("java -jar " + (mkgmap_path) + (style_file) + " --check-styles " + (typ_file))
