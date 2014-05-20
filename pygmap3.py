@@ -287,13 +287,14 @@ if (args.map_style) != "no" and (args.map_style) != "defaultmap":
         printerror((args.map_style) + "_typ.txt not found")
         quit()
         
-if (args.map_style) != "no":       
-  if config.get('map_styles', (args.map_style)) == "yes":
-    config.set('map_styles', (args.map_style), 'no')
-    printwarning((args.map_style) + " style disabled")
-  elif config.get('map_styles', (args.map_style)) == "no":
-    config.set('map_styles', (args.map_style), 'yes')
-    printinfo((args.map_style) + " style enabled")
+if (args.map_style) != "no":
+  if config.has_option('map_styles', (args.map_style)) == True:
+    if config.get('map_styles', (args.map_style)) == "yes":
+      config.set('map_styles', (args.map_style), 'no')
+      printwarning((args.map_style) + " style disabled")
+    elif config.get('map_styles', (args.map_style)) == "no":
+      config.set('map_styles', (args.map_style), 'yes')
+      printinfo((args.map_style) + " style enabled")
   else:
      config.set('map_styles', (args.map_style), 'yes')
      printinfo((args.map_style) + " style added and enabled")
