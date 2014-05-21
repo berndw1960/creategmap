@@ -60,7 +60,7 @@ def render():
       """
       mkgmap-options
       """
-      mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
+      option_mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
 
       if (layer) == "defaultmap":
         option_mkgmap_options = " --route --gmapsupp --read-config=" + (WORK_DIR) + config.get('mkgmap', 'version') + "/examples/styles/default/options "
@@ -104,33 +104,28 @@ def render():
 
 
       if (layer == "defaultmap"):
-        typ_file = " "
-        style_file = " "
-
-      elif os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
-        if config.get('runtime', 'verbose') == "yes":
-          print()
-          printinfo((layer) + " build with " + (layer) + "typ.txt")
-        typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
-        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
-
-      elif os.path.exists((WORK_DIR) + "mystyles/pygmap3_typ.txt") == True:
-        if config.get('runtime', 'verbose') == "yes":
-          print()
-          printinfo((layer) + " build with pygmap3_typ.txt")
-        typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
-        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
-
-      elif os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == False:
-        print()
-        printwarning((layer) + " build without a typ_file")
-        typ_file = " "
-        style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
+        option_typ_file = " "
+        option_style_file = " --style-file=" + (WORK_DIR) + config.get('mkgmap', 'version') + "/examples/styles/default "
 
       else:
-        print()
-        printerror(" Oops, something going wrong, please check your stylefiles" )
-        quit()
+        if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
+          if config.get('runtime', 'verbose') == "yes":
+            print()
+            printinfo((layer) + " build with " + (layer) + "typ.txt")
+          option_typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
+
+        elif os.path.exists((WORK_DIR) + "mystyles/pygmap3_typ.txt") == True:
+          if config.get('runtime', 'verbose') == "yes":
+            print()
+            printinfo((layer) + " build with pygmap3_typ.txt")
+          option_typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
+
+        else:
+          print()
+          printwarning((layer) + " build without a typ_file")
+          option_typ_file = " "
+
+        option_style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
 
 
       """
@@ -142,11 +137,11 @@ def render():
       os.system("java -ea " +
             config.get('ramsize', 'ramsize') +
             (option_mkgmap_logging) +
-            " -jar " + (mkgmap_path) +
+            " -jar " + (option_mkgmap_path) +
             (option_mkgmap_options) +
             (option_bounds) +
             (option_sea) +
-            (style_file) +
+            (option_style_file) +
             " --name-tag-list=name:de,name,name:en,int_name " +
             " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
             " --family-id=" + config.get((layer), 'family-id') +
@@ -155,7 +150,7 @@ def render():
             " --family-name=" + config.get((layer), 'family-name') +
             " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
             (WORK_DIR) + "tiles/*.o5m " +
-            (typ_file))
+            (option_typ_file))
 
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img

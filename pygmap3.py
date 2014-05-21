@@ -172,6 +172,7 @@ parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="a
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style on the build list")
 parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style from the build list ")
+parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 
 # mapset handling
 parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set map region to build")
@@ -234,6 +235,16 @@ if (args.list_mapstyle):
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
       print ("  " + (key) + " = " + config['mapset'][(key)])
+    print()
+  quit()
+
+if (args.all_map_styles):
+  if config.has_section('map_styles') == True:
+    for key in (config['map_styles']):
+      config.set('map_styles', (key), 'yes')
+      write_config()
+    print()
+    printinfo("all mapstyles enabled")
     print()
   quit()
 

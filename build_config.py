@@ -61,15 +61,22 @@ def create():
                        'mapid_ext': '2001',}
 
   config['carmap'] = {}
-  config['carmap'] = {'family-id': '2',
-                       'product-id': '48',
+  config['carmap'] = {'family-id': '6',
+                       'product-id': '47',
                        'family-name': 'Carmap',
                        'draw-priority': '10',
                        'mapid_ext': '3001',}
 
+  config['housenumber'] = {}
+  config['housenumber'] = {'family-id': '7',
+                       'product-id': '48',
+                       'family-name': 'Housenumbers',
+                       'draw-priority': '16',
+                       'mapid_ext': '6001',}
+
   config['defaultmap'] = {}
-  config['defaultmap'] = {'family-id': '6',
-                          'product-id': '47',
+  config['defaultmap'] = {'family-id': '9',
+                          'product-id': '50',
                           'family-name': 'defaultmap',
                           'draw-priority': '10',
                           'mapid_ext': '5001',}
