@@ -242,6 +242,7 @@ if (args.all_map_styles):
   if config.has_section('map_styles') == True:
     for key in (config['map_styles']):
       config.set('map_styles', (key), 'yes')
+      print ("  " + (key) + " = " + config['map_styles'][(key)])
       write_config()
     print()
     printinfo("all mapstyles enabled")
