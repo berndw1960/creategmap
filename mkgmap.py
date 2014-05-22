@@ -71,7 +71,7 @@ def render():
         if config.get('runtime', 'verbose') == "yes":
           print()
           printinfo("logging enabled")
-        option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "logging.properties "
+        option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "logging.properities "
       else:
         if config.get('runtime', 'verbose') == "yes":
           print()
@@ -111,7 +111,7 @@ def render():
         if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
           if config.get('runtime', 'verbose') == "yes":
             print()
-            printinfo((layer) + " build with " + (layer) + "typ.txt")
+            printinfo((layer) + " build with " + (layer) + "_typ.txt")
           option_typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
 
         elif os.path.exists((WORK_DIR) + "mystyles/pygmap3_typ.txt") == True:
