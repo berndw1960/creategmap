@@ -102,7 +102,7 @@ def split():
   else:
     os.chdir("tiles")
     print()
-    printwarning("no areas.list enabled, splitting the mapdata without it...")
+    printwarning("'--areas_list' isn't enabled, splitting the mapdata without it...")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
 
   os.chdir(WORK_DIR)

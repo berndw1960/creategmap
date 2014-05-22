@@ -71,7 +71,7 @@ def render():
         if config.get('runtime', 'verbose') == "yes":
           print()
           printinfo("logging enabled")
-        option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "log.conf "
+        option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "logging.properties "
       else:
         if config.get('runtime', 'verbose') == "yes":
           print()
