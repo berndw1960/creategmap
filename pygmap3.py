@@ -546,7 +546,7 @@ if (args.zip_img):
   store.zip_img()
   store.kml()
 
-if config.get('mkgmap', 'logging') == "yes":
+if(args.log):
   store.log()
 
 """

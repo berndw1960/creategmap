@@ -118,6 +118,7 @@ def log():
 
       ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
       if ExitCode == True:
+
         from shutil import copytree, ignore_patterns
         copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
 
