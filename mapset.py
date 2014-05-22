@@ -40,10 +40,11 @@ parser = argparse.ArgumentParser(
         '''))
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
-parser.add_argument('-l', '--list_mapset', action="store_true", help="print out the mapset list")
+parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
 parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
+parser.add_argument('-l', '--log', action="store_true", help="enable mkgmaps log")
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 args = parser.parse_args()
 
@@ -145,10 +146,15 @@ if (args.svn):
 else:
   svn = " "
 
+if (args.log):
+  log = " --log "
+else:
+  log = " "
+
 for buildmap in config['mapset']:
   if (buildmap) != "default":
     if config['mapset'][(buildmap)] == "yes":
-      os.system("pygmap3.py " + (stop) + (cl) +  (svn) + "-z -b " + (buildmap))
+      os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + "-z -b " + (buildmap))
 
 print()
 print("###### all mapsets successfully build! #######")
