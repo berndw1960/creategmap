@@ -33,8 +33,7 @@ def create():
                       'use_bounds': 'yes',}
 
   config['splitter'] = {}
-  config['splitter'] = {'logging': 'yes',
-                        'maxnodes': '1600000',
+  config['splitter'] = {'maxnodes': '1600000',
                         'use_areas': 'no',}
 
   config['mkgmap'] = {}

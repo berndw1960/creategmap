@@ -305,7 +305,7 @@ if (args.rm_style) != "no":
   if config.has_option('map_styles', (args.rm_style)) == True:
     config.remove_option('map_styles', (args.rm_style))
     write_config()
-  printwarning((args.rm_style) + " removed from map_styles list")
+  printinfo((args.rm_style) + " removed from map_styles list")
   quit()
 
 if (args.map_set) != "no":
@@ -394,8 +394,9 @@ get splitter and mkgmap
 """
 if (args.svn):
   config.set('runtime', 'svn', 'yes')
-  print()
-  printwarning("using svn versions of splitter and mkgmap")
+  if (args.verbose):
+    print()
+    printinfo("using svn versions of splitter and mkgmap")
 
   write_config()
 
@@ -411,7 +412,7 @@ if config.get('navmap', 'pre_comp') == "yes":
 
 if (args.stop_after) == "tests":
   print()
-  printwarning(" Tests successful finished")
+  printinfo(" Tests successful finished")
   print()
   quit()
 
@@ -485,7 +486,7 @@ config.read('pygmap3.cfg')
 
 if (args.stop_after) == "create":
   print()
-  printwarning(" Mapdata for " + (buildmap) + " successful extracted/updated")
+  printinfo(" Mapdata for " + (buildmap) + " successful extracted/updated")
   print()
   quit()
 
@@ -516,7 +517,8 @@ if ExitCode == False:
   splitter.split()
 
 elif ExitCode == True:
-  printwarning("no_split switched on!")
+  if (args.verbose):
+    printinfo("no_split switched on!")
   ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     printwarning("have to split once again!")
@@ -528,7 +530,7 @@ elif ExitCode == True:
 
 if (args.stop_after) == "splitter":
   print()
-  printwarning(" Mapdata for " + (buildmap) + " successful splitted")
+  printinfo(" Mapdata for " + (buildmap) + " successful splitted")
   print()
   quit()
 
@@ -550,7 +552,7 @@ if config.get('mkgmap', 'logging') == "yes":
 
 if (args.stop_after) == "mkgmap":
   print()
-  printwarning(" Mapset for " + (buildmap) + " successful created")
+  printinfo(" Mapset for " + (buildmap) + " successful created")
   print()
   quit()
 

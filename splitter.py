@@ -34,28 +34,22 @@ def split():
   java_opts = ("java -ea " + config.get('ramsize', 'ramsize') +
                   " -jar " + (splitter_path))
 
-  logging = config.get('splitter', 'logging')
-  if logging == "yes":
+  log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
 
-    log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
+  ExitCode = os.path.exists(log_dir)
+  if ExitCode == True:
+    path = (log_dir)
+    for file in os.listdir(path):
+      if os.path.isfile(os.path.join(path, file)):
+        try:
+          os.remove(os.path.join(path, file))
+        except:
+          print('Could not delete', file, 'in', path)
 
-    ExitCode = os.path.exists(log_dir)
-    if ExitCode == True:
-      path = (log_dir)
-      for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path, file)):
-          try:
-            os.remove(os.path.join(path, file))
-          except:
-            print('Could not delete', file, 'in', path)
+  elif ExitCode == False:
+    os.makedirs(log_dir)
 
-    elif ExitCode == False:
-      os.makedirs(log_dir)
-
-    log_opts = (" > " + (log_dir) + "/splitter.log ")
-
-  else:
-    log_opts = (" > /dev/null ")
+  log_opts = (" > " + (log_dir) + "/splitter.log ")
 
   """
   splitter-options
@@ -89,19 +83,22 @@ def split():
     ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
     if ExitCode == True:
       os.chdir("tiles")
-      print()
-      printinfo("splitting the mapdata with areas.list...")
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo("splitting the mapdata with areas.list...")
       os.system((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
     else:
       os.chdir("tiles")
-      print()
-      printwarning("create areas.list and splitting the mapdata...")
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo("create areas.list and splitting the mapdata...")
       os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
       shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
   else:
     os.chdir("tiles")
-    print()
-    printwarning("'--areas_list' isn't enabled, splitting the mapdata without it...")
+    if config.get('runtime', 'verbose') == "yes":
+      print()
+      printinfo("'--areas_list' isn't enabled, splitting the mapdata without it...")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
 
   for i in ['densities-out.txt', 'template.args', 'areas.poly']:
