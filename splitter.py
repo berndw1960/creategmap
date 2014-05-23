@@ -36,9 +36,9 @@ def split():
                   " -jar " + (splitter_path))
 
   logging = config.get('splitter', 'logging')
-  if logging == "yes":
+  log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
 
-    log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
+  if logging == "yes":
 
     ExitCode = os.path.exists(log_dir)
     if ExitCode == True:
