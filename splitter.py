@@ -16,7 +16,6 @@ def printwarning(msg):
 def printerror(msg):
   print("EE: " + msg)
 
-
 config = configparser.ConfigParser()
 
 """
