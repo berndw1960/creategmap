@@ -197,7 +197,7 @@ parser.add_argument('-cs', '--check_styles', action="store_true", help="test the
 # debugging
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
-parser.add_argument('-l', '--log', action="store_true", help="enable mkgmaps log")
+parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
 # development
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
@@ -337,6 +337,17 @@ set buildmap
 """
 config.set('runtime', 'buildmap', (args.buildmap))
 
+
+"""
+logging
+
+"""
+
+if (args.log):
+  config.set('runtime', 'logging', 'yes')
+else:
+  config.set('runtime', 'logging', 'no')
+
 """
 verbosity
 
@@ -375,8 +386,6 @@ else:
   write_config()
 
 write_config()
-
-
 
 """
 create dir for areas. poly and splitter-output
@@ -538,9 +547,6 @@ if (args.stop_after) == "splitter":
 render the map-images
 
 """
-if (args.log):
-  config.set('mkgmap', 'logging', 'yes')
-  write_config()
 
 import mkgmap
 mkgmap.render()

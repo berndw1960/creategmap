@@ -34,22 +34,8 @@ def split():
   java_opts = ("java -ea " + config.get('ramsize', 'ramsize') +
                   " -jar " + (splitter_path))
 
-  log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
 
-  ExitCode = os.path.exists(log_dir)
-  if ExitCode == True:
-    path = (log_dir)
-    for file in os.listdir(path):
-      if os.path.isfile(os.path.join(path, file)):
-        try:
-          os.remove(os.path.join(path, file))
-        except:
-          print('Could not delete', file, 'in', path)
-
-  elif ExitCode == False:
-    os.makedirs(log_dir)
-
-  log_opts = (" > " + (log_dir) + "/splitter.log ")
+  log_opts = (" > splitter.log ")
 
   """
   splitter-options
@@ -93,7 +79,7 @@ def split():
         print()
         printinfo("create areas.list and splitting the mapdata...")
       os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
-      shutil.move("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
+      shutil.copy2("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
   else:
     os.chdir("tiles")
     if config.get('runtime', 'verbose') == "yes":
@@ -101,10 +87,26 @@ def split():
       printinfo("'--areas_list' isn't enabled, splitting the mapdata without it...")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
 
-  for i in ['densities-out.txt', 'template.args', 'areas.poly']:
-    ExitCode = os.path.exists(i)
+  if config.get('runtime', 'logging') == "yes":
+    log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
+
+    ExitCode = os.path.exists(log_dir)
     if ExitCode == True:
-      shutil.copy2((i), (log_dir))
+      path = (log_dir)
+      for file in os.listdir(path):
+        if os.path.isfile(os.path.join(path, file)):
+          try:
+            os.remove(os.path.join(path, file))
+          except:
+            print('Could not delete', file, 'in', path)
+
+    elif ExitCode == False:
+      os.makedirs(log_dir)
+
+    for i in ['densities-out.txt', 'template.args', 'areas.poly', 'splitter.log', 'areas.list']:
+      ExitCode = os.path.exists(i)
+      if ExitCode == True:
+        shutil.copy2((i), (log_dir))
 
   os.chdir(WORK_DIR)
 

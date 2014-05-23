@@ -67,15 +67,12 @@ def render():
       else:
         option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
 
-      if config.get('mkgmap', 'logging') == "yes":
+      if config.get('runtime', 'logging') == "yes":
         if config.get('runtime', 'verbose') == "yes":
           print()
           printinfo("logging enabled")
         option_mkgmap_logging = " -Dlog.config=" + (WORK_DIR) + "mkgmap_log.props "
       else:
-        if config.get('runtime', 'verbose') == "yes":
-          print()
-          printwarning("logging disabled")
         option_mkgmap_logging = " "
 
       option_bounds_default = " --location-autofill=bounds,is_in,nearest "
