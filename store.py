@@ -110,7 +110,7 @@ def log():
 
       buildmap = config.get('runtime', 'buildmap')
       buildday = config.get('time_stamp', (buildmap))
-      log_dir = ("log/mkgmap/" + (buildday) + "/" + (buildmap) + "/" + (layer))
+      log_dir = ("log/mkgmap/" + (buildmap) + "/" + (layer) + "/" + (buildday))
 
       ExitCode = os.path.exists(log_dir)
       if ExitCode == True:

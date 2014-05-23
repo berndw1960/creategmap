@@ -38,7 +38,7 @@ def split():
   logging = config.get('splitter', 'logging')
   if logging == "yes":
 
-    log_dir = ((WORK_DIR) + "log/splitter/" + (buildday) + "/" + (buildmap))
+    log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
 
     ExitCode = os.path.exists(log_dir)
     if ExitCode == True:
@@ -104,6 +104,11 @@ def split():
     print()
     printwarning("'--areas_list' isn't enabled, splitting the mapdata without it...")
     os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
+
+  for i in ['densities-out.txt', 'template.args', 'areas.poly']:
+    ExitCode = os.path.exists(i)
+    if ExitCode == True:
+      shutil.copy2((i), (log_dir))
 
   os.chdir(WORK_DIR)
 

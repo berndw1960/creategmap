@@ -225,6 +225,22 @@ if (args.print_section) != "no":
   print()
   quit()
 
+if (args.areas_list):
+  if config.get('splitter', 'use_areas') == "no":
+    config.set('splitter', 'use_areas', 'yes')
+    print()
+    printinfo("use_areas enabled in config file")
+    print()
+
+  elif config.get('splitter', 'use_areas') == "yes":
+    config.set('splitter', 'use_areas', 'no')
+    print()
+    printinfo("use_areas disabled in config file")
+    print()
+
+  write_config()
+  quit()
+
 if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
     print()
@@ -464,6 +480,7 @@ if (args.stop_after) == "create":
   print()
   quit()
 
+
 """
 split rawdata
 
@@ -486,14 +503,6 @@ if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
-
-  if (args.areas_list):
-    if config.get('splitter', 'use_areas') == "no":
-      config.set('splitter', 'use_areas', 'yes')
-      print()
-      printinfo("use_areas enabled in config file")
-      print()
-      write_config()
 
   splitter.split()
 
