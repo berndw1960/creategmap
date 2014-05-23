@@ -424,15 +424,24 @@ is there a keep_data.lck, then use the old data
 
 ExitCode = os.path.exists("keep_data.lck")
 if ExitCode == True:
-  try:
-    description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
-    printinfo(description)
-  except:
-    printerror()
-    printerror()
-    printerror("keep_data.lck found and no older time_stamp for " + (buildmap) + " is set in config")
-    printerror("please remove keep_data.lck with 'keep_data.py'")
-    printerror()
+
+  ExitCode = os.path.exists("o5m/" + (buildmap) + ".o5m")
+  if ExitCode == True:
+    try:
+      description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
+      printinfo(description)
+    except:
+      printerror()
+      printerror()
+      printerror("keep_data.lck found and no older time_stamp for " + (buildmap) + " is set in config")
+      printerror("please remove keep_data.lck")
+      printerror()
+      quit()
+  else:
+    print()
+    printerror("o5m/" + (buildmap) + ".o5m not found, but a keep_data.lck, ")
+    printerror("please remove that file with 'keep_data.py'")
+    print()
     quit()
 
 else:
