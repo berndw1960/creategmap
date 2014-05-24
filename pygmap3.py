@@ -522,14 +522,17 @@ if ExitCode == False:
   remove_old_tiles()
 
   os.chdir(WORK_DIR)
+  print()
   printinfo("Now splitting the mapdata...")
   splitter.split()
 
 elif ExitCode == True:
   if (args.verbose):
+    print()
     printinfo("no_split switched on!")
   ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
+    print()
     printwarning("have to split once again!")
     remove_old_tiles()
 
