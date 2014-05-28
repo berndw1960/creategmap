@@ -421,7 +421,7 @@ if config.get('navmap', 'pre_comp') == "yes":
 
 if (args.stop_after) == "tests":
   print()
-  printinfo(" Tests successful finished")
+  printinfo("Tests successful finished")
   print()
   quit()
 

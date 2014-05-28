@@ -42,8 +42,10 @@ def create():
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
 			  'bikemap': 'no',
+                          'carmap': 'no',
+                          'housenumber': 'no',
                           'fixme': 'no',
-                          'default': 'yes',}
+                          'defaultmap': 'yes',}
 
   config['basemap'] = {}
   config['basemap'] = {'family-id': '4',
