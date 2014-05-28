@@ -70,6 +70,7 @@ def create_o5m():
 
   ExitCode = os.path.exists("o5m/planet.o5m")
   if ExitCode == True:
+    print()
     printinfo("now extracting " + (buildmap) + ".o5m from Planet, please wait...")
     os.system("osmconvert o5m/planet.o5m " +
               "--complete-ways --complex-ways --drop-version " +
