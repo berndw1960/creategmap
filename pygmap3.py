@@ -154,29 +154,31 @@ parser = argparse.ArgumentParser(
 
             To build maps for Garmin PNA
 
+            map layers (routable):
             basemap - to route  motorvehicle, bicycle and foot
             bikemap - better visibiltity of cycleroute and -ways
             carmap  - only for motorvehicle, no routing for bicycle and foot
 
-
-            FIXME (possible)
-            Contourlines (possible)
-
+            additional layers
+            fixme   - a fixme layer for mapping
+            housenumbers - a layer that shows the housenumbers
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
         '''))
 
-# style handling
+# list styles
+parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
+
+# mapstyle handling
 parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style to the build list")
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style on the build list")
-parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style from the build list ")
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 
 # mapset handling
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set map region to build")
-parser.add_argument('-sd', '--map_set', dest='map_set', default='no', help="set $MAP_SET as new default")
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set mapset to build")
+parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set the default mapset")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
@@ -189,9 +191,6 @@ parser.add_argument('-ps', '--print_section', dest='print_section', default='no'
 parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
-# mkgmap options
-parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-
 # contourlines
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 
@@ -199,7 +198,8 @@ parser.add_argument('-c', '--contourlines', action="store_true", help="create co
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
 # debugging
-parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
+parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
+parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
@@ -312,14 +312,14 @@ if (args.rm_style) != "no":
   printinfo((args.rm_style) + " removed from map_styles list")
   quit()
 
-if (args.map_set) != "no":
-  ExitCode = os.path.exists("poly/" + (args.map_set) + ".poly")
+if (args.set_default) != "no":
+  ExitCode = os.path.exists("poly/" + (args.set_default) + ".poly")
   if ExitCode == False:
-    printerror((WORK_DIR) + "poly/" + (args.map_set) + ".poly not found... ")
-    printerror("please create or download "+ (args.map_set) + ".poly")
+    printerror((WORK_DIR) + "poly/" + (args.set_default) + ".poly not found... ")
+    printerror("please create or download "+ (args.set_default) + ".poly")
     quit()
-  config.set('mapset', 'default', (args.map_set))
-  print((args.map_set) + " set as new default mapset")
+  config.set('mapset', 'default', (args.set_default))
+  print((args.set_default) + " set as new default mapset")
   write_config()
   quit()
 
