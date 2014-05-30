@@ -126,6 +126,6 @@ def split():
     print()
     printerror("If this error comes again after the next start, please remove")
     printerror("  " + (WORK_DIR) + "o5m/"  + (buildmap) + ".o5m")
-    printerror("this file is possible damaged")
+    printerror("Maybe this file is damaged")
     print()
     quit()

@@ -178,11 +178,8 @@ parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable
 parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set map region to build")
 parser.add_argument('-sd', '--map_set', dest='map_set', default='no', help="set $MAP_SET as new default")
 
-# image handling
-parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
-
-# contourlines
-parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
+# mapdata
+parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
 
 # config
 parser.add_argument('-pc', '--print_config', action="store_true", help="printout the config sections  and exit")
@@ -190,9 +187,16 @@ parser.add_argument('-ps', '--print_section', dest='print_section', default='no'
 
 # splitter options
 parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
+parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
 # mkgmap options
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
+
+# contourlines
+parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
+
+# image handling
+parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
 # debugging
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
@@ -401,6 +405,7 @@ for dir in ['o5m', 'areas', 'poly', 'tiles']:
 get splitter and mkgmap
 
 """
+
 if (args.svn):
   config.set('runtime', 'svn', 'yes')
   if (args.verbose):
@@ -425,35 +430,31 @@ if (args.stop_after) == "tests":
   print()
   quit()
 
+"""
+if --keep_data is set, then use the old data
 
 """
-is there a keep_data.lck, then use the old data
 
-"""
-
-
-ExitCode = os.path.exists("keep_data.lck")
-if ExitCode == True:
-
+if (args.keep_data):
   ExitCode = os.path.exists("o5m/" + (buildmap) + ".o5m")
   if ExitCode == True:
     try:
       description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
+      print()
       printinfo(description)
     except:
       printerror()
       printerror()
-      printerror("keep_data.lck found and no older time_stamp for " + (buildmap) + " is set in config")
+      printerror("keep_data enabled and no older time_stamp for " + (buildmap) + " is set in config")
       printerror("please remove keep_data.lck")
       printerror()
       quit()
   else:
     print()
-    printerror("o5m/" + (buildmap) + ".o5m not found, but a keep_data.lck, ")
-    printerror("please remove that file with 'keep_data.py'")
+    printerror("o5m/" + (buildmap) + ".o5m not found, but option --keep_data is set ")
+    printerror("please start pygmap3.py without it")
     print()
     quit()
-
 else:
   buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
 
@@ -470,7 +471,7 @@ else:
       printerror()
       printerror("No Planet-File found!  ")
       printerror()
-      printerror("A planet is needed,because you didn't have ")
+      printerror("A planet is needed, because you didn't have ")
       printerror("a " + (buildmap) + ".o5m O5M-File! ")
       printerror("Please download one with 'planet_up.py'.")
       printerror()
@@ -505,7 +506,6 @@ split rawdata
 
 """
 
-
 def remove_old_tiles():
   path = 'tiles'
   for file in os.listdir(path):
@@ -517,28 +517,23 @@ def remove_old_tiles():
 
 import splitter
 
-ExitCode = os.path.exists((WORK_DIR) + "no_split.lck")
-if ExitCode == False:
-  remove_old_tiles()
-
-  os.chdir(WORK_DIR)
-  print()
-  printinfo("Now splitting the mapdata...")
-  splitter.split()
-
-elif ExitCode == True:
+if (args.no_split):
   if (args.verbose):
     print()
     printinfo("no_split switched on!")
   ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     print()
-    printwarning("have to split once again!")
-    remove_old_tiles()
-
-    os.chdir(WORK_DIR)
-
-    splitter.split()
+    printerror("there is no tiles/" + (buildmap) + "_split.ready")
+    printerror("--no_split makes no sense, please restart without this option")
+    print()
+    quit()
+else:
+  remove_old_tiles()
+  os.chdir(WORK_DIR)
+  print()
+  printinfo("now splitting the mapdata...")
+  splitter.split()
 
 if (args.stop_after) == "splitter":
   print()

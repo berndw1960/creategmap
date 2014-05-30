@@ -38,11 +38,5 @@ pygmap3.py -    the main script, start it without any option to create map
 
 planet_up.py -  download  a complete planet from openstreetmap.org or update it
 
-keep_data.py -  needed, if you want to build a map with older mapdata
-                keep_data.py is a FlipFlop to stop some functions in pygmap3.py
-                start it with 'keep_data.py', there are no options needed
-
-no_split.py -   like 'keep_data.py, but it do this only for the split-function
-                in 'splitter.py'
 
 all other *.py are helper for 'pygmap3.py', they must be in the same folder!
