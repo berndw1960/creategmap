@@ -39,6 +39,11 @@ def create():
   config['mkgmap'] = {}
   config['mkgmap'] = {'logging': 'no',}
 
+  config['runtime'] = {}
+  config['runtime'] = {'svn': 'no',
+                       'logging': 'no',
+                       'verbose': 'no',}
+
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
 			  'bikemap': 'no',
@@ -110,7 +115,16 @@ def update():
 
   if ('runtime' in config) == False:
     config.add_section('runtime')
-    
+
+  if config.has_option('runtime', 'svn') == False:
+    config.set('runtime', 'svn', 'no')
+
+  if config.has_option('runtime', 'logging') == False:
+    config.set('runtime', 'logging', 'no')
+
+  if config.has_option('runtime', 'verbose') == False:
+    config.set('runtime', 'verbose', 'no')
+
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 

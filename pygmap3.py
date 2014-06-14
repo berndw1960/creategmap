@@ -246,8 +246,8 @@ if (args.areas_list):
     print()
     printinfo("use_areas disabled in config file")
     print()
-  
-  write_config()  
+
+  write_config()
   quit()
 
 if (args.list_mapstyle):
@@ -305,7 +305,7 @@ if (args.map_style) != "no":
   else:
      config.set('map_styles', (args.map_style), 'yes')
      printinfo((args.map_style) + " style added and enabled")
-  
+
   write_config()
   quit()
 
@@ -323,7 +323,7 @@ if (args.set_default) != "no":
     quit()
   config.set('mapset', 'default', (args.set_default))
   print((args.set_default) + " set as new default mapset")
-  
+
   write_config()
   quit()
 
@@ -342,8 +342,6 @@ logging
 
 if (args.log):
   config.set('runtime', 'logging', 'yes')
-else:
-  config.set('runtime', 'logging', 'no')
 
 """
 verbosity
@@ -353,8 +351,6 @@ verbosity
 if (args.verbose):
   config.set('runtime', 'verbose', 'yes')
   printinfo("verbosity turned on")
-else:
-  config.set('runtime', 'verbose', 'no')
 
 """
 development version of splitter and mkgmap
@@ -419,7 +415,7 @@ import get_tools
 if config.get('runtime', 'svn') == "yes":
   config.set('runtime', 'svn', 'no')
   write_config()
-  
+
 """
 bounds and precomp_sea from navmap.eu
 
@@ -465,7 +461,7 @@ if (args.keep_data):
     printerror("please start pygmap3.py without it")
     print()
     quit()
- 
+
 else:
   """
   create mapdata if needed
