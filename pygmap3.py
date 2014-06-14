@@ -177,8 +177,8 @@ parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="rem
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 
 # mapset handling
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('mapset', 'default'), help="set mapset to build")
-parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set the default mapset")
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('runtime', 'buildmap'), help="set map to build at runtime")
+parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set map to build as new default")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")

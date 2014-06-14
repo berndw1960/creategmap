@@ -152,9 +152,8 @@ else:
   log = " "
 
 for buildmap in config['mapset']:
-  if (buildmap) != "default":
-    if config['mapset'][(buildmap)] == "yes":
-      os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + "-z -b " + (buildmap))
+  if config['mapset'][(buildmap)] == "yes":
+    os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + "-z -b " + (buildmap))
 
 print()
 print("###### all mapsets successfully build! #######")

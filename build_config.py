@@ -21,9 +21,6 @@ def create():
   config['osmtools'] = {}
   config['osmtools'] = {'check': 'yes',}
 
-  config['mapset'] = {}
-  config['mapset'] = {'default': 'dach',}
-
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
@@ -42,7 +39,8 @@ def create():
   config['runtime'] = {}
   config['runtime'] = {'svn': 'no',
                        'logging': 'no',
-                       'verbose': 'no',}
+                       'verbose': 'no',
+                       'buildmap': 'dach',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -113,6 +111,9 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
+  if config.has_option('mapset', 'default') == True:
+    config.remove_option('mapset', 'default')
+
   if ('runtime' in config) == False:
     config.add_section('runtime')
 
@@ -124,6 +125,9 @@ def update():
 
   if config.has_option('runtime', 'verbose') == False:
     config.set('runtime', 'verbose', 'no')
+
+  if config.has_option('runtime', 'buildmap') == False:
+    config.set('runtime', 'buildmap', 'dach')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
