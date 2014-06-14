@@ -108,6 +108,9 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
+  if ('runtime' in config) == False:
+    config.add_section('runtime')
+    
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 

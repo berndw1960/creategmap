@@ -208,6 +208,8 @@ parser.add_argument('--svn', action="store_true", help="use svn versions of spli
 
 args = parser.parse_args()
 
+# config options
+
 if (args.print_config):
   print()
   printinfo("this are the sections of pygmap3.cfg: ")
@@ -229,6 +231,9 @@ if (args.print_section) != "no":
   print()
   quit()
 
+
+# map build options
+
 if (args.areas_list):
   if config.get('splitter', 'use_areas') == "no":
     config.set('splitter', 'use_areas', 'yes')
@@ -241,8 +246,8 @@ if (args.areas_list):
     print()
     printinfo("use_areas disabled in config file")
     print()
-
-  write_config()
+  
+  write_config()  
   quit()
 
 if (args.list_mapstyle):
@@ -271,7 +276,6 @@ if (args.all_map_styles):
 
 if (args.add_style) != "no":
   config.set('map_styles', (args.add_style), 'yes')
-  write_config()
   printinfo((args.add_style) + " added to map_styles list")
   quit()
 
@@ -301,14 +305,13 @@ if (args.map_style) != "no":
   else:
      config.set('map_styles', (args.map_style), 'yes')
      printinfo((args.map_style) + " style added and enabled")
-
+  
   write_config()
   quit()
 
 if (args.rm_style) != "no":
   if config.has_option('map_styles', (args.rm_style)) == True:
     config.remove_option('map_styles', (args.rm_style))
-    write_config()
   printinfo((args.rm_style) + " removed from map_styles list")
   quit()
 
@@ -320,6 +323,7 @@ if (args.set_default) != "no":
     quit()
   config.set('mapset', 'default', (args.set_default))
   print((args.set_default) + " set as new default mapset")
+  
   write_config()
   quit()
 
@@ -329,18 +333,7 @@ if (args.check_styles):
   quit()
 
 
-if ('runtime' in config) == True:
-  config.remove_section('runtime')
-  write_config()
-
-config.add_section('runtime')
-
-"""
-set buildmap
-
-"""
-config.set('runtime', 'buildmap', (args.buildmap))
-
+# runtime options
 
 """
 logging
@@ -363,9 +356,24 @@ if (args.verbose):
 else:
   config.set('runtime', 'verbose', 'no')
 
-write_config()
+"""
+development version of splitter and mkgmap
 
-buildmap = config.get('runtime', 'buildmap')
+"""
+
+if (args.svn):
+  config.set('runtime', 'svn', 'yes')
+  if (args.verbose):
+    print()
+    printinfo("using svn versions of splitter and mkgmap")
+
+"""
+set buildmap
+
+"""
+
+buildmap = (args.buildmap)
+config.set('runtime', 'buildmap', (buildmap))
 
 ExitCode = os.path.exists("poly/" + (buildmap) + ".poly")
 if ExitCode == False:
@@ -387,12 +395,11 @@ else:
   next_mapid = str(int(option_mapid)+1)
   config.set('mapid', (buildmap), (option_mapid))
   config.set('mapid', 'next_mapid', (next_mapid))
-  write_config()
 
 write_config()
 
 """
-create dir for areas. poly and splitter-output
+create dir o5m, areas, poly and tiles
 
 """
 
@@ -406,16 +413,13 @@ get splitter and mkgmap
 
 """
 
-if (args.svn):
-  config.set('runtime', 'svn', 'yes')
-  if (args.verbose):
-    print()
-    printinfo("using svn versions of splitter and mkgmap")
-
-  write_config()
-
 import get_tools
 
+
+if config.get('runtime', 'svn') == "yes":
+  config.set('runtime', 'svn', 'no')
+  write_config()
+  
 """
 bounds and precomp_sea from navmap.eu
 
@@ -431,33 +435,38 @@ if (args.stop_after) == "tests":
   quit()
 
 """
+mapdata to use
+
+"""
+buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
+
+"""
 if --keep_data is set, then use the old data
 
 """
 
 if (args.keep_data):
-  ExitCode = os.path.exists("o5m/" + (buildmap) + ".o5m")
+  ExitCode = os.path.exists(buildmap_o5m)
   if ExitCode == True:
     try:
       description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
       print()
       printinfo(description)
     except:
-      printerror()
-      printerror()
-      printerror("keep_data enabled and no older time_stamp for " + (buildmap) + " is set in config")
-      printerror("please remove keep_data.lck")
-      printerror()
-      quit()
+      print()
+      printwarning("keep_data enabled, but didn't found a time_stamp for " + (buildmap))
+      description = (buildmap)
+      printwarning(description)
+      print()
+
   else:
     print()
     printerror("o5m/" + (buildmap) + ".o5m not found, but option --keep_data is set ")
     printerror("please start pygmap3.py without it")
     print()
     quit()
+ 
 else:
-  buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
-
   """
   create mapdata if needed
 
@@ -468,18 +477,16 @@ else:
   if ExitCode == False:
     ExitCode = os.path.exists("o5m/planet.o5m")
     if ExitCode == False:
-      printerror()
+      print()
       printerror("No Planet-File found!  ")
-      printerror()
+      prin()
       printerror("A planet is needed, because you didn't have ")
-      printerror("a " + (buildmap) + ".o5m O5M-File! ")
+      printerror("a " + (buildmap_o5m) + "! ")
       printerror("Please download one with 'planet_up.py'.")
-      printerror()
+      print()
       printerror("The first planet will be updated by 'planet_up.py', ")
-      printerror("but the extracted mapdata can be updated with ")
-      printerror("'pygmap3.py', this function ist enabled by default ")
-      printerror("disable it with 'keep_data.py'. ")
-      printerror("'HINT: 'keep_data.py' is a FlipFlop. ")
+      printerror("but the extracted mapdata can be updated with 'pygmap3.py'")
+      print()
       quit()
 
     mapdata.create_o5m()
@@ -502,7 +509,7 @@ if (args.stop_after) == "create":
 
 
 """
-split rawdata
+split mapdata
 
 """
 
