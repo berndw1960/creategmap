@@ -40,7 +40,7 @@ def create():
   config['runtime'] = {'svn': 'no',
                        'logging': 'no',
                        'verbose': 'no',
-                       'buildmap': 'dach',}
+                       'default': 'germany',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -126,8 +126,8 @@ def update():
   if config.has_option('runtime', 'verbose') == False:
     config.set('runtime', 'verbose', 'no')
 
-  if config.has_option('runtime', 'buildmap') == False:
-    config.set('runtime', 'buildmap', 'dach')
+  if config.has_option('runtime', 'default') == False:
+    config.set('runtime', 'default', 'germany')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)

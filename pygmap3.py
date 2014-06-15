@@ -97,11 +97,6 @@ if ExitCode == False:
 
 os.chdir(WORK_DIR)
 
-ExitCode = os.path.exists("planet.o5m")
-if ExitCode == True:
-  printerror("please move planet.o5m to " + (WORK_DIR) + "o5m/")
-  quit()
-
 ExitCode = os.path.exists("pygmap3.cfg")
 if ExitCode == True:
   ExitCode = os.path.exists("pygmap3.cfg.bak")
@@ -109,6 +104,17 @@ if ExitCode == True:
     os.remove("pygmap3.cfg.bak")
 
   shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
+  
+
+"""
+create dir o5m, areas, poly and tiles
+
+"""
+
+for dir in ['o5m', 'areas', 'poly', 'tiles']:
+  ExitCode = os.path.exists(dir)
+  if ExitCode == False:
+    os.mkdir(dir)  
 
 """
 configparser
@@ -167,18 +173,18 @@ parser = argparse.ArgumentParser(
             example for dach, use dach.poly as name
         '''))
 
+# mapset handling
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('runtime', 'default'), help="set map region to build, default is " + config.get('runtime', 'default'))
+parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
+
 # list styles
 parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
 
 # mapstyle handling
-parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style to the build list")
-parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style on the build list")
-parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style from the build list ")
+parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style")
+parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
+parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style")
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
-
-# mapset handling
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('runtime', 'buildmap'), help="set map to build at runtime")
-parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set map to build as new default")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
@@ -255,11 +261,11 @@ if (args.list_mapstyle):
     print()
     printinfo("map_styles list includes: ")
     for key in (config['map_styles']):
-      print ("  " + (key) + " = " + config['map_styles'][(key)])
+      print("  " + (key) + " = " + config['map_styles'][(key)])
     print()
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
-      print ("  " + (key) + " = " + config['mapset'][(key)])
+      print("  " + (key) + " = " + config['mapset'][(key)])
     print()
   quit()
 
@@ -268,7 +274,8 @@ if (args.all_map_styles):
     for key in (config['map_styles']):
       config.set('map_styles', (key), 'yes')
       print ("  " + (key) + " = " + config['map_styles'][(key)])
-      write_config()
+    
+    write_config()
     print()
     printinfo("all mapstyles enabled")
     print()
@@ -318,11 +325,14 @@ if (args.rm_style) != "no":
 if (args.set_default) != "no":
   ExitCode = os.path.exists("poly/" + (args.set_default) + ".poly")
   if ExitCode == False:
+    print()
     printerror((WORK_DIR) + "poly/" + (args.set_default) + ".poly not found... ")
     printerror("please create or download "+ (args.set_default) + ".poly")
+    print()
     quit()
-  config.set('mapset', 'default', (args.set_default))
-  print((args.set_default) + " set as new default mapset")
+    
+  config.set('runtime', 'default', (args.set_default))
+  print((args.set_default) + " set as new default region")
 
   write_config()
   quit()
@@ -359,9 +369,6 @@ development version of splitter and mkgmap
 
 if (args.svn):
   config.set('runtime', 'svn', 'yes')
-  if (args.verbose):
-    print()
-    printinfo("using svn versions of splitter and mkgmap")
 
 """
 set buildmap
@@ -371,16 +378,8 @@ set buildmap
 buildmap = (args.buildmap)
 config.set('runtime', 'buildmap', (buildmap))
 
-ExitCode = os.path.exists("poly/" + (buildmap) + ".poly")
-if ExitCode == False:
-  print()
-  printerror((WORK_DIR) + "poly/" + (buildmap) + ".poly not found... ")
-  printerror("please create or download "+ (buildmap) + ".poly")
-  quit()
-
-
 """
-read the config and set or create the mapid
+set or create the mapid
 
 """
 
@@ -392,17 +391,33 @@ else:
   config.set('mapid', (buildmap), (option_mapid))
   config.set('mapid', 'next_mapid', (next_mapid))
 
+"""
+osmupdate and osmconvert
+
+"""
+
+if config.get('osmtools', 'check') == "yes":
+  def checkprg(programmtofind, solutionhint):
+    ExitCode = os.system("which " + programmtofind)
+    if ExitCode == 0:
+      printinfo(programmtofind + " found")
+    else:
+      printerror(programmtofind + " not found")
+      print(solutionhint)
+      quit()
+      
+  for tool in ['osmconvert', 'osmupdate']:
+    hint = (tool) + " missed, please use mk_osmtools to build it from sources"
+    checkprg((tool), hint)
+
+  config.set('osmtools', 'check', 'no')
+  
+"""
+write to config
+
+"""
+
 write_config()
-
-"""
-create dir o5m, areas, poly and tiles
-
-"""
-
-for dir in ['o5m', 'areas', 'poly', 'tiles']:
-  ExitCode = os.path.exists(dir)
-  if ExitCode == False:
-    os.mkdir(dir)
 
 """
 get splitter and mkgmap
@@ -410,7 +425,6 @@ get splitter and mkgmap
 """
 
 import get_tools
-
 
 if config.get('runtime', 'svn') == "yes":
   config.set('runtime', 'svn', 'no')
@@ -424,6 +438,11 @@ bounds and precomp_sea from navmap.eu
 if config.get('navmap', 'pre_comp') == "yes":
   import navmap
 
+"""
+--stop_after tests
+
+"""
+
 if (args.stop_after) == "tests":
   print()
   printinfo("Tests successful finished")
@@ -434,56 +453,21 @@ if (args.stop_after) == "tests":
 mapdata to use
 
 """
+
 buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
+
 
 """
 if --keep_data is set, then use the old data
 
 """
 
-if (args.keep_data):
-  ExitCode = os.path.exists(buildmap_o5m)
-  if ExitCode == True:
-    try:
-      description = (buildmap) + "_" + config.get('time_stamp', (buildmap))
-      print()
-      printinfo(description)
-    except:
-      print()
-      printwarning("keep_data enabled, but didn't found a time_stamp for " + (buildmap))
-      description = (buildmap)
-      printwarning(description)
-      print()
+if (args.keep_data) == False:
 
-  else:
-    print()
-    printerror("o5m/" + (buildmap) + ".o5m not found, but option --keep_data is set ")
-    printerror("please start pygmap3.py without it")
-    print()
-    quit()
-
-else:
-  """
-  create mapdata if needed
-
-  """
   import mapdata
 
   ExitCode = os.path.exists(buildmap_o5m)
   if ExitCode == False:
-    ExitCode = os.path.exists("o5m/planet.o5m")
-    if ExitCode == False:
-      print()
-      printerror("No Planet-File found!  ")
-      prin()
-      printerror("A planet is needed, because you didn't have ")
-      printerror("a " + (buildmap_o5m) + "! ")
-      printerror("Please download one with 'planet_up.py'.")
-      print()
-      printerror("The first planet will be updated by 'planet_up.py', ")
-      printerror("but the extracted mapdata can be updated with 'pygmap3.py'")
-      print()
-      quit()
 
     mapdata.create_o5m()
 
@@ -496,6 +480,11 @@ else:
 
 os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
+
+"""
+--stop_after create
+
+"""
 
 if (args.stop_after) == "create":
   print()
@@ -527,10 +516,10 @@ if (args.no_split):
   ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
   if ExitCode == False:
     print()
-    printerror("there is no tiles/" + (buildmap) + "_split.ready")
-    printerror("--no_split makes no sense, please restart without this option")
-    print()
-    quit()
+    printwarning("can't find tiles/" + (buildmap) + "_split.ready")
+    printwarning("--no_split/-ns makes no sense, ignoring it")
+    splitter.split()
+    
 else:
   remove_old_tiles()
   os.chdir(WORK_DIR)
@@ -538,9 +527,14 @@ else:
   printinfo("now splitting the mapdata...")
   splitter.split()
 
+"""
+--stop_after splitter
+
+"""
+
 if (args.stop_after) == "splitter":
   print()
-  printinfo(" Mapdata for " + (buildmap) + " successful splitted")
+  printinfo((buildmap) + ".o5m successful splitted")
   print()
   quit()
 
@@ -556,6 +550,11 @@ if config.get('mkgmap', 'logging') == "yes":
   config.set('mkgmap', 'logging', 'no')
   write_config()
 
+
+"""
+--stop_after mkgmap
+
+"""
 
 if (args.stop_after) == "mkgmap":
   print()
@@ -597,17 +596,4 @@ print()
 
 quit()
 
-
-"""
-
-## Changelog
-
-v0.9.49 - update only the needed mapdata with osmupdate
-          move planet to $WORK_DIR/o5m
-
-v0.9.48 - add 7z as output for the images
-        - mapid for DACH and germany
-
-
-"""
 

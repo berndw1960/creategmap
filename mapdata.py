@@ -29,38 +29,12 @@ config = configparser.ConfigParser()
 
 
 """
-test if an executable can be found by
-following $PATH
-raise message if fails and returns 1
-on success return 0
-search follows $PATH
-"""
-os.chdir(WORK_DIR)
-config.read('pygmap3.cfg')
-
-if config.get('osmtools', 'check') == "yes":
-  def checkprg(programmtofind, solutionhint):
-    ExitCode = os.system("which " + programmtofind)
-    if ExitCode == 0:
-      printinfo(programmtofind + " found")
-    else:
-      printerror(programmtofind + " not found")
-      print(solutionhint)
-
-  for tool in ['osmconvert', 'osmupdate']:
-    hint = (tool) + " missed, please use mk_osmtools to build it from sources"
-    checkprg((tool), hint)
-
-  config.set('osmtools', 'check', 'no')
-
-  write_config()
-
-"""
 cut data from planet-file
 
 """
 
 def create_o5m():
+
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
@@ -89,7 +63,8 @@ def create_o5m():
   else:
     print()
     printerror((WORK_DIR) + "o5m/planet.o5m not found... ")
-    printerror("please download with 'planet_up.py'")
+    printerror("please download it with 'planet_up.py'")
+    print()
     quit()
 
 def update_o5m():
