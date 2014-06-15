@@ -75,7 +75,7 @@ is_there((WORK_DIR), hint)
 
 os.chdir(WORK_DIR)
 
-for tool in ['osmconvert', 'osmfilter']:
+for tool in ['osmconvert', 'osmupdate']:
   hint = (tool) + " missed, please use mk_osmtools to build it from sources"
   checkprg((tool), hint)
 
