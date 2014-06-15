@@ -111,7 +111,12 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
-  if config.has_option('mapset', 'default') == True:
+  
+  if config.has_option('runtime', 'default') == False:
+    if config.has_option('mapset', 'default') == True:
+      config.set('runtime', 'default', config.get('mapset', 'default'))
+    else:
+      config.set('runtime', 'default', 'germany') 
     config.remove_option('mapset', 'default')
 
   if ('runtime' in config) == False:
@@ -125,9 +130,6 @@ def update():
 
   if config.has_option('runtime', 'verbose') == False:
     config.set('runtime', 'verbose', 'no')
-
-  if config.has_option('runtime', 'default') == False:
-    config.set('runtime', 'default', 'germany')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
