@@ -352,7 +352,9 @@ logging
 
 if (args.log):
   config.set('runtime', 'logging', 'yes')
-
+else:
+  config.set('runtime', 'logging', 'no')
+  
 """
 verbosity
 
@@ -369,7 +371,9 @@ development version of splitter and mkgmap
 
 if (args.svn):
   config.set('runtime', 'svn', 'yes')
-
+else:
+  config.set('runtime', 'svn', 'no')
+  
 """
 set buildmap
 
