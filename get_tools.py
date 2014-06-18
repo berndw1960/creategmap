@@ -52,7 +52,7 @@ for i in ['splitter', 'mkgmap']:
     data = htmlcontent.read()
     data = data.decode('utf8')
 
-    if config.has_option('runtime', 'svn') == True:
+    if config.get('runtime', 'svn') == "yes":
       if (i) == "splitter":
         pattern = re.compile('splitter-r\d{3}')
       elif (i) == "mkgmap":
