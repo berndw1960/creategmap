@@ -204,7 +204,7 @@ parser.add_argument('-c', '--contourlines', action="store_true", help="create co
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
 # Java options
-parser.add_argument('-rs', '--ramsize', dest='ramsize', default='3G', help="set the ramsize for Java")
+parser.add_argument('-rs', '--ramsize', dest='ramsize', default='3G', help="set the ramsize for Java, default is 3G")
 
 # maxnodes
 parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default='1600000', help="set the maxnodes count for splitter")
