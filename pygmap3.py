@@ -14,10 +14,10 @@ with this program; if not, see http://www.gnu.org/licenses/.
 
 
 """
-__version__ = "0.9.49"
+__version__ = "0.9.50"
 __author__ = "Bernd Weigelt"
-__copyright__ = "Copyright 2013 Bernd Weigelt"
-__credits__ = "Dschuwa, Franco B."
+__copyright__ = "Copyright 2014 Bernd Weigelt"
+__credits__ = "Franco B."
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
@@ -104,7 +104,7 @@ if ExitCode == True:
     os.remove("pygmap3.cfg.bak")
 
   shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
-  
+
 
 """
 create dir o5m, areas, poly and tiles
@@ -114,7 +114,7 @@ create dir o5m, areas, poly and tiles
 for dir in ['o5m', 'areas', 'poly', 'tiles']:
   ExitCode = os.path.exists(dir)
   if ExitCode == False:
-    os.mkdir(dir)  
+    os.mkdir(dir)
 
 """
 configparser
@@ -203,6 +203,12 @@ parser.add_argument('-c', '--contourlines', action="store_true", help="create co
 # image handling
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
+# Java options
+parser.add_argument('-rs', '--ramsize', dest='ramsize', default='3G', help="set the ramsize for Java")
+
+# maxnodes
+parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default='1600000', help="set the maxnodes count for splitter")
+
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
 parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
@@ -241,14 +247,14 @@ if (args.print_section) != "no":
 # map build options
 
 if (args.areas_list):
-  if config.get('splitter', 'use_areas') == "no":
-    config.set('splitter', 'use_areas', 'yes')
+  if config.get('runtime', 'use_areas') == "no":
+    config.set('runtime', 'use_areas', 'yes')
     print()
     printinfo("use_areas enabled in config file")
     print()
 
-  elif config.get('splitter', 'use_areas') == "yes":
-    config.set('splitter', 'use_areas', 'no')
+  elif config.get('runtime', 'use_areas') == "yes":
+    config.set('runtime', 'use_areas', 'no')
     print()
     printinfo("use_areas disabled in config file")
     print()
@@ -274,7 +280,7 @@ if (args.all_map_styles):
     for key in (config['map_styles']):
       config.set('map_styles', (key), 'yes')
       print ("  " + (key) + " = " + config['map_styles'][(key)])
-    
+
     write_config()
     print()
     printinfo("all mapstyles enabled")
@@ -330,7 +336,7 @@ if (args.set_default) != "no":
     printerror("please create or download "+ (args.set_default) + ".poly")
     print()
     quit()
-    
+
   config.set('runtime', 'default', (args.set_default))
   print((args.set_default) + " set as new default region")
 
@@ -346,6 +352,20 @@ if (args.check_styles):
 # runtime options
 
 """
+ramsize for java
+"""
+
+if (args.ramsize) != "3G":
+  config.set('runtime', 'ramsize', ("-Xmx" + str(args.ramsize)))
+
+"""
+maxnodes for plitter
+"""
+
+if (args.maxnodes) != "1600000":
+  config.set('runtime', 'maxnodes', ("-Xmx" + str(args.maxnodes)))
+
+"""
 logging
 
 """
@@ -354,7 +374,7 @@ if (args.log):
   config.set('runtime', 'logging', 'yes')
 else:
   config.set('runtime', 'logging', 'no')
-  
+
 """
 verbosity
 
@@ -373,7 +393,7 @@ if (args.svn):
   config.set('runtime', 'svn', 'yes')
 else:
   config.set('runtime', 'svn', 'no')
-  
+
 """
 set buildmap
 
@@ -409,13 +429,13 @@ if config.get('osmtools', 'check') == "yes":
       printerror(programmtofind + " not found")
       print(solutionhint)
       quit()
-      
+
   for tool in ['osmconvert', 'osmupdate']:
     hint = (tool) + " missed, please use mk_osmtools to build it from sources"
     checkprg((tool), hint)
 
   config.set('osmtools', 'check', 'no')
-  
+
 """
 write to config
 
@@ -523,7 +543,7 @@ if (args.no_split):
     printwarning("can't find tiles/" + (buildmap) + "_split.ready")
     printwarning("--no_split/-ns makes no sense, ignoring it")
     splitter.split()
-    
+
 else:
   remove_old_tiles()
   os.chdir(WORK_DIR)
@@ -550,8 +570,8 @@ render the map-images
 import mkgmap
 mkgmap.render()
 
-if config.get('mkgmap', 'logging') == "yes":
-  config.set('mkgmap', 'logging', 'no')
+if config.get('runtime', 'logging') == "yes":
+  config.set('runtime', 'logging', 'no')
   write_config()
 
 

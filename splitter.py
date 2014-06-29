@@ -29,9 +29,9 @@ def split():
   config.read('pygmap3.cfg')
   buildmap = config.get('runtime', 'buildmap')
   buildday = config.get('time_stamp', (buildmap))
-  splitter_path = (WORK_DIR) + config.get('splitter', 'version') + "/splitter.jar "
+  splitter_path = (WORK_DIR) + config.get('runtime', 'splitter') + "/splitter.jar "
 
-  java_opts = ("java -ea " + config.get('ramsize', 'ramsize') +
+  java_opts = ("java -ea " + config.get('runtime', 'ramsize') +
                   " -jar " + (splitter_path))
 
 
@@ -60,11 +60,11 @@ def split():
   ## split with
   areas_list = " --split-file=" + (WORK_DIR) + "areas/" + (buildmap) + "_areas.list "
   ## or
-  max_nodes = (" --max-nodes=" + config.get('splitter', 'maxnodes') + " ")
+  max_nodes = (" --max-nodes=" + config.get('runtime', 'maxnodes') + " ")
 
   BUILD_O5M = (WORK_DIR) + "o5m/" + (buildmap) + ".o5m"
 
-  use_areas = config.get('splitter', 'use_areas')
+  use_areas = config.get('runtime', 'use_areas')
   if use_areas == "yes":
     ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
     if ExitCode == True:

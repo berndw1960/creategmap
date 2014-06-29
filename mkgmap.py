@@ -60,10 +60,11 @@ def render():
       """
       mkgmap-options
       """
-      option_mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
+      
+      option_mkgmap_path = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/mkgmap.jar "
 
       if (layer) == "defaultmap":
-        option_mkgmap_options = " --route --gmapsupp --read-config=" + (WORK_DIR) + config.get('mkgmap', 'version') + "/examples/styles/default/options "
+        option_mkgmap_options = " --route --gmapsupp --read-config=" + (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default/options "
       else:
         option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
 
@@ -102,7 +103,7 @@ def render():
 
       if (layer == "defaultmap"):
         option_typ_file = " "
-        option_style_file = " --style-file=" + (WORK_DIR) + config.get('mkgmap', 'version') + "/examples/styles/default "
+        option_style_file = " --style-file=" + (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
 
       else:
         if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
@@ -127,12 +128,10 @@ def render():
 
       """
       map rendering
-
       """
-      mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
 
       os.system("java -ea " +
-            config.get('ramsize', 'ramsize') +
+            config.get('runtime', 'ramsize') +
             (option_mkgmap_logging) +
             " -jar " + (option_mkgmap_path) +
             (option_mkgmap_options) +

@@ -72,7 +72,7 @@ def create_cont():
   config.read('pygmap3.cfg')
 
   buildmap = config.get('runtime', 'buildmap')
-  mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
+  mkgmap_path = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/mkgmap.jar "
 
   cl_dir = ("contourlines/" + (buildmap) + "/")
   cltemp_dir = ("cl_temp/")
@@ -134,7 +134,7 @@ def create_cont():
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + config.get('ramsize', 'ramsize') + " -jar " + (mkgmap_path) +
+    os.system("java -ea " + config.get('runtime', 'ramsize') + " -jar " + (mkgmap_path) +
               " --read-config=" + (WORK_DIR) + (mapstyle) + "/contourlines_style/options" +
               " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style" +
               " --mapname=" + config.get('mapid', (buildmap)) + "8001" +

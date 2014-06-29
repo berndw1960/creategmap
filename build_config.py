@@ -15,9 +15,6 @@ def create():
 
   config['DEFAULT'] = {}
 
-  config['ramsize'] = {}
-  config['ramsize'] = {'ramsize': '-Xmx3G',}
-
   config['osmtools'] = {}
   config['osmtools'] = {'check': 'yes',}
 
@@ -29,18 +26,14 @@ def create():
                       'use_sea': 'yes',
                       'use_bounds': 'yes',}
 
-  config['splitter'] = {}
-  config['splitter'] = {'maxnodes': '1600000',
-                        'use_areas': 'no',}
-
-  config['mkgmap'] = {}
-  config['mkgmap'] = {'logging': 'no',}
-
   config['runtime'] = {}
-  config['runtime'] = {'svn': 'no',
+  config['runtime'] = {'maxnodes': '1600000',
+                       'use_areas': 'no',
+                       'svn': 'no',
                        'logging': 'no',
                        'verbose': 'no',
-                       'default': 'germany',}
+                       'default': 'germany',
+                       'ramsize': '-Xmx3G',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -111,16 +104,18 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
-  
+  if ('runtime' in config) == False:
+    config.add_section('runtime')
+
   if config.has_option('runtime', 'default') == False:
     if config.has_option('mapset', 'default') == True:
       config.set('runtime', 'default', config.get('mapset', 'default'))
+      config.remove_option('mapset', 'default')
     else:
-      config.set('runtime', 'default', 'germany') 
-    config.remove_option('mapset', 'default')
+      config.set('runtime', 'default', 'germany')
 
-  if ('runtime' in config) == False:
-    config.add_section('runtime')
+  if config.has_option('runtime', 'ramsize') == False:
+    config.set('runtime', 'ramsize', '-Xmx3G')
 
   if config.has_option('runtime', 'svn') == False:
     config.set('runtime', 'svn', 'no')
@@ -130,6 +125,12 @@ def update():
 
   if config.has_option('runtime', 'verbose') == False:
     config.set('runtime', 'verbose', 'no')
+
+  if config.has_option('runtime', 'maxnodes') == False:
+    config.set('runtime', 'maxnodes', '1600000')
+
+  if config.has_option('runtime', 'use_areas') == False:
+    config.set('runtime', 'use_areas', 'no')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)

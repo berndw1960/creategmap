@@ -64,11 +64,11 @@ for i in ['splitter', 'mkgmap']:
         pattern = re.compile('/download/splitter-r\d{3}.zip')
       elif (i) == "mkgmap":
         pattern = re.compile('/download/mkgmap-r\d{4}.zip')
-        
+
       i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
 
       i_rev_pre.replace("/download/", "")
-      
+
       i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
     target.close()
@@ -80,7 +80,7 @@ for i in ['splitter', 'mkgmap']:
     print()
 
     try:
-      i_rev = config.get((i), 'version')
+      i_rev = config.get('runtime', (i))
     except:
       print()
       printerror((i) + "_rev not set in config")
@@ -118,7 +118,7 @@ for i in ['splitter', 'mkgmap']:
           tar_extract()
         except:
           print()
-          printerror(" couldn't extract " + (i_rev) + " from downloaded file")
+          printerror(" couldn't extract " + (i_rev))
           print()
           quit()
 
@@ -135,7 +135,7 @@ for i in ['splitter', 'mkgmap']:
     print()
     quit()
 
-  config.set((i), 'version', (i_rev))
+  config.set('runtime', (i), (i_rev))
   write_config()
 
 """
