@@ -272,6 +272,7 @@ if (args.list_mapstyle):
     if config.has_section('mapset') == True:
       print()
       printinfo("mapset list includes: ")
+      print()
       for key in (config['mapset']):
         print("  " + (key) + " = " + config['mapset'][(key)])
   print()
