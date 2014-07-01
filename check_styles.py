@@ -22,7 +22,7 @@ config = configparser.ConfigParser()
 def check():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
-  option_mkgmap_path = (WORK_DIR) + config.get('mkgmap', 'version') + "/mkgmap.jar "
+  option_mkgmap_path = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/mkgmap.jar "
 
   for layer in config['map_styles']:
     if config['map_styles'][(layer)] == "yes":
@@ -32,7 +32,7 @@ def check():
 
       if (layer == "defaultmap"):
         option_typ_file = " "
-        option_style_file = (WORK_DIR) + config.get('mkgmap', 'version') + "/examples/styles/default "
+        option_style_file = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
 
       else:
         if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:

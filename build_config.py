@@ -41,31 +41,40 @@ def create():
                           'carmap': 'no',
                           'housenumber': 'no',
                           'fixme': 'no',
+                          'boundary': 'no',
                           'defaultmap': 'yes',}
 
   config['basemap'] = {}
   config['basemap'] = {'family-id': '4',
-                       'product-id': '45',
+                       'product-id': '44',
                        'family-name': 'Basemap',
                        'draw-priority': '10',
                        'mapid_ext': '1001',}
 
   config['bikemap'] = {}
   config['bikemap'] = {'family-id': '5',
-                       'product-id': '46',
+                       'product-id': '45',
                        'family-name': 'Bikemap',
                        'draw-priority': '10',
                        'mapid_ext': '2001',}
 
   config['carmap'] = {}
   config['carmap'] = {'family-id': '6',
-                       'product-id': '47',
+                       'product-id': '46',
                        'family-name': 'Carmap',
                        'draw-priority': '10',
                        'mapid_ext': '3001',}
 
+  config['boundary'] = {}
+  config['boundary'] = {'family-id': '7',
+                       'product-id': '47',
+                       'family-name': 'Boundaries',
+                       'draw-priority': '14',
+                       'mapid_ext': '4001',}
+
+
   config['housenumber'] = {}
-  config['housenumber'] = {'family-id': '7',
+  config['housenumber'] = {'family-id': '8',
                        'product-id': '48',
                        'family-name': 'Housenumbers',
                        'draw-priority': '16',
@@ -73,7 +82,7 @@ def create():
 
   config['defaultmap'] = {}
   config['defaultmap'] = {'family-id': '9',
-                          'product-id': '50',
+                          'product-id': '49',
                           'family-name': 'defaultmap',
                           'draw-priority': '10',
                           'mapid_ext': '5001',}

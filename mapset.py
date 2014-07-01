@@ -121,7 +121,10 @@ if (args.list_mapset):
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
       print ("  " + (key) + " = " + config['mapset'][(key)])
+  else:
     print()
+    printinfo("mapset didn't exist")
+  print()
   quit()
 
 if (args.del_mapset):

@@ -266,13 +266,15 @@ if (args.list_mapstyle):
   if config.has_section('map_styles') == True:
     print()
     printinfo("map_styles list includes: ")
+    print()
     for key in (config['map_styles']):
       print("  " + (key) + " = " + config['map_styles'][(key)])
-    print()
-    printinfo("mapset list includes: ")
-    for key in (config['mapset']):
-      print("  " + (key) + " = " + config['mapset'][(key)])
-    print()
+    if config.has_section('mapset') == True:
+      print()
+      printinfo("mapset list includes: ")
+      for key in (config['mapset']):
+        print("  " + (key) + " = " + config['mapset'][(key)])
+  print()
   quit()
 
 if (args.all_map_styles):
@@ -301,6 +303,8 @@ if (args.map_style) != "no" and (args.map_style) != "defaultmap":
     print("    basemap")
     print("    bikemap")
     print("    carmap")
+    print("    boundary")
+    print("    housenumber")
     print("    fixme")
     print("    defaultmap")
     print("    or your own style!")
