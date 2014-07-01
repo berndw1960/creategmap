@@ -291,8 +291,13 @@ if (args.all_map_styles):
   quit()
 
 if (args.add_style) != "no":
-  config.set('map_styles', (args.add_style), 'yes')
-  printinfo((args.add_style) + " added to map_styles list")
+  if os.path.exists("mystyles/" + (args.add_style) + "_style") == True:
+    config.set('map_styles', (args.add_style), 'yes')
+    printinfo((args.add_style) + " added to map_styles list")
+  else:
+    print()
+    printerror((args.add_style) + "_style - dir not found")
+  print()  
   quit()
 
 if (args.map_style) != "no" and (args.map_style) != "defaultmap":
