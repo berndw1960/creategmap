@@ -28,10 +28,10 @@ pygmap3.py -    the main script, start it without any option to create map
                 you have to do some work
 
                 add a folder named {your_map}_style and a textbased file
-                named {your_map}_typ.txt to the folder 'mystyles'
+                named {your_map}_typ.txt to the folder 'styles'
 
                 you can also use our fork of the AIO, copy the complete
-                repository to 'mystyles'
+                repository to 'styles'
 
                 pygmap3.py -h shows a help
                 pygmap3.py -m basemap enable the build of our basemap style

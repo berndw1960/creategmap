@@ -291,7 +291,7 @@ if (args.all_map_styles):
   quit()
 
 if (args.add_style) != "no":
-  if os.path.exists("mystyles/" + (args.add_style) + "_style") == True:
+  if os.path.exists("styles/" + (args.add_style) + "_style") == True:
     config.set('map_styles', (args.add_style), 'yes')
     printinfo((args.add_style) + " added to map_styles list")
   else:
@@ -301,7 +301,7 @@ if (args.add_style) != "no":
   quit()
 
 if (args.map_style) != "no" and (args.map_style) != "defaultmap":
-  if os.path.exists("mystyles/" + (args.map_style) + "_style") == False:
+  if os.path.exists("styles/" + (args.map_style) + "_style") == False:
     print()
     printerror((args.map_style) + "_style - dir not found")
     printerror("possible styles are: ")
@@ -615,12 +615,12 @@ create the contourlines
 """
 
 if (args.contourlines):
-    ExitCode = os.path.exists("mystyles/contourlines_style")
+    ExitCode = os.path.exists("styles/contourlines_style")
     if ExitCode == True:
       import contourlines
       contourlines.create_cont()
     else:
-      printwarning("dir mystyles/contourlines_style not found")
+      printwarning("dir styles/contourlines_style not found")
 
 print()
 print()

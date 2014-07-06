@@ -66,7 +66,7 @@ def render():
       if (layer) == "defaultmap":
         option_mkgmap_options = " --route --gmapsupp --read-config=" + (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default/options "
       else:
-        option_mkgmap_options = " --read-config=" + (WORK_DIR) + "mystyles/" + (layer) + "_style/options "
+        option_mkgmap_options = " --read-config=" + (WORK_DIR) + "styles/" + (layer) + "_style/options "
 
       if config.get('runtime', 'logging') == "yes":
         if config.get('runtime', 'verbose') == "yes":
@@ -106,24 +106,24 @@ def render():
         option_style_file = " --style-file=" + (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
 
       else:
-        if os.path.exists((WORK_DIR) + "mystyles/" + (layer) + "_typ.txt") == True:
+        if os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.txt") == True:
           if config.get('runtime', 'verbose') == "yes":
             print()
             printinfo((layer) + " build with " + (layer) + "_typ.txt")
-          option_typ_file = " " + (WORK_DIR) + "mystyles/" + (layer) + "_typ.txt"
+          option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.txt"
 
-        elif os.path.exists((WORK_DIR) + "mystyles/pygmap3_typ.txt") == True:
+        elif os.path.exists((WORK_DIR) + "styles/pygmap3_typ.txt") == True:
           if config.get('runtime', 'verbose') == "yes":
             print()
             printinfo((layer) + " build with pygmap3_typ.txt")
-          option_typ_file = " " + (WORK_DIR) + "mystyles/pygmap3_typ.txt"
+          option_typ_file = " " + (WORK_DIR) + "styles/pygmap3_typ.txt"
 
         else:
           print()
           printwarning((layer) + " build without a typ_file")
           option_typ_file = " "
 
-        option_style_file = " --style-file=" + (WORK_DIR) + "mystyles/" + (layer) + "_style "
+        option_style_file = " --style-file=" + (WORK_DIR) + "styles/" + (layer) + "_style "
 
 
       """

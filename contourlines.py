@@ -98,10 +98,10 @@ def create_cont():
     hint = "Install phyghtmap to create contourlines if needed"
     checkprg("phyghtmap", hint)
 
-    ExitCode = os.path.exists("mystyles/contourlines_style")
+    ExitCode = os.path.exists("styles/contourlines_style")
     global mapstyle
     if ExitCode == True:
-      mapstyle = "mystyles"
+      mapstyle = "styles"
     else:
       printerror("contourlines_style not found, please disable it in pygmap3.cfg")
 
