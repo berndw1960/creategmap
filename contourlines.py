@@ -117,7 +117,7 @@ def create_cont():
     os.system("phyghtmap --source=view1,view3,srtm1,srtm3" +
               " --start-node-id=1" +
               " --start-way-id=1" +
-              " --max-nodes-per-tile=" + config.get('splitter', 'maxnodes') +
+              " --max-nodes-per-tile=" + config.get('runtime', 'maxnodes') +
               " --max-nodes-per-way=250" +
               " --jobs=4" +
               " --pbf" +
