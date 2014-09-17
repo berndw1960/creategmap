@@ -156,6 +156,13 @@ else:
 
 for buildmap in config['mapset']:
   if config['mapset'][(buildmap)] == "yes":
+    ExitCode = os.path.exists("stop")
+    if ExitCode == True:
+      os.remove ("stop")
+      print()
+      printwarning("stopping build_process")
+      print()
+      quit()
     os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + "-z -b " + (buildmap))
 
 print()
