@@ -44,6 +44,13 @@ def create():
                           'boundary': 'no',
                           'defaultmap': 'yes',}
 
+  config['defaultmap'] = {}
+  config['defaultmap'] = {'family-id': '1',
+                          'product-id': '41',
+                          'family-name': 'defaultmap',
+                          'draw-priority': '10',
+                          'mapid_ext': '1001',}
+  
   config['basemap'] = {}
   config['basemap'] = {'family-id': '4',
                        'product-id': '44',
@@ -78,21 +85,15 @@ def create():
                        'product-id': '48',
                        'family-name': 'Housenumbers',
                        'draw-priority': '16',
-                       'mapid_ext': '6001',}
+                       'mapid_ext': '5001',}
 
-  config['defaultmap'] = {}
-  config['defaultmap'] = {'family-id': '9',
-                          'product-id': '49',
-                          'family-name': 'defaultmap',
-                          'draw-priority': '10',
-                          'mapid_ext': '5001',}
 
   config['fixme'] = {}
   config['fixme'] = {'family-id': '3',
                      'product-id': '33',
                      'family-name': 'OSM-Fixme',
                      'draw-priority': '16',
-                     'mapid_ext': '6001',}
+                     'mapid_ext': '7001',}
 
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
