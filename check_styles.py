@@ -62,9 +62,9 @@ def check():
       os.system("java -jar " + (option_mkgmap_path) + " --style-file=" + (option_style_file) + " --check-styles " + (option_typ_file))
 
 
-      for i in ['pygmap3_typ.typ', 'housenumber_typ.typ', 'fixme_typ.typ', 'splitter.log', 'osmmap.tdb']:
-        ExitCode = os.path.exists(i)
-        if ExitCode == True:
-          os.remove(i)
+  for i in ['pygmap3_typ.typ', 'housenumber_typ.typ', 'fixme_typ.typ', 'splitter.log', 'osmmap.tdb']:
+    ExitCode = os.path.exists(i)
+    if ExitCode == True:
+      os.remove(i)
 
-      print()
+  print()
