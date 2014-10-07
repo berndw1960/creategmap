@@ -280,6 +280,7 @@ if (args.list_mapstyle):
 
 if (args.all_map_styles):
   if config.has_section('map_styles') == True:
+    print()
     for key in (config['map_styles']):
       config.set('map_styles', (key), 'yes')
       print ("  " + (key) + " = " + config['map_styles'][(key)])
@@ -293,11 +294,12 @@ if (args.all_map_styles):
 if (args.add_style) != "no":
   if os.path.exists("styles/" + (args.add_style) + "_style") == True:
     config.set('map_styles', (args.add_style), 'yes')
+    print()
     printinfo((args.add_style) + " added to map_styles list")
   else:
     print()
     printerror((args.add_style) + "_style - dir not found")
-  print()  
+  print()
   quit()
 
 if (args.map_style) != "no" and (args.map_style) != "defaultmap":
@@ -321,12 +323,15 @@ if (args.map_style) != "no":
   if config.has_option('map_styles', (args.map_style)) == True:
     if config.get('map_styles', (args.map_style)) == "yes":
       config.set('map_styles', (args.map_style), 'no')
+      print()
       printwarning((args.map_style) + " style disabled")
     elif config.get('map_styles', (args.map_style)) == "no":
       config.set('map_styles', (args.map_style), 'yes')
+      print()
       printinfo((args.map_style) + " style enabled")
   else:
      config.set('map_styles', (args.map_style), 'yes')
+     print()
      printinfo((args.map_style) + " style added and enabled")
 
   write_config()
@@ -335,6 +340,7 @@ if (args.map_style) != "no":
 if (args.rm_style) != "no":
   if config.has_option('map_styles', (args.rm_style)) == True:
     config.remove_option('map_styles', (args.rm_style))
+  print()
   printinfo((args.rm_style) + " removed from map_styles list")
   quit()
 
@@ -392,6 +398,7 @@ verbosity
 
 if (args.verbose):
   config.set('runtime', 'verbose', 'yes')
+  print()
   printinfo("verbosity turned on")
 
 """
@@ -434,8 +441,10 @@ if config.get('osmtools', 'check') == "yes":
   def checkprg(programmtofind, solutionhint):
     ExitCode = os.system("which " + programmtofind)
     if ExitCode == 0:
+      print()
       printinfo(programmtofind + " found")
     else:
+      print()
       printerror(programmtofind + " not found")
       print(solutionhint)
       quit()
