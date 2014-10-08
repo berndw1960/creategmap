@@ -88,13 +88,22 @@ def create():
                        'mapid_ext': '5001',}
 
 
+  config['bikeroute'] = {}
+  config['bikeroute'] = {'family-id': '9',
+                      'product-id': '49',
+                      'family-name': 'OSM-Fixme',
+                      'draw-priority': '16',
+                      'mapid_ext': '6001',}
+
+
   config['fixme'] = {}
   config['fixme'] = {'family-id': '3',
                      'product-id': '33',
                      'family-name': 'OSM-Fixme',
                      'draw-priority': '16',
-                     'mapid_ext': '7001',}
-
+                     'mapid_ext': '7001',}  
+  
+  
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
 
