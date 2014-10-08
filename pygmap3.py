@@ -300,6 +300,7 @@ if (args.add_style) != "no":
     print()
     printerror((args.add_style) + "_style - dir not found")
   print()
+  write_config()
   quit()
 
 if (args.map_style) != "no" and (args.map_style) != "defaultmap":
