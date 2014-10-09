@@ -50,7 +50,7 @@ def create():
                           'family-name': 'defaultmap',
                           'draw-priority': '10',
                           'mapid_ext': '1001',}
-  
+
   config['basemap'] = {}
   config['basemap'] = {'family-id': '4',
                        'product-id': '44',
@@ -91,7 +91,7 @@ def create():
   config['bikeroute'] = {}
   config['bikeroute'] = {'family-id': '9',
                       'product-id': '49',
-                      'family-name': 'OSM-Fixme',
+                      'family-name': 'Bikeroutes',
                       'draw-priority': '16',
                       'mapid_ext': '6001',}
 
@@ -101,9 +101,9 @@ def create():
                      'product-id': '33',
                      'family-name': 'OSM-Fixme',
                      'draw-priority': '16',
-                     'mapid_ext': '7001',}  
-  
-  
+                     'mapid_ext': '7001',}
+
+
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
 
