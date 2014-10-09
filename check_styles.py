@@ -27,7 +27,7 @@ def check():
   for layer in config['map_styles']:
     if config['map_styles'][(layer)] == "yes":
       print()
-      print(layer)
+      printinfo(layer)
 
 
       if (layer == "defaultmap"):
@@ -56,8 +56,9 @@ def check():
 
 
       print()
-      print("typ_file   = " + option_typ_file)
-      print("style_file = " + option_style_file)
+      printinfo("typ_file   = " + option_typ_file)
+      print()
+      printinfo("style_file = " + option_style_file)
       print()
       os.system("java -jar " + (option_mkgmap_path) + " --style-file=" + (option_style_file) + " --check-styles " + (option_typ_file))
 

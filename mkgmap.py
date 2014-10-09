@@ -55,12 +55,12 @@ def render():
 
       os.chdir(layer)
       print()
-      printinfo("Now building " + (layer))
+      printinfo("building " + (layer))
 
       """
       mkgmap-options
       """
-      
+
       option_mkgmap_path = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/mkgmap.jar "
 
       if (layer) == "defaultmap":

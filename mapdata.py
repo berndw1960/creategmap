@@ -63,7 +63,7 @@ def create_o5m():
   else:
     print()
     printerror((WORK_DIR) + "o5m/planet.o5m not found... ")
-    printerror("please download it with 'planet_up.py'")
+    print("please download it with 'planet_up.py'")
     print()
     quit()
 
@@ -73,7 +73,7 @@ def update_o5m():
   buildmap = config.get('runtime', 'buildmap')
 
   print()
-  printinfo("now updating " + (buildmap) + ".o5m, please wait...")
+  printinfo("updating " + (buildmap) + ".o5m, please wait...")
   os.system("osmupdate --daily --hourly -B=poly/" + (buildmap) +
 	    ".poly --keep-tempfiles o5m/" + (buildmap) +
 	    ".o5m  o5m/" + (buildmap) +  "_new.o5m")

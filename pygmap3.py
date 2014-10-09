@@ -92,7 +92,9 @@ on success return 0
 
 ExitCode = os.path.exists(WORK_DIR)
 if ExitCode == False:
-  printerror("Please create" + (WORK_DIR))
+  print()
+  printerror("Please create " + (WORK_DIR))
+  print()
   quit()
 
 os.chdir(WORK_DIR)
@@ -231,7 +233,7 @@ if (args.print_config):
     print("  " + (i))
   print()
   printinfo("to get more infos about a section use")
-  printinfo("    pygmap3.py -ps $SECTION   ")
+  print("    pygmap3.py -ps $SECTION   ")
   quit()
 
 if (args.print_section) != "no":
@@ -291,33 +293,55 @@ if (args.all_map_styles):
     print()
   quit()
 
+def info_styles():
+  print()
+  printerror((args.add_style) + "_style - dir not found")
+  print()
+  print()
+  printinfo("possible styles for routable layers are: ")
+  print("    basemap")
+  print("    bikemap")
+  print("    carmap")
+  print()
+  print()
+  printinfo("possible styles as overlays are:")
+  print("    bikeroute")
+  print("    boundary")
+  print("    housenumber")
+  print("    fixme")
+  print("    defaultmap")
+  print()
+  print()
+  print("    or your own style files!")
+  print()
+
 if (args.add_style) != "no":
   if os.path.exists("styles/" + (args.add_style) + "_style") == True:
     config.set('map_styles', (args.add_style), 'yes')
     print()
+    if ((args.add_style) in config) == False:
+      printinfo("please add a section [" + (args.add_style) + "] to pygmap3.cfg")
+      print("see the existing entries for the fixme layer as example")
+      print("for family-id and product-id increase the values")
+      print("mapid_ext and draw_priotity could be the same values")
+      print("family_name is a free text value")
+      print()
+      printinfo("please read mkgmap's manual for more infos")
+      print()
+      print("  [fixme]")
+      for key in (config['fixme']):
+        print("  " + (key) + " = " + config['fixme'][(key)])
+      print()
     printinfo((args.add_style) + " added to map_styles list")
   else:
-    print()
-    printerror((args.add_style) + "_style - dir not found")
+    info_styles()
   print()
   write_config()
   quit()
 
 if (args.map_style) != "no" and (args.map_style) != "defaultmap":
   if os.path.exists("styles/" + (args.map_style) + "_style") == False:
-    print()
-    printerror((args.map_style) + "_style - dir not found")
-    printerror("possible styles are: ")
-    print()
-    print("    basemap")
-    print("    bikemap")
-    print("    carmap")
-    print("    boundary")
-    print("    housenumber")
-    print("    fixme")
-    print("    defaultmap")
-    print("    or your own style!")
-    print()
+    info_styles()
     quit()
 
 if (args.map_style) != "no":
@@ -341,8 +365,10 @@ if (args.map_style) != "no":
 if (args.rm_style) != "no":
   if config.has_option('map_styles', (args.rm_style)) == True:
     config.remove_option('map_styles', (args.rm_style))
+    write_config()
   print()
   printinfo((args.rm_style) + " removed from map_styles list")
+  print()
   quit()
 
 if (args.set_default) != "no":
@@ -452,6 +478,7 @@ if config.get('osmtools', 'check') == "yes":
 
   for tool in ['osmconvert', 'osmupdate']:
     hint = (tool) + " missed, please use mk_osmtools to build it from sources"
+    print()
     checkprg((tool), hint)
 
   config.set('osmtools', 'check', 'no')
@@ -496,24 +523,66 @@ if (args.stop_after) == "tests":
 """
 mapdata to use
 
-"""
-
-buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
-
-
-"""
 if --keep_data is set, then use the old data
 
 """
 
-if (args.keep_data) == False:
+buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
+buildmap_pbf = (WORK_DIR) + "o5m/" + (buildmap) +  ".osm.pbf"
+buildmap_poly = (WORK_DIR) + "poly/" + (buildmap) +  ".poly"
 
+def download():
+  print()
+  printinfo("download " + (url))
+
+  # Download the file from `url` and save it locally under `file_name`:
+  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+    shutil.copyfileobj(response, out_file)
+
+
+if (args.keep_data) == False:
   import mapdata
 
   ExitCode = os.path.exists(buildmap_o5m)
   if ExitCode == False:
 
-    mapdata.create_o5m()
+    if (buildmap) == "germany":
+      ExitCode = os.path.exists(buildmap_poly)
+      if ExitCode == False:
+        os.chdir((WORK_DIR) + "/poly")
+        try:
+          url = "http://download.geofabrik.de/europe/germany.poly"
+          file_name = "germany.poly"
+          download()
+        except:
+          print()
+          printerror("download http://download.geofabrik.de/europe/germany.poly failed")
+          print("please try to download it manually and store it in " + (WORK_DIR) + "poly/")
+          print()
+          quit()
+
+      os.chdir((WORK_DIR) + "/o5m")
+      try:
+        url = "http://download.geofabrik.de/europe/germany-latest.osm.pbf"
+        file_name = "germany-latest.osm.pbf"
+        download()
+
+        print()
+        printinfo("converting germany-latest.osm.pbf to germany.o5m")
+        os.system("osmconvert germany-latest.osm.pbf -o=germany.o5m")
+        os.remove("germany-latest.osm.pbf")
+
+      except:
+        print()
+        printerror("download or convert germany-latest.osm.pbf to germany.o5m failed")
+        print("please try to download it manually and store it in " + (WORK_DIR) + "o5m/")
+        print()
+        quit()
+
+        os.chdir(WORK_DIR)
+
+    else:
+      mapdata.create_o5m()
 
   """
   update mapdata
@@ -561,7 +630,7 @@ if (args.no_split):
   if ExitCode == False:
     print()
     printwarning("can't find tiles/" + (buildmap) + "_split.ready")
-    printwarning("--no_split/-ns makes no sense, ignoring it")
+    print("--no_split/-ns makes no sense, ignoring it")
     splitter.split()
 
 else:

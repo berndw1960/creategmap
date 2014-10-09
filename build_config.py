@@ -41,13 +41,14 @@ def create():
                           'carmap': 'no',
                           'housenumber': 'no',
                           'fixme': 'no',
+                          'bikeroute': 'no',
                           'boundary': 'no',
                           'defaultmap': 'yes',}
 
   config['defaultmap'] = {}
   config['defaultmap'] = {'family-id': '1',
                           'product-id': '41',
-                          'family-name': 'defaultmap',
+                          'family-name': 'Defaultmap',
                           'draw-priority': '10',
                           'mapid_ext': '1001',}
 
@@ -99,7 +100,7 @@ def create():
   config['fixme'] = {}
   config['fixme'] = {'family-id': '3',
                      'product-id': '33',
-                     'family-name': 'OSM-Fixme',
+                     'family-name': 'Fixme',
                      'draw-priority': '16',
                      'mapid_ext': '7001',}
 

@@ -76,7 +76,7 @@ for i in ['splitter', 'mkgmap']:
   except:
     print()
     printwarning("can't get a new " + (i) + "-rev from mkgmap.org")
-    printwarning("trying to use another one")
+    print("trying to use another one")
     print()
 
     try:
@@ -84,7 +84,7 @@ for i in ['splitter', 'mkgmap']:
     except:
       print()
       printerror((i) + "_rev not set in config")
-      printerror("i don't know, which version should i use!")
+      print("i don't know, which version should i use!")
       print()
       quit()
 

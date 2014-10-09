@@ -99,7 +99,7 @@ if (args.add_mapset) != "no":
     if ExitCode == False:
       print()
       printerror((WORK_DIR) + "poly/" + (args.add_mapset) + ".poly not found... ")
-      printerror("please create or download "+ (args.add_mapset) + ".poly")
+      print("please create or download "+ (args.add_mapset) + ".poly")
       quit()
     config.set('mapset', (args.add_mapset), 'yes')
     write_config()

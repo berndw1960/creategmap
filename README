@@ -17,7 +17,7 @@ mapset.py -     if you want to build more then one mapset, as example dach and
                 mapset.py -h shows a help
 
 pygmap3.py -    the main script, start it without any option to create map
-                for DACH with the default style of mkgmap
+                for Germany with the default style of mkgmap
 
                 you need a poly file of the region, if you want to build your
                 choice of region
