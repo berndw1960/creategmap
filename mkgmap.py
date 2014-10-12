@@ -112,11 +112,11 @@ def render():
             printinfo((layer) + " build with " + (layer) + "_typ.txt")
           option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.txt"
 
-        elif os.path.exists((WORK_DIR) + "styles/pygmap3_typ.txt") == True:
+        elif os.path.exists((WORK_DIR) + "styles/styles_typ.txt") == True:
           if config.get('runtime', 'verbose') == "yes":
             print()
-            printinfo((layer) + " build with pygmap3_typ.txt")
-          option_typ_file = " " + (WORK_DIR) + "styles/pygmap3_typ.txt"
+            printinfo((layer) + " build with styles_typ.txt")
+          option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.txt"
 
         else:
           print()
