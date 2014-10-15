@@ -701,9 +701,12 @@ if (args.contourlines):
     else:
       printwarning("dir styles/contourlines_style not found")
 
+today = datetime.datetime.now()
+DATE = today.strftime('%Y%m%d_%H%M')
+
 print()
 print()
-print("  ---------- " + (buildmap) + " ready! ----------")
+print(" ----- " + (DATE) + " ----- " + (buildmap) + " ready! -----")
 print()
 print()
 
