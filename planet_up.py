@@ -91,7 +91,7 @@ is_there("o5m/planet.o5m", hint)
 ExitCode = os.path.exists("o5m/planet.o5m")
 if ExitCode == False:
   os.chdir("o5m/")
-  printinfo("Download started. Size ~18 Gigabytes... please wait! ")
+  printinfo("Download started. Size ~30 Gigabytes... please wait! ")
   os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
   os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
   os.remove("planet-latest.osm.pbf")
