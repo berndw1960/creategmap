@@ -1,4 +1,4 @@
-Time started: Sat May 31 09:09:59 CEST 2014
+Time started: Sat Jan 03 15:01:19 CET 2015
 Note that option order is significant:  An option only applies to
 subsequent input files.  (So if you are using splitter, you probably
 want to put most of your options before '-c template.args'.)
@@ -70,6 +70,9 @@ Label options:
 
 --latin1
 	This is equivalent to --code-page=1252.
+
+--unicode
+	This is equivalent to --code-page=65001. Note that only newer devices support unicode.
 
 --code-page=number
     This option enables the use of international characters. Only 8 bit
@@ -345,13 +348,22 @@ Miscellaneous options:
 --route
 	Create maps that support routing.
 
+--drive-on=left|right|detect|detect,left|detect,right
+	Explicitly specify which side of the road vehicles are
+	expected to drive on. 
+	If the first option is detect, the program tries 
+	to find out the proper flag. If that detection
+	fails, the second value is used (or right if none is given).
+	With OSM data as input, the detection tries to find out  
+	the country each road is in and compares the number
+	of drive-on-left roads with the rest.
+	Use the --bounds option to make sure that the detection 
+	finds the correct country. 
+	
 --drive-on-left
 --drive-on-right
-	Explicitly specify which side of the road vehicles are
-	expected to drive on. If neither of these options are
-	specified, it is assumed that vehicles drive on the right
-	unless --check-roundabouts is specified and the first
-	roundabout processed is clockwise.
+	Deprecated: Use drive-on instead.
+	The options are translated to drive-on=left|right. 
 
 --check-roundabouts
 	Check that roundabouts have the expected direction (clockwise
@@ -645,5 +657,5 @@ Miscellaneous options:
 	Makes some operations more verbose. Mostly used with --list-styles.
 Number of MapFailedExceptions: 0
 Number of ExitExceptions: 0
-Time finished: Sat May 31 09:09:59 CEST 2014
-Total time taken: 63ms
+Time finished: Sat Jan 03 15:01:19 CET 2015
+Total time taken: 66ms
