@@ -19,8 +19,80 @@ def printerror(msg):
 
 config = configparser.ConfigParser()
 
+def typ_txt_test():
+  global option_typ_file
+  global option_style_file
+  if (layer == "defaultmap"):
+
+    option_typ_file = " "
+    option_style_file = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
+
+  else:
+    if os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.typ") == True:
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo((layer) + " build with " + (layer) + "_typ.typ")
+      option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.typ"
+
+    elif os.path.exists((WORK_DIR) + "styles/styles_typ.typ") == True:
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo((layer) + " build with styles_typ.typ")
+      option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.typ"
+
+    elif os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.txt") == True:
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo((layer) + " build with " + (layer) + "_typ.txt")
+      option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.txt"
+
+    elif os.path.exists((WORK_DIR) + "styles/styles_typ.txt") == True:
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo((layer) + " build with styles_typ.txt")
+      option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.txt"
+
+    else:
+      print()
+      printwarning((layer) + " build without a typ_file")
+      option_typ_file = " "
+
+    option_style_file = " --style-file=" + (WORK_DIR) + "styles/" + (layer) + "_style "
+
 """
-map-rendering
+style check
+
+"""
+
+def check():
+  os.chdir(WORK_DIR)
+  config.read('pygmap3.cfg')
+  option_mkgmap_path = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/mkgmap.jar "
+
+  global layer
+  for layer in config['map_styles']:
+    if config['map_styles'][(layer)] == "yes":
+      print()
+      print()
+      printinfo("checking needed files to build " + (layer))
+      typ_txt_test()
+      print()
+      printinfo("typ_file   = " + option_typ_file)
+      print()
+      printinfo("style_file = " + option_style_file)
+      print()
+      os.system("java -jar " + (option_mkgmap_path) + " --style-file=" + (option_style_file) + " --check-styles " + (option_typ_file))
+
+
+  for i in ['styles_typ.typ', 'splitter.log', 'osmmap.tdb']:
+    ExitCode = os.path.exists(i)
+    if ExitCode == True:
+      os.remove(i)
+
+  print()
+
+"""
+map rendering
 
 """
 
@@ -100,31 +172,7 @@ def render():
         option_bounds = (option_bounds_default)
         option_sea = (option_sea_default)
 
-
-      if (layer == "defaultmap"):
-        option_typ_file = " "
-        option_style_file = " --style-file=" + (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
-
-      else:
-        if os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.txt") == True:
-          if config.get('runtime', 'verbose') == "yes":
-            print()
-            printinfo((layer) + " build with " + (layer) + "_typ.txt")
-          option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.txt"
-
-        elif os.path.exists((WORK_DIR) + "styles/styles_typ.txt") == True:
-          if config.get('runtime', 'verbose') == "yes":
-            print()
-            printinfo((layer) + " build with styles_typ.txt")
-          option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.txt"
-
-        else:
-          print()
-          printwarning((layer) + " build without a typ_file")
-          option_typ_file = " "
-
-        option_style_file = " --style-file=" + (WORK_DIR) + "styles/" + (layer) + "_style "
-
+      typ_txt_test()
 
       """
       map rendering

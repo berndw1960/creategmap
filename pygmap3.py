@@ -387,8 +387,8 @@ if (args.set_default) != "no":
   quit()
 
 if (args.check_styles):
-  import check_styles
-  check_styles.check()
+  import mkgmap
+  mkgmap.check()
   quit()
 
 
@@ -425,8 +425,8 @@ verbosity
 
 if (args.verbose):
   config.set('runtime', 'verbose', 'yes')
-  print()
-  printinfo("verbosity turned on")
+else:
+  config.set('runtime', 'verbose', 'no')
 
 """
 development version of splitter and mkgmap
