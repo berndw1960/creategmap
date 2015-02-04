@@ -29,27 +29,29 @@ def typ_txt_test():
 
   else:
     if os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.typ") == True:
-      if config.get('runtime', 'verbose') == "yes":
-        print()
-        printinfo((layer) + " build with " + (layer) + "_typ.typ")
+      printinfo((layer) + " build with " + (layer) + "_typ.typ")
       option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.typ"
 
     elif os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.txt") == True:
-      if config.get('runtime', 'verbose') == "yes":
-        print()
-        printinfo((layer) + " build with " + (layer) + "_typ.txt")
-      option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.txt"
+      printinfo((layer) + " build with " + (layer) + "_typ.txt")
 
     elif os.path.exists((WORK_DIR) + "styles/styles_typ.typ") == True:
-      if config.get('runtime', 'verbose') == "yes":
+      if os.path.exists((WORK_DIR) + "styles/styles_typ.txt") == True:
+        m1 = os.path.getmtime((WORK_DIR) + "styles/styles_typ.typ")
+        m2 = os.path.getmtime((WORK_DIR) + "styles/styles_typ.txt")
+        if m1 < m2:
+          print()
+          printwarning("styles_typ.typ is older then styles_typ.txt, renew it")
+          os.remove((WORK_DIR) + "styles/styles_typ.typ")
+
+      if os.path.exists((WORK_DIR) + "styles/styles_typ.typ") == True:
+        option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.typ"
+      else:
+        option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.txt"
         print()
-        printinfo((layer) + " build with styles_typ.typ")
-      option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.typ"
+        printwarning((layer) + " build with styles_typ.txt")
 
     elif os.path.exists((WORK_DIR) + "styles/styles_typ.txt") == True:
-      if config.get('runtime', 'verbose') == "yes":
-        print()
-        printinfo((layer) + " build with styles_typ.txt")
       option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.txt"
 
     else:
@@ -82,13 +84,6 @@ def check():
       printinfo("style_file = " + option_style_file)
       print()
       os.system("java -jar " + (option_mkgmap_path) + " --style-file=" + (option_style_file) + " --check-styles " + (option_typ_file))
-
-
-  for i in ['styles_typ.typ', 'splitter.log', 'osmmap.tdb']:
-    ExitCode = os.path.exists(i)
-    if ExitCode == True:
-      os.remove(i)
-
   print()
 
 """
