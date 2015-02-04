@@ -34,17 +34,17 @@ def typ_txt_test():
         printinfo((layer) + " build with " + (layer) + "_typ.typ")
       option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.typ"
 
-    elif os.path.exists((WORK_DIR) + "styles/styles_typ.typ") == True:
-      if config.get('runtime', 'verbose') == "yes":
-        print()
-        printinfo((layer) + " build with styles_typ.typ")
-      option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.typ"
-
     elif os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.txt") == True:
       if config.get('runtime', 'verbose') == "yes":
         print()
         printinfo((layer) + " build with " + (layer) + "_typ.txt")
       option_typ_file = " " + (WORK_DIR) + "styles/" + (layer) + "_typ.txt"
+
+    elif os.path.exists((WORK_DIR) + "styles/styles_typ.typ") == True:
+      if config.get('runtime', 'verbose') == "yes":
+        print()
+        printinfo((layer) + " build with styles_typ.typ")
+      option_typ_file = " " + (WORK_DIR) + "styles/styles_typ.typ"
 
     elif os.path.exists((WORK_DIR) + "styles/styles_typ.txt") == True:
       if config.get('runtime', 'verbose') == "yes":
@@ -196,23 +196,34 @@ def render():
             (WORK_DIR) + "tiles/*.o5m " +
             (option_typ_file))
 
+      os.chdir(WORK_DIR)
+
+      """
+      mkgmap creates a TYP named styles_typ.typ (as example), this file could be saved for
+      later use, maybe it save time
+      """
+
+      if os.path.exists("styles/" + (layer) + "_typ.typ") == False:
+         if os.path.exists((layer) + "/" + (layer) + "_typ.typ") == True:
+           shutil.move((layer) + "/" + (layer) + "_typ.typ", "styles/" + (layer) + "_typ.typ")
+
+      if os.path.exists("styles/styles_typ.typ") == False:
+        if os.path.exists((layer) + "/" + "styles_typ.typ") == True:
+          shutil.move((layer) + "/" + "styles_typ.typ", "styles/styles_typ.typ")
+
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
       """
-
-      os.chdir(WORK_DIR)
 
       unzip_dir = "gps_ready/unzipped/" + (buildmap)
 
       bl = (buildmap) + "_" + (layer)
       img = (unzip_dir) + "/" + (bl) + "_gmapsupp.img"
 
-      ExitCode = os.path.exists(unzip_dir)
-      if ExitCode == False:
+      if os.path.exists(unzip_dir) == False:
         os.makedirs(unzip_dir)
 
-      ExitCode = os.path.exists(img)
-      if ExitCode == True:
+      if os.path.exists(img) == True:
         os.remove(img)
 
       shutil.move((layer) +"/gmapsupp.img", (img))
