@@ -55,10 +55,12 @@ for i in ['splitter', 'mkgmap']:
 
     if config.get('runtime', 'svn') == "yes":
       if (i) == "splitter":
-        pattern = re.compile('splitter-r\d{3}')
+        pattern = re.compile('splitter-r\d{3}.zip')
       elif (i) == "mkgmap":
-        pattern = re.compile('mkgmap-r\d{4}')
-      i_rev = sorted(pattern.findall(data), reverse=True)[0]
+        pattern = re.compile('mkgmap-r\d{4}.zip')
+      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
+
+      i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
     else:
       if (i) == "splitter":
@@ -71,7 +73,7 @@ for i in ['splitter', 'mkgmap']:
       i_rev_pre.replace("/download/", "")
 
       i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
-
+      
     target.close()
 
   except:

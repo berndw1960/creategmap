@@ -505,7 +505,7 @@ if config.get('runtime', 'get_tools') != "no":
     write_config()
 
   """
-  bounds and precomp_sea from navmap.eu
+  bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
   """
 
