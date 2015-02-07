@@ -490,24 +490,27 @@ write to config
 
 write_config()
 
+
 """
 get splitter and mkgmap
 
 """
 
-import get_tools
+if config.get('runtime', 'get_tools') != "no":
 
-if config.get('runtime', 'svn') == "yes":
-  config.set('runtime', 'svn', 'no')
-  write_config()
+  import get_tools
 
-"""
-bounds and precomp_sea from navmap.eu
+  if config.get('runtime', 'svn') == "yes":
+    config.set('runtime', 'svn', 'no')
+    write_config()
 
-"""
+  """
+  bounds and precomp_sea from navmap.eu
 
-if config.get('navmap', 'pre_comp') == "yes":
-  import navmap
+  """
+
+  if config.get('navmap', 'pre_comp') == "yes":
+    import navmap
 
 """
 --stop_after tests

@@ -152,6 +152,9 @@ def update():
   if config.has_option('runtime', 'use_areas') == False:
     config.set('runtime', 'use_areas', 'no')
 
+  if config.has_option('runtime', 'get_tools') == False:
+     config.set('runtime', 'get_tools', 'yes')
+     
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 

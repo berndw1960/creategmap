@@ -164,6 +164,11 @@ for buildmap in config['mapset']:
       print()
       quit()
     os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + "-z -b " + (buildmap))
+    config.set('runtime', 'get_tools', 'no')
+    write_config()
+
+config.set('runtime', 'get_tools', 'yes')
+write_config()
 
 print()
 print("###### all mapsets successfully build! #######")
