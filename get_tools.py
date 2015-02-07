@@ -154,7 +154,7 @@ if ExitCode == True:
   if difftime > 18144000:
     os.rename((path), (path) + ".bak")
     print()
-    printwarning((WORK_DIR) + "cities15000.zip is older then 1 month, try to fetch a newer one")
+    printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
 
 
 ExitCode = os.path.exists(path)
@@ -170,9 +170,15 @@ if ExitCode == False:
       shutil.copyfileobj(response, out_file)
   except:
     print()
-    printerror("failed download cities15000.zip")
+    printwarning("failed download cities15000.zip")
     print()
-    quit()
+    try:
+      os.rename((path) + ".bak", (path))
+    except:
+      print()
+      printerror("couldn't restore cities15000.zip from backup!")
+      print()
+      quit()
 
 ExitCode = os.path.exists(path)
 if ExitCode == True:
