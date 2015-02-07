@@ -77,7 +77,7 @@ for i in ['splitter', 'mkgmap']:
   except:
     print()
     printwarning("can't get a new " + (i) + "-rev from mkgmap.org")
-    print("trying to use another one")
+    printwarning("trying to use another one")
     print()
 
     try:
@@ -85,7 +85,7 @@ for i in ['splitter', 'mkgmap']:
     except:
       print()
       printerror((i) + "_rev not set in config")
-      print("i don't know, which version should i use!")
+      printerror("i don't know, which version should i use!")
       print()
       quit()
 
@@ -185,7 +185,7 @@ if ExitCode == True:
       error()
   else:
     config.set('runtime', 'use_cities15000', 'yes')
-    
+
 elif ExitCode == False:
   try:
     download()
