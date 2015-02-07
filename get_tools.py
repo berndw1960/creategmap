@@ -8,6 +8,7 @@ import tarfile
 import configparser
 import urllib.request
 import shutil
+import time
 
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
@@ -143,7 +144,20 @@ get the geonames for splitter
 
 """
 
-ExitCode = os.path.exists((WORK_DIR) + "cities15000.zip")
+path = ((WORK_DIR) + "cities15000.zip")
+
+ExitCode = os.path.exists(path)
+if ExitCode == True:
+  ftime = os.path.getmtime(path)
+  curtime = time.time()
+  difftime = curtime - ftime
+  if difftime > 18144000:
+    os.rename((path), (path) + ".bak")
+    print()
+    printwarning((WORK_DIR) + "cities15000.zip is older then 1 month, try to fetch a newer one")
+
+
+ExitCode = os.path.exists(path)
 if ExitCode == False:
   try:
     url = "http://download.geonames.org/export/dump/cities15000.zip"
@@ -160,3 +174,8 @@ if ExitCode == False:
     print()
     quit()
 
+ExitCode = os.path.exists(path)
+if ExitCode == True:
+  ExitCode = os.path.exists((path) + ".bak")
+  if ExitCode == True:
+    os.remove((path) + ".bak")
