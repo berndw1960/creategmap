@@ -86,6 +86,11 @@ def check():
       os.system("java -jar " + (option_mkgmap_path) + " --style-file=" + (option_style_file) + " --check-styles " + (option_typ_file))
   print()
 
+  for i in ['styles/xstyles_typ.typ', 'splitter.log', 'osmmap.tdb']:
+    ExitCode = os.path.exists(i)
+    if ExitCode == True:
+      os.remove(i)
+
 """
 map rendering
 
@@ -192,19 +197,6 @@ def render():
             (option_typ_file))
 
       os.chdir(WORK_DIR)
-
-      """
-      mkgmap creates a TYP named styles_typ.typ (as example), this file could be saved for
-      later use, maybe it save time
-      """
-
-      if os.path.exists("styles/" + (layer) + "_typ.typ") == False:
-         if os.path.exists((layer) + "/" + (layer) + "_typ.typ") == True:
-           shutil.move((layer) + "/" + (layer) + "_typ.typ", "styles/" + (layer) + "_typ.typ")
-
-      if os.path.exists("styles/styles_typ.typ") == False:
-        if os.path.exists((layer) + "/" + "styles_typ.typ") == True:
-          shutil.move((layer) + "/" + "styles_typ.typ", "styles/styles_typ.typ")
 
       """
       move gmapsupp.img to (unzip_dir) as (buildmap)_(layer)_gmapsupp.img
