@@ -146,6 +146,30 @@ get the geonames for splitter
 
 path = ((WORK_DIR) + "cities15000.zip")
 
+def download():
+  url = "http://download.geonames.org/export/dump/cities15000.zip"
+  file_name = "cities15000.zip"
+  print()
+  printinfo("download " + (url))
+
+  # Download the file from `url` and save it locally under `file_name`:
+  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+    shutil.copyfileobj(response, out_file)
+  config.set('runtime', 'use_cities15000', 'yes')
+
+def error():
+  print()
+  printwarning("failed download cities15000.zip")
+  print()
+  try:
+    os.rename((path) + ".bak", (path))
+    config.set('runtime', 'use_cities15000', 'yes')
+    os.remove((path) + ".bak")
+  except:
+    print()
+    printerror("couldn't restore cities15000.zip from backup!")
+    config.set('runtime', 'use_cities15000', 'no')
+
 ExitCode = os.path.exists(path)
 if ExitCode == True:
   ftime = os.path.getmtime(path)
@@ -155,33 +179,17 @@ if ExitCode == True:
     os.rename((path), (path) + ".bak")
     print()
     printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
-
-
-ExitCode = os.path.exists(path)
-if ExitCode == False:
-  try:
-    url = "http://download.geonames.org/export/dump/cities15000.zip"
-    file_name = "cities15000.zip"
-    print()
-    printinfo("download " + (url))
-
-    # Download the file from `url` and save it locally under `file_name`:
-    with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-      shutil.copyfileobj(response, out_file)
-  except:
-    print()
-    printwarning("failed download cities15000.zip")
-    print()
     try:
-      os.rename((path) + ".bak", (path))
+      download()
     except:
-      print()
-      printerror("couldn't restore cities15000.zip from backup!")
-      print()
-      quit()
+      error()
+  else:
+    config.set('runtime', 'use_cities15000', 'yes')
+    
+elif ExitCode == False:
+  try:
+    download()
+  except:
+    error()
 
-ExitCode = os.path.exists(path)
-if ExitCode == True:
-  ExitCode = os.path.exists((path) + ".bak")
-  if ExitCode == True:
-    os.remove((path) + ".bak")
+write_config()

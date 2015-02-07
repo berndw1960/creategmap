@@ -40,16 +40,18 @@ def split():
   """
   splitter-options
   """
-
+  
+  pre_comp = " "
   if config.get('navmap', 'pre_comp') == "yes":
     if config.get('navmap', 'use_sea') == "yes":
       pre_comp = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip "
-    else:
-      pre_comp = " "
-  else:
-    pre_comp = " "
 
-  splitter_opts = (" --geonames-file=" + (WORK_DIR) + "cities15000.zip " +
+  if config.get('runtime','use_cities15000') == "yes":
+    geonames = " --geonames-file=" + (WORK_DIR) + "cities15000.zip "
+  else:
+    geonames = " "
+
+  splitter_opts = ((geonames) +
                    " --mapid=" + config.get('mapid', (buildmap)) + "0001 " +
                    " --output=o5m " +
                    (pre_comp) +

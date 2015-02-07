@@ -148,8 +148,8 @@ def render():
       else:
         option_mkgmap_logging = " "
 
-      option_bounds_default = " --location-autofill=bounds,is_in,nearest "
-      option_sea_default = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+      option_bounds = " --location-autofill=bounds,is_in,nearest "
+      option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
       if config.get('navmap', 'pre_comp') == "yes":
         if config.get('navmap', 'use_bounds') == "yes":
@@ -157,20 +157,14 @@ def render():
             print()
             printinfo ("use precompiled bounds")
           option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
-        else:
-          option_bounds = (option_bounds_default)
 
         if config.get('navmap', 'use_sea') == "yes":
           if config.get('runtime', 'verbose') == "yes":
             print()
             printinfo ("use precompiled sea_tiles")
+            print()
           option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
-        else:
-          option_sea = (option_sea_default)
 
-      else:
-        option_bounds = (option_bounds_default)
-        option_sea = (option_sea_default)
 
       typ_txt_test()
 
