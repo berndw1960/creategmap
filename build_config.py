@@ -155,9 +155,6 @@ def update():
   if config.has_option('runtime', 'use_areas') == False:
     config.set('runtime', 'use_areas', 'no')
 
-  if config.has_option('runtime', 'use_cities15000') == False:
-    config.set('runtime', 'use_cities15000', 'no')
-
   if config.has_option('runtime', 'get_tools') == False:
      config.set('runtime', 'get_tools', 'yes')
 
