@@ -33,7 +33,9 @@ def create():
                        'logging': 'no',
                        'verbose': 'no',
                        'default': 'germany',
-                       'ramsize': '-Xmx3G',}
+                       'ramsize': '-Xmx3G',
+                       'use_cities15000': 'yes',
+                       'get_tools', 'yes'}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -154,7 +156,10 @@ def update():
 
   if config.has_option('runtime', 'get_tools') == False:
      config.set('runtime', 'get_tools', 'yes')
-     
+
+  if config.has_option('runtime', 'use_cities15000') == False:
+     config.set('runtime', 'use_cities15000', 'yes')
+
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 

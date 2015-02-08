@@ -41,6 +41,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
 parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
+parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
@@ -149,6 +150,11 @@ if (args.svn):
 else:
   svn = " "
 
+if (args.no_zip):
+  zip = " "
+else:
+  zip = "  -z "
+
 if (args.log):
   log = " --log "
 else:
@@ -163,7 +169,7 @@ for buildmap in config['mapset']:
       printwarning("stopping build_process")
       print()
       quit()
-    os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + "-z -b " + (buildmap))
+    os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + (zip) + " -b " + (buildmap))
     config.set('runtime', 'get_tools', 'no')
     write_config()
 
