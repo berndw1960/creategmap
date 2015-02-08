@@ -29,7 +29,6 @@ def create():
   config['runtime'] = {}
   config['runtime'] = {'maxnodes': '1600000',
                        'use_areas': 'no',
-                       'use_cities15000': 'no',
                        'svn': 'no',
                        'logging': 'no',
                        'verbose': 'no',
