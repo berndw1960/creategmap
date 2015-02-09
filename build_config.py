@@ -35,7 +35,7 @@ def create():
                        'default': 'germany',
                        'ramsize': '-Xmx3G',
                        'use_cities15000': 'yes',
-                       'get_tools', 'yes'}
+                       'get_tools': 'yes'}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
