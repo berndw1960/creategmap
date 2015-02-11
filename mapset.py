@@ -160,6 +160,10 @@ if (args.log):
 else:
   log = " "
 
+if config.get('runtime', 'get_tools') == "no":
+  config.set('runtime', 'get_tools', 'yes')
+  write_config()
+  
 for buildmap in config['mapset']:
   if config['mapset'][(buildmap)] == "yes":
     ExitCode = os.path.exists("stop")
