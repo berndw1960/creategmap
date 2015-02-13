@@ -42,8 +42,7 @@ def create_o5m():
   BUILD_O5M = ("o5m/" + (buildmap) + ".o5m")
   BUILD_OLD = ("o5m/" + (buildmap) + ".old")
 
-  ExitCode = os.path.exists("o5m/planet.o5m")
-  if ExitCode == True:
+  if os.path.exists("o5m/planet.o5m") == True:
     print()
     printinfo("now extracting " + (buildmap) + ".o5m from Planet, please wait...")
     os.system("osmconvert o5m/planet.o5m " +
@@ -51,14 +50,12 @@ def create_o5m():
               " -B=poly/" + (buildmap) + ".poly " +
               " -o=" + (BUILD_TEMP))
 
-    ExitCode = os.path.exists(BUILD_O5M)
-    if ExitCode == True:
+    if os.path.exists(BUILD_O5M) == True:
       os.rename((BUILD_O5M), (BUILD_OLD))
 
     os.rename((BUILD_TEMP), (BUILD_O5M))
 
-    ExitCode = os.path.exists(BUILD_OLD)
-    if ExitCode == True:
+    if os.path.exists(BUILD_OLD) == True:
       os.remove(BUILD_OLD)
   else:
     print()
@@ -80,12 +77,10 @@ def update_o5m():
 
   os.chdir("o5m")
 
-  ExitCode = os.path.exists((buildmap) +  "_new.o5m")
-  if ExitCode == True:
+  if os.path.exists((buildmap) +  "_new.o5m") == True:
     os.rename((buildmap) + ".o5m", (buildmap) + "_temp.o5m")
     os.rename((buildmap) + "_new.o5m", (buildmap) + ".o5m")
-    ExitCode = os.path.exists((buildmap) + ".o5m")
-    if ExitCode == True:
+    if os.path.exists((buildmap) + ".o5m") == True:
       os.remove((buildmap) + "_temp.o5m")
 
   os.chdir(WORK_DIR)

@@ -56,8 +56,7 @@ raise message if fails and returns 1
 on success return 0
 """
 
-ExitCode = os.path.exists(WORK_DIR)
-if ExitCode == False:
+if os.path.exists(WORK_DIR) == False:
   printerror("Please create" + (WORK_DIR))
   quit()
 
@@ -78,8 +77,7 @@ config = configparser.ConfigParser()
 
 import build_config
 
-ExitCode = os.path.exists("pygmap3.cfg")
-if ExitCode == False:
+if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
 
 config.read('pygmap3.cfg')
@@ -96,8 +94,7 @@ set, edit or delete mapset list
 """
 if (args.add_mapset) != "no":
   if config.has_option('mapset', (args.add_mapset)) == False:
-    ExitCode = os.path.exists("poly/" + (args.add_mapset) + ".poly")
-    if ExitCode == False:
+   if os.path.exists("poly/" + (args.add_mapset) + ".poly") == False:
       print()
       printerror((WORK_DIR) + "poly/" + (args.add_mapset) + ".poly not found... ")
       print("please create or download "+ (args.add_mapset) + ".poly")
@@ -160,15 +157,16 @@ if (args.log):
 else:
   log = " "
 
-if config.get('runtime', 'get_tools') == "no":
-  config.set('runtime', 'get_tools', 'yes')
-  write_config()
-  
+def reset():
+  if config.get('runtime', 'get_tools') == "no":
+    config.set('runtime', 'get_tools', 'yes')
+    write_config()
+
 for buildmap in config['mapset']:
   if config['mapset'][(buildmap)] == "yes":
-    ExitCode = os.path.exists("stop")
-    if ExitCode == True:
+    if os.path.exists("stop") == True:
       os.remove ("stop")
+      reset()
       print()
       printwarning("stopping build_process")
       print()
@@ -177,8 +175,7 @@ for buildmap in config['mapset']:
     config.set('runtime', 'get_tools', 'no')
     write_config()
 
-config.set('runtime', 'get_tools', 'yes')
-write_config()
+reset()
 
 print()
 print("###### all mapsets successfully build! #######")

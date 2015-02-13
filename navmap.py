@@ -47,8 +47,7 @@ for i in ['sea', 'bounds']:
       print()
       quit()
 
-  ExitCode = os.path.exists((rev) + ".zip")
-  if ExitCode == False:
+  if os.path.exists((rev) + ".zip") == False:
     try:
       url = "http://" + (www_path) + (path) + (date) + "/" + (i) + "_" + (date) + ".zip"
       file_name = (i) + "_" + (date) + ".zip"
@@ -65,8 +64,7 @@ for i in ['sea', 'bounds']:
       quit()
 
 
-  ExitCode = os.path.exists((rev) + ".zip")
-  if ExitCode == True:
+  if os.path.exists((rev) + ".zip") == True:
     if config.get('navmap', "use_" + (i)) == "no":
       config.set('navmap', "use_" + (i), 'yes',)
     print()

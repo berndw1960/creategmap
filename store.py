@@ -17,8 +17,7 @@ def printerror(msg):
   print("EE: " + msg)
 
 def checkprg(programmtofind, solutionhint):
-  ExitCode = os.system("which " + programmtofind)
-  if ExitCode == 0:
+  if os.system("which " + programmtofind) == 0:
     printinfo(programmtofind + " found")
   else:
     printerror(programmtofind + " not found")
@@ -41,8 +40,7 @@ def zip_img():
   unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap)
   zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap)
 
-  ExitCode = os.path.exists(zip_dir)
-  if ExitCode == False:
+  if os.path.exists(zip_dir) == False:
     os.makedirs(zip_dir)
 
   os.chdir(unzip_dir)
@@ -71,8 +69,7 @@ def zip_img():
 
       my_zip_img.close()
 
-      ExitCode = os.path.exists((zip_dir) + "/" + (zip_img))
-      if ExitCode == True:
+      if os.path.exists((zip_dir) + "/" + (zip_img)) == True:
         os.remove((zip_dir) + "/" + (zip_img))
 
       shutil.move((zip_img), (zip_dir))
@@ -84,15 +81,12 @@ def kml():
   buildmap = config.get('runtime', 'buildmap')
   kml_dir = "gps_ready/zipped/kml/"
 
-  ExitCode = os.path.exists(kml_dir)
-  if ExitCode == False:
+  if os.path.exists(kml_dir) == False:
     os.makedirs(kml_dir)
 
-  ExitCode = os.path.exists("tiles/" + (buildmap) + ".kml")
-  if ExitCode == True:
+  if os.path.exists("tiles/" + (buildmap) + ".kml") == True:
     kml = (kml_dir) + "/" + (buildmap) + ".kml"
-    ExitCode = os.path.exists(kml)
-    if ExitCode == True:
+    if os.path.exists(kml) == True:
       os.remove(kml)
 
     shutil.move("tiles/" + (buildmap) + ".kml", (kml_dir))
@@ -112,12 +106,10 @@ def log():
       buildday = config.get('time_stamp', (buildmap))
       log_dir = ("log/mkgmap/" + (buildmap) + "/" + (layer) + "/" + (buildday))
 
-      ExitCode = os.path.exists(log_dir)
-      if ExitCode == True:
+      if os.path.exists(log_dir)e == True:
         shutil.rmtree(log_dir)
 
-      ExitCode = os.path.exists((layer) + "/mkgmap.log.0")
-      if ExitCode == True:
+      if os.path.exists((layer) + "/mkgmap.log.0") == True:
 
         from shutil import copytree, ignore_patterns
         copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))

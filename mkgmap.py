@@ -86,9 +86,8 @@ def check():
       os.system("java -jar " + (option_mkgmap_path) + " --style-file=" + (option_style_file) + " --check-styles " + (option_typ_file))
   print()
 
-  for i in ['styles/xstyles_typ.typ', 'splitter.log', 'osmmap.tdb']:
-    ExitCode = os.path.exists(i)
-    if ExitCode == True:
+  for i in ['styles_typ.typ', 'styles/xstyles_typ.typ', 'splitter.log', 'osmmap.tdb']:
+    if os.path.exists(i) == True:
       os.remove(i)
 
 """
@@ -112,8 +111,7 @@ def render():
       Test for (layer)-dir and remove old data from there
       """
 
-      ExitCode = os.path.exists(layer)
-      if ExitCode == False:
+      if os.path.exists(layer) == False:
         os.mkdir(layer)
       else:
         path = (layer)

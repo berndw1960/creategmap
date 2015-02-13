@@ -40,7 +40,7 @@ def split():
   """
   splitter-options
   """
-  
+
   pre_comp = " "
   if config.get('navmap', 'pre_comp') == "yes":
     if config.get('navmap', 'use_sea') == "yes":
@@ -68,8 +68,7 @@ def split():
 
   use_areas = config.get('runtime', 'use_areas')
   if use_areas == "yes":
-    ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
-    if ExitCode == True:
+    if os.path.exists("areas/" + (buildmap) + "_areas.list") == True:
       os.chdir("tiles")
       if config.get('runtime', 'verbose') == "yes":
         print()
@@ -92,8 +91,7 @@ def split():
   if config.get('runtime', 'logging') == "yes":
     log_dir = ((WORK_DIR) + "log/splitter/" + (buildmap) + "/" + (buildday))
 
-    ExitCode = os.path.exists(log_dir)
-    if ExitCode == True:
+    if os.path.exists(log_dir) == True:
       path = (log_dir)
       for file in os.listdir(path):
         if os.path.isfile(os.path.join(path, file)):
@@ -102,23 +100,20 @@ def split():
           except:
             print('Could not delete', file, 'in', path)
 
-    elif ExitCode == False:
+    else:
       os.makedirs(log_dir)
 
     for i in ['densities-out.txt', 'template.args', 'areas.poly', 'splitter.log', 'areas.list']:
-      ExitCode = os.path.exists(i)
-      if ExitCode == True:
+      if os.path.exists(i) == True:
         shutil.copy2((i), (log_dir))
 
   os.chdir(WORK_DIR)
 
-  ExitCode = os.path.exists("tiles/template.args")
-  if ExitCode == True:
+  if os.path.exists("tiles/template.args") == True:
     datei = open("tiles/" + (buildmap) + "_split.ready", "w")
     datei.close()
-  elif ExitCode == False:
-    ExitCode = os.path.exists("areas/" + (buildmap) + "_areas.list")
-    if ExitCode == True:
+  else:
+    if os.path.exists("areas/" + (buildmap) + "_areas.list") == True:
       os.remove("areas/" + (buildmap) + "_areas.list")
       print()
       printwarning((buildmap) + "_areas.list removed, next build creates a new one")

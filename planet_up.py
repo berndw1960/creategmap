@@ -45,9 +45,7 @@ def checkprg(programmtofind, solutionhint):
     search follows $PATH
   """
 
-  ExitCode = os.system("which " + programmtofind)
-
-  if ExitCode == 0:
+  if os.system("which " + programmtofind) == 0:
     printinfo(programmtofind + " found")
   else:
     printerror(programmtofind + " not found")
@@ -61,9 +59,7 @@ def is_there(find, solutionhint):
     on success return 0
   """
 
-  ExitCode = os.path.exists(find)
-
-  if ExitCode == True:
+  if os.path.exists(find) == True:
      printinfo(find + " found")
   else:
     printerror(find + " not found")
@@ -79,8 +75,7 @@ for tool in ['osmconvert', 'osmupdate']:
   hint = (tool) + " missed, please use mk_osmtools to build it from sources"
   checkprg((tool), hint)
 
-ExitCode = os.path.exists("planet.o5m")
-if ExitCode == True:
+if os.path.exists("planet.o5m") == True:
   printerror("please move planet.o5m to " +(WORK_DIR) + "o5m/")
   quit()
 
@@ -88,8 +83,7 @@ hint = ("No Planet-File found! ")
 is_there("o5m/planet.o5m", hint)
 
 
-ExitCode = os.path.exists("o5m/planet.o5m")
-if ExitCode == False:
+if os.path.exists("o5m/planet.o5m") == False:
   os.chdir("o5m/")
   printinfo("Download started. Size ~30 Gigabytes... please wait! ")
   os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
@@ -109,8 +103,7 @@ def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
-ExitCode = os.path.exists("pygmap3.cfg")
-if ExitCode == False:
+if os.path.exists("pygmap3.cfg") == False:
   import default_config
   default_config.create()
 
@@ -137,12 +130,10 @@ os.system("osmupdate -v --daily --hourly --keep-tempfiles o5m/planet.o5m o5m/pla
 
 os.chdir("o5m/")
 
-ExitCode = os.path.exists("planet_new.o5m")
-if ExitCode == True:
+if os.path.exists("planet_new.o5m") == True:
   os.rename("planet.o5m", "planet_temp.o5m")
   os.rename("planet_new.o5m", "planet.o5m")
-  ExitCode = os.path.exists("planet.o5m")
-  if ExitCode == True:
+  if os.path.exists("planet.o5m") == True:
     os.remove("planet_temp.o5m")
 
 os.chdir(WORK_DIR)

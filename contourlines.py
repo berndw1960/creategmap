@@ -26,9 +26,7 @@ def checkprg(programmtofind, solutionhint):
   search follows $PATH
   """
 
-  ExitCode = os.system("which " + programmtofind)
-
-  if ExitCode == 0:
+  if os.system("which " + programmtofind) == 0:
     printinfo(programmtofind + " found")
   else:
     printerror(programmtofind + " not found")
@@ -42,10 +40,8 @@ def is_there(find, solutionhint):
   on success return 0
   """
 
-  ExitCode = os.path.exists(find)
-
-  if ExitCode == True:
-     printinfo(find + " found")
+  if os.path.exists(find) == True:
+    printinfo(find + " found")
   else:
     printerror(find + " not found")
     print(solutionhint)
@@ -62,8 +58,7 @@ create the contourlines
 
 def create_cont():
 
-  ExitCode = os.path.exists("contourlines/temp/")
-  if ExitCode == True:
+  if os.path.exists("contourlines/temp/") == True:
     printerror(" Please move " + (WORK_DIR) + "'contourlines/temp/' to '" + (WORK_DIR) + "cl_temp/'...")
     quit()
 
@@ -78,8 +73,7 @@ def create_cont():
   cltemp_dir = ("cl_temp/")
 
   for dir in [(cltemp_dir), (cl_dir)]:
-    ExitCode = os.path.exists(dir)
-    if ExitCode == False:
+    if os.path.exists(dir) == False:
       os.makedirs(dir)
 
   path = (cltemp_dir)
@@ -92,21 +86,17 @@ def create_cont():
 
   print("searching for " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
 
-  ExitCode = os.path.exists((cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
-  if ExitCode == False:
-
+  if os.path.exists((cl_dir) + (buildmap) + "_contourlines_gmapsupp.img") == False:
     hint = "Install phyghtmap to create contourlines if needed"
     checkprg("phyghtmap", hint)
 
-    ExitCode = os.path.exists("styles/contourlines_style")
     global mapstyle
-    if ExitCode == True:
+    if os.path.exists("styles/contourlines_style") == True:
       mapstyle = "styles"
     else:
       printerror("contourlines_style not found, please disable it in pygmap3.cfg")
 
-    ExitCode = os.path.exists((mapstyle) + "/contourlines_style/lines")
-    if ExitCode == False:
+    if os.path.exists((mapstyle) + "/contourlines_style/lines") == False:
       printerror("No contourlines_style found")
       quit()
 

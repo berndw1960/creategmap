@@ -90,8 +90,7 @@ raise message if fails and returns 1
 on success return 0
 """
 
-ExitCode = os.path.exists(WORK_DIR)
-if ExitCode == False:
+if os.path.exists(WORK_DIR) == False:
   print()
   printerror("Please create " + (WORK_DIR))
   print()
@@ -99,10 +98,8 @@ if ExitCode == False:
 
 os.chdir(WORK_DIR)
 
-ExitCode = os.path.exists("pygmap3.cfg")
-if ExitCode == True:
-  ExitCode = os.path.exists("pygmap3.cfg.bak")
-  if ExitCode == True:
+if os.path.exists("pygmap3.cfg") == True:
+  if os.path.exists("pygmap3.cfg.bak") == True:
     os.remove("pygmap3.cfg.bak")
 
   shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
@@ -114,8 +111,7 @@ create dir o5m, areas, poly and tiles
 """
 
 for dir in ['o5m', 'areas', 'poly', 'tiles']:
-  ExitCode = os.path.exists(dir)
-  if ExitCode == False:
+  if os.path.exists(dir) == False:
     os.mkdir(dir)
 
 """
@@ -136,8 +132,7 @@ create a new config if needed
 
 import build_config
 
-ExitCode = os.path.exists("pygmap3.cfg")
-if ExitCode == False:
+if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
 
 """
@@ -372,8 +367,7 @@ if (args.rm_style) != "no":
   quit()
 
 if (args.set_default) != "no":
-  ExitCode = os.path.exists("poly/" + (args.set_default) + ".poly")
-  if ExitCode == False:
+  if os.path.exists("poly/" + (args.set_default) + ".poly") == False:
     print()
     printerror((WORK_DIR) + "poly/" + (args.set_default) + ".poly not found... ")
     printerror("please create or download "+ (args.set_default) + ".poly")
@@ -466,8 +460,7 @@ osmupdate and osmconvert
 
 if config.get('osmtools', 'check') == "yes":
   def checkprg(programmtofind, solutionhint):
-    ExitCode = os.system("which " + programmtofind)
-    if ExitCode == 0:
+    if os.system("which " + programmtofind) == 0:
       print()
       printinfo(programmtofind + " found")
     else:
@@ -542,17 +535,15 @@ def download():
   with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
     shutil.copyfileobj(response, out_file)
 
+os.chdir(WORK_DIR)
 
 if (args.keep_data) == False:
   import mapdata
 
-  ExitCode = os.path.exists(buildmap_o5m)
-  if ExitCode == False:
-
+  if os.path.exists(buildmap_o5m) == False:
     if (buildmap) == "germany":
-      ExitCode = os.path.exists(buildmap_poly)
-      if ExitCode == False:
-        os.chdir((WORK_DIR) + "/poly")
+      if os.path.exists(buildmap_poly) == False:
+        os.chdir("/poly")
         try:
           url = "http://download.geofabrik.de/europe/germany.poly"
           file_name = "germany.poly"
@@ -564,7 +555,7 @@ if (args.keep_data) == False:
           print()
           quit()
 
-      os.chdir((WORK_DIR) + "/o5m")
+      os.chdir("../o5m")
       try:
         url = "http://download.geofabrik.de/europe/germany-latest.osm.pbf"
         file_name = "germany-latest.osm.pbf"
@@ -629,8 +620,7 @@ if (args.no_split):
   if (args.verbose):
     print()
     printinfo("no_split switched on!")
-  ExitCode = os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready")
-  if ExitCode == False:
+  if os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready") == False:
     print()
     printwarning("can't find tiles/" + (buildmap) + "_split.ready")
     print("--no_split/-ns makes no sense, ignoring it")
@@ -697,8 +687,7 @@ create the contourlines
 """
 
 if (args.contourlines):
-    ExitCode = os.path.exists("styles/contourlines_style")
-    if ExitCode == True:
+    if os.path.exists("styles/contourlines_style") == True:
       import contourlines
       contourlines.create_cont()
     else:

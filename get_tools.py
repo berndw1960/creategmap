@@ -73,7 +73,7 @@ for i in ['splitter', 'mkgmap']:
       i_rev_pre.replace("/download/", "")
 
       i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
-      
+
     target.close()
 
   except:
@@ -91,13 +91,11 @@ for i in ['splitter', 'mkgmap']:
       print()
       quit()
 
-  ExitCode = os.path.exists(i_rev)
-  if ExitCode == True:
+  if os.path.exists(i_rev) == True:
     print()
     printinfo("using " + (i_rev))
   else:
-    ExitCode = os.path.isfile((i_rev) + ".tar.gz")
-    if ExitCode == True:
+    if os.path.isfile((i_rev) + ".tar.gz") == True:
       try:
         tar_extract()
       except:
@@ -131,8 +129,7 @@ for i in ['splitter', 'mkgmap']:
         print()
         quit()
 
-  ExitCode = os.path.exists(i_rev)
-  if ExitCode == False:
+  if os.path.exists(i_rev) == False:
     print()
     printerror((i_rev) + " didn't exist")
     print()
@@ -172,8 +169,7 @@ def error():
     printerror("couldn't restore cities15000.zip from backup!")
     config.set('runtime', 'use_cities15000', 'no')
 
-ExitCode = os.path.exists(path)
-if ExitCode == True:
+if os.path.exists(path) == True:
   ftime = os.path.getmtime(path)
   curtime = time.time()
   difftime = curtime - ftime
@@ -187,8 +183,7 @@ if ExitCode == True:
       error()
   else:
     config.set('runtime', 'use_cities15000', 'yes')
-
-elif ExitCode == False:
+else:
   try:
     download()
   except:
