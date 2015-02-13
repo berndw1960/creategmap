@@ -106,7 +106,7 @@ def log():
       buildday = config.get('time_stamp', (buildmap))
       log_dir = ("log/mkgmap/" + (buildmap) + "/" + (layer) + "/" + (buildday))
 
-      if os.path.exists(log_dir)e == True:
+      if os.path.exists(log_dir) == True:
         shutil.rmtree(log_dir)
 
       if os.path.exists((layer) + "/mkgmap.log.0") == True:
