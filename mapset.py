@@ -94,7 +94,7 @@ set, edit or delete mapset list
 """
 if (args.add_mapset) != "no":
   if config.has_option('mapset', (args.add_mapset)) == False:
-   if os.path.exists("poly/" + (args.add_mapset) + ".poly") == False:
+    if os.path.exists("poly/" + (args.add_mapset) + ".poly") == False:
       print()
       printerror((WORK_DIR) + "poly/" + (args.add_mapset) + ".poly not found... ")
       print("please create or download "+ (args.add_mapset) + ".poly")
