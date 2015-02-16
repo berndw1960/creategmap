@@ -489,21 +489,19 @@ get splitter and mkgmap
 
 """
 
-if config.get('runtime', 'get_tools') != "no":
+import get_tools
 
-  import get_tools
+if config.get('runtime', 'svn') == "yes":
+  config.set('runtime', 'svn', 'no')
+  write_config()
 
-  if config.get('runtime', 'svn') == "yes":
-    config.set('runtime', 'svn', 'no')
-    write_config()
+"""
+bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
-  """
-  bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
+"""
 
-  """
-
-  if config.get('navmap', 'pre_comp') == "yes":
-    import navmap
+if config.get('navmap', 'pre_comp') == "yes":
+  import navmap
 
 """
 --stop_after tests

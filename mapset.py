@@ -157,25 +157,16 @@ if (args.log):
 else:
   log = " "
 
-def reset():
-  if config.get('runtime', 'get_tools') == "no":
-    config.set('runtime', 'get_tools', 'yes')
-    write_config()
-
 for buildmap in config['mapset']:
   if config['mapset'][(buildmap)] == "yes":
     if os.path.exists("stop") == True:
       os.remove ("stop")
-      reset()
       print()
       printwarning("stopping build_process")
       print()
       quit()
     os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + (zip) + " -b " + (buildmap))
-    config.set('runtime', 'get_tools', 'no')
     write_config()
-
-reset()
 
 print()
 print("###### all mapsets successfully build! #######")

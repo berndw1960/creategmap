@@ -34,8 +34,7 @@ def create():
                        'verbose': 'no',
                        'default': 'germany',
                        'ramsize': '-Xmx3G',
-                       'use_cities15000': 'yes',
-                       'get_tools': 'yes'}
+                       'use_cities15000': 'yes',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -126,39 +125,6 @@ def update():
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
 
-  if ('runtime' in config) == False:
-    config.add_section('runtime')
-
-  if config.has_option('runtime', 'default') == False:
-    if config.has_option('mapset', 'default') == True:
-      config.set('runtime', 'default', config.get('mapset', 'default'))
-      config.remove_option('mapset', 'default')
-    else:
-      config.set('runtime', 'default', 'germany')
-
-  if config.has_option('runtime', 'ramsize') == False:
-    config.set('runtime', 'ramsize', '-Xmx3G')
-
-  if config.has_option('runtime', 'svn') == False:
-    config.set('runtime', 'svn', 'no')
-
-  if config.has_option('runtime', 'logging') == False:
-    config.set('runtime', 'logging', 'no')
-
-  if config.has_option('runtime', 'verbose') == False:
-    config.set('runtime', 'verbose', 'no')
-
-  if config.has_option('runtime', 'maxnodes') == False:
-    config.set('runtime', 'maxnodes', '1600000')
-
-  if config.has_option('runtime', 'use_areas') == False:
-    config.set('runtime', 'use_areas', 'no')
-
-  if config.has_option('runtime', 'get_tools') == False:
-     config.set('runtime', 'get_tools', 'yes')
-
-  if config.has_option('runtime', 'use_cities15000') == False:
-     config.set('runtime', 'use_cities15000', 'yes')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
