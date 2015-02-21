@@ -162,8 +162,7 @@ def render():
             printinfo ("use precompiled sea_tiles")
             print()
           option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
-          print("1")
-
+         
       typ_txt_test()
 
       """
