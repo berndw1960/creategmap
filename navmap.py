@@ -20,8 +20,13 @@ def printerror(msg):
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
+def write_config():
+  with open('pygmap3.cfg', 'w') as configfile:
+    config.write(configfile)
+
 config = configparser.ConfigParser()
 config.read('pygmap3.cfg')
+
 for i in ['sea', 'bounds']:
   try:
     www_path = "osm2.pleiades.uni-wuppertal.de"
@@ -36,7 +41,11 @@ for i in ['sea', 'bounds']:
     target.close()
 
     rev = (i) + "_" + (date)
-    config.set('navmap', (i) + "_rev", (rev))
+
+    if config.has_option('navmap', (i) + "_rev"):
+      prerev = config.get('navmap', (i) + "_rev")
+      if (prerev) != (rev):
+        config.set('navmap', "pre_" + (i) + "_rev", (prerev))
 
   except:
     if config.has_option('navmap', (i) + "_rev"):
@@ -47,7 +56,12 @@ for i in ['sea', 'bounds']:
       print()
       quit()
 
+  if config.has_option('navmap', 'use_old_bounds'):
+    if config.get('navmap', 'use_old_bounds') == "yes":
+      rev = config.get('navmap', "pre_" + (i) + "_rev")
+
   if os.path.exists((rev) + ".zip") == False:
+
     try:
       url = "http://" + (www_path) + (path) + (date) + "/" + (i) + "_" + (date) + ".zip"
       file_name = (i) + "_" + (date) + ".zip"
@@ -63,8 +77,8 @@ for i in ['sea', 'bounds']:
       print()
       quit()
 
-
   if os.path.exists((rev) + ".zip") == True:
+    config.set('navmap', (i) + "_rev", (rev))
     if config.get('navmap', "use_" + (i)) == "no":
       config.set('navmap', "use_" + (i), 'yes',)
     print()
@@ -75,7 +89,5 @@ for i in ['sea', 'bounds']:
     print()
     printwarning("pre_comp " + (i) + " disabled, needed file(s) not found")
 
-  with open('pygmap3.cfg', 'w') as configfile:
-    config.write(configfile)
-
+  write_config()
 

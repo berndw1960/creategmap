@@ -186,6 +186,7 @@ parser.add_argument('-dm', '--no_map_styles', action="store_true", help="disable
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
+parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 
 # config
 parser.add_argument('-pc', '--print_config', action="store_true", help="printout the config sections  and exit")
@@ -517,6 +518,10 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 """
 
 if config.get('navmap', 'pre_comp') == "yes":
+  if (args.old_bounds):
+    config.set('navmap', 'use_old_bounds', 'yes')
+    write_config()
+    
   import navmap
 
 """

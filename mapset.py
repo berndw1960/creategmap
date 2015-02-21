@@ -38,6 +38,8 @@ parser = argparse.ArgumentParser(
           pygmap3.py creates only 'one' mapset, with mapset.py, it is possible
           to create mapsets from a list
         '''))
+
+parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
 parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
@@ -157,6 +159,11 @@ if (args.log):
 else:
   log = " "
 
+if (args.old_bounds):
+  ob = " -ob "
+else:
+  ob = " "
+
 for buildmap in config['mapset']:
   if config['mapset'][(buildmap)] == "yes":
     if os.path.exists("stop") == True:
@@ -165,7 +172,7 @@ for buildmap in config['mapset']:
       printwarning("stopping build_process")
       print()
       quit()
-    os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + (zip) + " -b " + (buildmap))
+    os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + (zip) + (ob) + " -b " + (buildmap))
     write_config()
 
 print()
