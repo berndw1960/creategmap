@@ -521,8 +521,12 @@ if config.get('navmap', 'pre_comp') == "yes":
   if (args.old_bounds):
     config.set('navmap', 'use_old_bounds', 'yes')
     write_config()
-    
+
   import navmap
+
+  if config.get('navmap', 'use_old_bounds') == "yes":
+    config.set('navmap', 'use_old_bounds', 'no')
+    write_config()
 
 """
 --stop_after tests

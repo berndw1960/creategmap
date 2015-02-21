@@ -124,7 +124,8 @@ def update():
 
   config = configparser.ConfigParser()
   config.read('pygmap3.cfg')
-
+  if config.has_option('navmap', 'use_old_bounds') == False:
+    config.set('navmap', 'use_old_bounds'. 'no')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
