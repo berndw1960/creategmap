@@ -44,7 +44,7 @@ def split():
   pre_comp = " "
   if config.get('navmap', 'pre_comp') == "yes":
     if config.get('navmap', 'use_sea') == "yes":
-      pre_comp = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip "
+      pre_comp = " --precomp-sea=" + (WORK_DIR) + "sea_"+ config.get('navmap', 'sea') + ".zip "
 
   if config.get('runtime','use_cities15000') == "yes":
     geonames = " --geonames-file=" + (WORK_DIR) + "cities15000.zip "
@@ -73,12 +73,15 @@ def split():
       if config.get('runtime', 'verbose') == "yes":
         print()
         printinfo("splitting the mapdata with areas.list...")
+      if config.get('runtime', 'verbose') == "yes":
+        printinfo((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
       os.system((java_opts) + (log_opts) + (splitter_opts) + (areas_list) + (BUILD_O5M))
     else:
       os.chdir("tiles")
       if config.get('runtime', 'verbose') == "yes":
         print()
         printinfo("create areas.list and splitting the mapdata...")
+        printinfo((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
       os.system((java_opts) + (log_opts) + (splitter_opts) + (max_nodes) + (BUILD_O5M))
       shutil.copy2("areas.list", (WORK_DIR) + "areas/" + (buildmap) + "_areas.list")
   else:

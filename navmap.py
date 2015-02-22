@@ -28,66 +28,64 @@ config = configparser.ConfigParser()
 config.read('pygmap3.cfg')
 
 for i in ['sea', 'bounds']:
+
+  www = "osm2.pleiades.uni-wuppertal.de"
+  path =  "/" + (i) + "/"
+
   try:
-    www_path = "osm2.pleiades.uni-wuppertal.de"
-    path =  "/" + (i) + "/"
-    target = http.client.HTTPConnection(www_path)
+    target = http.client.HTTPConnection(www)
     target.request("GET", (path))
     htmlcontent =  target.getresponse()
     data = htmlcontent.read()
     data = data.decode('utf8')
     pattern = re.compile('201\d{5}')
-    date = sorted(pattern.findall(data), reverse=True)[1]
+    date_new = sorted(pattern.findall(data), reverse=True)[1]
+    date_pre = sorted(pattern.findall(data), reverse=True)[2]
     target.close()
 
-    rev = (i) + "_" + (date)
-
-    if config.has_option('navmap', (i) + "_rev"):
-      prerev = config.get('navmap', (i) + "_rev")
-      if (prerev) != (rev):
-        config.set('navmap', "pre_" + (i) + "_rev", (prerev))
-
   except:
-    if config.has_option('navmap', (i) + "_rev"):
-      rev = config.get('navmap', (i) + "_rev")
-    else:
-      print()
-      printerror((i) + "_rev not set in config")
-      print()
-      quit()
+    print()
+    printerror("Oops, something went wrong, while trying to get the versions of " + (i) + "*.zip")
+    print()
+    break
 
-  if config.has_option('navmap', 'use_old_bounds'):
-    if config.get('navmap', 'use_old_bounds') == "yes":
-      rev = config.get('navmap', "pre_" + (i) + "_rev")
+  if config.get('navmap', 'use_old_bounds') == "yes":
+    date = date_pre
+  else:
+    date = date_new
 
-  if os.path.exists((rev) + ".zip") == False:
+  file = (i) + "_" + (date) + ".zip"
+
+  if os.path.exists(file) == False:
 
     try:
-      url = "http://" + (www_path) + (path) + (date) + "/" + (i) + "_" + (date) + ".zip"
-      file_name = (i) + "_" + (date) + ".zip"
-      print()
+      url = "http://" + (www) + (path) + (date) + "/" + (file)
+      print(url)
       printinfo("download " + (url))
 
-      with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+      with urllib.request.urlopen(url) as response, open(file, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
 
     except:
       print()
-      printerror("failed download " + (i))
+      printerror("failed download " + (file))
       print()
-      quit()
+      break
 
-  if os.path.exists((rev) + ".zip") == True:
-    config.set('navmap', (i) + "_rev", (rev))
-    if config.get('navmap', "use_" + (i)) == "no":
-      config.set('navmap', "use_" + (i), 'yes',)
+  if os.path.exists(file) == True:
     print()
-    printinfo("using " + (rev) + ".zip")
+    printinfo("using " + (file))
+    config.set('navmap', (i), (date))
+
   else:
     if config.get('navmap', "use_" + (i)) == "yes":
-      config.set('navmap', "use_" + (i), 'no',)
+      config.set('navmap', "use_" + (i), 'no')
     print()
     printwarning("pre_comp " + (i) + " disabled, needed file(s) not found")
 
-  write_config()
+if config.get('navmap', 'use_old_bounds') == "yes":
+  config.set('navmap', 'use_old_bounds', 'no')
+
+write_config()
+
 

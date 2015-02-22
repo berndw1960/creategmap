@@ -22,8 +22,8 @@ config = configparser.ConfigParser()
 def typ_txt_test():
   global option_typ_file
   global option_style_file
-  if (layer == "defaultmap"):
 
+  if (layer == "defaultmap"):
     option_typ_file = " "
     option_style_file = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
 
@@ -154,20 +154,38 @@ def render():
           if config.get('runtime', 'verbose') == "yes":
             print()
             printinfo ("use precompiled bounds")
-          option_bounds = " --bounds=" + (WORK_DIR) + config.get('navmap', 'bounds_rev') + ".zip "
+          option_bounds = " --bounds=" + (WORK_DIR) + "bounds_"+ config.get('navmap', 'bounds') + ".zip "
 
         if config.get('navmap', 'use_sea') == "yes":
           if config.get('runtime', 'verbose') == "yes":
             print()
             printinfo ("use precompiled sea_tiles")
             print()
-          option_sea = " --precomp-sea=" + (WORK_DIR) + config.get('navmap', 'sea_rev') + ".zip  --generate-sea "
-         
+          option_sea = " --precomp-sea=" + (WORK_DIR) + "sea_"+ config.get('navmap', 'sea') + ".zip  --generate-sea "
+
       typ_txt_test()
 
       """
       map rendering
       """
+      if config.get('runtime', 'verbose') == "yes":
+        printinfo("java -ea " +
+            config.get('runtime', 'ramsize') +
+            (option_mkgmap_logging) +
+            " -jar " + (option_mkgmap_path) +
+            (option_mkgmap_options) +
+            (option_bounds) +
+            (option_sea) +
+            (option_style_file) +
+            " --name-tag-list=name:de,name,name:en,int_name " +
+            " --mapname=" + config.get('mapid', (buildmap)) + config.get((layer), 'mapid_ext') +
+            " --family-id=" + config.get((layer), 'family-id') +
+            " --product-id=" + config.get((layer), 'product-id') +
+            " --description=" + (buildmap) + "_" + (buildday) + "_" + (layer) +
+            " --family-name=" + config.get((layer), 'family-name') +
+            " --draw-priority=" + config.get((layer), 'draw-priority') + " " +
+            (WORK_DIR) + "tiles/*.o5m " +
+            (option_typ_file))
 
       os.system("java -ea " +
             config.get('runtime', 'ramsize') +
