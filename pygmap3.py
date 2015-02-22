@@ -345,6 +345,8 @@ if (args.add_style) != "no":
         print("  " + (key) + " = " + config['fixme'][(key)])
       print()
     printinfo((args.add_style) + " added to map_styles list")
+  elif (args.add_style) == "defaultmap":
+    config.set('map_styles', (args.add_style), 'yes')
   else:
     info_styles()
   print()
@@ -523,10 +525,6 @@ if config.get('navmap', 'pre_comp') == "yes":
     write_config()
 
   import navmap
-
-  if config.get('navmap', 'use_old_bounds') == "yes":
-    config.set('navmap', 'use_old_bounds', 'no')
-    write_config()
 
 """
 --stop_after tests
