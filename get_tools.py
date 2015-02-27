@@ -33,10 +33,16 @@ def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
+def get_rev():
+  i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
+  global i_rev
+  i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+
 def tar_extract():
   tar = tarfile.open((i_rev) + ".tar.gz")
   tar.extractall()
   tar.close()
+
 
 """
 get splitter and mkgmap
@@ -58,9 +64,8 @@ for i in ['splitter', 'mkgmap']:
     if (mkgmap_test) != "no" and (i) == "mkgmap":
 
       pattern = re.compile("mkgmap-" + (mkgmap_test) + "-r\d{4}.zip")
+      get_rev()
 
-      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-      i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
     elif config.get('runtime', 'svn') == "yes":
 
@@ -69,8 +74,7 @@ for i in ['splitter', 'mkgmap']:
       elif (i) == "mkgmap":
         pattern = re.compile('mkgmap-r\d{4}.zip')
 
-      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-      i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+      get_rev()
 
     else:
 
@@ -79,9 +83,9 @@ for i in ['splitter', 'mkgmap']:
       elif (i) == "mkgmap":
         pattern = re.compile('/download/mkgmap-r\d{4}.zip')
 
-      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-      i_rev_pre.replace("/download/", "")
-      i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+      get_rev()
+      
+      i_rev.replace("/download/", "")
 
     target.close()
 
