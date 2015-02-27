@@ -196,6 +196,9 @@ parser.add_argument('-ps', '--print_section', dest='print_section', default='no'
 parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
+# mkgmap options
+parser.add_argument('-mt', '--mkgmap_test', dest='mkgmap_test', default='no', help="use a svn version of mkgmap like housenumbers2")
+
 # contourlines
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 
@@ -446,8 +449,18 @@ development version of splitter and mkgmap
 
 """
 
-if (args.svn):
+if (args.mkgmap_test) != "no":
+  config.set('runtime', 'mkgmap_test', (args.mkgmap_test))
+else:
+  config.set('runtime', 'mkgmap_test', 'no')
+
+if (args.svn) and (args.mkgmap_test) == "no":
   config.set('runtime', 'svn', 'yes')
+elif (args.svn) and (args.mkgmap_test) != "no":
+  print()
+  printwarning("Please, do not use --svn together with --mkgmap_test")
+  printwarning("not useful at this time, ignoring --svn")
+  config.set('runtime', 'svn', 'no')
 else:
   config.set('runtime', 'svn', 'no')
 

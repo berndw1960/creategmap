@@ -53,25 +53,34 @@ for i in ['splitter', 'mkgmap']:
     data = htmlcontent.read()
     data = data.decode('utf8')
 
-    if config.get('runtime', 'svn') == "yes":
+    mkgmap_test = config.get('runtime', 'mkgmap_test')
+
+    if (mkgmap_test) != "no" and (i) == "mkgmap":
+
+      pattern = re.compile("mkgmap-" + (mkgmap_test) + "-r\d{4}.zip")
+
+      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
+      i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
+
+    elif config.get('runtime', 'svn') == "yes":
+
       if (i) == "splitter":
         pattern = re.compile('splitter-r\d{3}.zip')
       elif (i) == "mkgmap":
         pattern = re.compile('mkgmap-r\d{4}.zip')
-      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
 
+      i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
       i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
     else:
+
       if (i) == "splitter":
         pattern = re.compile('/download/splitter-r\d{3}.zip')
       elif (i) == "mkgmap":
         pattern = re.compile('/download/mkgmap-r\d{4}.zip')
 
       i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-
       i_rev_pre.replace("/download/", "")
-
       i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
     target.close()
