@@ -59,7 +59,9 @@ create the contourlines
 def create_cont():
 
   if os.path.exists("contourlines/temp/") == True:
+
     printerror(" Please move " + WORK_DIR + "'contourlines/temp/' to '" + WORK_DIR + "cl_temp/'...")
+
     quit()
 
   os.chdir(WORK_DIR)
