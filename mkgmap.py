@@ -25,7 +25,7 @@ def typ_txt_test():
 
   if (layer == "defaultmap"):
     option_typ_file = " "
-    option_style_file = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default "
+    option_style_file = "--style-file=" + (WORK_DIR) + config.get('runtime', 'mkgmap') + "/examples/styles/default/ "
 
   else:
     if os.path.exists((WORK_DIR) + "styles/" + (layer) + "_typ.typ") == True:
