@@ -45,45 +45,45 @@ for i in ['sea', 'bounds']:
 
   except:
     print()
-    printerror("Oops, something went wrong, while trying to get the versions of " + (i) + "*.zip")
+    printerror("Oops, something went wrong, while trying to get the versions of " + i + "*.zip")
     print()
     break
 
-  if config.get('navmap', 'use_old_bounds') == "yes":
+  if config['navmap']['use_old_bounds'] == "yes":
     date = date_pre
   else:
     date = date_new
 
-  file = (i) + "_" + (date) + ".zip"
+  file = i + "_" + date + ".zip"
 
   if os.path.exists(file) == False:
 
     try:
-      url = "http://" + (www) + (path) + (date) + "/" + (file)
+      url = "http://" + www + path + date + "/" + file
       print(url)
-      printinfo("download " + (url))
+      printinfo("download " + url)
 
       with urllib.request.urlopen(url) as response, open(file, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
 
     except:
       print()
-      printerror("failed download " + (file))
+      printerror("failed download " + file)
       print()
       break
 
   if os.path.exists(file) == True:
     print()
-    printinfo("using " + (file))
-    config.set('navmap', (i), (date))
+    printinfo("using " + file)
+    config.set('navmap', i, date)
 
   else:
-    if config.get('navmap', "use_" + (i)) == "yes":
-      config.set('navmap', "use_" + (i), 'no')
+    if config['navmap']["use_" + i] == "yes":
+      config.set('navmap', "use_" + i, 'no')
     print()
-    printwarning("pre_comp " + (i) + " disabled, needed file(s) not found")
+    printwarning("pre_comp " + i + " disabled, needed file(s) not found")
 
-if config.get('navmap', 'use_old_bounds') == "yes":
+if config['navmap']['use_old_bounds'] == "yes":
   config.set('navmap', 'use_old_bounds', 'no')
 
 write_config()

@@ -66,17 +66,17 @@ def is_there(find, solutionhint):
     print(solutionhint)
 
 
-hint = ("mkdir " + (WORK_DIR))
-is_there((WORK_DIR), hint)
+hint = ("mkdir " + WORK_DIR)
+is_there(WORK_DIR, hint)
 
 os.chdir(WORK_DIR)
 
 for tool in ['osmconvert', 'osmupdate']:
-  hint = (tool) + " missed, please use mk_osmtools to build it from sources"
-  checkprg((tool), hint)
+  hint = tool + " missed, please use mk_osmtools to build it from sources"
+  checkprg(tool, hint)
 
 if os.path.exists("planet.o5m") == True:
-  printerror("please move planet.o5m to " +(WORK_DIR) + "o5m/")
+  printerror("please move planet.o5m to " + WORK_DIR + "o5m/")
   quit()
 
 hint = ("No Planet-File found! ")

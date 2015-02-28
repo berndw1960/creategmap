@@ -54,75 +54,75 @@ config.read('pygmap3.cfg')
 for i in ['splitter', 'mkgmap']:
   try:
     target = http.client.HTTPConnection("www.mkgmap.org.uk")
-    target.request("GET", "/download/" + (i) + ".html")
+    target.request("GET", "/download/" + i + ".html")
     htmlcontent =  target.getresponse()
     data = htmlcontent.read()
     data = data.decode('utf8')
 
-    mkgmap_test = config.get('runtime', 'mkgmap_test')
+    mkgmap_test = config['runtime']['mkgmap_test']
 
-    if (mkgmap_test) != "no" and (i) == "mkgmap":
+    if mkgmap_test != "no" and i == "mkgmap":
 
-      pattern = re.compile("mkgmap-" + (mkgmap_test) + "-r\d{4}.zip")
+      pattern = re.compile("mkgmap-" + mkgmap_test + "-r\d{4}.zip")
       get_rev()
 
 
-    elif config.get('runtime', 'svn') == "yes":
+    elif config['runtime']['svn'] == "yes":
 
-      if (i) == "splitter":
+      if i == "splitter":
         pattern = re.compile('splitter-r\d{3}.zip')
-      elif (i) == "mkgmap":
+      elif i == "mkgmap":
         pattern = re.compile('mkgmap-r\d{4}.zip')
 
       get_rev()
 
     else:
 
-      if (i) == "splitter":
+      if i == "splitter":
         pattern = re.compile('/download/splitter-r\d{3}.zip')
-      elif (i) == "mkgmap":
+      elif i == "mkgmap":
         pattern = re.compile('/download/mkgmap-r\d{4}.zip')
 
       get_rev()
-      
+
       i_rev.replace("/download/", "")
 
     target.close()
 
   except:
     print()
-    printwarning("can't get a new " + (i) + "-rev from mkgmap.org")
+    printwarning("can't get a new " + i + "-rev from mkgmap.org")
     printwarning("trying to use another one")
     print()
 
     try:
-      i_rev = config.get('runtime', (i))
+      i_rev = config['runtime'][i]
     except:
       print()
-      printerror((i) + "_rev not set in config")
+      printerror(i + "_rev not set in config")
       printerror("i don't know, which version should i use!")
       print()
       quit()
 
   if os.path.exists(i_rev) == True:
     print()
-    printinfo("using " + (i_rev))
+    printinfo("using " + i_rev)
   else:
-    if os.path.isfile((i_rev) + ".tar.gz") == True:
+    if os.path.isfile(i_rev + ".tar.gz") == True:
       try:
         tar_extract()
       except:
         print()
-        printerror(" couldn't extract " + (i_rev) + " from local file")
+        printerror(" couldn't extract " + i_rev + " from local file")
         print()
         quit()
 
     else:
       try:
-        url = "http://www.mkgmap.org.uk/download/" + (i_rev) + ".tar.gz"
-        file_name = (i_rev) + ".tar.gz"
+        url = "http://www.mkgmap.org.uk/download/" + i_rev + ".tar.gz"
+        file_name = i_rev + ".tar.gz"
         print()
-        printinfo("download " + (url))
+        printinfo("download " + url)
 
         # Download the file from `url` and save it locally under `file_name`:
         with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
@@ -132,23 +132,23 @@ for i in ['splitter', 'mkgmap']:
           tar_extract()
         except:
           print()
-          printerror(" couldn't extract " + (i_rev))
+          printerror(" couldn't extract " + i_rev)
           print()
           quit()
 
       except:
         print()
-        printerror("failed download " + (i_rev) + ".tar.gz")
+        printerror("failed download " + i_rev + ".tar.gz")
         print()
         quit()
 
   if os.path.exists(i_rev) == False:
     print()
-    printerror((i_rev) + " didn't exist")
+    printerror(i_rev + " didn't exist")
     print()
     quit()
 
-  config.set('runtime', (i), (i_rev))
+  config.set('runtime', i, i_rev)
   write_config()
 
 """
@@ -156,13 +156,13 @@ get the geonames for splitter
 
 """
 
-path = ((WORK_DIR) + "cities15000.zip")
+path = (WORK_DIR + "cities15000.zip")
 
 def download():
   url = "http://download.geonames.org/export/dump/cities15000.zip"
   file_name = "cities15000.zip"
   print()
-  printinfo("download " + (url))
+  printinfo("download " + url)
 
   # Download the file from `url` and save it locally under `file_name`:
   with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
@@ -174,9 +174,9 @@ def error():
   printwarning("failed download cities15000.zip")
   print()
   try:
-    os.rename((path) + ".bak", (path))
+    os.rename(path + ".bak", path)
     config.set('runtime', 'use_cities15000', 'yes')
-    os.remove((path) + ".bak")
+    os.remove(path + ".bak")
   except:
     print()
     printerror("couldn't restore cities15000.zip from backup!")
@@ -187,7 +187,7 @@ if os.path.exists(path) == True:
   curtime = time.time()
   difftime = curtime - ftime
   if difftime > 18144000:
-    os.rename((path), (path) + ".bak")
+    os.rename(path, path + ".bak")
     print()
     printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
     try:

@@ -37,23 +37,23 @@ def create_o5m():
 
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
-  buildmap = config.get('runtime', 'buildmap')
-  BUILD_TEMP = ("o5m/" + (buildmap) + ".temp.o5m")
-  BUILD_O5M = ("o5m/" + (buildmap) + ".o5m")
-  BUILD_OLD = ("o5m/" + (buildmap) + ".old")
+  buildmap = config['runtime']['buildmap']
+  BUILD_TEMP = ("o5m/" + buildmap + ".temp.o5m")
+  BUILD_O5M = ("o5m/" + buildmap + ".o5m")
+  BUILD_OLD = ("o5m/" + buildmap + ".old")
 
   if os.path.exists("o5m/planet.o5m") == True:
     print()
-    printinfo("now extracting " + (buildmap) + ".o5m from Planet, please wait...")
+    printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
     os.system("osmconvert o5m/planet.o5m " +
               "--complete-ways --complex-ways --drop-version " +
               " -B=poly/" + (buildmap) + ".poly " +
-              " -o=" + (BUILD_TEMP))
+              " -o=" + BUILD_TEMP)
 
     if os.path.exists(BUILD_O5M) == True:
-      os.rename((BUILD_O5M), (BUILD_OLD))
+      os.rename(BUILD_O5M, BUILD_OLD)
 
-    os.rename((BUILD_TEMP), (BUILD_O5M))
+    os.rename(BUILD_TEMP, BUILD_O5M)
 
     if os.path.exists(BUILD_OLD) == True:
       os.remove(BUILD_OLD)
@@ -67,21 +67,21 @@ def create_o5m():
 def update_o5m():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
-  buildmap = config.get('runtime', 'buildmap')
+  buildmap = config['runtime']['buildmap']
 
   print()
-  printinfo("updating " + (buildmap) + ".o5m, please wait...")
-  os.system("osmupdate --daily --hourly -B=poly/" + (buildmap) +
-	    ".poly --keep-tempfiles o5m/" + (buildmap) +
-	    ".o5m  o5m/" + (buildmap) +  "_new.o5m")
+  printinfo("updating " + buildmap + ".o5m, please wait...")
+  os.system("osmupdate --daily --hourly -B=poly/" + buildmap +
+	    ".poly --keep-tempfiles o5m/" + buildmap +
+	    ".o5m  o5m/" + buildmap +  "_new.o5m")
 
   os.chdir("o5m")
 
-  if os.path.exists((buildmap) +  "_new.o5m") == True:
-    os.rename((buildmap) + ".o5m", (buildmap) + "_temp.o5m")
-    os.rename((buildmap) + "_new.o5m", (buildmap) + ".o5m")
-    if os.path.exists((buildmap) + ".o5m") == True:
-      os.remove((buildmap) + "_temp.o5m")
+  if os.path.exists(buildmap +  "_new.o5m") == True:
+    os.rename(buildmap + ".o5m", buildmap + "_temp.o5m")
+    os.rename(buildmap + "_new.o5m", buildmap + ".o5m")
+    if os.path.exists(buildmap + ".o5m") == True:
+      os.remove(buildmap + "_temp.o5m")
 
   os.chdir(WORK_DIR)
 
@@ -92,6 +92,6 @@ def update_o5m():
   today = datetime.datetime.now()
   DATE = today.strftime('%Y%m%d_%H00')
 
-  config.set('time_stamp', (buildmap), (DATE))
+  config.set('time_stamp', buildmap, DATE)
   write_config()
 

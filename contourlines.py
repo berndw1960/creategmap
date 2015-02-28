@@ -59,24 +59,24 @@ create the contourlines
 def create_cont():
 
   if os.path.exists("contourlines/temp/") == True:
-    printerror(" Please move " + (WORK_DIR) + "'contourlines/temp/' to '" + (WORK_DIR) + "cl_temp/'...")
+    printerror(" Please move " + (WORK_DIR) + "'contourlines/temp/' to '" + WORK_DIR + "cl_temp/'...")
     quit()
 
   os.chdir(WORK_DIR)
 
   config.read('pygmap3.cfg')
 
-  buildmap = config.get('runtime', 'buildmap')
-  mkgmap_path = (WORK_DIR) + config.get('runtime', 'mkgmap') + "/mkgmap.jar "
+  buildmap = config['runtime']['buildmap']
+  mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
-  cl_dir = ("contourlines/" + (buildmap) + "/")
-  cltemp_dir = ("cl_temp/")
+  cl_dir = "contourlines/" + buildmap + "/"
+  cltemp_dir = "cl_temp/"
 
-  for dir in [(cltemp_dir), (cl_dir)]:
+  for dir in [cltemp_dir, cl_dir]:
     if os.path.exists(dir) == False:
       os.makedirs(dir)
 
-  path = (cltemp_dir)
+  path = cltemp_dir
   for file in os.listdir(path):
     if os.path.isfile(os.path.join(path, file)):
       try:
@@ -84,9 +84,9 @@ def create_cont():
       except:
         print('Could not delete', file, 'in', path)
 
-  print("searching for " + (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
+  print("searching for " + cl_dir + buildmap + "_contourlines_gmapsupp.img")
 
-  if os.path.exists((cl_dir) + (buildmap) + "_contourlines_gmapsupp.img") == False:
+  if os.path.exists(cl_dir + buildmap + "_contourlines_gmapsupp.img") == False:
     hint = "Install phyghtmap to create contourlines if needed"
     checkprg("phyghtmap", hint)
 
@@ -96,7 +96,7 @@ def create_cont():
     else:
       printerror("contourlines_style not found, please disable it in pygmap3.cfg")
 
-    if os.path.exists((mapstyle) + "/contourlines_style/lines") == False:
+    if os.path.exists(mapstyle + "/contourlines_style/lines") == False:
       printerror("No contourlines_style found")
       quit()
 
@@ -107,15 +107,15 @@ def create_cont():
     os.system("phyghtmap --source=view1,view3,srtm1,srtm3" +
               " --start-node-id=1" +
               " --start-way-id=1" +
-              " --max-nodes-per-tile=" + config.get('runtime', 'maxnodes') +
+              " --max-nodes-per-tile=" + config['runtime'][maxnodes'] +
               " --max-nodes-per-way=250" +
               " --jobs=4" +
               " --pbf" +
               " --no-zero-contour" +
               " -s 50" +
               " -c 500,100" +
-              " --polygon=poly/" + (buildmap) + ".poly" +
-              " -o " + (cltemp_dir) + (buildmap))
+              " --polygon=poly/" + buildmap + ".poly" +
+              " -o " + cltemp_dir + buildmap)
 
     """
     contourlines-build with mkgmap
@@ -124,20 +124,20 @@ def create_cont():
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + config.get('runtime', 'ramsize') + " -jar " + (mkgmap_path) +
-              " --read-config=" + (WORK_DIR) + (mapstyle) + "/contourlines_style/options" +
-              " --style-file=" + (WORK_DIR) + (mapstyle) + "/contourlines_style" +
-              " --mapname=" + config.get('mapid', (buildmap)) + "8001" +
-              " --description=" + (buildmap) + "_contourlines " +
+    os.system("java -ea " + config['runtime']['ramsize'[ + " -jar " + mkgmap_path +
+              " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
+              " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
+              " --mapname=" + config['mapid'][ buildmap] + "8001" +
+              " --description=" + buildmap + "_contourlines " +
               " --family-name=Contourlines" +
-              " --draw-priority=" + config.get('contourlines', 'draw-priority') +
+              " --draw-priority=" + config['contourlines']['draw-priority'] +
               " *.osm.pbf ")
 
     """
     store the ready contourlines in separated dirs for later use
     """
     os.chdir(WORK_DIR)
-    shutil.move((cltemp_dir) + "gmapsupp.img", (cl_dir) + (buildmap) + "_contourlines_gmapsupp.img")
+    shutil.move(cltemp_dir + "gmapsupp.img", cl_dir + buildmap + "_contourlines_gmapsupp.img")
 
   else:
     printinfo("...found")
