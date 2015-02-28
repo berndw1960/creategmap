@@ -36,9 +36,9 @@ def zip_img():
   zipp the images and mv them to separate dirs
   """
 
-  buildmap = config.get('runtime', 'buildmap')
-  unzip_dir = (WORK_DIR) + "gps_ready/unzipped/" + (buildmap)
-  zip_dir = (WORK_DIR) + "gps_ready/zipped/" + (buildmap)
+  buildmap = config['runtime']['buildmap']
+  unzip_dir = WORK_DIR + "gps_ready/unzipped/" + buildmap
+  zip_dir = WORK_DIR + "gps_ready/zipped/" + buildmap
 
   if os.path.exists(zip_dir) == False:
     os.makedirs(zip_dir)
@@ -55,41 +55,41 @@ def zip_img():
 
   for layer in config['map_styles']:
 
-    if config['map_styles'][(layer)]== "yes":
+    if config['map_styles'][layer]== "yes":
 
-      bl = (buildmap) + "_" + (layer)
+      bl = buildmap + "_" + layer
 
-      img = (bl) + "_gmapsupp.img"
+      img = bl + "_gmapsupp.img"
 
-      zip_img = (img) + ".zip"
+      zip_img = img + ".zip"
 
-      my_zip_img = zipfile.ZipFile((zip_img), 'w', allowZip64=True)
+      my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
 
-      my_zip_img.write((img), compress_type=(compression))
+      my_zip_img.write(img, compress_type=compression)
 
       my_zip_img.close()
 
-      if os.path.exists((zip_dir) + "/" + (zip_img)) == True:
-        os.remove((zip_dir) + "/" + (zip_img))
+      if os.path.exists(zip_dir + "/" + zip_img) == True:
+        os.remove(zip_dir + "/" + zip_img)
 
-      shutil.move((zip_img), (zip_dir))
+      shutil.move(zip_img, zip_dir)
 
 def kml():
 
   os.chdir(WORK_DIR)
 
-  buildmap = config.get('runtime', 'buildmap')
+  buildmap = config['runtime']['buildmap']
   kml_dir = "gps_ready/zipped/kml/"
 
   if os.path.exists(kml_dir) == False:
     os.makedirs(kml_dir)
 
-  if os.path.exists("tiles/" + (buildmap) + ".kml") == True:
-    kml = (kml_dir) + "/" + (buildmap) + ".kml"
+  if os.path.exists("tiles/" + buildmap + ".kml") == True:
+    kml = kml_dir + "/" + buildmap + ".kml"
     if os.path.exists(kml) == True:
       os.remove(kml)
 
-    shutil.move("tiles/" + (buildmap) + ".kml", (kml_dir))
+    shutil.move("tiles/" + buildmap + ".kml", kml_dir)
 
 def log():
 
@@ -100,19 +100,19 @@ def log():
   config.read('pygmap3.cfg')
 
   for layer in config['map_styles']:
-    if config['map_styles'][(layer)]== "yes":
+    if config['map_styles'][layer]== "yes":
 
-      buildmap = config.get('runtime', 'buildmap')
-      buildday = config.get('time_stamp', (buildmap))
-      log_dir = ("log/mkgmap/" + (buildmap) + "/" + (layer) + "/" + (buildday))
+      buildmap = config['runtime']['buildmap']
+      buildday = config['time_stamp'][buildmap]
+      log_dir = ("log/mkgmap/" + buildmap + "/" + layer + "/" + buildday)
 
       if os.path.exists(log_dir) == True:
         shutil.rmtree(log_dir)
 
-      if os.path.exists((layer) + "/mkgmap.log.0") == True:
+      if os.path.exists(layer + "/mkgmap.log.0") == True:
 
         from shutil import copytree, ignore_patterns
-        copytree((layer), (log_dir), ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
+        copytree(layer, log_dir, ignore=ignore_patterns('*.img', '*.typ', 'osm*'))
 
 
 

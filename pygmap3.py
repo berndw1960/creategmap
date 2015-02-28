@@ -92,7 +92,7 @@ on success return 0
 
 if os.path.exists(WORK_DIR) == False:
   print()
-  printerror("Please create " + (WORK_DIR))
+  printerror("Please create " + WORK_DIR)
   print()
   quit()
 
@@ -171,7 +171,7 @@ parser = argparse.ArgumentParser(
         '''))
 
 # mapset handling
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config.get('runtime', 'default'), help="set map region to build, default is " + config.get('runtime', 'default'))
+parser.add_argument('-b', '--buildmap', dest='buildmap', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
 
 # list styles
@@ -224,7 +224,7 @@ args = parser.parse_args()
 
 # config options
 
-if (args.print_config):
+if args.print_config:
   print()
   printinfo("this are the sections of pygmap3.cfg: ")
   print()
@@ -236,26 +236,26 @@ if (args.print_config):
   print("    pygmap3.py -ps $SECTION   ")
   quit()
 
-if (args.print_section) != "no":
+if args.print_section != "no":
   print()
-  printinfo("this is the " + (args.print_section) +  " section of pygmap3.cfg: ")
+  printinfo("this is the " + args.print_section +  " section of pygmap3.cfg: ")
   print()
-  for key in (config[(args.print_section)]):
-    print ("  " + (key) + " = " + config[(args.print_section)][(key)])
+  for key in (config[args.print_section]):
+    print ("  " + key + " = " + config[args.print_section][key])
   print()
   quit()
 
 
 # map build options
 
-if (args.areas_list):
-  if config.get('runtime', 'use_areas') == "no":
+if args.areas_list:
+  if config['runtime']['use_areas'] == "no":
     config.set('runtime', 'use_areas', 'yes')
     print()
     printinfo("use_areas enabled in config file")
     print()
 
-  elif config.get('runtime', 'use_areas') == "yes":
+  elif config['runtime']['use_areas'] == "yes":
     config.set('runtime', 'use_areas', 'no')
     print()
     printinfo("use_areas disabled in config file")
@@ -264,28 +264,28 @@ if (args.areas_list):
   write_config()
   quit()
 
-if (args.list_mapstyle):
+if args.list_mapstyle:
   if config.has_section('map_styles') == True:
     print()
     printinfo("map_styles list includes: ")
     print()
     for key in (config['map_styles']):
-      print("  " + (key) + " = " + config['map_styles'][(key)])
+      print("  " + (key) + " = " + config['map_styles'][key])
     if config.has_section('mapset') == True:
       print()
       printinfo("mapset list includes: ")
       print()
       for key in (config['mapset']):
-        print("  " + (key) + " = " + config['mapset'][(key)])
+        print("  " + key + " = " + config['mapset'][key])
   print()
   quit()
 
-if (args.all_map_styles):
+if args.all_map_styles:
   if config.has_section('map_styles') == True:
     print()
     for key in (config['map_styles']):
-      config.set('map_styles', (key), 'yes')
-      print ("  " + (key) + " = " + config['map_styles'][(key)])
+      config.set('map_styles', key, 'yes')
+      print ("  " + key + " = " + config['map_styles'][key])
 
     write_config()
     print()
@@ -293,12 +293,12 @@ if (args.all_map_styles):
     print()
   quit()
 
-if (args.no_map_styles):
+if args.no_map_styles:
   if config.has_section('map_styles') == True:
     print()
     for key in (config['map_styles']):
-      config.set('map_styles', (key), 'no')
-      print ("  " + (key) + " = " + config['map_styles'][(key)])
+      config.set('map_styles', key, 'no')
+      print ("  " + key + " = " + config['map_styles'][key])
 
     write_config()
     print()
@@ -310,7 +310,7 @@ if (args.no_map_styles):
 
 def info_styles():
   print()
-  printerror((args.add_style) + "_style - dir not found")
+  printerror(args.add_style + "_style - dir not found")
   print()
   print()
   printinfo("possible styles for routable layers are: ")
@@ -330,12 +330,12 @@ def info_styles():
   print("    or your own style files!")
   print()
 
-if (args.add_style) != "no":
-  if os.path.exists("styles/" + (args.add_style) + "_style") == True:
-    config.set('map_styles', (args.add_style), 'yes')
+if args.add_style != "no":
+  if os.path.exists("styles/" + args.add_style + "_style") == True:
+    config['map_styles'] = {args.add_style: 'yes'}
     print()
-    if ((args.add_style) in config) == False:
-      printinfo("please add a section [" + (args.add_style) + "] to pygmap3.cfg")
+    if args.add_style in config == False:
+      printinfo("please add a section [" + args.add_style + "] to pygmap3.cfg")
       print("see the existing entries for the fixme layer as example")
       print("for family-id and product-id increase the values")
       print("mapid_ext and draw_priotity could be the same values")
@@ -344,65 +344,65 @@ if (args.add_style) != "no":
       printinfo("please read mkgmap's manual for more infos")
       print()
       print("  [fixme]")
-      for key in (config['fixme']):
-        print("  " + (key) + " = " + config['fixme'][(key)])
+      for key in config['fixme']:
+        print("  " + key + " = " + config['fixme'][key])
       print()
-    printinfo((args.add_style) + " added to map_styles list")
-  elif (args.add_style) == "defaultmap":
-    config.set('map_styles', (args.add_style), 'yes')
+    printinfo(args.add_style + " added to map_styles list")
+  elif args.add_style == "defaultmap":
+    config.set('map_styles', args.add_style, 'yes')
   else:
     info_styles()
   print()
   write_config()
   quit()
 
-if (args.map_style) != "no" and (args.map_style) != "defaultmap":
-  if os.path.exists("styles/" + (args.map_style) + "_style") == False:
+if args.map_style != "no" and args.map_style != "defaultmap":
+  if os.path.exists("styles/" + args.map_style + "_style") == False:
     info_styles()
     quit()
 
-if (args.map_style) != "no":
-  if config.has_option('map_styles', (args.map_style)) == True:
-    if config.get('map_styles', (args.map_style)) == "yes":
-      config.set('map_styles', (args.map_style), 'no')
+if args.map_style != "no":
+  if config.has_option('map_styles', args.map_style) == True:
+    if config['map_styles'][args.map_style] == "yes":
+      config.set('map_styles', args.map_style, 'no')
       print()
-      printwarning((args.map_style) + " style disabled")
-    elif config.get('map_styles', (args.map_style)) == "no":
-      config.set('map_styles', (args.map_style), 'yes')
+      printwarning(args.map_style + " style disabled")
+    elif config['map_styles'][args.map_style] == "no":
+      config.set('map_styles', args.map_style, 'yes')
       print()
-      printinfo((args.map_style) + " style enabled")
+      printinfo(args.map_style + " style enabled")
   else:
-     config.set('map_styles', (args.map_style), 'yes')
+     config.set('map_styles', args.map_style, 'yes')
      print()
-     printinfo((args.map_style) + " style added and enabled")
+     printinfo(args.map_style + " style added and enabled")
 
   write_config()
   quit()
 
-if (args.rm_style) != "no":
-  if config.has_option('map_styles', (args.rm_style)) == True:
-    config.remove_option('map_styles', (args.rm_style))
+if args.rm_style != "no":
+  if config.has_option('map_styles', args.rm_style) == True:
+    config.remove_option('map_styles', args.rm_style)
     write_config()
   print()
-  printinfo((args.rm_style) + " removed from map_styles list")
+  printinfo(args.rm_style + " removed from map_styles list")
   print()
   quit()
 
-if (args.set_default) != "no":
-  if os.path.exists("poly/" + (args.set_default) + ".poly") == False:
+if args.set_default != "no":
+  if os.path.exists("poly/" + args.set_default + ".poly") == False:
     print()
-    printerror((WORK_DIR) + "poly/" + (args.set_default) + ".poly not found... ")
-    printerror("please create or download "+ (args.set_default) + ".poly")
+    printerror((WORK_DIR) + "poly/" + args.set_default + ".poly not found... ")
+    printerror("please create or download "+ args.set_default + ".poly")
     print()
     quit()
 
-  config.set('runtime', 'default', (args.set_default))
-  print((args.set_default) + " set as new default region")
+  config.set('runtime', 'default', args.set_default)
+  print(args.set_default + " set as new default region")
 
   write_config()
   quit()
 
-if (args.check_styles):
+if args.check_styles:
   import mkgmap
   mkgmap.check()
   quit()
@@ -414,22 +414,22 @@ if (args.check_styles):
 ramsize for java
 """
 
-if (args.ramsize) != "3G":
-  config.set('runtime', 'ramsize', ("-Xmx" + str(args.ramsize)))
+if args.ramsize != "3G":
+  config.set('runtime', 'ramsize', "-Xmx" + str(args.ramsize))
 
 """
 maxnodes for plitter
 """
 
-if (args.maxnodes) != "1600000":
-  config.set('runtime', 'maxnodes', ("-Xmx" + str(args.maxnodes)))
+if args.maxnodes != "1600000":
+  config.set('runtime', 'maxnodes', "-Xmx" + str(args.maxnodes))
 
 """
 logging
 
 """
 
-if (args.log):
+if args.log:
   config.set('runtime', 'logging', 'yes')
 else:
   config.set('runtime', 'logging', 'no')
@@ -439,7 +439,7 @@ verbosity
 
 """
 
-if (args.verbose):
+if args.verbose:
   config.set('runtime', 'verbose', 'yes')
 else:
   config.set('runtime', 'verbose', 'no')
@@ -449,14 +449,14 @@ development version of splitter and mkgmap
 
 """
 
-if (args.mkgmap_test) != "no":
-  config.set('runtime', 'mkgmap_test', (args.mkgmap_test))
+if args.mkgmap_test != "no":
+  config.set('runtime', 'mkgmap_test', args.mkgmap_test)
 else:
   config.set('runtime', 'mkgmap_test', 'no')
 
-if (args.svn) and (args.mkgmap_test) == "no":
+if args.svn and args.mkgmap_test == "no":
   config.set('runtime', 'svn', 'yes')
-elif (args.svn) and (args.mkgmap_test) != "no":
+elif args.svn and args.mkgmap_test != "no":
   print()
   printwarning("Please, do not use --svn together with --mkgmap_test")
   printwarning("not useful at this time, ignoring --svn")
@@ -469,28 +469,28 @@ set buildmap
 
 """
 
-buildmap = (args.buildmap)
-config.set('runtime', 'buildmap', (buildmap))
+buildmap = args.buildmap
+config.set('runtime', 'buildmap', buildmap)
 
 """
 set or create the mapid
 
 """
 
-if config.has_option('mapid', (buildmap)) == True:
-  option_mapid = config.get('mapid', (buildmap))
+if config.has_option('mapid', buildmap) == True:
+  option_mapid = config['mapid'][buildmap]
 else:
-  option_mapid = config.get('mapid', 'next_mapid')
+  option_mapid = config['mapid']['next_mapid']
   next_mapid = str(int(option_mapid)+1)
-  config.set('mapid', (buildmap), (option_mapid))
-  config.set('mapid', 'next_mapid', (next_mapid))
+  config.set('mapid', buildmap, option_mapid)
+  config.set('mapid', 'next_mapid', next_mapid)
 
 """
 osmupdate and osmconvert
 
 """
 
-if config.get('osmtools', 'check') == "yes":
+if config['osmtools']['check'] == "yes":
   def checkprg(programmtofind, solutionhint):
     if os.system("which " + programmtofind) == 0:
       print()
@@ -502,9 +502,9 @@ if config.get('osmtools', 'check') == "yes":
       quit()
 
   for tool in ['osmconvert', 'osmupdate']:
-    hint = (tool) + " missed, please use mk_osmtools to build it from sources"
+    hint = tool + " missed, please use mk_osmtools to build it from sources"
     print()
-    checkprg((tool), hint)
+    checkprg(tool, hint)
 
   config.set('osmtools', 'check', 'no')
 
@@ -523,7 +523,7 @@ get splitter and mkgmap
 
 import get_tools
 
-if config.get('runtime', 'svn') == "yes":
+if config['runtime']['svn'] == "yes":
   config.set('runtime', 'svn', 'no')
   write_config()
 
@@ -532,8 +532,8 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
 """
 
-if config.get('navmap', 'pre_comp') == "yes":
-  if (args.old_bounds):
+if config['navmap']['pre_comp'] == "yes":
+  if args.old_bounds:
     config.set('navmap', 'use_old_bounds', 'yes')
     write_config()
 
@@ -544,7 +544,7 @@ if config.get('navmap', 'pre_comp') == "yes":
 
 """
 
-if (args.stop_after) == "tests":
+if args.stop_after == "tests":
   print()
   printinfo("Tests successful finished")
   print()
@@ -557,13 +557,13 @@ if --keep_data is set, then use the old data
 
 """
 
-buildmap_o5m = (WORK_DIR) + "o5m/" + (buildmap) +  ".o5m"
-buildmap_pbf = (WORK_DIR) + "o5m/" + (buildmap) +  ".osm.pbf"
-buildmap_poly = (WORK_DIR) + "poly/" + (buildmap) +  ".poly"
+buildmap_o5m = WORK_DIR + "o5m/" + buildmap +  ".o5m"
+buildmap_pbf = WORK_DIR + "o5m/" + buildmap +  ".osm.pbf"
+buildmap_poly = WORK_DIR + "poly/" + buildmap +  ".poly"
 
 def download():
   print()
-  printinfo("download " + (url))
+  printinfo("download " + url)
 
   # Download the file from `url` and save it locally under `file_name`:
   with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
@@ -571,11 +571,11 @@ def download():
 
 os.chdir(WORK_DIR)
 
-if (args.keep_data) == False:
+if args.keep_data == False:
   import mapdata
 
   if os.path.exists(buildmap_o5m) == False:
-    if (buildmap) == "germany":
+    if buildmap == "germany":
       if os.path.exists(buildmap_poly) == False:
         os.chdir("/poly")
         try:
@@ -585,7 +585,7 @@ if (args.keep_data) == False:
         except:
           print()
           printerror("download http://download.geofabrik.de/europe/germany.poly failed")
-          print("please try to download it manually and store it in " + (WORK_DIR) + "poly/")
+          print("please try to download it manually and store it in " + WORK_DIR + "poly/")
           print()
           quit()
 
@@ -603,7 +603,7 @@ if (args.keep_data) == False:
       except:
         print()
         printerror("download or convert germany-latest.osm.pbf to germany.o5m failed")
-        print("please try to download it manually and store it in " + (WORK_DIR) + "o5m/")
+        print("please try to download it manually and store it in " + WORK_DIR + "o5m/")
         print()
         quit()
 
@@ -627,9 +627,9 @@ config.read('pygmap3.cfg')
 
 """
 
-if (args.stop_after) == "create":
+if args.stop_after == "create":
   print()
-  printinfo(" Mapdata for " + (buildmap) + " successful extracted/updated")
+  printinfo(" Mapdata for " + buildmap + " successful extracted/updated")
   print()
   quit()
 
@@ -650,13 +650,13 @@ def remove_old_tiles():
 
 import splitter
 
-if (args.no_split):
-  if (args.verbose):
+if args.no_split:
+  if args.verbose:
     print()
     printinfo("no_split switched on!")
-  if os.path.exists((WORK_DIR) + "tiles/" + (buildmap) + "_split.ready") == False:
+  if os.path.exists(WORK_DIR + "tiles/" + buildmap + "_split.ready") == False:
     print()
-    printwarning("can't find tiles/" + (buildmap) + "_split.ready")
+    printwarning("can't find tiles/" + buildmap + "_split.ready")
     print("--no_split/-ns makes no sense, ignoring it")
     splitter.split()
 
@@ -672,9 +672,9 @@ else:
 
 """
 
-if (args.stop_after) == "splitter":
+if args.stop_after == "splitter":
   print()
-  printinfo((buildmap) + ".o5m successful splitted")
+  printinfo(buildmap + ".o5m successful splitted")
   print()
   quit()
 
@@ -686,7 +686,7 @@ render the map-images
 import mkgmap
 mkgmap.render()
 
-if config.get('runtime', 'logging') == "yes":
+if config['runtime']['logging'] == "yes":
   config.set('runtime', 'logging', 'no')
   write_config()
 
@@ -696,9 +696,9 @@ if config.get('runtime', 'logging') == "yes":
 
 """
 
-if (args.stop_after) == "mkgmap":
+if args.stop_after == "mkgmap":
   print()
-  printinfo(" Mapset for " + (buildmap) + " successful created")
+  printinfo(" Mapset for " + buildmap + " successful created")
   print()
   quit()
 
@@ -708,11 +708,11 @@ zip the images, kml and log
 
 import store
 
-if (args.zip_img):
+if args.zip_img:
   store.zip_img()
   store.kml()
 
-if(args.log):
+if args.log:
   store.log()
 
 """
@@ -720,7 +720,7 @@ create the contourlines
 
 """
 
-if (args.contourlines):
+if args.contourlines:
     if os.path.exists("styles/contourlines_style") == True:
       import contourlines
       contourlines.create_cont()

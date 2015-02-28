@@ -49,6 +49,8 @@ parser.add_argument('-c', '--contourlines', action="store_true", help="enable co
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
+parser.add_argument('-mt', '--mkgmap_test', dest='mkgmap_test', default='no', help="use a svn version of mkgmap like housenumbers2")
+
 args = parser.parse_args()
 
 
@@ -59,7 +61,7 @@ on success return 0
 """
 
 if os.path.exists(WORK_DIR) == False:
-  printerror("Please create" + (WORK_DIR))
+  printerror("Please create" + WORK_DIR)
   quit()
 
 os.chdir(WORK_DIR)
@@ -94,85 +96,88 @@ config.read('pygmap3.cfg')
 set, edit or delete mapset list
 
 """
-if (args.add_mapset) != "no":
-  if config.has_option('mapset', (args.add_mapset)) == False:
-    if os.path.exists("poly/" + (args.add_mapset) + ".poly") == False:
+if args.add_mapset != "no":
+  if config.has_option('mapset', args.add_mapset) == False:
+    if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
       print()
-      printerror((WORK_DIR) + "poly/" + (args.add_mapset) + ".poly not found... ")
-      print("please create or download "+ (args.add_mapset) + ".poly")
+      printerror(WORK_DIR + "poly/" + args.add_mapset + ".poly not found... ")
+      print("please create or download "+ args.add_mapset + ".poly")
       quit()
-    config.set('mapset', (args.add_mapset), 'yes')
+    config.set('mapset', args.add_mapset, 'yes')
     write_config()
   print()
-  printinfo((args.add_mapset) + " added to mapset list")
+  printinfo(args.add_mapset + " added to mapset list")
   quit()
 
-if (args.rm_mapset) != "no":
+if args.rm_mapset != "no":
   if config.has_section('mapset') == True:
-    config.remove_option('mapset', (args.rm_mapset))
+    config.remove_option('mapset', args.rm_mapset)
     write_config()
   print()
-  printwarning((args.rm_mapset) + " removed from mapset list")
+  printwarning(args.rm_mapset + " removed from mapset list")
   quit()
 
-if (args.list_mapset):
+if args.list_mapset:
   if config.has_section('mapset') == True:
     print()
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
-      print ("  " + (key) + " = " + config['mapset'][(key)])
+      print ("  " + key + " = " + config['mapset'][key])
   else:
     print()
     printinfo("mapset didn't exist")
   print()
   quit()
 
-if (args.del_mapset):
+if args.del_mapset:
   if config.has_section('mapset') == True:
     config.remove_section('mapset')
     write_config()
   printwarning("mapset list deleted")
   quit()
 
-if (args.stop_after):
-  stop = " --stop_after " + (args.stop_after)
+if args.stop_after:
+  stop = " --stop_after " + args.stop_after
 else:
   stop = " "
 
-if (args.contourlines):
+if args.contourlines:
   cl = " -c "
 else:
   cl = " "
 
-if (args.svn):
+if args.mkgmap_test != "no":
+  mkgmap_test = " -mt " + args.mkgmap_test
+
+if args.svn:
   svn = " --svn "
 else:
   svn = " "
 
-if (args.no_zip):
+if args.no_zip:
   zip = " "
 else:
   zip = "  -z "
 
-if (args.log):
+if args.log:
   log = " --log "
 else:
   log = " "
 
-if (args.old_bounds):
+if args.old_bounds:
   ob = " -ob "
 else:
   ob = " "
 
 for buildmap in config['mapset']:
-  if config['mapset'][(buildmap)] == "yes":
+  if config['mapset'][buildmap] == "yes":
     if os.path.exists("stop") == True:
       os.remove ("stop")
       print()
       printwarning("stopping build_process")
       print()
       quit()
-    os.system("pygmap3.py " + (stop) + (cl) +  (svn) +  (log) + (zip) + (ob) + " -b " + (buildmap))
+    os.system("pygmap3.py " + stop + cl + svn + mkgmap_test + log + zip + ob + " -b " + buildmap)
     write_config()
 
 print()
