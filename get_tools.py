@@ -59,9 +59,11 @@ for i in ['splitter', 'mkgmap']:
     data = htmlcontent.read()
     data = data.decode('utf8')
 
-    mkgmap_test = config['runtime']['mkgmap_test']
+    use_mkgmap_test = config['runtime']['use_mkgmap_test']
 
-    if mkgmap_test != "no" and i == "mkgmap":
+    if use_mkgmap_test == "yes" and i == "mkgmap":
+
+      mkgmap_test = config['runtime']['mkgmap_test']
 
       pattern = re.compile("mkgmap-" + mkgmap_test + "-r\d{4}.zip")
       get_rev()
@@ -167,20 +169,6 @@ def download():
   # Download the file from `url` and save it locally under `file_name`:
   with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
     shutil.copyfileobj(response, out_file)
-  config.set('runtime', 'use_cities15000', 'yes')
-
-def error():
-  print()
-  printwarning("failed download cities15000.zip")
-  print()
-  try:
-    os.rename(path + ".bak", path)
-    config.set('runtime', 'use_cities15000', 'yes')
-    os.remove(path + ".bak")
-  except:
-    print()
-    printerror("couldn't restore cities15000.zip from backup!")
-    config.set('runtime', 'use_cities15000', 'no')
 
 if os.path.exists(path) == True:
   ftime = os.path.getmtime(path)
@@ -193,13 +181,12 @@ if os.path.exists(path) == True:
     try:
       download()
     except:
-      error()
-  else:
-    config.set('runtime', 'use_cities15000', 'yes')
+      print()
+      printwarning("can't get a new cities15000.zip")
 else:
   try:
     download()
   except:
-    error()
+    print()
+    printwarning("can't get a cities15000.zip")
 
-write_config()

@@ -28,7 +28,7 @@ def create():
                        'verbose': 'no',
                        'default': 'bonn',
                        'ramsize': '-Xmx3G',
-                       'use_cities15000': 'yes',}
+                       'use_mkgmap_test': ' no',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -120,6 +120,9 @@ def update():
   config.read('pygmap3.cfg')
   if config.has_option('navmap', 'use_old_bounds') == False:
     config.set('navmap', 'use_old_bounds', 'no')
+
+  if config.has_option('runtime', 'use_mkgmap_test') == False:
+    config.set('runtime', 'use_mkgmap_test', 'no')
 
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)

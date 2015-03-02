@@ -197,7 +197,6 @@ parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't 
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
 # mkgmap options
-parser.add_argument('-mt', '--mkgmap_test', dest='mkgmap_test', default='no', help="use a svn version of mkgmap like housenumbers2")
 
 # contourlines
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
@@ -219,8 +218,11 @@ parser.add_argument('-l', '--log', action="store_true", help="enable splitter an
 
 # development
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
+parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use the svn version of mkgmap like housenumbers2")
+parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default='no', help="set the svn version of mkgmap like housenumbers2")
 
 args = parser.parse_args()
+
 
 """
 set buildmap
@@ -451,18 +453,29 @@ development version of splitter and mkgmap
 
 """
 
-if args.mkgmap_test != "no":
-  config.set('runtime', 'mkgmap_test', args.mkgmap_test)
-else:
-  config.set('runtime', 'mkgmap_test', 'no')
+config.set('runtime', 'use_mkgmap_test', 'no')
 
-if args.svn and args.mkgmap_test == "no":
-  config.set('runtime', 'svn', 'yes')
-elif args.svn and args.mkgmap_test != "no":
+if args.mkgmap_set != "no":
+  config.set('runtime', 'mkgmap_test', args.mkgmap_set)
+  config.set('runtime', 'use_mkgmap_test', 'yes')
+
+if args.mkgmap_test:
+  if config.has_option('runtime', 'mkgmap_test'):
+    config.set('runtime', 'use_mkgmap_test', 'yes')
+  else:
+    print()
+    printwarning("no test version of mkgmap is set in config")
+    printwarning("please use '-ms/--mkgmap_set' to set one version")
+    print()
+    quit()
+
+if args.svn and args.mkgmap_test:
   print()
   printwarning("Please, do not use --svn together with --mkgmap_test")
   printwarning("not useful at this time, ignoring --svn")
   config.set('runtime', 'svn', 'no')
+elif args.svn:
+  config.set('runtime', 'svn', 'yes')
 else:
   config.set('runtime', 'svn', 'no')
 
@@ -526,12 +539,7 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
 """
 
-if config['navmap']['pre_comp'] == "yes":
-  if args.old_bounds:
-    config.set('navmap', 'use_old_bounds', 'yes')
-    write_config()
-
-  import navmap
+import navmap
 
 """
 --stop_after tests
