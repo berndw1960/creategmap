@@ -106,10 +106,7 @@ for i in ['splitter', 'mkgmap']:
       print()
       quit()
 
-  if os.path.exists(i_rev) == True:
-    print()
-    printinfo("using " + i_rev)
-  else:
+  if os.path.exists(i_rev) == False:
     if os.path.isfile(i_rev + ".tar.gz") == True:
       try:
         tar_extract()
@@ -149,6 +146,10 @@ for i in ['splitter', 'mkgmap']:
     printerror(i_rev + " didn't exist")
     print()
     quit()
+
+  if use_mkgmap_test == "yes" and i == "mkgmap":
+    print()
+    printinfo("using " + i_rev)
 
   config.set('runtime', i, i_rev)
   write_config()

@@ -56,6 +56,8 @@ for i in ['sea', 'bounds']:
 
   file = i + "_" + date + ".zip"
 
+  config.set('navmap', i, date)
+
   if os.path.exists(file) == False:
 
     try:
