@@ -123,9 +123,7 @@ def render():
               print()
               print('Could not delete', file, 'in', path)
 
-      os.chdir(layer)
-      print()
-      printinfo("building " + layer)
+
 
       """
       mkgmap-options
@@ -141,24 +139,37 @@ def render():
       option_bounds = " --location-autofill=bounds,is_in,nearest "
       option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
-      if config['navmap']['pre_comp'] == "yes":
-        if config['navmap']['use_bounds'] == "yes":
-          option_bounds = " --bounds=" + WORK_DIR + "bounds_"+ config['navmap']['bounds'] + ".zip "
+      if layer == "basemap" or layer == "bikemap" or layer == "carmap" or layer == "defaultmap":
+        bounds_zip = WORK_DIR + "bounds_"+ config['navmap']['bounds'] + ".zip"
+        if os.path.exists(bounds_zip):
+          option_bounds = " --bounds=" + bounds_zip
 
-        if config['navmap']['use_sea'] == "yes":
-          option_sea = " --precomp-sea=" + WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip  --generate-sea "
+        sea_zip = WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip"
+        if os.path.exists(sea_zip):
+          option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
+
+      elif layer == "fixme" or layer == "bikeroute" or layer == "housenumber" or layer == "boundary":
+        option_bounds = " "
+        option_sea = " "
+
+      mkgmap_default = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp -c " + WORK_DIR + "tiles/template.args "
+      mkgmap_common = " -c " + WORK_DIR + "styles/options -c " + WORK_DIR + "tiles/template.args "
+      mkgmap_special = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options -c " + WORK_DIR + "tiles/template.args "
 
       if layer == "defaultmap":
-        option_mkgmap_options = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp -c " + WORK_DIR + "tiles/template.args "
+        option_mkgmap_options = mkgmap_default
 
-      elif layer == "basemap" or "bikemap":
-        option_mkgmap_options = " -c " + WORK_DIR + "styles/options -c " + WORK_DIR + "tiles/template.args "
+      elif layer == "basemap" or layer == "bikemap":
+        option_mkgmap_options = mkgmap_common
 
       else:
-        option_mkgmap_options = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options -c " + WORK_DIR + "tiles/template.args "
-
+        option_mkgmap_options = mkgmap_special
 
       typ_txt_test()
+
+      os.chdir(layer)
+      print()
+      printinfo("building " + layer)
 
       """
       map rendering

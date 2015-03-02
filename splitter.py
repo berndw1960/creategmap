@@ -48,20 +48,22 @@ def split():
 
   BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
 
-  pre_comp = " "
-  if config['navmap']['pre_comp'] == "yes":
-    if config['navmap']['use_sea'] == "yes":
-      pre_comp = " --precomp-sea=" + WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip "
+  sea_zip = WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip"
+  if os.path.exists(sea_zip):
+    option_sea = " --precomp-sea=" + sea_zip
+  else:
+    option_sea = " "
 
-  if config['runtime']['use_cities15000'] == "yes":
-    geonames = " --geonames-file=" + WORK_DIR + "cities15000.zip "
+  cities15000 = WORK_DIR + "cities15000.zip"
+  if os.path.exists(cities15000):
+    geonames = " --geonames-file=" + cities15000
   else:
     geonames = " "
 
   splitter_opts = (geonames +
                    " --mapid=" + config['mapid'][buildmap] + "0001 " +
                    " --output=o5m " +
-                   pre_comp +
+                   option_sea +
                    " --write-kml=" + buildmap + ".kml " +
                    " --keep-complete " +
                    " --overlap=0 ")

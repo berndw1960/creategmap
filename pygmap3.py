@@ -645,9 +645,6 @@ def remove_old_tiles():
 import splitter
 
 if args.no_split:
-  if args.verbose:
-    print()
-    printinfo("no_split switched on!")
   if os.path.exists(WORK_DIR + "tiles/" + buildmap + "_split.ready") == False:
     print()
     printwarning("can't find tiles/" + buildmap + "_split.ready")

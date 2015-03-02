@@ -60,7 +60,7 @@ for i in ['sea', 'bounds']:
 
     try:
       url = "http://" + www + path + date + "/" + file
-      print(url)
+      print()
       printinfo("download " + url)
 
       with urllib.request.urlopen(url) as response, open(file, 'wb') as out_file:
@@ -71,20 +71,6 @@ for i in ['sea', 'bounds']:
       printerror("failed download " + file)
       print()
       break
-
-  if os.path.exists(file) == True:
-    print()
-    printinfo("using " + file)
-    config.set('navmap', i, date)
-
-  else:
-    if config['navmap']["use_" + i] == "yes":
-      config.set('navmap', "use_" + i, 'no')
-    print()
-    printwarning("pre_comp " + i + " disabled, needed file(s) not found")
-
-if config['navmap']['use_old_bounds'] == "yes":
-  config.set('navmap', 'use_old_bounds', 'no')
 
 write_config()
 

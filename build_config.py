@@ -21,18 +21,12 @@ def create():
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
-  config['navmap'] = {}
-  config['navmap'] = {'pre_comp': 'yes',
-                      'use_sea': 'yes',
-                      'use_bounds': 'yes',}
-
   config['runtime'] = {}
   config['runtime'] = {'maxnodes': '1600000',
-                       'use_areas': 'no',
                        'svn': 'no',
                        'logging': 'no',
                        'verbose': 'no',
-                       'default': 'germany',
+                       'default': 'bonn',
                        'ramsize': '-Xmx3G',
                        'use_cities15000': 'yes',}
 
