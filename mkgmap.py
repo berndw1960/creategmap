@@ -133,15 +133,7 @@ def render():
 
       option_mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
-      if (layer) == "defaultmap":
-        option_mkgmap_options = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp -c " + WORK_DIR + "tiles/template.args "
-      else:
-        option_mkgmap_options = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options -c " + WORK_DIR + "tiles/template.args "
-
       if config['runtime']['logging'] == "yes":
-        if config['runtime']['verbose'] == "yes":
-          print()
-          printinfo("logging enabled")
         option_mkgmap_logging = " -Dlog.config=" + WORK_DIR + "mkgmap_log.props "
       else:
         option_mkgmap_logging = " "
@@ -151,17 +143,20 @@ def render():
 
       if config['navmap']['pre_comp'] == "yes":
         if config['navmap']['use_bounds'] == "yes":
-          if config['runtime']['verbose'] == "yes":
-            print()
-            printinfo ("use precompiled bounds")
           option_bounds = " --bounds=" + WORK_DIR + "bounds_"+ config['navmap']['bounds'] + ".zip "
 
         if config['navmap']['use_sea'] == "yes":
-          if config['runtime']['verbose'] == "yes":
-            print()
-            printinfo ("use precompiled sea_tiles")
-            print()
           option_sea = " --precomp-sea=" + WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip  --generate-sea "
+
+      if layer == "defaultmap":
+        option_mkgmap_options = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp -c " + WORK_DIR + "tiles/template.args "
+
+      elif layer == "basemap" or "bikemap":
+        option_mkgmap_options = " -c " + WORK_DIR + "styles/options -c " + WORK_DIR + "tiles/template.args "
+
+      else:
+        option_mkgmap_options = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options -c " + WORK_DIR + "tiles/template.args "
+
 
       typ_txt_test()
 
@@ -186,7 +181,9 @@ def render():
                         option_typ_file)
 
       if config['runtime']['verbose'] == "yes":
+        print()
         printinfo(command_line)
+        print()
 
       os.system(command_line)
 

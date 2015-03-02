@@ -4,6 +4,7 @@
 import os
 import configparser
 import shutil
+import time
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
@@ -16,6 +17,10 @@ def printwarning(msg):
 def printerror(msg):
   print("EE: " + msg)
 
+
+def write_config():
+  with open('pygmap3.cfg', 'w') as configfile:
+    config.write(configfile)
 config = configparser.ConfigParser()
 
 """
@@ -41,6 +46,8 @@ def split():
   splitter-options
   """
 
+  BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
+
   pre_comp = " "
   if config['navmap']['pre_comp'] == "yes":
     if config['navmap']['use_sea'] == "yes":
@@ -60,43 +67,27 @@ def split():
                    " --overlap=0 ")
 
   ## split with
-  areas_list = " --split-file=" + WORK_DIR + "areas/" + buildmap + "_areas.list "
+  areas_list = WORK_DIR + "areas/" + buildmap + "_areas.list"
+  areas = " --split-file=" + areas_list
   ## or
   max_nodes = (" --max-nodes=" + config['runtime']['maxnodes'] + " ")
 
-  BUILD_O5M = WORK_DIR + "o5m/" + buildmap + ".o5m"
+  split_with_areas_list = java_opts + log_opts + splitter_opts + areas + BUILD_O5M
+  split_without_areas_list = java_opts + log_opts + splitter_opts + max_nodes + BUILD_O5M
 
-  use_areas = config['runtime'][ 'use_areas']
-  if use_areas == "yes":
 
-    if os.path.exists("areas/" + buildmap + "_areas.list") == True:
-      os.chdir("tiles")
-      if config['runtime']['verbose'] == "yes":
-        print()
-        printinfo("splitting the mapdata with areas.list...")
-
-      command_line = java_opts + log_opts + splitter_opts + areas_list + BUILD_O5M
-
-      if config['runtime']['verbose'] == "yes":
-        printinfo(command_line)
-      os.system(command_line)
-    else:
-      os.chdir("tiles")
-
-      command_line = java_opts + log_opts + splitter_opts + max_nodes + BUILD_O5M
-
-      if config['runtime']['verbose'] == "yes":
-        print()
-        printinfo("create areas.list and splitting the mapdata...")
-        printinfo(command_line)
-      os.system(command_line)
-      shutil.copy2("areas.list", WORK_DIR + "areas/" + buildmap + "_areas.list")
+  if os.path.exists(areas_list) == True:
+    command_line = split_with_areas_list
   else:
-    os.chdir("tiles")
-    if config['runtime']['verbose'] == "yes":
-      print()
-      printinfo("'--areas_list' isn't enabled, splitting the mapdata without it...")
-    os.system(java_opts + log_opts + splitter_opts + max_nodes + BUILD_O5M)
+    command_line = split_without_areas_list
+
+  if config['runtime']['verbose'] == "yes":
+    print()
+    printinfo(command_line)
+    print()
+
+  os.chdir("tiles")
+  os.system(command_line)
 
   if config['runtime']['logging'] == "yes":
     log_dir = (WORK_DIR + "log/splitter/" + buildmap + "/" + buildday)
@@ -117,22 +108,8 @@ def split():
       if os.path.exists(i) == True:
         shutil.copy2(i, log_dir)
 
-  os.chdir(WORK_DIR)
 
-  if os.path.exists("tiles/template.args") == True:
-    datei = open("tiles/" + buildmap + "_split.ready", "w")
-    datei.close()
-  else:
-    if os.path.exists("areas/" + buildmap + "_areas.list") == True:
-      os.remove("areas/" + buildmap + "_areas.list")
-      print()
-      printwarning(buildmap + "_areas.list removed, next build creates a new one")
-    print()
-    printerror("Splitter-Error!")
-    print("Please restart the buildprocess for " + buildmap)
-    print()
-    printerror("If this error comes again after the next start, please remove")
-    print("  " + WORK_DIR + "o5m/"  + buildmap + ".o5m")
-    print("Maybe this file is damaged")
-    print()
-    quit()
+  if os.path.exists(areas_list) == False:
+    shutil.copy2("areas.list", areas_list)
+  datei = open(buildmap + "_split.ready", "w")
+  datei.close()

@@ -193,7 +193,7 @@ parser.add_argument('-pc', '--print_config', action="store_true", help="printout
 parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout a config section and exit")
 
 # splitter options
-parser.add_argument('-al', '--areas_list', action="store_true", help="use areas.list to split mapdata")
+parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't use areas.list to split mapdata")
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
 # mkgmap options
@@ -209,7 +209,7 @@ parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping
 parser.add_argument('-rs', '--ramsize', dest='ramsize', default='3G', help="set the ramsize for Java, example '3G' or '3000M'")
 
 # maxnodes
-parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default='1600000', help="set the maxnodes count for splitter")
+parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtime']['maxnodes'], help="set the maxnodes count for splitter")
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
@@ -221,6 +221,14 @@ parser.add_argument('-l', '--log', action="store_true", help="enable splitter an
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 
 args = parser.parse_args()
+
+"""
+set buildmap
+
+"""
+
+buildmap = args.buildmap
+config.set('runtime', 'buildmap', buildmap)
 
 # config options
 
@@ -247,22 +255,6 @@ if args.print_section != "no":
 
 
 # map build options
-
-if args.areas_list:
-  if config['runtime']['use_areas'] == "no":
-    config.set('runtime', 'use_areas', 'yes')
-    print()
-    printinfo("use_areas enabled in config file")
-    print()
-
-  elif config['runtime']['use_areas'] == "yes":
-    config.set('runtime', 'use_areas', 'no')
-    print()
-    printinfo("use_areas disabled in config file")
-    print()
-
-  write_config()
-  quit()
 
 if args.list_mapstyle:
   if config.has_section('map_styles') == True:
@@ -407,22 +399,32 @@ if args.check_styles:
   mkgmap.check()
   quit()
 
-
 # runtime options
 
 """
 ramsize for java
 """
 
-if args.ramsize != "3G":
+if args.ramsize != config['runtime']['ramsize']:
   config.set('runtime', 'ramsize', "-Xmx" + str(args.ramsize))
 
 """
-maxnodes for plitter
+maxnodes for splitter
 """
 
-if args.maxnodes != "1600000":
-  config.set('runtime', 'maxnodes', "-Xmx" + str(args.maxnodes))
+if args.maxnodes != config['runtime']['maxnodes']:
+  config.set('runtime', 'maxnodes', args.maxnodes)
+  if os.path.exists("areas/" + buildmap + "_areas.list"):
+    os.remove("areas/" + buildmap + "_areas.list")
+
+"""
+don't use the areas.list
+
+"""
+
+if args.no_areas_list:
+  if os.path.exists("areas/" + buildmap + "_areas.list"):
+    os.remove("areas/" + buildmap + "_areas.list")
 
 """
 logging
@@ -463,14 +465,6 @@ elif args.svn and args.mkgmap_test != "no":
   config.set('runtime', 'svn', 'no')
 else:
   config.set('runtime', 'svn', 'no')
-
-"""
-set buildmap
-
-"""
-
-buildmap = args.buildmap
-config.set('runtime', 'buildmap', buildmap)
 
 """
 set or create the mapid
