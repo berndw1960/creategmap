@@ -154,40 +154,4 @@ for i in ['splitter', 'mkgmap']:
   config.set('runtime', i, i_rev)
   write_config()
 
-"""
-get the geonames for splitter
-
-"""
-
-path = (WORK_DIR + "cities15000.zip")
-
-def download():
-  url = "http://download.geonames.org/export/dump/cities15000.zip"
-  file_name = "cities15000.zip"
-  print()
-  printinfo("download " + url)
-
-  # Download the file from `url` and save it locally under `file_name`:
-  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-    shutil.copyfileobj(response, out_file)
-
-if os.path.exists(path) == True:
-  ftime = os.path.getmtime(path)
-  curtime = time.time()
-  difftime = curtime - ftime
-  if difftime > 18144000:
-    os.rename(path, path + ".bak")
-    print()
-    printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
-    try:
-      download()
-    except:
-      print()
-      printwarning("can't get a new cities15000.zip")
-else:
-  try:
-    download()
-  except:
-    print()
-    printwarning("can't get a cities15000.zip")
 
