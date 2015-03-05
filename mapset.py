@@ -49,7 +49,8 @@ parser.add_argument('-c', '--contourlines', action="store_true", help="enable co
 parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
-parser.add_argument('-mt', '--mkgmap_test', dest='mkgmap_test', default='no', help="use a svn version of mkgmap like housenumbers2")
+parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
+parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 
 args = parser.parse_args()
 
@@ -146,8 +147,8 @@ if args.contourlines:
 else:
   cl = " "
 
-if args.mkgmap_test != "no":
-  mkgmap_test = " -mt " + args.mkgmap_test
+if args.mkgmap_test:
+  mkgmap_test = " -mt "
 
 if args.svn:
   svn = " --svn "
@@ -158,6 +159,11 @@ if args.no_zip:
   zip = " "
 else:
   zip = "  -z "
+
+if args.verbose:
+  verbose = " -v "
+else:
+  verbose = " "
 
 if args.log:
   log = " --log "
@@ -177,7 +183,7 @@ for buildmap in config['mapset']:
       printwarning("stopping build_process")
       print()
       quit()
-    os.system("pygmap3.py " + stop + cl + svn + mkgmap_test + log + zip + ob + " -b " + buildmap)
+    os.system("pygmap3.py " + verbose + stop + cl + svn + mkgmap_test + log + zip + ob + " -b " + buildmap)
     write_config()
 
 print()
