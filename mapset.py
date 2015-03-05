@@ -149,7 +149,7 @@ else:
 
 if args.mkgmap_test:
   mkgmap_test = " -mt "
-else
+else:
   mkgmap_test = " "
 
 if args.svn:
