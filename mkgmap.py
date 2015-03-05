@@ -185,7 +185,7 @@ def render():
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
                         " --family-id=" + config[layer]['family-id'] +
                         " --product-id=" + config[layer]['product-id'] +
-                        " --description=" + buildmap + "_" + buildday + "_" + layer +
+                        #" --description=" + buildmap + "_" + buildday + "_" + layer +
                         " --family-name=" + config[layer]['family-name'] +
                         " --draw-priority=" + config[layer]['draw-priority'] + " " +
                         option_mkgmap_options +
