@@ -152,9 +152,12 @@ def render():
         option_bounds = " "
         option_sea = " "
 
-      mkgmap_default = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp -c " + WORK_DIR + "tiles/template.args "
-      mkgmap_common = " -c " + WORK_DIR + "styles/options -c " + WORK_DIR + "tiles/template.args "
-      mkgmap_special = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options -c " + WORK_DIR + "tiles/template.args "
+      # for using template use this as last option
+      # -c " + WORK_DIR + "tiles/template.args "
+      
+      mkgmap_default = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp " + WORK_DIR + "tiles/*.o5m "
+      mkgmap_common = " -c " + WORK_DIR + "styles/options " + WORK_DIR + "tiles/*.o5m "
+      mkgmap_special = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options " + WORK_DIR + "tiles/*.o5m "
 
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_default
@@ -185,7 +188,7 @@ def render():
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
                         " --family-id=" + config[layer]['family-id'] +
                         " --product-id=" + config[layer]['product-id'] +
-                        #" --description=" + buildmap + "_" + buildday + "_" + layer +
+                        " --description=" + buildmap + "_" + buildday + "_" + layer +
                         " --family-name=" + config[layer]['family-name'] +
                         " --draw-priority=" + config[layer]['draw-priority'] + " " +
                         option_mkgmap_options +

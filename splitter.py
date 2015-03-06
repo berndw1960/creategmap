@@ -54,7 +54,13 @@ def split():
   else:
     option_sea = " "
 
-  splitter_opts = (" --description=" + buildmap + "_" + buildday +
+  cities15000 = WORK_DIR + "cities15000.zip"
+  if os.path.exists(cities15000):
+    geonames = " --geonames-file=" + cities15000
+  else:
+    geonames = " "
+
+  splitter_opts = (geonames +
                    " --mapid=" + config['mapid'][buildmap] + "0001 " +
                    " --output=o5m " +
                    option_sea +
