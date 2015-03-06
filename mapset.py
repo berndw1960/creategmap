@@ -147,7 +147,7 @@ if args.contourlines:
 else:
   cl = " "
 
-if args.mkgmap_test:
+if args.mkgmap_test and config.has_option('runtime', 'mkgmap_test'):
   mkgmap_test = " -mt "
 else:
   mkgmap_test = " "
