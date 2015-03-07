@@ -212,7 +212,7 @@ parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtim
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [contourlines|tests|create|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
@@ -534,6 +534,26 @@ if config['runtime']['svn'] == "yes":
   config.set('runtime', 'svn', 'no')
   write_config()
 
+
+"""
+create the contourlines
+
+"""
+
+if args.contourlines:
+    if os.path.exists("styles/contourlines_style") == True:
+      import contourlines
+      contourlines.create_cont()
+
+    else:
+      printwarning("dir styles/contourlines_style not found")
+
+if args.stop_after == "contourlines":
+  print()
+  printinfo("stop after contourlines creation")
+  print()
+  quit()
+
 """
 bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
@@ -714,17 +734,6 @@ if args.zip_img:
 if args.log:
   store.log()
 
-"""
-create the contourlines
-
-"""
-
-if args.contourlines:
-    if os.path.exists("styles/contourlines_style") == True:
-      import contourlines
-      contourlines.create_cont()
-    else:
-      printwarning("dir styles/contourlines_style not found")
 
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H%M')

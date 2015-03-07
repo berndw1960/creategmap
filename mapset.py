@@ -46,7 +46,7 @@ parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
-parser.add_argument('--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
