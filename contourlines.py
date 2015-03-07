@@ -129,6 +129,7 @@ def create_cont():
     os.system("java -ea " + config['runtime']['ramsize'] +
               " -jar " + mkgmap_path +
               " --keep-going " +
+              " --max-jobs " +
               " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
               " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
               " --mapname=" + config['mapid'][ buildmap] + "8001" +
