@@ -106,17 +106,17 @@ def create_cont():
     use phyghtmap to get the raw-data from the internet,
     downloaded files will be stored for later builds
     """
-    os.system("phyghtmap --source=view1,view3,srtm1,srtm3" +
-              " --start-node-id=1" +
-              " --start-way-id=1" +
-              " --max-nodes-per-tile=" + config['runtime'][maxnodes'] +
-              " --max-nodes-per-way=250" +
-              " --jobs=4" +
-              " --pbf" +
-              " --no-zero-contour" +
-              " -s 50" +
-              " -c 500,100" +
-              " --polygon=poly/" + buildmap + ".poly" +
+    os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
+              " --start-node-id=1 " +
+              " --start-way-id=1 " +
+              " --max-nodes-per-tile=" + config['runtime']['maxnodes'] +
+              " --max-nodes-per-way=250 " +
+              " --jobs=4 " +
+              " --o5m " +
+              " --no-zero-contour " +
+              " -s 50 " +
+              " -c 500,100 " +
+              " --polygon=poly/" + buildmap + ".poly " +
               " -o " + cltemp_dir + buildmap)
 
     """
@@ -126,14 +126,17 @@ def create_cont():
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + config['runtime']['ramsize'[ + " -jar " + mkgmap_path +
+    os.system("java -ea " + config['runtime']['ramsize'] +
+              " -jar " + mkgmap_path +
+              " --keep-going " +
               " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
               " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
               " --mapname=" + config['mapid'][ buildmap] + "8001" +
               " --description=" + buildmap + "_contourlines " +
               " --family-name=Contourlines" +
               " --draw-priority=" + config['contourlines']['draw-priority'] +
-              " *.osm.pbf ")
+              " --gmapsupp " +
+              " *.o5m ")
 
     """
     store the ready contourlines in separated dirs for later use

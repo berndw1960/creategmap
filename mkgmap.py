@@ -154,19 +154,21 @@ def render():
 
       # for using template use this as last option
       # -c " + WORK_DIR + "tiles/template.args "
-      
-      mkgmap_default = " --x-split-name-index --route --housenumbers --index --nsis --gmapsupp " + WORK_DIR + "tiles/*.o5m "
-      mkgmap_common = " -c " + WORK_DIR + "styles/options " + WORK_DIR + "tiles/*.o5m "
-      mkgmap_special = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options " + WORK_DIR + "tiles/*.o5m "
+
+      mkgmap_defaultmap = " --x-split-name-index --route --housenumbers --index --nsis "
+
+      mkgmap_base_layer = " -c " + WORK_DIR + "styles/options "
+
+      mkgmap_special_layer = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options "
 
       if layer == "defaultmap":
-        option_mkgmap_options = mkgmap_default
+        option_mkgmap_options = mkgmap_defaultmap
 
       elif layer == "basemap" or layer == "bikemap":
-        option_mkgmap_options = mkgmap_common
+        option_mkgmap_options = mkgmap_base_layer
 
       else:
-        option_mkgmap_options = mkgmap_special
+        option_mkgmap_options = mkgmap_special_layer
 
       typ_txt_test()
 
@@ -181,6 +183,8 @@ def render():
                         config['runtime']['ramsize'] +
                         option_mkgmap_logging +
                         " -jar " + option_mkgmap_path +
+                        " --keep-going " +
+                        " --max-jobs " +
                         option_bounds +
                         option_sea +
                         option_style_file +
@@ -188,10 +192,12 @@ def render():
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
                         " --family-id=" + config[layer]['family-id'] +
                         " --product-id=" + config[layer]['product-id'] +
-                        " --description=" + buildmap + "_" + buildday + "_" + layer +
                         " --family-name=" + config[layer]['family-name'] +
-                        " --draw-priority=" + config[layer]['draw-priority'] + " " +
+                        " --draw-priority=" + config[layer]['draw-priority'] +
+                        " --description=" + buildmap + "_" + buildday + "_" + layer +
                         option_mkgmap_options +
+                        " --gmapsupp " +
+                        WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)
 
       if config['runtime']['verbose'] == "yes":
