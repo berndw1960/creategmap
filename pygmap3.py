@@ -255,7 +255,6 @@ if args.print_section != "no":
   print()
   quit()
 
-
 # map build options
 
 if args.list_mapstyle:
