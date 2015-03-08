@@ -79,7 +79,6 @@ def write_config():
 
 config = configparser.ConfigParser()
 
-
 import build_config
 
 if os.path.exists("pygmap3.cfg") == False:
@@ -87,17 +86,16 @@ if os.path.exists("pygmap3.cfg") == False:
 
 config.read('pygmap3.cfg')
 
-if config.has_section('mapset') == False:
-    config['mapset'] = {}
-    write_config()
-
-config.read('pygmap3.cfg')
 
 """
 set, edit or delete mapset list
 
 """
+
 if args.add_mapset != "no":
+  if config.has_section('mapset') == False:
+    config['mapset'] = {}
+
   if config.has_option('mapset', args.add_mapset) == False:
     if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
       print()
@@ -185,8 +183,12 @@ for buildmap in config['mapset']:
       printwarning("stopping build_process")
       print()
       quit()
-    os.system("pygmap3.py " + verbose + stop + cl + svn + mkgmap_test + log + zip + ob + " -b " + buildmap)
-    write_config()
+    command_line =  "pygmap3.py " + verbose + stop + cl + svn + mkgmap_test + log + zip + ob + " -b " + buildmap
+
+    if args.verbose:
+      print(command_line)
+
+    os.system(command_line)
 
 print()
 print("###### all mapsets successfully build! #######")

@@ -515,13 +515,6 @@ if config['osmtools']['check'] == "yes":
 
   config.set('osmtools', 'check', 'no')
 
-"""
-write to config
-
-"""
-
-write_config()
-
 
 """
 get splitter and mkgmap
@@ -532,7 +525,6 @@ import get_tools
 
 if config['runtime']['svn'] == "yes":
   config.set('runtime', 'svn', 'no')
-  write_config()
 
 
 """
@@ -553,6 +545,9 @@ if args.stop_after == "contourlines":
   printinfo("stop after contourlines creation")
   print()
   quit()
+
+
+write_config()
 
 """
 bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
@@ -651,7 +646,7 @@ config.read('pygmap3.cfg')
 
 if args.stop_after == "create":
   print()
-  printinfo(" Mapdata for " + buildmap + " successful extracted/updated")
+  printinfo(" Mapdata for " + buildmap + " " + config['time_stamp'][buildmap] + " successful extracted/updated")
   print()
   quit()
 
