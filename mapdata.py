@@ -65,6 +65,7 @@ def create_o5m():
     quit()
 
 def update_o5m():
+
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config['runtime']['buildmap']
@@ -87,11 +88,12 @@ def update_o5m():
 
   if config.has_section('time_stamp') == False:
     config.add_section('time_stamp')
-    write_config()
 
   today = datetime.datetime.now()
   DATE = today.strftime('%Y%m%d_%H00')
 
   config.set('time_stamp', buildmap, DATE)
+
   write_config()
+  
 
