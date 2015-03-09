@@ -151,8 +151,12 @@ for i in ['splitter', 'mkgmap']:
     print()
     printinfo("using " + i_rev)
 
+  if config['runtime']['svn'] == "yes":
+    config.set('runtime', 'svn', 'no')
+    
   config.set('runtime', i, i_rev)
   write_config()
+  print(config['runtime']['mkgmap'])
 
 """
 get the geonames for splitter

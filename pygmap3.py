@@ -522,9 +522,7 @@ get splitter and mkgmap
 
 import get_tools
 
-if config['runtime']['svn'] == "yes":
-  config.set('runtime', 'svn', 'no')
-
+config.read('pygmap3.cfg')
 
 """
 create the contourlines
@@ -544,9 +542,6 @@ if args.stop_after == "contourlines":
   printinfo("stop after contourlines creation")
   print()
   quit()
-
-
-write_config()
 
 """
 bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
