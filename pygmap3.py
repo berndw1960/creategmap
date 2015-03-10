@@ -514,6 +514,7 @@ if config['osmtools']['check'] == "yes":
 
   config.set('osmtools', 'check', 'no')
 
+write_config()
 
 """
 get splitter and mkgmap
