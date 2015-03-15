@@ -66,8 +66,16 @@ import time
 import urllib.request
 import shutil
 
-WORK_DIR = os.environ['HOME'] + "/map_build/"
+## local modules
+import build_config
+import get_tools
+import navmap
+import geonames
+import splitter
+import mkgmap
+import store
 
+WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 """
 set prefix for messages
@@ -130,20 +138,10 @@ create a new config if needed
 
 """
 
-import build_config
-
 if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
 
-"""
-update the config if needed
-
-"""
-
-build_config.update()
-
 config.read('pygmap3.cfg')
-
 
 """
 argparse
@@ -212,7 +210,7 @@ parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtim
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [contourlines|tests|create|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
@@ -396,7 +394,7 @@ if args.set_default != "no":
   quit()
 
 if args.check_styles:
-  import mkgmap
+
   mkgmap.check()
   quit()
 
@@ -468,16 +466,6 @@ if args.mkgmap_test:
     print()
     quit()
 
-if args.svn and args.mkgmap_test:
-  print()
-  printwarning("Please, do not use --svn together with --mkgmap_test")
-  printwarning("not useful at this time, ignoring --svn")
-  config.set('runtime', 'svn', 'no')
-elif args.svn:
-  config.set('runtime', 'svn', 'yes')
-else:
-  config.set('runtime', 'svn', 'no')
-
 """
 set or create the mapid
 
@@ -521,9 +509,10 @@ get splitter and mkgmap
 
 """
 
-import get_tools
+get_tools.from_mkgmap_org()
 
 config.read('pygmap3.cfg')
+
 
 """
 create the contourlines
@@ -545,11 +534,18 @@ if args.stop_after == "contourlines":
   quit()
 
 """
+get the geonames file
+
+"""
+
+geonames.cities15000()
+
+"""
 bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
 """
 
-import navmap
+navmap.get_bounds()
 
 """
 --stop_after tests
@@ -660,8 +656,6 @@ def remove_old_tiles():
       except:
         print('Could not delete', file, 'in', path)
 
-import splitter
-
 if args.no_split:
   if os.path.exists(WORK_DIR + "tiles/" + buildmap + "_split.ready") == False:
     print()
@@ -692,7 +686,6 @@ render the map-images
 
 """
 
-import mkgmap
 mkgmap.render()
 
 if config['runtime']['logging'] == "yes":
@@ -715,7 +708,7 @@ if args.stop_after == "mkgmap":
 zip the images, kml and log
 """
 
-import store
+
 
 if args.zip_img:
   store.zip_img()

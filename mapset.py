@@ -80,11 +80,10 @@ parser.add_argument('-s', '--set_default', dest='set_default', default='no', hel
 parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
-parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|create|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
-parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 
 args = parser.parse_args()
 
@@ -170,11 +169,6 @@ if args.mkgmap_test and config.has_option('runtime', 'mkgmap_test'):
 else:
   mkgmap_test = ""
 
-if args.svn:
-  svn = "--svn "
-else:
-  svn = ""
-
 if args.no_zip:
   zip = ""
 else:
@@ -195,7 +189,7 @@ if args.old_bounds:
 else:
   ob = ""
 
-command_line =  "pygmap3.py " + verbose + stop + cl + svn + mkgmap_test + log + zip + ob
+command_line =  "pygmap3.py " + verbose + stop + cl + mkgmap_test + log + zip + ob
 
 if args.fastbuild:
   buildmap = config['runtime']['default']

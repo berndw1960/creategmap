@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import configparser
+
+def write_config():
+  with open('pygmap3.cfg', 'w') as configfile:
+    config.write(configfile)
+
+config = configparser.ConfigParser()
 
 def create():
 
@@ -9,21 +16,19 @@ def create():
 
   """
 
-  import configparser
-
-  config = configparser.ConfigParser()
-
   config['DEFAULT'] = {}
 
   config['osmtools'] = {}
   config['osmtools'] = {'check': 'yes',}
+
+  config['navmap'] = {}
+  config['navmap'] = {'use_old_bounds': 'no',}
 
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
   config['runtime'] = {}
   config['runtime'] = {'maxnodes': '1600000',
-                       'svn': 'no',
                        'logging': 'no',
                        'verbose': 'no',
                        'default': 'bonn',
@@ -103,27 +108,5 @@ def create():
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
 
-  with open('pygmap3.cfg', 'w') as configfile:
-    config.write(configfile)
-
-def update():
-
-  """
-  update config
-  remove unneeded lines
-  add new options
-
-  """
-  import configparser
-
-  config = configparser.ConfigParser()
-  config.read('pygmap3.cfg')
-  if config.has_option('navmap', 'use_old_bounds') == False:
-    config.set('navmap', 'use_old_bounds', 'no')
-
-  if config.has_option('runtime', 'use_mkgmap_test') == False:
-    config.set('runtime', 'use_mkgmap_test', 'no')
-
-  with open('pygmap3.cfg', 'w') as configfile:
-    config.write(configfile)
+  write_config()
 
