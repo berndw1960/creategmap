@@ -157,15 +157,17 @@ parser = argparse.ArgumentParser(
 
             map layers (routable):
             basemap - to route  motorvehicle, bicycle and foot
-            bikemap - better visibiltity of cycleroute and -ways
+            bikemap - better visibility of cycleroute and -ways
             carmap  - only for motorvehicle, no routing for bicycle and foot
 
             additional layers
             fixme   - a fixme layer for mapping
-            housenumbers - a layer that shows the housenumbers
+            boundary - a layer to show boundaries with admin_level<=6
+            housenumbers - a layer to shows the housenumbers
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
+
         '''))
 
 # mapset handling
@@ -323,7 +325,7 @@ def info_styles():
 
 if args.add_style != "no":
   if os.path.exists("styles/" + args.add_style + "_style") == True:
-    config['map_styles'] = {args.add_style: 'yes'}
+    config.set('map_styles', args.add_style, 'yes')
     print()
     if args.add_style in config == False:
       printinfo("please add a section [" + args.add_style + "] to pygmap3.cfg")
