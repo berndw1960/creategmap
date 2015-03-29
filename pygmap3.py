@@ -217,7 +217,6 @@ parser.add_argument('-v', '--verbose', action="store_true", help="increase verbo
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
 # development
-parser.add_argument('--svn', action="store_true", help="use svn versions of splitter and mkgmap")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use the svn version of mkgmap like housenumbers2")
 parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default='no', help="set the svn version of mkgmap like housenumbers2")
 
