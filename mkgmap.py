@@ -170,6 +170,11 @@ def render():
       else:
         option_mkgmap_options = mkgmap_special_layer
 
+      if  config['runtime']['use_mkgmap_test'] == "yes" and config['runtime']['mkgmap_test'] == "housenumbers2":
+        spec_mkgmap_opts = " --x-name-service-roads=3 "
+      else:
+        spec_mkgmap_opts = " "
+
       typ_txt_test()
 
       os.chdir(layer)
@@ -196,6 +201,7 @@ def render():
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
                         option_mkgmap_options +
+                        #spec_mkgmap_opts +
                         " --gmapsupp " +
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)
