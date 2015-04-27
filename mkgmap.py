@@ -170,10 +170,10 @@ def render():
       else:
         option_mkgmap_options = mkgmap_special_layer
 
-      if  config['runtime']['use_mkgmap_test'] == "yes" and config['runtime']['mkgmap_test'] == "housenumbers2":
-        spec_mkgmap_opts = " --x-name-service-roads=3 "
-      else:
-        spec_mkgmap_opts = " "
+      #if  config['runtime']['use_mkgmap_test'] == "yes" and config['runtime']['mkgmap_test'] == "housenumbers2":
+      #  spec_mkgmap_opts = " --x-name-service-roads=3 "
+      #else:
+      #  spec_mkgmap_opts = " "
 
       typ_txt_test()
 
