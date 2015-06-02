@@ -62,14 +62,16 @@ def from_mkgmap_org():
       else:
 
         if i == "splitter":
-          pattern = re.compile('/download/splitter-r\d{3}.zip')
+          #pattern = re.compile('/download/splitter-r\d{3}.zip')
+          pattern = re.compile('splitter-r\d{3}.zip')
         elif i == "mkgmap":
-          pattern = re.compile('/download/mkgmap-r\d{4}.zip')
+          #pattern = re.compile('/download/mkgmap-r\d{4}.zip')
+          pattern = re.compile('mkgmap-r\d{4}.zip')
 
         i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
         i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
-        i_rev.replace("/download/", "")
+        #i_rev.replace("/download/", "")
 
       target.close()
 
