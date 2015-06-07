@@ -212,7 +212,7 @@ parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtim
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|contourlines|mapdata|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
@@ -549,13 +549,13 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 navmap.get_bounds()
 
 """
---stop_after tests
+--stop_after get_tools
 
 """
 
-if args.stop_after == "tests":
+if args.stop_after == "get_tools":
   print()
-  printinfo("Tests successful finished")
+  printinfo("needed programs found and files successfully loaded")
   print()
   quit()
 
