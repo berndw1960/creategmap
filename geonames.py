@@ -55,7 +55,7 @@ def cities15000():
     ftime = os.path.getmtime(path)
     curtime = time.time()
     difftime = curtime - ftime
-    if difftime > 18144000:
+    if difftime > 1741800:
       os.rename(path, path + ".bak")
       print()
       printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
