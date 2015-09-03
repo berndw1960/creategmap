@@ -632,11 +632,11 @@ os.chdir(WORK_DIR)
 config.read('pygmap3.cfg')
 
 """
---stop_after create
+--stop_after mapdata
 
 """
 
-if args.stop_after == "create":
+if args.stop_after == "mapdata":
   print()
   printinfo(" Mapdata for " + buildmap + " " + config['time_stamp'][buildmap] + " successful extracted/updated")
   print()
