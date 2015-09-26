@@ -566,60 +566,13 @@ if --keep_data is set, then use the old data
 
 """
 
-buildmap_o5m = WORK_DIR + "o5m/" + buildmap +  ".o5m"
-buildmap_pbf = WORK_DIR + "o5m/" + buildmap +  ".osm.pbf"
-buildmap_poly = WORK_DIR + "poly/" + buildmap +  ".poly"
-
-def download():
-  print()
-  printinfo("download " + url)
-
-  # Download the file from `url` and save it locally under `file_name`:
-  with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-    shutil.copyfileobj(response, out_file)
-
 os.chdir(WORK_DIR)
 
 if args.keep_data == False:
   import mapdata
 
-  if os.path.exists(buildmap_o5m) == False:
-    if buildmap == "germany":
-      if os.path.exists(buildmap_poly) == False:
-        os.chdir("/poly")
-        try:
-          url = "http://download.geofabrik.de/europe/germany.poly"
-          file_name = "germany.poly"
-          download()
-        except:
-          print()
-          printerror("download http://download.geofabrik.de/europe/germany.poly failed")
-          print("please try to download it manually and store it in " + WORK_DIR + "poly/")
-          print()
-          quit()
-
-      os.chdir("../o5m")
-      try:
-        url = "http://download.geofabrik.de/europe/germany-latest.osm.pbf"
-        file_name = "germany-latest.osm.pbf"
-        download()
-
-        print()
-        printinfo("converting germany-latest.osm.pbf to germany.o5m")
-        os.system("osmconvert germany-latest.osm.pbf -o=germany.o5m")
-        os.remove("germany-latest.osm.pbf")
-
-      except:
-        print()
-        printerror("download or convert germany-latest.osm.pbf to germany.o5m failed")
-        print("please try to download it manually and store it in " + WORK_DIR + "o5m/")
-        print()
-        quit()
-
-        os.chdir(WORK_DIR)
-
-    else:
-      mapdata.create_o5m()
+  if os.path.exists("o5m/" + buildmap + ".o5m") == False:
+    mapdata.create_o5m()
 
   """
   update mapdata

@@ -75,6 +75,7 @@ parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
 parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
 parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to fast build a mapset as new default")
+parser.add_argument('-ba', '--break_after', dest='break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
 
 ## pygmap3
 parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
@@ -195,13 +196,17 @@ if args.fastbuild:
   buildmap = config['runtime']['default']
   if args.verbose:
     print()
-    print(command_line + "-b " + buildmap)
+    print(command_line)
 
-  os.system(command_line + "-b " + buildmap)
+  os.system(command_line)
 
+    
 else:
   for buildmap in config['mapset']:
     if config['mapset'][buildmap] == "yes":
+      if buildmap == args.break_after:
+        print()
+        printwarning("Stopping creating mapsets after this mapset")
       if os.path.exists("stop") == True:
         os.remove ("stop")
         print()
@@ -210,6 +215,9 @@ else:
         quit()
 
       os.system(command_line + "-b " + buildmap)
+      
+    if buildmap == args.break_after:
+      quit()
 
   print()
   print("###### all mapsets successfully build! #######")

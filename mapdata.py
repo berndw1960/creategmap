@@ -38,29 +38,55 @@ def create_o5m():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config['runtime']['buildmap']
-  BUILD_TEMP = ("o5m/" + buildmap + ".temp.o5m")
-  BUILD_O5M = ("o5m/" + buildmap + ".o5m")
-  BUILD_OLD = ("o5m/" + buildmap + ".old")
-
-  if os.path.exists("o5m/planet.o5m") == True:
+      
+  if os.path.exists("o5m/" + buildmap + "osm.pbf") == True:
     print()
-    printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
-    os.system("osmconvert o5m/planet.o5m " +
+    printinfo("converting o5m/" + buildmap + ".osm.pbf to o5m/" + buildmap + ".o5m, please wait...")
+    os.system("osmconvert o5m/" + buildmap + ".osm.pbf -o=o5m/" + buildmap + ".o5m")
+
+  elif os.path.exists("o5m/" + buildmap + "-latest.osm.pbf") == True:
+    print()
+    printinfo("converting o5m/" + buildmap + "-latest.osm.pbf to o5m/" + buildmap + ".o5m, please wait...")
+    os.system("osmconvert o5m/" + buildmap + "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m") 
+    
+  elif os.path.exists("o5m/planet.o5m") == True:
+    if os.path.exists("poly/" + buildmap + ".poly") == True:
+      print()
+      printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
+      os.system("osmconvert o5m/planet.o5m " +
               "--complete-ways --complex-ways --drop-version " +
-              " -B=poly/" + (buildmap) + ".poly " +
-              " -o=" + BUILD_TEMP)
+              " -B=poly/" + buildmap + ".poly " +
+              " -o=o5m/" + buildmap + ".o5m")
+    else:
+      print()
+      printerror("missing poly/" + buildmap + ".poly")
+      print()
+      printinfo("created it or try to get one from http://download.geofabrik.de ")
+      print("    or use another source for this file")
+      print()
+      quit()
 
-    if os.path.exists(BUILD_O5M) == True:
-      os.rename(BUILD_O5M, BUILD_OLD)
-
-    os.rename(BUILD_TEMP, BUILD_O5M)
-
-    if os.path.exists(BUILD_OLD) == True:
-      os.remove(BUILD_OLD)
   else:
     print()
-    printerror((WORK_DIR) + "o5m/planet.o5m not found... ")
-    print("please download it with 'planet_up.py'")
+    printerror((WORK_DIR) + "o5m/" + buildmap + ".o5m not found! ")
+    print()
+    printinfo("Solution 1 (should be preferred):")
+    print()
+    print("    Store one of the following files in " + WORK_DIR + "o5m ")
+    print()
+    print("    " + buildmap + "-latest.osm.pbf (from http://download.geofabrik.de) ")
+    print("    " + buildmap + ".osm.pbf")    
+    print("    " + buildmap + ".o5m")
+    print()
+    print("    it will be used the next time when you start pygmap3.py -b " + buildmap)  
+    print()
+    printinfo("Solution 2:")
+    print()
+    print("    If you have a " + buildmap + ".poly stored in " + WORK_DIR + "poly,")
+    print("    then the missed " + buildmap + ".o5m can be extracted from a planet file by pygmap3.py. ") 
+    print("    You can download the complete planet file wth planet_up.py,")
+    print("    but the planet file has a size of more then 20 GiB, so it is the second best solution ")
+    print("    If you had download this file, backup it and it can be updated with planet_up.py,too.")
     print()
     quit()
 
