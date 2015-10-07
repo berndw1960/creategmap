@@ -123,8 +123,6 @@ def render():
               print()
               print('Could not delete', file, 'in', path)
 
-
-
       """
       mkgmap-options
       """
@@ -135,6 +133,11 @@ def render():
         option_mkgmap_logging = " -Dlog.config=" + WORK_DIR + "mkgmap_log.props "
       else:
         option_mkgmap_logging = " "
+
+      if buildmap == "dach" or buildmap == "austria" or buildmap == "switzerland" or buildmap == "germany" or buildmap == " bonn":
+        option_name_tag_list = " --name-tag-list=name:de,name,name:en,int_name "
+      else:
+        option_name_tag_list = " --name-tag-list=name:en,int_name,name "
 
       option_bounds = " --location-autofill=bounds,is_in,nearest "
       option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
@@ -148,12 +151,9 @@ def render():
         if os.path.exists(sea_zip):
           option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
 
-      elif layer == "fixme" or layer == "bikeroute" or layer == "housenumber" or layer == "boundary":
+      else:
         option_bounds = " "
         option_sea = " "
-
-      # for using template use this as last option
-      # -c " + WORK_DIR + "tiles/template.args "
 
       mkgmap_defaultmap = " --x-split-name-index --route --housenumbers --index --nsis "
 
@@ -169,11 +169,6 @@ def render():
 
       else:
         option_mkgmap_options = mkgmap_special_layer
-
-      #if  config['runtime']['use_mkgmap_test'] == "yes" and config['runtime']['mkgmap_test'] == "housenumbers2":
-      #  spec_mkgmap_opts = " --x-name-service-roads=3 "
-      #else:
-      #  spec_mkgmap_opts = " "
 
       typ_txt_test()
 
@@ -193,7 +188,7 @@ def render():
                         option_bounds +
                         option_sea +
                         option_style_file +
-                        " --name-tag-list=name:de,name,name:en,int_name " +
+                        option_name_tag_list +
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
                         " --family-id=" + config[layer]['family-id'] +
                         " --product-id=" + config[layer]['product-id'] +
@@ -201,7 +196,6 @@ def render():
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
                         option_mkgmap_options +
-                        #spec_mkgmap_opts +
                         " --gmapsupp " +
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)
