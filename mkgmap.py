@@ -134,7 +134,7 @@ def render():
       else:
         option_mkgmap_logging = " "
 
-      if buildmap == "dach" or buildmap == "austria" or buildmap == "switzerland" or buildmap == "germany" or buildmap == " bonn":
+      if buildmap == "dach" or buildmap == "austria" or buildmap == "switzerland" or buildmap == "germany" or buildmap == "bonn":
         option_name_tag_list = " --name-tag-list=name:de,name,name:en,int_name "
       else:
         option_name_tag_list = " --name-tag-list=name:en,int_name,name "
