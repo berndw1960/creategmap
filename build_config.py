@@ -111,9 +111,9 @@ def create():
   
   config['name_tag_list'] = {}
   config['name_tag_list'] = { 'default': 'name:en,name:int,name',
-                              'dach': 'name:de,name,name:en',
-                              'germany': 'name:de,name,name:en',
-                              'bonn': 'name:de,name,name:en',}
+                              'dach': 'name:de,name',
+                              'germany': 'name:de,name',
+                              'bonn': 'name:de,name',}
  
   write_config()
 
