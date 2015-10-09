@@ -107,6 +107,13 @@ def create():
 
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
-
+  
+  
+  config['name_tag_list'] = {}
+  config['name_tag_list'] = { 'default': 'name:en,name:int,name',
+                              'dach': 'name:de,name,name:en',
+                              'germany': 'name:de,name,name:en',
+                              'bonn': 'name:de,name,name:en',}
+ 
   write_config()
 

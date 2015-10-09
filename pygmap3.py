@@ -173,6 +173,7 @@ parser = argparse.ArgumentParser(
 # mapset handling
 parser.add_argument('-b', '--buildmap', dest='buildmap', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
+parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # list styles
 parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
@@ -230,6 +231,22 @@ set buildmap
 
 buildmap = args.buildmap
 config.set('runtime', 'buildmap', buildmap)
+
+name_tag_list = args.name_tag_list
+
+if ('name_tag_list' in config) == False:
+  config.add_section('name_tag_list')
+  config.set('name_tag_list', 'default', 'name:en,name:int,name')
+  write_config()
+
+if config.has_option('name_tag_list', buildmap) == False:
+  print()
+  printwarning("for this mapset isn't set the MKGMAP option '--name-tag-list'")
+  printwarning("using the default 'name:en,name:int,name'")
+  print()
+  
+if args.name_tag_list != "no":
+  config.set('name_tag_list', buildmap, name_tag_list) 
 
 # config options
 

@@ -134,10 +134,10 @@ def render():
       else:
         option_mkgmap_logging = " "
 
-      if buildmap == "dach" or buildmap == "austria" or buildmap == "switzerland" or buildmap == "germany" or buildmap == "bonn":
-        option_name_tag_list = " --name-tag-list=name:de,name,name:en,int_name "
+      if config.has_option('name_tag_list', buildmap) == True:
+        option_name_tag_list = " --name-tag-list=" + config['name_tag_list'][buildmap]
       else:
-        option_name_tag_list = " --name-tag-list=name:en,int_name,name "
+        option_name_tag_list = " --name-tag-list=" + config['name_tag_list']['default']
 
       option_bounds = " --location-autofill=bounds,is_in,nearest "
       option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
