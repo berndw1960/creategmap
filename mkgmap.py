@@ -159,16 +159,16 @@ def render():
 
       mkgmap_base_layer = " -c " + WORK_DIR + "styles/options "
 
-      mkgmap_special_layer = " -c " + WORK_DIR + "styles/" + (layer) + "_style/options "
+      mkgmap_special_layer = WORK_DIR + "styles/" + (layer) + "_style/options"
 
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap
 
-      elif layer == "basemap" or layer == "bikemap":
-        option_mkgmap_options = mkgmap_base_layer
+      elif os.path.exists(mkgmap_special_layer):
+        option_mkgmap_options = " -c " + mkgmap_special_layer + " "
 
       else:
-        option_mkgmap_options = mkgmap_special_layer
+        option_mkgmap_options = mkgmap_base_layer
 
       typ_txt_test()
 
