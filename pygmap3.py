@@ -238,15 +238,15 @@ if ('name_tag_list' in config) == False:
   config.add_section('name_tag_list')
   config.set('name_tag_list', 'default', 'name:en,name:int,name')
   write_config()
-
-if config.has_option('name_tag_list', buildmap) == False:
-  print()
-  printwarning("for this mapset isn't set the MKGMAP option '--name-tag-list'")
-  printwarning("using the default 'name:en,name:int,name'")
-  print()
   
 if args.name_tag_list != "no":
   config.set('name_tag_list', buildmap, name_tag_list) 
+
+if config.has_option('name_tag_list', buildmap) == False:
+  print()
+  printwarning("for this mapset the MKGMAP option '--name-tag-list' isn't set")
+  printwarning("using the default 'name:en,name:int,name'")
+  print()
 
 # config options
 
