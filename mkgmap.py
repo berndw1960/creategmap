@@ -139,36 +139,30 @@ def render():
       else:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list']['default']
 
-      option_bounds = " --location-autofill=bounds,is_in,nearest "
-      option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
-
-      if layer == "basemap" or layer == "bikemap" or layer == "carmap" or layer == "defaultmap":
-        bounds_zip = WORK_DIR + "bounds_"+ config['navmap']['bounds'] + ".zip"
-        if os.path.exists(bounds_zip):
-          option_bounds = " --bounds=" + bounds_zip
-
-        sea_zip = WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip"
-        if os.path.exists(sea_zip):
-          option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
-
+      bounds_zip = WORK_DIR + "bounds_"+ config['navmap']['bounds'] + ".zip"
+      if os.path.exists(bounds_zip):
+        option_bounds = " --bounds=" + bounds_zip
       else:
-        option_bounds = " "
-        option_sea = " "
+        option_bounds = " --location-autofill=bounds,is_in,nearest "
+        
+      sea_zip = WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip"
+      if os.path.exists(sea_zip):
+        option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
+      else:
+        option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
-      mkgmap_defaultmap = " --x-split-name-index --route --housenumbers --index --nsis "
-
-      mkgmap_base_layer = " -c " + WORK_DIR + "styles/options "
-
-      mkgmap_special_layer = WORK_DIR + "styles/" + (layer) + "_style/options"
+      mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
+      mkgmap_base_opts = WORK_DIR + "styles/options "
+      mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
 
       if layer == "defaultmap":
-        option_mkgmap_options = mkgmap_defaultmap
+        option_mkgmap_options = mkgmap_defaultmap_opts
 
-      elif os.path.exists(mkgmap_special_layer):
-        option_mkgmap_options = " -c " + mkgmap_special_layer + " "
+      elif os.path.exists(mkgmap_style_opts):
+        option_mkgmap_options =  mkgmap_style_opts
 
       else:
-        option_mkgmap_options = mkgmap_base_layer
+        option_mkgmap_options = mkgmap_base_opts
 
       typ_txt_test()
 
@@ -195,7 +189,7 @@ def render():
                         " --family-name=" + config[layer]['family-name'] +
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
-                        option_mkgmap_options +
+                        " -c " + option_mkgmap_options +
                         " --gmapsupp " +
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)
