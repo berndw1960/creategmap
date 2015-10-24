@@ -83,7 +83,20 @@ def check():
       print()
       printinfo("style_file = " + option_style_file)
       print()
-      os.system("java -jar " + option_mkgmap_path + " --style-file=" + option_style_file + " --check-styles " + option_typ_file)
+      mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
+      mkgmap_base_opts = WORK_DIR + "styles/options "
+      mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
+
+      if layer == "defaultmap":
+        option_mkgmap_options = mkgmap_defaultmap_opts
+
+      elif os.path.exists(mkgmap_style_opts):
+        option_mkgmap_options =  mkgmap_style_opts
+
+      else:
+        option_mkgmap_options = mkgmap_base_opts
+
+      os.system("java -jar " + option_mkgmap_path + " -c " +option_mkgmap_options + " --style-file=" + option_style_file + " --check-styles " + option_typ_file)
   print()
 
   for i in ['styles_typ.typ', 'styles/xstyles_typ.typ', 'splitter.log', 'osmmap.tdb']:

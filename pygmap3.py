@@ -156,9 +156,9 @@ parser = argparse.ArgumentParser(
             To build maps for Garmin PNA
 
             map layers (routable):
-            basemap - to route  motorvehicle, bicycle and foot
+            basemap - to route  motorvehicle, bicycle and pedestrian
             bikemap - better visibility of cycleroute and -ways
-            carmap  - only for motorvehicle, no routing for bicycle and foot
+            carmap  - only for motorvehicle, no routing for bicycle and pedestrian
 
             additional layers
             fixme   - a fixme layer for mapping
