@@ -31,8 +31,8 @@ def create():
   config['runtime'] = {'maxnodes': '1600000',
                        'logging': 'no',
                        'verbose': 'no',
-                       'default': 'bonn',
-                       'ramsize': '-Xmx3G',
+                       'default': 'germany',
+                       'ramsize': '-Xmx4G',
                        'use_mkgmap_test': ' no',}
 
   config['map_styles'] = {}
@@ -64,14 +64,14 @@ def create():
                        'product-id': '45',
                        'family-name': 'Bikemap',
                        'draw-priority': '10',
-                       'mapid_ext': '2001',}
+                       'mapid_ext': '1001',}
 
   config['carmap'] = {}
   config['carmap'] = {'family-id': '6',
                        'product-id': '46',
                        'family-name': 'Carmap',
                        'draw-priority': '10',
-                       'mapid_ext': '3001',}
+                       'mapid_ext': '1001',}
 
   config['boundary'] = {}
   config['boundary'] = {'family-id': '7',

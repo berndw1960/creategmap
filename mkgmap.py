@@ -165,8 +165,8 @@ def render():
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
       mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
-      mkgmap_base_opts = WORK_DIR + "styles/options "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
+      mkgmap_base_opts = WORK_DIR + "styles/options "
 
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
