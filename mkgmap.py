@@ -167,7 +167,8 @@ def render():
       mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
-
+      mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
+      
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
 
@@ -176,6 +177,11 @@ def render():
 
       else:
         option_mkgmap_options = mkgmap_base_opts
+        
+      if config['runtime']['use_spec_opts'] == "yes":
+        option_mkgmap_spec_opts = mkgmap_spec_opts
+      else: 
+        option_mkgmap_spec_opts = " "
 
       typ_txt_test()
 
@@ -203,6 +209,7 @@ def render():
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
                         " -c " + option_mkgmap_options +
+                        option_mkgmap_spec_opts +
                         " --gmapsupp " +
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)

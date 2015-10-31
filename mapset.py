@@ -85,6 +85,7 @@ parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
+parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
 
 args = parser.parse_args()
 
@@ -190,6 +191,11 @@ if args.old_bounds:
 else:
   ob = ""
 
+if args.spec_opts:
+  so = " -so "
+else:
+  so = " "
+  
 command_line =  "pygmap3.py " + verbose + stop + cl + mkgmap_test + log + zip + ob
 
 if args.fastbuild:

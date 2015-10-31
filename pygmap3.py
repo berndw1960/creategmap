@@ -214,6 +214,7 @@ parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtim
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
 parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
+parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
@@ -444,6 +445,15 @@ if args.no_areas_list:
     os.remove("areas/" + buildmap + "_areas.list")
 
 """
+special opts to debug the raw map data
+"""
+
+config.set('runtime', 'use_spec_opts', 'no')
+
+if args.spec_opts:
+  config.set('runtime', 'use_spec_opts', 'yes')
+
+"""
 logging
 
 """
@@ -463,11 +473,11 @@ if args.verbose:
 else:
   config.set('runtime', 'verbose', 'no')
 
+
 """
 development version of splitter and mkgmap
 
 """
-
 config.set('runtime', 'use_mkgmap_test', 'no')
 
 if args.mkgmap_set != "no":
