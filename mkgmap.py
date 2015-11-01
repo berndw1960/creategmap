@@ -34,6 +34,7 @@ def typ_txt_test():
 
     elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.txt") == True:
       printinfo(layer + " build with " + layer + "_typ.txt")
+      option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.txt"
 
     elif os.path.exists(WORK_DIR + "styles/styles_typ.typ") == True:
       if os.path.exists(WORK_DIR + "styles/styles_typ.txt") == True:
