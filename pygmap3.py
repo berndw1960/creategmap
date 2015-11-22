@@ -188,6 +188,8 @@ parser.add_argument('-dm', '--no_map_styles', action="store_true", help="disable
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
 parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
+parser.add_argument('--hourly', action="store_true", help="update the raw with the hourly files")
+parser.add_argument('--minutely', action="store_true", help="update the raw with the minutely files")
 
 # config
 parser.add_argument('-pc', '--print_config', action="store_true", help="printout the config sections  and exit")
@@ -600,12 +602,23 @@ if args.keep_data == False:
 
   if os.path.exists("o5m/" + buildmap + ".o5m") == False:
     mapdata.create_o5m()
-
+  
   """
   update mapdata
 
   """
+  if args.hourly:
+    config.set('runtime', 'hourly', 'yes')
+  else:
+    config.set('runtime', 'hourly', 'no')
 
+  if args.minutely:
+    config.set('runtime', 'minutely', 'yes')    
+  else:
+    config.set('runtime', 'minutely', 'no')
+    
+  write_config()
+  
   mapdata.update_o5m()
 
 os.chdir(WORK_DIR)

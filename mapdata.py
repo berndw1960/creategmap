@@ -95,10 +95,24 @@ def update_o5m():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config['runtime']['buildmap']
+  time = datetime.datetime.now()
 
+  if config['runtime']['minutely'] == "yes":
+    update_opts = " --hourly -- minutely "
+    DATE = time.strftime('%Y%m%d_%H%M')  
+    
+  elif config['runtime']['hourly'] == "yes":
+    update_opts = " --hourly "
+    DATE = time.strftime('%Y%m%d_%H00')   
+    
+  else:
+    update_opts = " "
+    DATE = time.strftime('%Y%m%d_0000')
+    
   print()
   printinfo("updating " + buildmap + ".o5m, please wait...")
-  os.system("osmupdate --daily --hourly -B=poly/" + buildmap +
+  os.system("osmupdate --daily" + update_opts + 
+        " -B=poly/" + buildmap +
 	    ".poly --keep-tempfiles o5m/" + buildmap +
 	    ".o5m  o5m/" + buildmap +  "_new.o5m")
 
@@ -114,9 +128,6 @@ def update_o5m():
 
   if config.has_section('time_stamp') == False:
     config.add_section('time_stamp')
-
-  today = datetime.datetime.now()
-  DATE = today.strftime('%Y%m%d_%H00')
 
   config.set('time_stamp', buildmap, DATE)
 

@@ -120,13 +120,13 @@ set date for info
 import datetime
 
 today = datetime.datetime.now()
-DATE = today.strftime('%Y%m%d_%H00')
+DATE = today.strftime('%Y%m%d')
 
 config.set('planet', 'buildday', (DATE))
 write_config()
 
 
-os.system("osmupdate -v --daily --hourly --keep-tempfiles o5m/planet.o5m o5m/planet_new.o5m")
+os.system("osmupdate -v --daily --keep-tempfiles o5m/planet.o5m o5m/planet_new.o5m")
 
 os.chdir("o5m/")
 
