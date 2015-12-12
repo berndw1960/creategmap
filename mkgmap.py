@@ -29,28 +29,26 @@ def typ_txt_test():
 
   else:
     if os.path.exists(WORK_DIR + "styles/" + layer + "_typ.typ") == True:
-      printinfo(layer + " build with " + layer + "_typ.typ")
       option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.typ"
-
+      
     elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.txt") == True:
-      printinfo(layer + " build with " + layer + "_typ.txt")
       option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.txt"
+      
+    elif os.path.exists(WORK_DIR + "styles/styles_typ.typ") == True and os.path.exists(WORK_DIR + "styles/styles_typ.txt") == True:
+      m1 = os.path.getmtime(WORK_DIR + "styles/styles_typ.typ")
+      m2 = os.path.getmtime(WORK_DIR + "styles/styles_typ.txt")
+      if m1 > m2:
+        option_typ_file = " " + WORK_DIR + "styles/styles_typ.typ" 
+      elif m2 > m1:
+        option_typ_file = " " + WORK_DIR + "styles/styles_typ.txt"
+      print()
+      printwarning("styles_typ.typ and styles_typ.txt exist, use the newer file")
+      print()
+      printinfo("typ_file   = " + option_typ_file)
+      print()
 
     elif os.path.exists(WORK_DIR + "styles/styles_typ.typ") == True:
-      if os.path.exists(WORK_DIR + "styles/styles_typ.txt") == True:
-        m1 = os.path.getmtime(WORK_DIR + "styles/styles_typ.typ")
-        m2 = os.path.getmtime(WORK_DIR + "styles/styles_typ.txt")
-        if m1 < m2:
-          print()
-          printwarning("styles_typ.typ is older then styles_typ.txt, renew it")
-          os.remove(WORK_DIR + "styles/styles_typ.typ")
-
-      if os.path.exists(WORK_DIR + "styles/styles_typ.typ") == True:
-        option_typ_file = " " + WORK_DIR + "styles/styles_typ.typ"
-      else:
-        option_typ_file = " " + WORK_DIR + "styles/styles_typ.txt"
-        print()
-        printwarning(layer + " build with styles_typ.txt")
+      option_typ_file = " " + WORK_DIR + "styles/styles_typ.typ"
 
     elif os.path.exists(WORK_DIR + "styles/styles_typ.txt") == True:
       option_typ_file = " " + WORK_DIR + "styles/styles_typ.txt"
