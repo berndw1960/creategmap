@@ -220,7 +220,7 @@ else:
         print()
         quit()
 
-      os.system(command_line + "-b " + buildmap)
+      os.system(command_line + "-p " + buildmap)
       
     if buildmap == args.break_after:
       quit()

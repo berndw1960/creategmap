@@ -50,7 +50,15 @@ def create_o5m():
     os.system("osmconvert o5m/" + buildmap + "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m") 
     
   elif os.path.exists("o5m/planet.o5m") == True:
-    if os.path.exists("poly/" + buildmap + ".poly") == True:
+    if config['runtime']['use_bbox'] == "yes":
+      print()
+      printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
+      os.system("osmconvert o5m/planet.o5m " +
+              "--complete-ways --complex-ways --drop-version " +
+              " -b=" + config['runtime']['bbox'] +
+              " -o=o5m/" + buildmap + ".o5m")      
+      
+    elif os.path.exists("poly/" + buildmap + ".poly") == True:
       print()
       printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
       os.system("osmconvert o5m/planet.o5m " +
@@ -111,9 +119,15 @@ def update_o5m():
     
   print()
   printinfo("updating " + buildmap + ".o5m, please wait...")
-  os.system("osmupdate --daily" + update_opts + 
-        " -B=poly/" + buildmap +
-	    ".poly --keep-tempfiles o5m/" + buildmap +
+  if config['runtime']['use_bbox'] == "yes":
+    os.system("osmupdate --daily" + update_opts + 
+        " -b=" + config['runtime']['bbox'] +
+	    " --keep-tempfiles o5m/" + buildmap +
+	    ".o5m  o5m/" + buildmap +  "_new.o5m")
+  else:
+    os.system("osmupdate --daily" + update_opts + 
+        " -B=poly/" + buildmap +".poly "
+	    " --keep-tempfiles o5m/" + buildmap +
 	    ".o5m  o5m/" + buildmap +  "_new.o5m")
 
   os.chdir("o5m")
@@ -133,4 +147,3 @@ def update_o5m():
 
   write_config()
   
-

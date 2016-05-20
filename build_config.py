@@ -32,6 +32,7 @@ def create():
                        'logging': 'no',
                        'verbose': 'no',
                        'default': 'germany',
+                       'bbox': '6.5,49,8.5,51',
                        'ramsize': '-Xmx4G',
                        'use_mkgmap_test': ' no',}
 

@@ -171,8 +171,10 @@ parser = argparse.ArgumentParser(
         '''))
 
 # mapset handling
-parser.add_argument('-b', '--buildmap', dest='buildmap', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
+parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
+parser.add_argument('-b', '--bbox', dest='bbox', default='no', help="set a bbox, example '-b 6.5,49,8.5,51' = degrees in W,S,E,N ")
+parser.add_argument('-n', '--bbox_name', dest='bbox_name', default='bbox_map', help="set the name of the mapfile when a bbox is used ")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # list styles
@@ -232,11 +234,19 @@ set buildmap
 
 """
 
-buildmap = args.buildmap
-config.set('runtime', 'buildmap', buildmap)
+if args.bbox != "no":
+  config.set('runtime', 'use_bbox', 'yes')
+  config.set('runtime', 'buildmap', args.bbox_name)
+  buildmap = args.bbox_name
+  config.set('runtime', 'bbox', args.bbox)
+else:
+  config.set('runtime', 'use_bbox', 'no')  
+  buildmap = os.path.splitext(os.path.basename(args.poly))[0]
+  config.set('runtime', 'buildmap', buildmap)
+
+write_config()
 
 name_tag_list = args.name_tag_list
-
 if ('name_tag_list' in config) == False:
   config.add_section('name_tag_list')
   config.set('name_tag_list', 'default', 'name:en,name:int,name')
