@@ -712,8 +712,6 @@ if args.stop_after == "mkgmap":
 zip the images, kml and log
 """
 
-
-
 if args.zip_img:
   store.zip_img()
   store.kml()
@@ -721,6 +719,8 @@ if args.zip_img:
 if args.log:
   store.log()
 
+if os.path.exists(WORK_DIR + "o5m/bbox_map") == True:
+  os.remove(WORK_DIR + "o5m/bbox_map")
 
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H%M')
