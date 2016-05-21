@@ -174,7 +174,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
 parser.add_argument('-b', '--bbox', dest='bbox', default='no', help="set a bbox, example '-b 6.5,49,8.5,51' = degrees in W,S,E,N ")
-parser.add_argument('-n', '--bbox_name', dest='bbox_name', default='bbox_map', help="set the name of the mapfile when a bbox is used ")
+parser.add_argument('-bn', '--bbox_name', dest='bbox_name', default='bbox_map', help="set the name of the mapfile when a bbox is used ")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # list styles
