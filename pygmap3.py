@@ -175,6 +175,7 @@ parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['defa
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
 parser.add_argument('-b', '--bbox', dest='bbox', default='no', help="set a bbox, example '-b 6.5,49,8.5,51' = degrees in W,S,E,N ")
 parser.add_argument('-bn', '--bbox_name', dest='bbox_name', default='bbox_map', help="set the name of the mapfile when a bbox is used ")
+parser.add_argument('-bl', '--bbox_list', dest='bbox_list', action="store_true", help="list the previous used BBOXes ")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # list styles
@@ -234,11 +235,33 @@ set buildmap
 
 """
 
+if 'bbox' in config == False:
+  config.add_section('bbox')
+
 if args.bbox != "no":
   config.set('runtime', 'use_bbox', 'yes')
   config.set('runtime', 'buildmap', args.bbox_name)
   buildmap = args.bbox_name
   config.set('runtime', 'bbox', args.bbox)
+  
+  if args.bbox_name != "bbox_map":
+    config.set('bbox', args.bbox_name, args.bbox)
+
+elif args.bbox_name != "bbox_map" and args.bbox == "no" and config.has_option('bbox', args.bbox_name) == True:
+  config.set('runtime', 'use_bbox', 'yes')
+  config.set('runtime', 'buildmap', args.bbox_name)
+  buildmap = args.bbox_name
+  config.set('runtime', 'bbox', config['bbox'][args.bbox_name])
+  
+elif args.bbox_name != "bbox_map" and args.bbox == "no" and config.has_option('bbox', args.bbox_name) == False:
+  print()
+  printerror(" unable to build this map without a BBOX")
+  printerror(" Please add a useful BBOX definition for this map, ")
+  printerror(" use the option -b and set the area outlines in W,S,E,N")
+  printerror(" An example: pygmap3.py -bn " + args.bbox_name + " -b 7,49.5,8.4,52.1 ")
+  print()
+  quit()
+  
 else:
   config.set('runtime', 'use_bbox', 'no')  
   buildmap = os.path.splitext(os.path.basename(args.poly))[0]
@@ -246,8 +269,15 @@ else:
 
 write_config()
 
+if args.bbox_list:
+  print()
+  for key in (config['bbox']):
+    print ("  " + key + " = " + config['bbox'][key])
+  print()
+  quit()
+
 name_tag_list = args.name_tag_list
-if ('name_tag_list' in config) == False:
+if 'name_tag_list' in config == False:
   config.add_section('name_tag_list')
   config.set('name_tag_list', 'default', 'name:en,name:int,name')
   write_config()
@@ -507,6 +537,16 @@ if args.mkgmap_test:
     quit()
 
 """
+print out the rumtime section for debugging
+
+"""
+
+if args.verbose:
+  for key in (config['runtime']):
+    print ("  " + key + " = " + config['runtime'][key])
+  print()
+
+"""
 set or create the mapid
 
 """
@@ -710,6 +750,7 @@ if args.stop_after == "mkgmap":
 
 """
 zip the images, kml and log
+
 """
 
 if args.zip_img:
@@ -724,6 +765,7 @@ if os.path.exists(WORK_DIR + "o5m/bbox_map") == True:
 
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H%M')
+
 
 print()
 print()
