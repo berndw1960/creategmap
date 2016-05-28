@@ -95,7 +95,7 @@ def check():
       else:
         option_mkgmap_options = mkgmap_base_opts
 
-      os.system("java -jar " + option_mkgmap_path + " -c " +option_mkgmap_options + " --style-file=" + option_style_file + " --check-styles " + option_typ_file)
+      os.system("java -jar " + option_mkgmap_path + " -c " + option_mkgmap_options + " --style-file=" + option_style_file + " --check-styles " + option_typ_file)
   print()
 
   for i in ['styles_typ.typ', 'styles/xstyles_typ.typ', 'splitter.log', 'osmmap.tdb']:

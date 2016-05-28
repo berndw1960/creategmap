@@ -101,7 +101,12 @@ def create_cont():
     if os.path.exists(mapstyle + "/contourlines_style/lines") == False:
       printerror("No contourlines_style found")
       quit()
-
+    
+    if config['runtime']['use_bbox'] == "yes":
+      bound_opts = " -a " + config['bbox'][buildmap].replace(',',':')
+    else:
+      bound_opts = " --polygon=poly/" + buildmap + ".poly "
+      
     """
     use phyghtmap to get the raw-data from the internet,
     downloaded files will be stored for later builds
@@ -116,7 +121,7 @@ def create_cont():
               " --no-zero-contour " +
               " -s 50 " +
               " -c 500,100 " +
-              " --polygon=poly/" + buildmap + ".poly " +
+              bound_opts +
               " -o " + cltemp_dir + buildmap)
 
     """
