@@ -79,7 +79,7 @@ def kml():
   os.chdir(WORK_DIR)
 
   buildmap = config['runtime']['buildmap']
-  kml_dir = "gps_ready/zipped/kml/"
+  kml_dir = "gps_ready/zipped/" + buildmap
 
   if os.path.exists(kml_dir) == False:
     os.makedirs(kml_dir)
