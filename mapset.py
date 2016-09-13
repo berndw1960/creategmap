@@ -128,7 +128,7 @@ if args.list_mapset:
       print ("  " + key + " = " + config['mapset'][key])
   else:
     print()
-    printinfo("mapset didn't exist")
+    printinfo("mapset list didn't exist or is empty")
   print()
   quit()
 
