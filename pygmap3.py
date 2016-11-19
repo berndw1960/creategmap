@@ -179,7 +179,7 @@ parser.add_argument('-bl', '--bbox_list', dest='bbox_list', action="store_true",
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # list styles
-parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
+parser.add_argument('-l', '--list_mapstyle', action="store_true", help="list the style settings")
 
 # mapstyle handling
 parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style")
@@ -221,7 +221,7 @@ parser.add_argument('-cs', '--check_styles', action="store_true", help="test the
 parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
-parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
+parser.add_argument('-log', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
 # development
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use the svn version of mkgmap like housenumbers2")

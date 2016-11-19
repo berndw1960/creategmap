@@ -70,7 +70,7 @@ parser = argparse.ArgumentParser(
 
 ## mapsets
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
-parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
+parser.add_argument('-l', '--list_mapset', action="store_true", help="print out the mapset list")
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
 parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
 parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
@@ -82,7 +82,7 @@ parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the pr
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
 parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|contourlines|mapdata|splitter|mkgmap]')
-parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
+parser.add_argument('-log', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
 parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
