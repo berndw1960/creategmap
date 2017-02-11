@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
+#import sys
 import configparser
 import os
 import argparse
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
+def printerror(msg):
+  print("EE: " + msg)
+  
 """
 test if a file or dir can be found at a predefined place
 raise message if fails and returns 1

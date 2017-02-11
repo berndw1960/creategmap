@@ -57,13 +57,13 @@ boundaries from navmap.org
 
 """
 
-import sys
+#import sys
 import os
 import datetime
 import argparse
 import configparser
-import time
-import urllib.request
+#import time
+#import urllib.request
 import shutil
 
 ## local modules

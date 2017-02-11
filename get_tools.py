@@ -8,7 +8,7 @@ import tarfile
 import configparser
 import urllib.request
 import shutil
-import time
+#import time
 
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"

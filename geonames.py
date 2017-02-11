@@ -14,7 +14,7 @@ with this program; if not, see http://www.gnu.org/licenses/.
 
 """
 
-import sys
+#import sys
 import os
 import time
 import urllib.request

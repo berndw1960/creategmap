@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import sys
+#import sys
 import os
 import configparser
 import shutil
