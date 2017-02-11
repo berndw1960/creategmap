@@ -58,12 +58,6 @@ create the contourlines
 
 def create_cont():
 
-  if os.path.exists("contourlines/temp/") == True:
-
-    printerror("Please move " + WORK_DIR + "'contourlines/temp/' to '" + WORK_DIR + "cl_temp/'...")
-
-    quit()
-
   os.chdir(WORK_DIR)
 
   config.read('pygmap3.cfg')
@@ -107,11 +101,23 @@ def create_cont():
     else:
       bound_opts = " --polygon=poly/" + buildmap + ".poly "
       
+    if config.has_option('runtime', 'ed_user') == True:
+      ed_user_opts = " --earthdata-user=" + config['runtime']['ed_user']
+    else:
+      ed_user_opts = " " 
+      
+    if config.has_option('runtime', 'ed_user') == True:
+      ed_pwd_opts = " --earthdata-password=" + config['runtime']['ed_pwd']
+    else:
+      ed_pwd_opts = " "
+      
     """
     use phyghtmap to get the raw-data from the internet,
     downloaded files will be stored for later builds
     """
     os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
+              ed_user_opts +
+              ed_pwd_opts +
               " --start-node-id=1 " +
               " --start-way-id=1 " +
               " --max-nodes-per-tile=" + config['runtime']['maxnodes'] +

@@ -206,6 +206,8 @@ parser.add_argument('-ns', '--no_split', action="store_true", help="don't split 
 
 # contourlines
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
+parser.add_argument('-edu', '--ed_user', dest='ed_user', default='no', help="earthdata-user")
+parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default='no', help="earthdata-password")                    
 
 # image handling
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
@@ -598,15 +600,22 @@ config.read('pygmap3.cfg')
 create the contourlines
 
 """
+if args.ed_user != "no":
+  config.set('runtime', 'ed_user', args.ed_user)
+
+if args.ed_pwd != "no":      
+  config.set('runtime', 'ed_pwd', args.ed_pwd)
+ 
+write_config()  
+    
 
 if args.contourlines:
-    if os.path.exists("styles/contourlines_style") == True:
-      import contourlines
-      contourlines.create_cont()
-
-    else:
-      printwarning("dir styles/contourlines_style not found")
-
+  if os.path.exists("styles/contourlines_style") == True:
+    import contourlines
+    contourlines.create_cont()
+  else:
+    printwarning("dir styles/contourlines_style not found")
+  
 if args.stop_after == "contourlines":
   print()
   printinfo("stop after contourlines creation")
