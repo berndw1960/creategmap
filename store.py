@@ -48,7 +48,7 @@ def zip_img():
   import zipfile
 
   try:
-    import zlib
+    #import zlib
     compression = zipfile.ZIP_DEFLATED
   except:
     compression = zipfile.ZIP_STORED
