@@ -625,7 +625,6 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
 if args.old_bounds:
   config.set('runtime', 'use_old_bounds', 'yes')
-
 else:
   config.set('runtime', 'use_old_bounds', 'no')
 
