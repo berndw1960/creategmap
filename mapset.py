@@ -66,8 +66,6 @@ parser = argparse.ArgumentParser(
         description=('''\
 
           This Program create mapsets for different regions for Garmin PNA
-          pygmap3.py creates only 'one' mapset, with mapset.py, it is possible
-          to create mapsets from a list
         '''))
 
 ## mapsets
