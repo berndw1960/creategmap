@@ -4,7 +4,6 @@
 import os
 import configparser
 import shutil
-#import time
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 

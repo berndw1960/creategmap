@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-#import sys
 import os
 import configparser
 import shutil
@@ -153,6 +151,7 @@ def create_cont():
     """
     store the ready contourlines in separated dirs for later use
     """
+    
     os.chdir(WORK_DIR)
     shutil.move(cltemp_dir + "gmapsupp.img", cl_dir + buildmap + "_contourlines_gmapsupp.img")
 

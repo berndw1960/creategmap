@@ -21,7 +21,6 @@ __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
 __status__ = "RC"
 
-#import sys
 import os
 
 WORK_DIR = (os.environ['HOME'] + "/map_build/")
