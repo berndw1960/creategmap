@@ -151,13 +151,13 @@ def render():
       else:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list']['default']
 
-      bounds_zip = WORK_DIR + "bounds_"+ config['navmap']['bounds'] + ".zip"
+      bounds_zip = WORK_DIR + "bounds_"+ config['runtime']['bounds'] + ".zip"
       if os.path.exists(bounds_zip):
         option_bounds = " --bounds=" + bounds_zip
       else:
-        option_bounds = " --location-autofill=bounds,is_in,nearest "
+        option_bounds = " --location-autofill=is_in,nearest "
         
-      sea_zip = WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip"
+      sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
       if os.path.exists(sea_zip):
         option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
       else:

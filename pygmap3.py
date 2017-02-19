@@ -62,8 +62,6 @@ import os
 import datetime
 import argparse
 import configparser
-#import time
-#import urllib.request
 import shutil
 
 ## local modules
@@ -492,11 +490,11 @@ if args.no_areas_list:
 special opts to debug the raw map data
 """
 
-config.set('runtime', 'use_spec_opts', 'no')
-
 if args.spec_opts:
   config.set('runtime', 'use_spec_opts', 'yes')
-
+else:
+  config.set('runtime', 'use_spec_opts', 'no')
+  
 """
 logging
 
@@ -522,6 +520,7 @@ else:
 development version of splitter and mkgmap
 
 """
+
 config.set('runtime', 'use_mkgmap_test', 'no')
 
 if args.mkgmap_set != "no":
@@ -537,16 +536,6 @@ if args.mkgmap_test:
     printwarning("please use '-ms/--mkgmap_set' to set one version")
     print()
     quit()
-
-"""
-print out the rumtime section for debugging
-
-"""
-
-if args.verbose:
-  for key in (config['runtime']):
-    print ("  " + key + " = " + config['runtime'][key])
-  print()
 
 """
 set or create the mapid
@@ -634,7 +623,30 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 
 """
 
+if args.old_bounds:
+  config.set('runtime', 'use_old_bounds', 'yes')
+
+else:
+  config.set('runtime', 'use_old_bounds', 'no')
+
+write_config() 
+
 navmap.get_bounds()
+
+
+"""
+print out the rumtime section for debugging
+
+"""
+
+if args.verbose:
+  print()
+  config.read('pygmap3.cfg')
+  print("Entries in config section 'runtime' for debugging:")
+  print()
+  for key in (config['runtime']):
+    print ("  " + key + " = " + config['runtime'][key])
+  print()
 
 """
 --stop_after get_tools

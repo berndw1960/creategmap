@@ -38,7 +38,7 @@ def get_bounds():
       htmlcontent =  target.getresponse()
       data = htmlcontent.read()
       data = data.decode('utf8')
-      pattern = re.compile('201\d{5}')
+      pattern = re.compile('20\d{6}')
       date_new = sorted(pattern.findall(data), reverse=True)[1]
       date_pre = sorted(pattern.findall(data), reverse=True)[2]
       target.close()
@@ -49,9 +49,7 @@ def get_bounds():
       print()
       break
 
-
-
-    if config['navmap']['use_old_bounds'] == "yes":
+    if config['runtime']['use_old_bounds'] == "yes":
       date = date_pre
     else:
       date = date_new
@@ -74,7 +72,7 @@ def get_bounds():
         print()
         break
 
-    config.set('navmap', i, date)
+    config.set('runtime', i, date)
     write_config()
 
 

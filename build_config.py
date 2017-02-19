@@ -20,10 +20,7 @@ def create():
 
   config['osmtools'] = {}
   config['osmtools'] = {'check': 'yes',}
-
-  config['navmap'] = {}
-  config['navmap'] = {'use_old_bounds': 'no',}
-
+  
   config['mapid'] = {}
   config['mapid'] = {'next_mapid': '6500',}
 
@@ -34,7 +31,8 @@ def create():
                        'default': 'germany',
                        'bbox': '6.5,49,8.5,51',
                        'ramsize': '-Xmx4G',
-                       'use_mkgmap_test': ' no',}
+                       'use_mkgmap_test': ' no',
+                       'use_old_bounds': ' no',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
