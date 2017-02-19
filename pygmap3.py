@@ -769,7 +769,7 @@ if args.stop_after == "mkgmap":
   quit()
 
 """
-zip the images, kml and log
+zip the images, save the kml and log
 
 """
 
