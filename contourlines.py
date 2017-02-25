@@ -63,7 +63,7 @@ def create_cont():
   buildmap = config['runtime']['buildmap']
   mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
-  cl_dir = "contourlines/" + buildmap + "/"
+  cl_dir = "gps_ready/zipped/" + buildmap + "/"
   cltemp_dir = "cl_temp/"
 
   for dir in [cltemp_dir, cl_dir]:
@@ -78,9 +78,9 @@ def create_cont():
       except:
         print('Could not delete', file, 'in', path)
 
-  print("searching for " + cl_dir + buildmap + "_contourlines_gmapsupp.img")
+  print("searching for " + buildmap + "_contourlines_gmapsupp.img.zip")
 
-  if os.path.exists(cl_dir + buildmap + "_contourlines_gmapsupp.img") == False:
+  if os.path.exists(cl_dir + buildmap + "_contourlines_gmapsupp.img.zip") == False:
     hint = "Install phyghtmap to create contourlines if needed"
     checkprg("phyghtmap", hint)
 
@@ -147,13 +147,25 @@ def create_cont():
               " --draw-priority=" + config['contourlines']['draw-priority'] +
               " --gmapsupp " +
               " *.o5m ")
-
-    """
-    store the ready contourlines in separated dirs for later use
-    """
     
+    import zipfile
+    
+    try:
+      compression = zipfile.ZIP_DEFLATED
+    except:
+      compression = zipfile.ZIP_STORED
+      
+    img = "gmapsupp.img"  
+    zip_img = img + ".zip"
+    my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
+    my_zip_img.write(img, compress_type=compression)
+    my_zip_img.close()
+
+    if os.path.exists(zip_img) == True:
+      os.remove(img)
+
     os.chdir(WORK_DIR)
-    shutil.move(cltemp_dir + "gmapsupp.img", cl_dir + buildmap + "_contourlines_gmapsupp.img")
+    shutil.move(cltemp_dir + "gmapsupp.img.zip", cl_dir + buildmap + "_contourlines_gmapsupp.img.zip")
 
   else:
     printinfo("...found")
