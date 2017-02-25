@@ -47,7 +47,7 @@ def split():
 
   BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
 
-  sea_zip = WORK_DIR + "sea_"+ config['navmap']['sea'] + ".zip"
+  sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
   if os.path.exists(sea_zip):
     option_sea = " --precomp-sea=" + sea_zip
   else:

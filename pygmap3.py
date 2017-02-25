@@ -171,7 +171,11 @@ parser = argparse.ArgumentParser(
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
-parser.add_argument('-b', '--bbox', dest='bbox', default='no', help="set a bbox from the degrees in W,S,E,N, example '-b 6.5,49,8.5,51' or '-b \"'-18.5',27.4,'-13.1',29.5\"' with negative values ")
+parser.add_argument('-b', '--bbox', dest='bbox', default='no', help="set a bbox from the degrees in W,S,E,N, " + 
+                                                                      "example '-b 6.5,49,8.5,51' or " +
+                                                                      "'-b \"'-18.5',27.4,'-13.1',29.5\"' with negative values, " +
+                                                                      "see http://tools.geofabrik.de/calc/ " + 
+                                                                      "to find the correct values for your map" )
 parser.add_argument('-bn', '--bbox_name', dest='bbox_name', default='bbox_map', help="set the name of the mapfile when a bbox is used ")
 parser.add_argument('-bl', '--bbox_list', dest='bbox_list', action="store_true", help="list the previous used BBOXes ")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
