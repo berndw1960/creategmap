@@ -32,7 +32,9 @@ def create():
                        'bbox': '6.5,49,8.5,51',
                        'ramsize': '-Xmx4G',
                        'use_mkgmap_test': ' no',
-                       'use_old_bounds': ' no',}
+                       'use_old_bounds': ' no',
+                       'bounds': '',
+                       'sea': '',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
