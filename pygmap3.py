@@ -69,6 +69,8 @@ import build_config
 import get_tools
 import navmap
 import geonames
+import contourlines
+import mapdata
 import splitter
 import mkgmap
 import store
@@ -233,7 +235,28 @@ parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default='no', help
 
 args = parser.parse_args()
 
-
+# config options
+def print_config():
+  if args.print_config:
+    print()
+    printinfo("this are the sections of pygmap3.cfg: ")
+    print()
+    sections = config.sections()
+    for i in (sections):
+      print("  " + (i))
+    print()
+    printinfo("to get more infos about a section use")
+    print("    pygmap3.py -ps $SECTION   ")
+        
+def print_section():
+  if args.print_section != "no":
+    print()
+    printinfo("this is the " + args.print_section +  " section of pygmap3.cfg: ")
+    print()
+    for key in (config[args.print_section]):
+      print ("  " + key + " = " + config[args.print_section][key])
+    print()
+    
 """
 set buildmap
 
@@ -295,28 +318,6 @@ if config.has_option('name_tag_list', buildmap) == False:
   printwarning("using the default 'name:en,name:int,name'")
   print()
 
-# config options
-
-if args.print_config:
-  print()
-  printinfo("this are the sections of pygmap3.cfg: ")
-  print()
-  sections = config.sections()
-  for i in (sections):
-    print("  " + (i))
-  print()
-  printinfo("to get more infos about a section use")
-  print("    pygmap3.py -ps $SECTION   ")
-  quit()
-
-if args.print_section != "no":
-  print()
-  printinfo("this is the " + args.print_section +  " section of pygmap3.cfg: ")
-  print()
-  for key in (config[args.print_section]):
-    print ("  " + key + " = " + config[args.print_section][key])
-  print()
-  quit()
 
 # map build options
 
@@ -463,8 +464,6 @@ if args.check_styles:
   mkgmap.check()
   quit()
 
-# runtime options
-
 """
 ramsize for java
 """
@@ -588,33 +587,6 @@ get_tools.from_mkgmap_org()
 
 config.read('pygmap3.cfg')
 
-
-"""
-create the contourlines
-
-"""
-if args.ed_user != "no":
-  config.set('runtime', 'ed_user', args.ed_user)
-
-if args.ed_pwd != "no":      
-  config.set('runtime', 'ed_pwd', args.ed_pwd)
- 
-write_config()  
-    
-
-if args.contourlines:
-  if os.path.exists("styles/contourlines_style") == True:
-    import contourlines
-    contourlines.create_cont()
-  else:
-    printwarning("dir styles/contourlines_style not found")
-  
-if args.stop_after == "contourlines":
-  print()
-  printinfo("stop after contourlines creation")
-  print()
-  quit()
-
 """
 get the geonames file
 
@@ -636,31 +608,48 @@ write_config()
 
 navmap.get_bounds()
 
-
-"""
-print out the rumtime section for debugging
-
-"""
-
-if args.verbose:
-  print()
-  config.read('pygmap3.cfg')
-  print("Entries in config section 'runtime' for debugging:")
-  print()
-  for key in (config['runtime']):
-    print ("  " + key + " = " + config['runtime'][key])
-  print()
-
 """
 --stop_after get_tools
 
 """
-
+config.read('pygmap3.cfg')
 if args.stop_after == "get_tools":
+  print_config()
+  print_section()
   print()
   printinfo("needed programs found and files successfully loaded")
   print()
   quit()
+
+
+"""
+create the contourlines
+
+"""
+if args.ed_user != "no":
+  config.set('runtime', 'ed_user', args.ed_user)
+
+if args.ed_pwd != "no":      
+  config.set('runtime', 'ed_pwd', args.ed_pwd)
+ 
+write_config()  
+    
+
+if args.contourlines:
+  if os.path.exists("styles/contourlines_style") == True:
+    contourlines.create_cont()
+  else:
+    printwarning("dir styles/contourlines_style not found")
+
+config.read('pygmap3.cfg')  
+if args.stop_after == "contourlines":
+  print_config()
+  print_section()
+  print()
+  printinfo("stop after contourlines creation")
+  print()
+  quit()
+
 
 """
 mapdata to use
@@ -672,8 +661,7 @@ if --keep_data is set, then use the old data
 os.chdir(WORK_DIR)
 
 if args.keep_data == False:
-  import mapdata
-
+  
   if os.path.exists("o5m/" + buildmap + ".o5m") == False:
     mapdata.create_o5m()
   
@@ -695,15 +683,15 @@ if args.keep_data == False:
   
   mapdata.update_o5m()
 
-os.chdir(WORK_DIR)
-config.read('pygmap3.cfg')
-
 """
 --stop_after mapdata
 
 """
 
+config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
+  print_config()
+  print_section()
   print()
   printinfo(" Mapdata for " + buildmap + " " + config['time_stamp'][buildmap] + " successful extracted/updated")
   print()
@@ -743,7 +731,10 @@ else:
 
 """
 
+config.read('pygmap3.cfg')
 if args.stop_after == "splitter":
+  print_config()
+  print_section()
   print()
   printinfo(buildmap + ".o5m successful splitted")
   print()
@@ -767,6 +758,9 @@ if config['runtime']['logging'] == "yes":
 """
 
 if args.stop_after == "mkgmap":
+  config.read('pygmap3.cfg')
+  print_config()
+  print_section()
   print()
   printinfo(" Mapset for " + buildmap + " successful created")
   print()
@@ -790,6 +784,9 @@ if os.path.exists(WORK_DIR + "o5m/bbox_map") == True:
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H%M')
 
+config.read('pygmap3.cfg')
+print_config()
+print_config()
 
 print()
 print()
