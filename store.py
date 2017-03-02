@@ -67,7 +67,9 @@ def zip_img():
         os.remove(zip_dir + "/" + zip_img)
 
       shutil.move(zip_img, zip_dir)
-
+      
+      os.remove(unzip_dir + "/" + img)
+      
 def kml():
 
   os.chdir(WORK_DIR)
