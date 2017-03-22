@@ -60,6 +60,8 @@ def typ_txt_test():
 
     option_style_file = " --style-file=" + WORK_DIR + "styles/" + layer + "_style "
 
+  
+
 """
 style check
 
@@ -82,18 +84,25 @@ def check():
       print()
       printinfo("style_file = " + option_style_file)
       print()
+      
       mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
-      mkgmap_base_opts = WORK_DIR + "styles/options "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
-
+      mkgmap_base_opts = WORK_DIR + "styles/options "
+      mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
+      
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
-
+        
       elif os.path.exists(mkgmap_style_opts):
         option_mkgmap_options =  mkgmap_style_opts
 
       else:
         option_mkgmap_options = mkgmap_base_opts
+        
+      if config['runtime']['use_spec_opts'] == "yes":
+        option_mkgmap_spec_opts = mkgmap_spec_opts
+      else: 
+        option_mkgmap_spec_opts = " "
 
       os.system("java -jar " + option_mkgmap_path + " -c " + option_mkgmap_options + " --style-file=" + option_style_file + " --check-styles " + option_typ_file)
   print()
@@ -162,7 +171,6 @@ def render():
         option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
       else:
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
-
       mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
@@ -170,7 +178,7 @@ def render():
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
-
+         
       elif os.path.exists(mkgmap_style_opts):
         option_mkgmap_options =  mkgmap_style_opts
 
@@ -181,7 +189,7 @@ def render():
         option_mkgmap_spec_opts = mkgmap_spec_opts
       else: 
         option_mkgmap_spec_opts = " "
-
+      
       typ_txt_test()
 
       os.chdir(layer)
