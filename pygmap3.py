@@ -198,9 +198,6 @@ parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the pr
 parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
 
-# config
-parser.add_argument('-pc', '--print_config', action="store_true", help="printout the config sections  and exit")
-parser.add_argument('-ps', '--print_section', dest='print_section', default='no', help="printout a config section and exit")
 
 # splitter options
 parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't use areas.list to split mapdata")
@@ -234,29 +231,7 @@ parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use the s
 parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default='no', help="set the svn version of mkgmap like housenumbers2")
 
 args = parser.parse_args()
-
-# config options
-def print_config():
-  if args.print_config:
-    print()
-    printinfo("this are the sections of pygmap3.cfg: ")
-    print()
-    sections = config.sections()
-    for i in (sections):
-      print("  " + (i))
-    print()
-    printinfo("to get more infos about a section use")
-    print("    pygmap3.py -ps $SECTION   ")
-        
-def print_section():
-  if args.print_section != "no":
-    print()
-    printinfo("this is the " + args.print_section +  " section of pygmap3.cfg: ")
-    print()
-    for key in (config[args.print_section]):
-      print ("  " + key + " = " + config[args.print_section][key])
-    print()
-    
+ 
 """
 set buildmap
 
@@ -449,7 +424,7 @@ if args.set_default != "no":
   if os.path.exists("poly/" + args.set_default + ".poly") == False:
     print()
     printerror((WORK_DIR) + "poly/" + args.set_default + ".poly not found... ")
-    printerror("please create or download "+ args.set_default + ".poly")
+    printerror("please create or download " + args.set_default + ".poly")
     print()
     quit()
 
@@ -458,7 +433,7 @@ if args.set_default != "no":
 
   write_config()
   quit()
-
+ 
 if args.check_styles:
 
   mkgmap.check()
@@ -614,8 +589,6 @@ navmap.get_bounds()
 """
 config.read('pygmap3.cfg')
 if args.stop_after == "get_tools":
-  print_config()
-  print_section()
   print()
   printinfo("needed programs found and files successfully loaded")
   print()
@@ -643,8 +616,6 @@ if args.contourlines:
 
 config.read('pygmap3.cfg')  
 if args.stop_after == "contourlines":
-  print_config()
-  print_section()
   print()
   printinfo("stop after contourlines creation")
   print()
@@ -690,8 +661,6 @@ if args.keep_data == False:
 
 config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
-  print_config()
-  print_section()
   print()
   printinfo(" Mapdata for " + buildmap + " " + config['time_stamp'][buildmap] + " successful extracted/updated")
   print()
@@ -733,8 +702,6 @@ else:
 
 config.read('pygmap3.cfg')
 if args.stop_after == "splitter":
-  print_config()
-  print_section()
   print()
   printinfo(buildmap + ".o5m successful splitted")
   print()
@@ -759,8 +726,6 @@ if config['runtime']['logging'] == "yes":
 
 if args.stop_after == "mkgmap":
   config.read('pygmap3.cfg')
-  print_config()
-  print_section()
   print()
   printinfo(" Mapset for " + buildmap + " successful created")
   print()
@@ -785,8 +750,6 @@ today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H%M')
 
 config.read('pygmap3.cfg')
-print_config()
-print_config()
 
 print()
 print()
