@@ -88,7 +88,6 @@ def check():
       mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
-      mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
@@ -98,11 +97,6 @@ def check():
 
       else:
         option_mkgmap_options = mkgmap_base_opts
-        
-      if config['runtime']['use_spec_opts'] == "yes":
-        option_mkgmap_spec_opts = mkgmap_spec_opts
-      else: 
-        option_mkgmap_spec_opts = " "
 
       os.system("java -jar " + option_mkgmap_path + " -c " + option_mkgmap_options + " --style-file=" + option_style_file + " --check-styles " + option_typ_file)
   print()
@@ -175,6 +169,7 @@ def render():
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
       mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
+      mkgmap_index_opts = WORK_DIR + "roadNameConfig.txt"
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
@@ -189,7 +184,12 @@ def render():
         option_mkgmap_spec_opts = mkgmap_spec_opts
       else: 
         option_mkgmap_spec_opts = " "
-      
+        
+      if os.path.exists(mkgmap_index_opts):
+        option_mkgmap_index_opts = " --road-name-config=" + WORK_DIR + "roadNameConfig.txt "
+      else: 
+        option_mkgmap_index_opts = " "
+        
       typ_txt_test()
 
       os.chdir(layer)
@@ -217,6 +217,7 @@ def render():
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
                         " -c " + option_mkgmap_options +
                         option_mkgmap_spec_opts +
+                        option_mkgmap_index_opts +
                         " --gmapsupp " +
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)
