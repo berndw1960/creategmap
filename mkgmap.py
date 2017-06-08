@@ -26,14 +26,11 @@ def typ_txt_test():
   if (layer == "defaultmap"):
     option_typ_file = " "
     option_style_file = "--style-file=" + WORK_DIR + config['runtime']['mkgmap'] + "/examples/styles/default/ "
-
   else:
     if os.path.exists(WORK_DIR + "styles/" + layer + "_typ.typ") == True:
       option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.typ"
-      
     elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.txt") == True:
       option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.txt"
-      
     elif os.path.exists(WORK_DIR + "styles/styles_typ.typ") == True and os.path.exists(WORK_DIR + "styles/styles_typ.txt") == True:
       m1 = os.path.getmtime(WORK_DIR + "styles/styles_typ.typ")
       m2 = os.path.getmtime(WORK_DIR + "styles/styles_typ.txt")
@@ -46,13 +43,10 @@ def typ_txt_test():
       print()
       printinfo("typ_file   = " + option_typ_file)
       print()
-
     elif os.path.exists(WORK_DIR + "styles/styles_typ.typ") == True:
       option_typ_file = " " + WORK_DIR + "styles/styles_typ.typ"
-
     elif os.path.exists(WORK_DIR + "styles/styles_typ.txt") == True:
       option_typ_file = " " + WORK_DIR + "styles/styles_typ.txt"
-
     else:
       print()
       printwarning(layer + " build without a typ_file")
@@ -91,10 +85,8 @@ def check():
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
-        
       elif os.path.exists(mkgmap_style_opts):
         option_mkgmap_options =  mkgmap_style_opts
-
       else:
         option_mkgmap_options = mkgmap_base_opts
 
@@ -171,28 +163,29 @@ def render():
         option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
       else:
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+
       mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
-      mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
-      mkgmap_index_opts = WORK_DIR + config['runtime']['mkgmap'] +  "/examples/roadNameConfig.txt"
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
-         
       elif os.path.exists(mkgmap_style_opts):
         option_mkgmap_options =  mkgmap_style_opts
-
       else:
         option_mkgmap_options = mkgmap_base_opts
+
+      mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
         
       if config['runtime']['use_spec_opts'] == "yes":
         option_mkgmap_spec_opts = mkgmap_spec_opts
       else: 
         option_mkgmap_spec_opts = " "
-        
-      if os.path.exists(mkgmap_index_opts):
-        option_mkgmap_index_opts = " --road-name-config=" + mkgmap_index_opts
+
+      mkgmap_index_file = WORK_DIR + config['runtime']['mkgmap'] +  "/examples/roadNameConfig.txt"
+
+      if os.path.exists(mkgmap_index_file):
+        option_mkgmap_index_opts = " --road-name-config=" + mkgmap_index_file
       else: 
         option_mkgmap_index_opts = " "
         
