@@ -191,6 +191,7 @@ parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="e
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style")
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 parser.add_argument('-dm', '--no_map_styles', action="store_true", help="disable all map_styles")
+parser.add_argument('-u', '--use_style', dest='use_style', default='no', help="use only one style")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
@@ -419,6 +420,16 @@ if args.rm_style != "no":
   printinfo(args.rm_style + " removed from map_styles list")
   print()
   quit()
+
+if args.use_style != "no":
+  print()
+  for key in (config['map_styles']):
+    config.set('map_styles', key, 'no')
+  config.set('map_styles', args.use_style, 'yes')
+  write_config()
+  print()
+  printinfo("create a map with " + args.use_style + " style only")
+  print()
 
 if args.set_default != "no":
   if os.path.exists("poly/" + args.set_default + ".poly") == False:
