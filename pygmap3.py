@@ -246,6 +246,7 @@ if args.bbox != "no":
   config.set('runtime', 'buildmap', args.bbox_name)
   buildmap = args.bbox_name
   config.set('runtime', 'bbox', args.bbox)
+  config.set('runtime', 'buildmap', args.bbox)
   
   if args.bbox_name != "bbox_map":
     config.set('bbox', args.bbox_name, args.bbox)
