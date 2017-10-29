@@ -72,7 +72,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
 parser.add_argument('-l', '--list_mapset', action="store_true", help="print out the mapset list")
 parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
-parser.add_argument('-d', '--del_mapset', action="store_true", help="deletes the whole list")
+parser.add_argument('-e', '--enable_mapset', action="store_true", help="enable the whole list")
+parser.add_argument('-d', '--disable_mapset', action="store_true", help="disable the whole list")
 parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to fast build a mapset as new default")
 parser.add_argument('-ba', '--break_after', dest='break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
@@ -100,24 +101,27 @@ if args.add_mapset != "no":
     
   add_mapset = os.path.splitext(os.path.basename(args.add_mapset))[0]
   
-  if config.has_option('mapset', add_mapset) == False:
-    if os.path.exists("poly/" + add_mapset + ".poly") == False:
+  if config.has_option('mapset', args.add_mapset) == False:
+    if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
       print()
       printerror(WORK_DIR + "poly/" + add_mapset + ".poly not found... ")
       print("please create or download "+ add_mapset + ".poly")
+      print()
       quit()
-    config.set('mapset', add_mapset, 'yes')
-    write_config()
+  config.set('mapset', args.add_mapset, 'yes')
+  write_config()
   print()
-  printinfo(args.add_mapset + " added to mapset list")
+  printinfo(args.add_mapset + " added to or enabled on list")
+  print()
   quit()
 
 if args.rm_mapset != "no":
   if config.has_section('mapset') == True:
-    config.remove_option('mapset', args.rm_mapset)
+    config.set('mapset', args.rm_mapset, 'no')
     write_config()
   print()
-  printwarning(args.rm_mapset + " removed from mapset list")
+  printwarning(args.rm_mapset + " disabled on list")
+  print()
   quit()
 
 if args.list_mapset:
@@ -132,13 +136,30 @@ if args.list_mapset:
   print()
   quit()
 
-if args.del_mapset:
+if args.enable_mapset:
   if config.has_section('mapset') == True:
-    config.remove_section('mapset')
-    write_config()
-  printwarning("mapset list deleted")
+    for key in (config['mapset']):
+      config.set('mapset', key, 'yes')
+  else:
+    print()
+    printerror(" mapset list not found!")
+    printerror(" please create one with 'mapset.py -a dach'")
+    print()
+    quit()
+  write_config()
+  print()
+  printinfo(" all mapsets enabled on list")
+  print()
   quit()
-
+  
+if args.disable_mapset:
+  if config.has_section('mapset') == True:
+    for key in (config['mapset']):
+      config.set('mapset', key, 'no')
+  write_config()
+  print()
+  printwarning(" all mapsets disabled on list")
+  quit()
 
 if args.set_default != "no":
   if os.path.exists("poly/" + args.set_default + ".poly") == False:
@@ -150,7 +171,7 @@ if args.set_default != "no":
 
   config.set('runtime', 'default', args.set_default)
   print(args.set_default + " set as new default region")
-
+  print()
   write_config()
   quit()
 
