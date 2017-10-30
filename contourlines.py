@@ -155,7 +155,8 @@ def create_cont():
     except:
       compression = zipfile.ZIP_STORED
       
-    img = "gmapsupp.img"  
+    img = buildmap + "_contourlines_gmapsupp.img"
+    shutil.move("gmapsupp.img", img)
     zip_img = img + ".zip"
     my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
     my_zip_img.write(img, compress_type=compression)
@@ -165,7 +166,7 @@ def create_cont():
       os.remove(img)
 
     os.chdir(WORK_DIR)
-    shutil.move(cltemp_dir + "gmapsupp.img.zip", cl_dir + buildmap + "_contourlines_gmapsupp.img.zip")
+    shutil.move(cltemp_dir + buildmap + "_contourlines_gmapsupp.img.zip", cl_dir + buildmap + "_contourlines_gmapsupp.img.zip")
 
   else:
     printinfo("...found")
