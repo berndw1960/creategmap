@@ -220,7 +220,7 @@ def render():
                         " --family-name=" + config[layer]['family-name'] +
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
-                       " -c " + option_mkgmap_options +
+                        " -c " + option_mkgmap_options +
                         option_mkgmap_spec_opts +
                         option_mkgmap_index_opts +
                         " --gmapsupp " +
