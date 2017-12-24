@@ -146,6 +146,10 @@ def render():
         option_mkgmap_logging = " -Dlog.config=" + WORK_DIR + "mkgmap_log.props "
       else:
         option_mkgmap_logging = " "
+      
+      if config['runtime']['mkgmap_test'] == "dem-tdb":
+        option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
+        option_mkgmap_dem_dists = " --x-dem-dists='5520,16560,44176,88368' "
 
       if config.has_option('name_tag_list', buildmap) == True:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list'][buildmap]
@@ -208,13 +212,15 @@ def render():
                         option_sea +
                         option_style_file +
                         option_name_tag_list +
+                        option_mkgmap_dem +
+                        option_mkgmap_dem_dists +
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
                         " --family-id=" + config[layer]['family-id'] +
                         " --product-id=" + config[layer]['product-id'] +
                         " --family-name=" + config[layer]['family-name'] +
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
-                        " -c " + option_mkgmap_options +
+                       " -c " + option_mkgmap_options +
                         option_mkgmap_spec_opts +
                         option_mkgmap_index_opts +
                         " --gmapsupp " +

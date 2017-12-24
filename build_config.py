@@ -25,7 +25,7 @@ def create():
   config['mapid'] = {'next_mapid': '6500',}
 
   config['runtime'] = {}
-  config['runtime'] = {'maxnodes': '1600000',
+  config['runtime'] = {'maxnodes': '512000',
                        'logging': 'no',
                        'verbose': 'no',
                        'default': 'germany',
@@ -104,7 +104,11 @@ def create():
                      'family-name': 'Fixme',
                      'draw-priority': '16',
                      'mapid_ext': '7001',}
-
+  
+  
+  config['dem-tdb'] = {}
+  config['dem-tdb'] = {'dem-dists': '5520,16560,44176,88368',}
+  
 
   config['contourlines'] = {}
   config['contourlines'] = {'draw-priority': '16',}
