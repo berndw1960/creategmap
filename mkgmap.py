@@ -150,7 +150,9 @@ def render():
       if config['runtime']['mkgmap_test'] == "dem-tdb":
         option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
         option_mkgmap_dem_dists = " --x-dem-dists='5520,16560,44176,88368' "
-
+      else:
+        option_mkgmap_dem = " "
+        option_mkgmap_dem_dists = " "
       if config.has_option('name_tag_list', buildmap) == True:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list'][buildmap]
       else:
