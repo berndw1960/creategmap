@@ -66,6 +66,9 @@ def create_cont():
   if config['runtime']['mkgmap_test'] == "dem-tdb":
     option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
     option_mkgmap_dem_dists = " --x-dem-dists='5520,16560,44176,88368' "
+  else:
+    option_mkgmap_dem = "" 
+    option_mkgmap_dem_dists = ""
 
   cl_dir = "gps_ready/zipped/" + buildmap + "/"
   cltemp_dir = "cl_temp/"
@@ -143,8 +146,8 @@ def create_cont():
               " -jar " + mkgmap_path +
               " --keep-going " +
               " --max-jobs " +
-							option_mkgmap_dem +
-							option_mkgmap_dem_dists +
+              option_mkgmap_dem +
+              option_mkgmap_dem_dists +
               " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
               " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
               " --mapname=" + config['mapid'][ buildmap] + "8001" +
