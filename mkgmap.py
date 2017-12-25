@@ -156,6 +156,9 @@ def render():
         else:
           option_mkgmap_dem = " "
           option_mkgmap_dem_dists = " "
+      else:
+        option_mkgmap_dem = " "
+        option_mkgmap_dem_dists = " "
         
       if config['runtime']['installer'] == "yes":
         option_mkgmap_installer = " --nsis --tdbfile "

@@ -63,12 +63,16 @@ def create_cont():
   buildmap = config['runtime']['buildmap']
   mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
-  if config['runtime']['mkgmap_test'] == "dem-tdb":
-    option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
-    option_mkgmap_dem_dists = " --x-dem-dists='5520,16560,44176,88368' "
+  if config['runtime']['use_mkgmap_test'] == "yes":
+    if config['runtime']['mkgmap_test'] == "dem-tdb":
+      option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
+      option_mkgmap_dem_dists = " --x-dem-dists=3314,6628,24512,53024,106048,212096 "
+    else:
+      option_mkgmap_dem = " "
+      option_mkgmap_dem_dists = " "
   else:
-    option_mkgmap_dem = "" 
-    option_mkgmap_dem_dists = ""
+    option_mkgmap_dem = " "
+    option_mkgmap_dem_dists = " "
 
   cl_dir = "gps_ready/zipped/" + buildmap + "/"
   cltemp_dir = "cl_temp/"
