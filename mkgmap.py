@@ -54,7 +54,6 @@ def typ_txt_test():
 
     option_style_file = " --style-file=" + WORK_DIR + "styles/" + layer + "_style "
 
-  
 
 """
 style check
@@ -147,12 +146,22 @@ def render():
       else:
         option_mkgmap_logging = " "
       
-      if config['runtime']['mkgmap_test'] == "dem-tdb":
-        option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
-        option_mkgmap_dem_dists = " --x-dem-dists='5520,16560,44176,88368' "
+      """
+      options to use some test branches of mkgmap
+      """
+      if config['runtime']['use_mkgmap_test'] == "yes":
+        if config['runtime']['mkgmap_test'] == "dem-tdb":
+          option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
+          option_mkgmap_dem_dists = " --x-dem-dists=3314,6628,24512,53024,106048,212096 "
+        else:
+          option_mkgmap_dem = " "
+          option_mkgmap_dem_dists = " "
+        
+      if config['runtime']['installer'] == "yes":
+        option_mkgmap_installer = " --nsis --tdbfile "
       else:
-        option_mkgmap_dem = " "
-        option_mkgmap_dem_dists = " "
+        option_mkgmap_installer = " "
+        
       if config.has_option('name_tag_list', buildmap) == True:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list'][buildmap]
       else:
@@ -225,6 +234,7 @@ def render():
                         " -c " + option_mkgmap_options +
                         option_mkgmap_spec_opts +
                         option_mkgmap_index_opts +
+                        option_mkgmap_installer +
                         " --gmapsupp " +
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)

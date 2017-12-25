@@ -205,6 +205,7 @@ parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't 
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
 # mkgmap options
+parser.add_argument('-i', '--installer', action="store_true", help="create mapsource installer")
 
 # contourlines
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
@@ -606,7 +607,15 @@ if args.stop_after == "get_tools":
   print()
   quit()
 
+"""
+create an installer for mapsource
 
+"""
+if args.installer:
+  config.set('runtime', 'installer', "yes")
+else:
+  config.set('runtime', 'installer', "no")
+  
 """
 create the contourlines
 
