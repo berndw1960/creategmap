@@ -86,7 +86,7 @@ def create_o5m():
     print("    " + buildmap + ".osm.pbf")    
     print("    " + buildmap + ".o5m")
     print()
-    print("    it will be used the next time when you start pygmap3.py -b " + buildmap)  
+    print("    it will be used the next time when you start pygmap3.py -p " + buildmap)  
     print()
     printinfo("Solution 2:")
     print()

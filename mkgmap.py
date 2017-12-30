@@ -149,14 +149,18 @@ def render():
       """
       options to use some test branches of mkgmap
       """
+      
+      option_mkgmap_dem = " "
+      option_mkgmap_dem_dists = " "
+      option_mkgmap_poly = " "
+        
       if config['runtime']['use_mkgmap_test'] == "yes":
         if config['runtime']['mkgmap_test'] == "dem-tdb":
-          option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
-          option_mkgmap_dem_dists = " --x-dem-dists=3314,6628,24512,53024,106048,212096 "
-        else:
-          option_mkgmap_dem = " "
-          option_mkgmap_dem_dists = " "
-        
+          if layer == "basemap" or layer == "bikemap" or layer == "carmap":
+            option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
+            option_mkgmap_dem_dists = " --x-dem-dists=3314,6628,24512,53024,106048,212096 "
+            option_mkgmap_poly = " --x-dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "
+     
       if config['runtime']['installer'] == "yes":
         option_mkgmap_installer = " --nsis --tdbfile "
       else:
@@ -197,7 +201,7 @@ def render():
       else: 
         option_mkgmap_spec_opts = " "
 
-      mkgmap_index_file = WORK_DIR + config['runtime']['mkgmap'] +  "/examples/roadNameConfig.txt"
+      mkgmap_index_file = WORK_DIR + config['runtime']['mkgmap'] + "/examples/roadNameConfig.txt"
 
       if os.path.exists(mkgmap_index_file):
         option_mkgmap_index_opts = " --road-name-config=" + mkgmap_index_file
@@ -225,6 +229,7 @@ def render():
                         option_name_tag_list +
                         option_mkgmap_dem +
                         option_mkgmap_dem_dists +
+                        option_mkgmap_poly +
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
                         " --family-id=" + config[layer]['family-id'] +
                         " --product-id=" + config[layer]['product-id'] +
