@@ -78,7 +78,7 @@ def check():
       printinfo("style_file = " + option_style_file)
       print()
       
-      mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
+      mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
       
@@ -133,7 +133,7 @@ def render():
               os.remove(os.path.join(path, file))
             except:
               print()
-              print('Could not delete', file, 'in', path)
+              print('Could not delete ', file, ' in ', path)
 
       """
       mkgmap-options
@@ -157,9 +157,9 @@ def render():
       if config['runtime']['use_mkgmap_test'] == "yes":
         if config['runtime']['mkgmap_test'] == "dem-tdb":
           if layer == "basemap" or layer == "bikemap" or layer == "carmap":
-            option_mkgmap_dem = " --x-dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
-            option_mkgmap_dem_dists = " --x-dem-dists=3314,6628,24512,53024,106048,212096 "
-            option_mkgmap_poly = " --x-dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "
+            option_mkgmap_dem = " --dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
+            option_mkgmap_dem_dists = " --dem-dists=3314,6628,24512,53024,106048,212096 "
+            option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "
      
       if config['runtime']['installer'] == "yes":
         option_mkgmap_installer = " --nsis --tdbfile "
@@ -183,7 +183,7 @@ def render():
       else:
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
-      mkgmap_defaultmap_opts = " --x-split-name-index --route --housenumbers --index --nsis "
+      mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
       mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
       
