@@ -97,8 +97,19 @@ def check():
                       " --check-styles " + 
                       option_typ_file)
   print()
-
-  for i in ['styles_typ.typ', 'styles/xstyles_typ.typ', 'splitter.log', 'osmmap.tdb']:
+  
+  os.chdir(WORK_DIR)
+  
+  for i in ['styles_typ.typ', 
+            'styles/xstyles_typ.typ', 
+            'splitter.log', 
+            'osmmap.tdb',
+            'osmmap.img',
+            'osmmap_mdr.img',
+            'osmmap.mdx',
+            'basemap_typ.typ',
+            'bikemap_typ.typ',
+            'carmap_typ.typ',]:
     if os.path.exists(i) == True:
       os.remove(i)
 
