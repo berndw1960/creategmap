@@ -199,7 +199,6 @@ parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the pr
 parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
 
-
 # splitter options
 parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't use areas.list to split mapdata")
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
@@ -207,7 +206,8 @@ parser.add_argument('-ns', '--no_split', action="store_true", help="don't split 
 # mkgmap options
 parser.add_argument('-i', '--installer', action="store_true", help="create mapsource installer")
 
-# contourlines
+# contourlines and hillshading
+parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 parser.add_argument('-edu', '--ed_user', dest='ed_user', default='no', help="earthdata-user")
 parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default='no', help="earthdata-password")                    
@@ -617,25 +617,42 @@ else:
   config.set('runtime', 'installer', "no")
   
 """
-create the contourlines
+create the contourlines and hillshading
 
 """
+
+if args.tdb:
+  demdir = WORK_DIR + "hgt/COPERNICUS"
+  if os.path.exists(demdir) == True:
+    config.set('dem-tdb', 'demdir', "COPERNICUS")
+    config.set('runtime', 'tdb', "yes")
+    
+  hgtdir1 = WORK_DIR + "hgt/VIEW1"
+  if os.path.exists(hgtdir1) == True:
+    config.set('dem-tdb', 'hgtdir1', "VIEW1")
+    config.set('runtime', 'tdb', "yes")
+    
+  hgtdir3 = WORK_DIR + "hgt/VIEW3"
+  if os.path.exists(hgtdir3) == True:
+    config.set('dem-tdb', 'hgtdir3', "VIEW3")
+    config.set('runtime', 'tdb', "yes")
+
 if args.ed_user != "no":
   config.set('runtime', 'ed_user', args.ed_user)
 
 if args.ed_pwd != "no":      
   config.set('runtime', 'ed_pwd', args.ed_pwd)
- 
-write_config()  
-    
+  
+write_config()
 
 if args.contourlines:
   if os.path.exists("styles/contourlines_style") == True:
     contourlines.create_cont()
   else:
     printwarning("dir styles/contourlines_style not found")
+ 
+config.read('pygmap3.cfg')
 
-config.read('pygmap3.cfg')  
 if args.stop_after == "contourlines":
   print()
   printinfo("stop after contourlines creation")

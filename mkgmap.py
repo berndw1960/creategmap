@@ -158,20 +158,44 @@ def render():
         option_mkgmap_logging = " "
       
       """
-      options to use some test branches of mkgmap
+      options to create hillshading
+      
       """
       
       option_mkgmap_dem = " "
       option_mkgmap_dem_dists = " "
       option_mkgmap_poly = " "
+      
+      if config['runtime']['tdb'] == "yes":
         
-      if config['runtime']['use_mkgmap_test'] == "yes":
-        if config['runtime']['mkgmap_test'] == "dem-tdb":
-          if layer == "basemap" or layer == "bikemap" or layer == "carmap":
-            option_mkgmap_dem = " --dem=" + WORK_DIR + "hgt/VIEW1," + WORK_DIR + "hgt/VIEW3 " 
-            option_mkgmap_dem_dists = " --dem-dists=3314,6628,24512,53024,106048,212096 "
-            option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "
-     
+        option_mkgmap_dem_dists = " --dem-dists=" + config['dem-tdb']['dem-dists'] + " "
+        option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "            
+          
+        option_mkgmap_dem = " --dem="
+          
+        if config.has_option('dem-tdb', 'demdir') == True:
+          option_mkgmap_dem = option_mkgmap_dem + WORK_DIR + "hgt/" + config['dem-tdb']['demdir']
+          
+        if config.has_option('dem-tdb', 'hgtdir1') == True:
+          option_mkgmap_dem = option_mkgmap_dem + "," + WORK_DIR + "hgt/" + config['dem-tdb']['hgtdir1']
+          
+        if config.has_option('dem-tdb', 'hgtdir3') == True:
+          option_mkgmap_dem = option_mkgmap_dem + "," + WORK_DIR + "hgt/" + config['dem-tdb']['hgtdir3']
+          
+        if option_mkgmap_dem == " --dem=":
+          print()
+          printwarning(" can't find any HGT file to create the hillshading in " + WORK_DIR + "hgt/")
+          printwarning(" there must be one or more of this dirs with usable files ")
+          print()
+          printwarning("          COPERNICUS VIEW1 VIEW3 ")
+          print()
+          option_mkgmap_dem = " "
+          option_mkgmap_dem_dists = " "
+          option_mkgmap_poly = " "              
+            
+          printwarning(" disable the option --tdb and building a map without hillshading ")
+          print()
+
       if config['runtime']['installer'] == "yes":
         option_mkgmap_installer = " --nsis --tdbfile "
       else:

@@ -107,7 +107,10 @@ def create():
   
   
   config['dem-tdb'] = {}
-  config['dem-tdb'] = {'dem-dists': '5520,16560,44176,88368',}
+  config['dem-tdb'] = {'dem-dists': '3314,6628,24512,53024,106048,212096',
+                       'basemap': 'yes',
+                       'bikemap': 'yes',
+                       'carmap': 'yes',}
   
 
   config['contourlines'] = {}
