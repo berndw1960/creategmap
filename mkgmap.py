@@ -202,25 +202,31 @@ def render():
       else:
         option_mkgmap_installer = " "
         
-      if config.has_option('name_tag_list', buildmap) == True:
+      if layer == "fixme" or layer == "boundary":
+        option_name_tag_list = " "
+      elif config.has_option('name_tag_list', buildmap) == True:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list'][buildmap]
       else:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list']['default']
 
       bounds_zip = WORK_DIR + "bounds_"+ config['runtime']['bounds'] + ".zip"
-      if os.path.exists(bounds_zip):
+      if layer == "fixme" or layer == "boundary":
+        option_bounds = " "
+      elif os.path.exists(bounds_zip):
         option_bounds = " --bounds=" + bounds_zip
       else:
         option_bounds = " --location-autofill=is_in,nearest "
         
       sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
-      if os.path.exists(sea_zip):
+      if layer == "fixme" or layer == "boundary":
+        option_sea = " "
+      elif os.path.exists(sea_zip):
         option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
       else:
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
       mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
-      mkgmap_style_opts = WORK_DIR + "styles/" + (layer) + "_style/options"
+      mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"
       mkgmap_base_opts = WORK_DIR + "styles/options "
       
       if layer == "defaultmap":
@@ -238,8 +244,10 @@ def render():
         option_mkgmap_spec_opts = " "
 
       mkgmap_index_file = WORK_DIR + config['runtime']['mkgmap'] + "/examples/roadNameConfig.txt"
-
-      if os.path.exists(mkgmap_index_file):
+      
+      if layer == "fixme" or layer == "boundary":
+        option_mkgmap_index_opts = " "
+      elif os.path.exists(mkgmap_index_file):
         option_mkgmap_index_opts = " --road-name-config=" + mkgmap_index_file
       else: 
         option_mkgmap_index_opts = " "
