@@ -167,7 +167,7 @@ def render():
       option_mkgmap_poly = " "
       
       if config['runtime']['tdb'] == "yes":
-          if config.has_option ('tdblayer', layer) and ['tdblayer'][layer] == "yes":
+        if config.has_option('tdblayer', layer) == True and config['tdblayer'][layer] == "yes":
         
             option_mkgmap_dem_dists = " --dem-dists=" + config['demtdb']['dem-dists'] + " "
             option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "            
