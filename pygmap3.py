@@ -320,12 +320,12 @@ if args.all_map_styles:
     print()
     for key in (config['map_styles']):
       config.set('map_styles', key, 'yes')
+      write_config()      
       print ("  " + key + " = " + config['map_styles'][key])
-   
+
     print()
     printinfo("all mapstyles enabled")
     print()
-  write_config()
   quit()
 
 if args.no_map_styles:
