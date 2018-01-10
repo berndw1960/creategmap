@@ -167,34 +167,35 @@ def render():
       option_mkgmap_poly = " "
       
       if config['runtime']['tdb'] == "yes":
+          if config.has_option ('tdblayer', layer) and ['tdblayer'][layer] == "yes":
         
-        option_mkgmap_dem_dists = " --dem-dists=" + config['dem-tdb']['dem-dists'] + " "
-        option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "            
+            option_mkgmap_dem_dists = " --dem-dists=" + config['demtdb']['dem-dists'] + " "
+            option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "            
           
-        option_mkgmap_dem = " --dem="
+            option_mkgmap_dem = " --dem="
           
-        if config.has_option('dem-tdb', 'demdir') == True:
-          option_mkgmap_dem = option_mkgmap_dem + WORK_DIR + "hgt/" + config['dem-tdb']['demdir']
+            if config.has_option('demtdb', 'demdir') == True:
+              option_mkgmap_dem = option_mkgmap_dem + WORK_DIR + "hgt/" + config['demtdb']['demdir']
+        
+            if config.has_option('demtdb', 'hgtdir1') == True:
+              option_mkgmap_dem = option_mkgmap_dem + "," + WORK_DIR + "hgt/" + config['demtdb']['hgtdir1']
           
-        if config.has_option('dem-tdb', 'hgtdir1') == True:
-          option_mkgmap_dem = option_mkgmap_dem + "," + WORK_DIR + "hgt/" + config['dem-tdb']['hgtdir1']
+            if config.has_option('demtdb', 'hgtdir3') == True:
+              option_mkgmap_dem = option_mkgmap_dem + "," + WORK_DIR + "hgt/" + config['demtdb']['hgtdir3']
           
-        if config.has_option('dem-tdb', 'hgtdir3') == True:
-          option_mkgmap_dem = option_mkgmap_dem + "," + WORK_DIR + "hgt/" + config['dem-tdb']['hgtdir3']
-          
-        if option_mkgmap_dem == " --dem=":
-          print()
-          printwarning(" can't find any HGT file to create the hillshading in " + WORK_DIR + "hgt/")
-          printwarning(" there must be one or more of this dirs with usable files ")
-          print()
-          printwarning("          COPERNICUS VIEW1 VIEW3 ")
-          print()
-          option_mkgmap_dem = " "
-          option_mkgmap_dem_dists = " "
-          option_mkgmap_poly = " "              
+            if option_mkgmap_dem == " --dem=":
+              print()
+              printwarning(" can't find any HGT file to create the hillshading in " + WORK_DIR + "hgt/")
+              printwarning(" there must be one or more of this dirs with usable files ")
+              print()
+              printwarning("          COPERNICUS VIEW1 VIEW3 ")
+              print()
+              option_mkgmap_dem = " "
+              option_mkgmap_dem_dists = " "
+              option_mkgmap_poly = " "              
             
-          printwarning(" disable the option --tdb and building a map without hillshading ")
-          print()
+              printwarning(" disable the option --tdb and building a map without hillshading ")
+              print()
 
       if config['runtime']['installer'] == "yes":
         option_mkgmap_installer = " --nsis --tdbfile "

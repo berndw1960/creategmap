@@ -321,11 +321,11 @@ if args.all_map_styles:
     for key in (config['map_styles']):
       config.set('map_styles', key, 'yes')
       print ("  " + key + " = " + config['map_styles'][key])
-
-    write_config()
+   
     print()
     printinfo("all mapstyles enabled")
     print()
+  write_config()
   quit()
 
 if args.no_map_styles:
@@ -624,17 +624,17 @@ create the contourlines and hillshading
 if args.tdb:
   demdir = WORK_DIR + "hgt/COPERNICUS"
   if os.path.exists(demdir) == True:
-    config.set('dem-tdb', 'demdir', "COPERNICUS")
+    config.set('demtdb', 'demdir', "COPERNICUS")
     config.set('runtime', 'tdb', "yes")
     
   hgtdir1 = WORK_DIR + "hgt/VIEW1"
   if os.path.exists(hgtdir1) == True:
-    config.set('dem-tdb', 'hgtdir1', "VIEW1")
+    config.set('demtdb', 'hgtdir1', "VIEW1")
     config.set('runtime', 'tdb', "yes")
     
   hgtdir3 = WORK_DIR + "hgt/VIEW3"
   if os.path.exists(hgtdir3) == True:
-    config.set('dem-tdb', 'hgtdir3', "VIEW3")
+    config.set('demtdb', 'hgtdir3', "VIEW3")
     config.set('runtime', 'tdb', "yes")
 
 if args.ed_user != "no":
