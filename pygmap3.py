@@ -636,6 +636,8 @@ if args.tdb:
   if os.path.exists(hgtdir3) == True:
     config.set('demtdb', 'hgtdir3', "VIEW3")
     config.set('runtime', 'tdb', "yes")
+else:
+  config.set('runtime', 'tdb', "no")
 
 if args.ed_user != "no":
   config.set('runtime', 'ed_user', args.ed_user)
