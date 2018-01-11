@@ -583,7 +583,7 @@ if args.ed_pwd != "no":
   config.set('runtime', 'ed_pwd', args.ed_pwd)
   
 write_config()
-quit()
+
 
 """
 set or create the mapid
