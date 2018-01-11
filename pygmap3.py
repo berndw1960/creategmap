@@ -545,7 +545,7 @@ if args.sw_tdb and config['demtdb']['sw_tdb'] == "no":
   print("sw_tdb = " + config['demtdb']['sw_tdb'])
   print("tdb = " + config['runtime']['tdb'])
   print()
-  printinfo("hillshading enabled as new default")
+  printinfo("hillshading enabled")
   print()
 elif args.sw_tdb and config['demtdb']['sw_tdb'] == "yes":
   config.set('demtdb', 'sw_tdb', "no")
@@ -554,7 +554,7 @@ elif args.sw_tdb and config['demtdb']['sw_tdb'] == "yes":
   print("sw_tdb = " + config['demtdb']['sw_tdb'])
   print("tdb = " + config['runtime']['tdb'])
   print()
-  printinfo("hillshading disabled as new default")
+  printinfo("hillshading disabled")
   print()
 elif config['demtdb']['sw_tdb'] == "yes":
   config.set('runtime', 'tdb', "yes")
