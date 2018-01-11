@@ -137,7 +137,8 @@ def from_mkgmap_org():
     if use_mkgmap_test == "yes" and i == "mkgmap":
       print()
       printinfo("using " + i_rev)
-
+      print()
+      
     config.set('runtime', i, i_rev)
     write_config()
 

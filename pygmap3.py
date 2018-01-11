@@ -207,7 +207,8 @@ parser.add_argument('-ns', '--no_split', action="store_true", help="don't split 
 parser.add_argument('-i', '--installer', action="store_true", help="create mapsource installer")
 
 # contourlines and hillshading
-parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading")
+parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading (only the next build process)")
+parser.add_argument('-sw_tdb', '--sw_tdb', action="store_true", help="enable/disable creating hillshading permanent")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 parser.add_argument('-edu', '--ed_user', dest='ed_user', default='no', help="earthdata-user")
 parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default='no', help="earthdata-password")                    
@@ -519,7 +520,7 @@ if args.mkgmap_set != "no":
   config.set('runtime', 'use_mkgmap_test', 'yes')
 
 if args.mkgmap_test:
-  if config.has_option('runtime', 'mkgmap_test'):
+  if config.has_option('runtime', 'mkgmap_test') == True:
     config.set('runtime', 'use_mkgmap_test', 'yes')
   else:
     print()
@@ -527,6 +528,62 @@ if args.mkgmap_test:
     printwarning("please use '-ms/--mkgmap_set' to set one version")
     print()
     quit()
+    
+"""
+create the contourlines and hillshading
+
+"""
+if config.has_option('demtdb', 'sw_tdb') == False:
+  print(0)
+  config.set('demtdb', 'sw_tdb', "no")
+  write_config()
+
+if args.sw_tdb and config['demtdb']['sw_tdb'] == "no":
+  config.set('demtdb', 'sw_tdb', "yes")
+  config.set('runtime', 'tdb', "yes")
+  print(1)
+  print("sw_tdb = " + config['demtdb']['sw_tdb'])
+  print("tdb = " + config['runtime']['tdb'])
+  print()
+  printinfo("hillshading enabled as new default")
+  print()
+elif args.sw_tdb and config['demtdb']['sw_tdb'] == "yes":
+  config.set('demtdb', 'sw_tdb', "no")
+  config.set('runtime', 'tdb', "no")
+  print(2)
+  print("sw_tdb = " + config['demtdb']['sw_tdb'])
+  print("tdb = " + config['runtime']['tdb'])
+  print()
+  printinfo("hillshading disabled as new default")
+  print()
+elif config['demtdb']['sw_tdb'] == "yes":
+  config.set('runtime', 'tdb', "yes")
+  print(3)
+  print("sw_tdb = " + config['demtdb']['sw_tdb'])
+  print("tdb = " + config['runtime']['tdb'])
+  print()
+elif args.tdb:
+  config.set('runtime', 'tdb', "yes")
+  print(4)
+  print("sw_tdb = " +config['demtdb']['sw_tdb'])
+  print("tdb = " + config['runtime']['tdb'])
+  print()
+else:
+  config.set('demtdb', 'sw_tdb', "no")
+  config.set('runtime', 'tdb', "no")
+  print(5)
+  print("sw_tdb = " +config['demtdb']['sw_tdb'])
+  print("tdb = " + config['runtime']['tdb'])
+  print()
+
+if args.ed_user != "no":
+  config.set('runtime', 'ed_user', args.ed_user)
+
+if args.ed_pwd != "no":      
+  config.set('runtime', 'ed_pwd', args.ed_pwd)
+  
+write_config()
+quit()
 
 """
 set or create the mapid
@@ -616,37 +673,6 @@ if args.installer:
 else:
   config.set('runtime', 'installer', "no")
   
-"""
-create the contourlines and hillshading
-
-"""
-
-if args.tdb:
-  demdir = WORK_DIR + "hgt/COPERNICUS"
-  if os.path.exists(demdir) == True:
-    config.set('demtdb', 'demdir', "COPERNICUS")
-    config.set('runtime', 'tdb', "yes")
-    
-  hgtdir1 = WORK_DIR + "hgt/VIEW1"
-  if os.path.exists(hgtdir1) == True:
-    config.set('demtdb', 'hgtdir1', "VIEW1")
-    config.set('runtime', 'tdb', "yes")
-    
-  hgtdir3 = WORK_DIR + "hgt/VIEW3"
-  if os.path.exists(hgtdir3) == True:
-    config.set('demtdb', 'hgtdir3', "VIEW3")
-    config.set('runtime', 'tdb', "yes")
-else:
-  config.set('runtime', 'tdb', "no")
-
-if args.ed_user != "no":
-  config.set('runtime', 'ed_user', args.ed_user)
-
-if args.ed_pwd != "no":      
-  config.set('runtime', 'ed_pwd', args.ed_pwd)
-  
-write_config()
-
 if args.contourlines:
   if os.path.exists("styles/contourlines_style") == True:
     contourlines.create_cont()
