@@ -534,47 +534,28 @@ create the contourlines and hillshading
 
 """
 if config.has_option('demtdb', 'sw_tdb') == False:
-  print(0)
   config.set('demtdb', 'sw_tdb', "no")
   write_config()
 
 if args.sw_tdb and config['demtdb']['sw_tdb'] == "no":
   config.set('demtdb', 'sw_tdb', "yes")
   config.set('runtime', 'tdb', "yes")
-  print(1)
-  print("sw_tdb = " + config['demtdb']['sw_tdb'])
-  print("tdb = " + config['runtime']['tdb'])
   print()
   printinfo("hillshading enabled")
   print()
 elif args.sw_tdb and config['demtdb']['sw_tdb'] == "yes":
   config.set('demtdb', 'sw_tdb', "no")
   config.set('runtime', 'tdb', "no")
-  print(2)
-  print("sw_tdb = " + config['demtdb']['sw_tdb'])
-  print("tdb = " + config['runtime']['tdb'])
   print()
   printinfo("hillshading disabled")
   print()
 elif config['demtdb']['sw_tdb'] == "yes":
   config.set('runtime', 'tdb', "yes")
-  print(3)
-  print("sw_tdb = " + config['demtdb']['sw_tdb'])
-  print("tdb = " + config['runtime']['tdb'])
-  print()
 elif args.tdb:
   config.set('runtime', 'tdb', "yes")
-  print(4)
-  print("sw_tdb = " +config['demtdb']['sw_tdb'])
-  print("tdb = " + config['runtime']['tdb'])
-  print()
 else:
   config.set('demtdb', 'sw_tdb', "no")
   config.set('runtime', 'tdb', "no")
-  print(5)
-  print("sw_tdb = " +config['demtdb']['sw_tdb'])
-  print("tdb = " + config['runtime']['tdb'])
-  print()
 
 if args.ed_user != "no":
   config.set('runtime', 'ed_user', args.ed_user)
@@ -584,6 +565,11 @@ if args.ed_pwd != "no":
   
 write_config()
 
+if args.verbose:
+  print()
+  print(" sw_tdb = " +config['demtdb']['sw_tdb'])
+  print("    tdb = " + config['runtime']['tdb'])
+  print()
 
 """
 set or create the mapid
