@@ -425,8 +425,11 @@ if args.rm_style != "no":
   quit()
 
 if args.use_style != "no":
+  if 'map_styles_backup' in config == False:
+    config.add_section('map_styles_backup')
   print()
   for key in (config['map_styles']):
+    config.set('map_styles_backup', key, config['map_styles'][key])
     config.set('map_styles', key, 'no')
   config.set('map_styles', args.use_style, 'yes')
   write_config()
@@ -766,9 +769,27 @@ render the map-images
 
 mkgmap.render()
 
+
+"""
+reset to previous options
+"""
+
 if config['runtime']['logging'] == "yes":
   config.set('runtime', 'logging', 'no')
   write_config()
+
+
+if args.use_style != "no":
+  print()
+  for key in (config['map_styles_backup']):
+    config.set('map_styles', key, config['map_styles_backup'][key])
+    config.remove_option('map_styles_backup', key)
+    if config['runtime']['verbose'] == "yes":
+      print ("  " + key + " = " + config['map_styles'][key])  
+  print()    
+  write_config()
+  printinfo("mapstyles restored")
+  print()
 
 
 """
