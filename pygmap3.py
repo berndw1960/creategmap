@@ -156,14 +156,13 @@ parser = argparse.ArgumentParser(
             To build maps for Garmin PNA
 
             map layers (routable):
-            basemap - to route  motorvehicle, bicycle and pedestrian
-            bikemap - better visibility of cycleroute and -ways
-            carmap  - only for motorvehicle, no routing for bicycle and pedestrian
+            basemap - to route motorvehicle, bicycle and pedestrian
+            bikemap - better visibility of cycleroutes and -ways
+            carmap  - only for motorvehicle, no special routing for bicycle and pedestrian
 
             additional layers
             fixme   - a fixme layer for mapping
             boundary - a layer to show boundaries with admin_level<=6
-            housenumbers - a layer to shows the housenumbers
 
             Place your own *-poly in WORK_DIR/poly,
             example for dach, use dach.poly as name
@@ -207,8 +206,10 @@ parser.add_argument('-ns', '--no_split', action="store_true", help="don't split 
 parser.add_argument('-i', '--installer', action="store_true", help="create mapsource installer")
 
 # contourlines and hillshading
-parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading (only the next build process)")
+parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading only for the next build process")
 parser.add_argument('-sw_tdb', '--sw_tdb', action="store_true", help="enable/disable creating hillshading permanent")
+parser.add_argument('-et', '--enable_tdb', dest='enable_tdb', default='no', help="enable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
+parser.add_argument('-dt', '--diable_tdb', dest='disable_tdb', default='no', help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 parser.add_argument('-edu', '--ed_user', dest='ed_user', default='no', help="earthdata-user")
 parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default='no', help="earthdata-password")                    
@@ -296,7 +297,6 @@ if config.has_option('name_tag_list', buildmap) == False:
   printwarning("for this mapset the MKGMAP option '--name-tag-list' isn't set")
   printwarning("using the default 'name:en,name:int,name'")
   print()
-
 
 # map build options
 
@@ -560,6 +560,36 @@ else:
   config.set('demtdb', 'sw_tdb', "no")
   config.set('runtime', 'tdb', "no")
 
+if args.enable_tdb != "no":
+  if args.enable_tdb == "ALL":  
+    print()
+    for key in (config['tdblayer']):
+      config.set('tdblayer', key, "yes")
+      print ("  " + key + " = " + config['tdblayer'][key])
+    print()
+  else:
+    config.set('tdblayer', args.enable_tdb, "yes")
+    print()
+    print( "  enabled hillshading for " + args.enable_tdb + " layer! " )
+    print()
+  write_config()
+  quit()
+  
+if args.disable_tdb != "no":
+  if args.disable_tdb == "ALL":  
+    print()
+    for key in (config['tdblayer']):
+      config.set('tdblayer', key, "no")
+      print ("  " + key + " = " + config['tdblayer'][key])
+    print()
+  else:
+    config.set('tdblayer', args.disable_tdb, "no")
+    print()
+    print( "  disabled hillshading for " + args.disable_tdb + " layer! " )
+    print()
+  write_config()
+  quit()
+  
 if args.ed_user != "no":
   config.set('runtime', 'ed_user', args.ed_user)
 
@@ -570,7 +600,7 @@ write_config()
 
 if args.verbose:
   print()
-  print(" sw_tdb = " +config['demtdb']['sw_tdb'])
+  print(" sw_tdb = " + config['demtdb']['sw_tdb'])
   print("    tdb = " + config['runtime']['tdb'])
   print()
 

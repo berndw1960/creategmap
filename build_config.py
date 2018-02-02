@@ -112,7 +112,7 @@ def create():
   config['tdblayer'] = {}
   config['tdblayer'] = {'basemap': 'yes',
                         'bikemap': 'yes',
-                        'carmap': 'yes',}
+                        'carmap': 'no',}
   
 
   config['contourlines'] = {}
