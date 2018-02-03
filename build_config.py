@@ -29,7 +29,6 @@ def create():
                        'logging': 'no',
                        'verbose': 'no',
                        'default': 'germany',
-                       'bbox': '6.5,49,8.5,51',
                        'ramsize': '-Xmx4G',
                        'use_mkgmap_test': ' no',
                        'use_old_bounds': ' no',
@@ -105,9 +104,12 @@ def create():
                      'draw-priority': '16',
                      'mapid_ext': '7001',}
   
+  config['maplevel'] = {}
+  config['maplevel'] = {'levels': '0:24,1:23,2:22,3:20,4:18,5:16',}
+                        
   
   config['demtdb'] = {}
-  config['demtdb'] = {'dem-dists': '3314,6628,24512,53024,106048,212096',}
+  config['demtdb'] = {'demdists': '3314,6628,13256,26512,53024,106048',}
   
   config['tdblayer'] = {}
   config['tdblayer'] = {'basemap': 'yes',

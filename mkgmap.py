@@ -156,6 +156,7 @@ def render():
         option_mkgmap_logging = " -Dlog.config=" + WORK_DIR + "mkgmap_log.props "
       else:
         option_mkgmap_logging = " "
+        
       
       """
       options to create hillshading
@@ -166,10 +167,10 @@ def render():
       option_mkgmap_dem_dists = " "
       option_mkgmap_poly = " "
       
-      if config['runtime']['tdb'] == "yes" or config['demtdb']['sw_tdb'] == "yes":
+      if config['runtime']['tdb'] == "yes" or config['demtdb']['switch_tdb'] == "yes":
         if config.has_option('tdblayer', layer) == True and config['tdblayer'][layer] == "yes":
         
-          option_mkgmap_dem_dists = " --dem-dists=" + config['demtdb']['dem-dists'] + " "
+          option_mkgmap_dem_dists = " --dem-dists=" + config['demtdb']['demdists'] + " "
           option_mkgmap_poly = " --dem-poly=" + WORK_DIR + "poly/" + buildmap + ".poly "            
           
           option_mkgmap_dem = " --dem="
@@ -274,6 +275,7 @@ def render():
                         option_sea +
                         option_style_file +
                         option_name_tag_list +
+                        " --levels=" + config['maplevel']['levels'] +
                         option_mkgmap_dem +
                         option_mkgmap_dem_dists +
                         option_mkgmap_poly +

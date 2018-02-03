@@ -181,10 +181,8 @@ parser.add_argument('-bn', '--bbox_name', dest='bbox_name', default='bbox_map', 
 parser.add_argument('-bl', '--bbox_list', dest='bbox_list', action="store_true", help="list the previous used BBOXes ")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
-# list styles
-parser.add_argument('-l', '--list_mapstyle', action="store_true", help="list the style settings")
-
 # mapstyle handling
+parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
 parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style")
 parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style")
@@ -207,9 +205,11 @@ parser.add_argument('-i', '--installer', action="store_true", help="create mapso
 
 # contourlines and hillshading
 parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading only for the next build process")
-parser.add_argument('-sw_tdb', '--sw_tdb', action="store_true", help="enable/disable creating hillshading permanent")
+parser.add_argument('-sw_tdb', '--switch_tdb', action="store_true", help="enable/disable creating hillshading permanent")
 parser.add_argument('-et', '--enable_tdb', dest='enable_tdb', default='no', help="enable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
 parser.add_argument('-dt', '--diable_tdb', dest='disable_tdb', default='no', help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
+parser.add_argument('-lv', '--levels', dest='levels', default=config['maplevel']['levels'], help="This is a number between 0 and 16 (although perhaps numbers above 10 are not usable), with 0 corresponding to the most detailed view. '0:24,1:23,2:22,3:20,4:18,5:16' are tested") 
+parser.add_argument('-dd', '--dem_dists', dest='dem_dists', default=config['demtdb']['demdists'], help="set the distance between two points with height information, a multiple of '3314', example: six levels=0:24,1:23... then use '3314,6628,13256,26512,53024,106048' as example")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
 parser.add_argument('-edu', '--ed_user', dest='ed_user', default='no', help="earthdata-user")
 parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default='no', help="earthdata-password")                    
@@ -228,7 +228,7 @@ parser.add_argument('-cs', '--check_styles', action="store_true", help="test the
 parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
-parser.add_argument('-log', '--log', action="store_true", help="enable splitter and mkgmap logging")
+parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
 # development
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use the svn version of mkgmap like housenumbers2")
@@ -531,33 +531,40 @@ if args.mkgmap_test:
     printwarning("please use '-ms/--mkgmap_set' to set one version")
     print()
     quit()
+
+""""
+set the amount of levels
+"""
+if args.levels != config['maplevel']['levels']:
+  config.set('maplevel', 'levels', args.levels)
+  write_config()
     
 """
 create the contourlines and hillshading
 
 """
-if config.has_option('demtdb', 'sw_tdb') == False:
-  config.set('demtdb', 'sw_tdb', "no")
+if config.has_option('demtdb', 'switch_tdb') == False:
+  config.set('demtdb', 'switch_tdb', "no")
   write_config()
 
-if args.sw_tdb and config['demtdb']['sw_tdb'] == "no":
-  config.set('demtdb', 'sw_tdb', "yes")
+if args.switch_tdb and config['demtdb']['switch_tdb'] == "no":
+  config.set('demtdb', 'switch_tdb', "yes")
   config.set('runtime', 'tdb', "yes")
   print()
   printinfo("hillshading enabled")
   print()
-elif args.sw_tdb and config['demtdb']['sw_tdb'] == "yes":
-  config.set('demtdb', 'sw_tdb', "no")
+elif args.switch_tdb and config['demtdb']['switch_tdb'] == "yes":
+  config.set('demtdb', 'switch_tdb', "no")
   config.set('runtime', 'tdb', "no")
   print()
   printinfo("hillshading disabled")
   print()
-elif config['demtdb']['sw_tdb'] == "yes":
+elif config['demtdb']['switch_tdb'] == "yes":
   config.set('runtime', 'tdb', "yes")
 elif args.tdb:
   config.set('runtime', 'tdb', "yes")
 else:
-  config.set('demtdb', 'sw_tdb', "no")
+  config.set('demtdb', 'switch_tdb', "no")
   config.set('runtime', 'tdb', "no")
 
 if args.enable_tdb != "no":
@@ -589,6 +596,10 @@ if args.disable_tdb != "no":
     print()
   write_config()
   quit()
+
+if args.dem_dists != config['demtdb']['demdists']:
+  config.set('demtdb', 'demdists', args.dem_dists)
+  write_config()
   
 if args.ed_user != "no":
   config.set('runtime', 'ed_user', args.ed_user)
@@ -600,7 +611,7 @@ write_config()
 
 if args.verbose:
   print()
-  print(" sw_tdb = " + config['demtdb']['sw_tdb'])
+  print(" switch_tdb = " + config['demtdb']['switch_tdb'])
   print("    tdb = " + config['runtime']['tdb'])
   print()
 
