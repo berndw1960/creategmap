@@ -207,7 +207,7 @@ parser.add_argument('-i', '--installer', action="store_true", help="create mapso
 parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading only for the next build process")
 parser.add_argument('-sw_tdb', '--switch_tdb', action="store_true", help="enable/disable creating hillshading permanent")
 parser.add_argument('-et', '--enable_tdb', dest='enable_tdb', default='no', help="enable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
-parser.add_argument('-dt', '--diable_tdb', dest='disable_tdb', default='no', help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
+parser.add_argument('-dt', '--disable_tdb', dest='disable_tdb', default='no', help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
 parser.add_argument('-lv', '--levels', dest='levels', default=config['maplevel']['levels'], help="This is a number between 0 and 16 (although perhaps numbers above 10 are not usable), with 0 corresponding to the most detailed view. '0:24,1:23,2:22,3:20,4:18,5:16' are tested") 
 parser.add_argument('-dd', '--dem_dists', dest='dem_dists', default=config['demtdb']['demdists'], help="set the distance between two points with height information, a multiple of '3314', example: six levels=0:24,1:23... then use '3314,6628,13256,26512,53024,106048' as example")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
