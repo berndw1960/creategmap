@@ -71,20 +71,20 @@ parser = argparse.ArgumentParser(
         '''))
 
 ## mapsets
-parser.add_argument('-am', '--add_mapset', dest='add_mapset', default='no')
+parser.add_argument('-am', '--add_mapset', default=0, help="add a new poly to the mapset list")
 parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
-parser.add_argument('-rm', '--rm_mapset', dest='rm_mapset', default='no')
+parser.add_argument('-rm', '--rm_mapset', default=0, help="remove a poly from the mapset list")
 parser.add_argument('-em', '--enable_mapset', action="store_true", help="enable the whole list")
 parser.add_argument('-dm', '--disable_mapset', action="store_true", help="disable the whole list")
 parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
-parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to fast build a mapset as new default")
-parser.add_argument('-ba', '--break_after', dest='break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
+parser.add_argument('-s', '--set_default', default=0, help="set region to fast build a mapset as new default")
+parser.add_argument('-ba', '--break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
 
 ## pygmap3
 parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
-parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|contourlines|mapdata|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', default=0, help='build process stop after [tests|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
@@ -97,7 +97,7 @@ set, edit or delete mapset list
 
 """
 
-if args.add_mapset != "no":
+if args.add_mapset:
   if config.has_section('mapset') == False:
     config['mapset'] = {}
     
@@ -117,7 +117,7 @@ if args.add_mapset != "no":
   print()
   quit()
 
-if args.rm_mapset != "no":
+if args.rm_mapset:
   if config.has_section('mapset') == True:
     config.set('mapset', args.rm_mapset, 'no')
     write_config()
@@ -131,7 +131,8 @@ if args.list_mapset:
     print()
     printinfo("mapset list includes: ")
     for key in (config['mapset']):
-      print ("  " + key + " = " + config['mapset'][key])
+      if config['mapset'][key] == "yes":
+        print ("  " + key + " = " + config['mapset'][key])
   else:
     print()
     printinfo("mapset list didn't exist or is empty")
@@ -163,7 +164,7 @@ if args.disable_mapset:
   printwarning(" all mapsets disabled on list")
   quit()
 
-if args.set_default != "no":
+if args.set_default:
   if os.path.exists("poly/" + args.set_default + ".poly") == False:
     print()
     printerror((WORK_DIR) + "poly/" + args.set_default + ".poly not found... ")

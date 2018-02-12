@@ -173,17 +173,17 @@ parser = argparse.ArgumentParser(
 
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
-parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
-parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
+parser.add_argument('-s', '--set_default', dest='set_default', default=0, help="set region to build as new default")
+parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default=0, help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # mapstyle handling
 parser.add_argument('-lm', '--list_mapstyle', action="store_true", help="list the style settings")
-parser.add_argument('-a', '--add_style', dest='add_style', default='no', help="add a new style")
-parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="enable/disable a style")
-parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style")
+parser.add_argument('-a', '--add_style', default=0, help="add a new style")
+parser.add_argument('-m', '--map_style', default=0, help="enable/disable a style")
+parser.add_argument('-r', '--rm_style', default=0, help="remove a style")
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 parser.add_argument('-dm', '--no_map_styles', action="store_true", help="disable all map_styles")
-parser.add_argument('-u', '--use_style', dest='use_style', default=0, help="use only one style")
+parser.add_argument('-u', '--use_style', default=0, help="use only one style")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
@@ -196,46 +196,46 @@ parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't 
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
 # mkgmap options
-parser.add_argument('-mj', '--max_jobs', dest='max_jobs', default='yes', help=" set the used threads to use with mkgmap (yes(max)/no(min=1)/$NUM_THREADS)")
+parser.add_argument('-mj', '--max_jobs', default='yes', help=" set the used threads to use with mkgmap (yes(max)/no(min=1)/$NUM_THREADS)")
 parser.add_argument('-kg', '--keep_going', action="store_true", help=" set it to 'no' if mkgmap should break on errors, default is 'yes' ")
 parser.add_argument('-i', '--installer', action="store_true", help="create mapsource installer")
 
 # contourlines and hillshading
 parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshading only for the next build process")
 parser.add_argument('-sw_tdb', '--switch_tdb', action="store_true", help="enable/disable creating hillshading permanent")
-parser.add_argument('-et', '--enable_tdb', dest='enable_tdb', default='no', help="enable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
-parser.add_argument('-dt', '--disable_tdb', dest='disable_tdb', default='no', help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
-parser.add_argument('-lv', '--levels', dest='levels', default=config['maplevel']['levels'], help="This is a number between 0 and 16 " +
+parser.add_argument('-et', '--enable_tdb', default=0, help="enable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
+parser.add_argument('-dt', '--disable_tdb', default=0, help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
+parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'], help="This is a number between 0 and 16 " +
                                                                                                  "(although perhaps numbers above 10 " +
                                                                                                   "are not usable), with 0 corresponding " +
                                                                                                   "to the most detailed view. " +
                                                                                                   " '0:24,1:23,2:22,3:20,4:18,5:16' are tested") 
-parser.add_argument('-dd', '--dem_dists', dest='dem_dists', default=config['demtdb']['demdists'], help="set the distance between two points with height information, " +
+parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'], help="set the distance between two points with height information, " +
                                                                                                        "a multiple of '3314', example: six levels=0:24,1:23... then use " +
                                                                                                        "'3314,6628,13256,26512,53024,106048' as example")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
-parser.add_argument('-edu', '--ed_user', dest='ed_user', default=0, help="earthdata-user")
-parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default=0, help="earthdata-password")                    
+parser.add_argument('-edu', '--ed_user', default=0, help="earthdata-user")
+parser.add_argument('-edp', '--ed_pwd', default=0, help="earthdata-password")                    
 
 # image handling
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
 # Java options
-parser.add_argument('-xmx', '--xmx', dest='xmx', default=config['runtime']['xmx'], help="set the HEAP for Java, min. 500 MB per threads, an example '6G' or '6000M' for a CPU with 4 cores and 8 threads. ")
+parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="set the HEAP for Java, min. 500 MB per threads, an example '6G' or '6000M' for a CPU with 4 cores and 8 threads. ")
 
 # maxnodes
-parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtime']['maxnodes'], help="set the maxnodes count for splitter")
+parser.add_argument('-mn', '--maxnodes', default=config['runtime']['maxnodes'], help="set the maxnodes count for splitter")
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', default='no', help='build process stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
 # development
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap")
-parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default=0, help="set a svn version of mkgmap like housenumbers2")
+parser.add_argument('-ms', '--mkgmap_set', default=0, help="set a svn version of mkgmap like housenumbers2")
 
 args = parser.parse_args()
  
@@ -250,12 +250,12 @@ config.set('runtime', 'buildmap', buildmap)
 write_config()
 
 name_tag_list = args.name_tag_list
-if 'name_tag_list' in config == False:
+if config.has_section('name_tag_list') == False:
   config.add_section('name_tag_list')
   config.set('name_tag_list', 'default', 'name:en,name:int,name')
   write_config()
   
-if args.name_tag_list != "no":
+if args.name_tag_list:
   config.set('name_tag_list', buildmap, name_tag_list) 
 
 if config.has_option('name_tag_list', buildmap) == False:
@@ -331,7 +331,7 @@ def info_styles():
   print("    or your own style files!")
   print()
 
-if args.add_style != "no":
+if args.add_style:
   if os.path.exists("styles/" + args.add_style + "_style") == True:
     config.set('map_styles', args.add_style, 'yes')
     print()
@@ -357,12 +357,12 @@ if args.add_style != "no":
   write_config()
   quit()
 
-if args.map_style != "no" and args.map_style != "defaultmap":
+if args.map_style and args.map_style != "defaultmap":
   if os.path.exists("styles/" + args.map_style + "_style") == False:
     info_styles()
     quit()
 
-if args.map_style != "no":
+if args.map_style:
   if config.has_option('map_styles', args.map_style) == True:
     if config['map_styles'][args.map_style] == "yes":
       config.set('map_styles', args.map_style, 'no')
@@ -380,7 +380,7 @@ if args.map_style != "no":
   write_config()
   quit()
 
-if args.rm_style != "no":
+if args.rm_style:
   if config.has_option('map_styles', args.rm_style) == True:
     config.remove_option('map_styles', args.rm_style)
     write_config()
@@ -402,7 +402,7 @@ if args.use_style:
   printinfo("create a map with " + args.use_style + " style only")
   print()
 
-if args.set_default != "no":
+if args.set_default:
   if os.path.exists("poly/" + args.set_default + ".poly") == False:
     print()
     printerror((WORK_DIR) + "poly/" + args.set_default + ".poly not found... ")
@@ -520,9 +520,6 @@ if args.levels != config['maplevel']['levels']:
 create the contourlines and hillshading
 
 """
-if config.has_option('demtdb', 'switch_tdb') == False:
-  config.set('demtdb', 'switch_tdb', "no")
-  write_config()
 
 if args.switch_tdb and config['demtdb']['switch_tdb'] == "no":
   config.set('demtdb', 'switch_tdb', "yes")
@@ -544,7 +541,7 @@ else:
   config.set('demtdb', 'switch_tdb', "no")
   config.set('runtime', 'tdb', "no")
 
-if args.enable_tdb != "no":
+if args.enable_tdb:
   if args.enable_tdb == "ALL":  
     print()
     for key in (config['tdblayer']):
@@ -559,7 +556,7 @@ if args.enable_tdb != "no":
   write_config()
   quit()
   
-if args.disable_tdb != "no":
+if args.disable_tdb:
   if args.disable_tdb == "ALL":  
     print()
     for key in (config['tdblayer']):

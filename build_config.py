@@ -182,7 +182,11 @@ def update():
   add new options
 
   """
-
+  if config.has_section('demtdb') == False:
+    config.add_section('demtdb')
+    
+  if config.has_option('demtdb', 'switch_tdb') == False:
+    config.set('demtdb', 'switch_tdb', "no")
 
   if config.has_option('runtime', 'ramsize') == True and config.has_option('runtime', 'xmx') == False:
     config.set('runtime', 'xmx', config['runtime']['ramsize'])
