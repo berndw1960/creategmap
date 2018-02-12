@@ -51,7 +51,9 @@ import build_config
 
 if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
-
+else:
+  build_config.update()
+  
 config.read('pygmap3.cfg')
 
 
@@ -69,11 +71,11 @@ parser = argparse.ArgumentParser(
         '''))
 
 ## mapsets
-parser.add_argument('-a', '--add_mapset', dest='add_mapset', default='no')
-parser.add_argument('-l', '--list_mapset', action="store_true", help="print out the mapset list")
-parser.add_argument('-r', '--rm_mapset', dest='rm_mapset', default='no')
-parser.add_argument('-e', '--enable_mapset', action="store_true", help="enable the whole list")
-parser.add_argument('-d', '--disable_mapset', action="store_true", help="disable the whole list")
+parser.add_argument('-am', '--add_mapset', dest='add_mapset', default='no')
+parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
+parser.add_argument('-rm', '--rm_mapset', dest='rm_mapset', default='no')
+parser.add_argument('-em', '--enable_mapset', action="store_true", help="enable the whole list")
+parser.add_argument('-dm', '--disable_mapset', action="store_true", help="disable the whole list")
 parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to fast build a mapset as new default")
 parser.add_argument('-ba', '--break_after', dest='break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
@@ -83,7 +85,7 @@ parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the pr
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
 parser.add_argument('-st', '--stop_after', dest='stop_after', default='no', help='buildprocess stop after [tests|contourlines|mapdata|splitter|mkgmap]')
-parser.add_argument('-log', '--log', action="store_true", help="enable splitter and mkgmap logging")
+parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap like housenumbers2")
 parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
@@ -219,7 +221,7 @@ if args.spec_opts:
 else:
   so = " "
   
-command_line =  "pygmap3.py " + verbose + stop + cl + mkgmap_test + log + zip + ob
+command_line =  "pygmap3.py -kg " + verbose + stop + cl + mkgmap_test + log + zip + ob
 
 if args.fastbuild:
   buildmap = config['runtime']['default']

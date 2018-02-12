@@ -39,9 +39,7 @@ get splitter and mkgmap
 
 def from_mkgmap_org():
   config.read('pygmap3.cfg')
-
-  use_mkgmap_test = config['runtime']['use_mkgmap_test']
-
+  
   for i in ['splitter', 'mkgmap']:
     try:
 
@@ -51,7 +49,7 @@ def from_mkgmap_org():
       data = htmlcontent.read()
       data = data.decode('utf8')
 
-      if use_mkgmap_test == "yes" and i == "mkgmap":
+      if config.has_option('runtime', 'use_mkgmap_test') and i == "mkgmap":
 
         mkgmap_test = config['runtime']['mkgmap_test']
 
@@ -134,7 +132,7 @@ def from_mkgmap_org():
       print()
       quit()
 
-    if use_mkgmap_test == "yes" and i == "mkgmap":
+    if config.has_option('runtime', 'use_mkgmap_test') and i == "mkgmap":
       print()
       printinfo("using " + i_rev)
       

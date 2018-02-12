@@ -49,7 +49,7 @@ def get_bounds():
       print()
       break
 
-    if config['runtime']['use_old_bounds'] == "yes":
+    if config.has_option('runtime', 'use_old_bounds'):
       date = date_pre
     else:
       date = date_new

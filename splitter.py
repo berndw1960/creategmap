@@ -35,7 +35,7 @@ def split():
   buildday = config['time_stamp'][buildmap]
   splitter_path = WORK_DIR + config['runtime']['splitter'] + "/splitter.jar "
 
-  java_opts = ("java -ea " + config['runtime']['ramsize'] +
+  java_opts = ("java -ea " + config['runtime']['xmx'] +
                   " -jar " + splitter_path)
 
 
@@ -82,7 +82,7 @@ def split():
   else:
     command_line = split_without_areas_list
 
-  if config['runtime']['verbose'] == "yes":
+  if config.has_option('runtime', 'verbose') :
     print()
     printinfo(command_line)
     print()
@@ -90,7 +90,7 @@ def split():
   os.chdir("tiles")
   os.system(command_line)
 
-  if config['runtime']['logging'] == "yes":
+  if config.has_option('runtime', 'logging'):
     log_dir = (WORK_DIR + "log/splitter/" + buildmap + "/" + buildday)
 
     if os.path.exists(log_dir) == True:

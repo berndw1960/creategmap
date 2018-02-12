@@ -9,6 +9,20 @@ def write_config():
 
 config = configparser.ConfigParser()
 
+"""
+set prefix for messages
+
+"""
+
+def printinfo(msg):
+  print("II: " + msg)
+
+def printwarning(msg):
+  print("WW: " + msg)
+
+def printerror(msg):
+  print("EE: " + msg)
+
 def create():
 
   """
@@ -26,20 +40,13 @@ def create():
 
   config['runtime'] = {}
   config['runtime'] = {'maxnodes': '512000',
-                       'logging': 'no',
-                       'verbose': 'no',
                        'default': 'germany',
-                       'ramsize': '-Xmx4G',
-                       'use_mkgmap_test': ' no',
-                       'use_old_bounds': ' no',
-                       'bounds': '',
-                       'sea': '',}
+                       'xmx': '-Xmx6G',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
-			  'bikemap': 'no',
+                          'bikemap': 'no',
                           'carmap': 'no',
-                          'housenumber': 'no',
                           'fixme': 'no',
                           'bikeroute': 'no',
                           'boundary': 'no',
@@ -79,14 +86,6 @@ def create():
                        'family-name': 'Boundaries',
                        'draw-priority': '14',
                        'mapid_ext': '4001',}
-
-
-  config['housenumber'] = {}
-  config['housenumber'] = {'family-id': '8',
-                       'product-id': '48',
-                       'family-name': 'Housenumbers',
-                       'draw-priority': '16',
-                       'mapid_ext': '5001',}
 
 
   config['bikeroute'] = {}
@@ -129,3 +128,54 @@ def create():
  
   write_config()
 
+def update():
+  
+  config.read('pygmap3.cfg')
+
+  """
+  remove temporary options
+
+  """
+  if config.has_option('runtime', 'use_bbox'):
+    config.remove_option('runtime', 'use_bbox')
+    
+  if config.has_option('runtime', 'hourly'):
+    config.remove_option('runtime', 'hourly')
+    
+  if config.has_option('runtime', 'minutely'):
+    config.remove_option('runtime', 'minutely')
+
+  if config.has_option('runtime', 'use_mkgmap_test'):
+    config.remove_option('runtime', 'use_mkgmap_test')
+  
+  if config.has_option('runtime', 'use_old_bounds'):
+    config.remove_option('runtime', 'use_old_bounds')
+  
+  if config.has_option('runtime', 'installer'):
+    config.remove_option('runtime', 'installer')
+
+  if config.has_option('runtime', 'use_spec_opts'):
+    config.remove_option('runtime', 'use_spec_opts')
+  
+  if config.has_option('runtime', 'logging'):
+    config.remove_option('runtime', 'logging')
+
+  if config.has_option('runtime', 'keep_going'):
+    config.remove_option('runtime', 'keep_going')
+
+  if config.has_option('runtime', 'verbose'):
+    config.remove_option('runtime', 'verbose')
+
+  """
+  add new options
+
+  """
+
+
+  if config.has_option('runtime', 'ramsize') == True and config.has_option('runtime', 'xmx') == False:
+    config.set('runtime', 'xmx', config['runtime']['ramsize'])
+    config.remove_option('runtime', 'ramsize')
+    print()
+    printinfo(" config successfully updated, changed in section 'runtime': 'ramsize' to 'xmx'")
+    print()
+  write_config()  

@@ -151,12 +151,23 @@ def render():
       """
 
       option_mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
-
-      if config['runtime']['logging'] == "yes":
-        option_mkgmap_logging = " -Dlog.config=" + WORK_DIR + "mkgmap_log.props "
+      
+      option_mkgmap_jobs = " "
+      if config['runtime']['max_jobs'] != "yes":
+        if config['runtime']['max_jobs'] == "no":
+          option_mkgmap_jobs = " --max-jobs=1 "
+        else: 
+          option_mkgmap_jobs = " --max-jobs=" + config['runtime']['max_jobs']
       else:
-        option_mkgmap_logging = " "
+        option_mkgmap_jobs = " --max-jobs "
         
+      option_keep_going = " "
+      if config.has_option('runtime', 'keep_going'):
+        option_keep_going = " --keep-going "
+        
+      option_mkgmap_logging = " "
+      if config.has_option('runtime', 'logging'):
+        option_mkgmap_logging = " -Dlog.config=" + WORK_DIR + "mkgmap_log.props "
       
       """
       options to create hillshading
@@ -167,7 +178,7 @@ def render():
       option_mkgmap_dem_dists = " "
       option_mkgmap_poly = " "
       
-      if config['runtime']['tdb'] == "yes" or config['demtdb']['switch_tdb'] == "yes":
+      if config['runtime']['tdb'] == "yes" or config['demtdb']['switch_tdb'] == "yes": 
         if config.has_option('tdblayer', layer) == True and config['tdblayer'][layer] == "yes":
         
           option_mkgmap_dem_dists = " --dem-dists=" + config['demtdb']['demdists'] + " "
@@ -201,7 +212,7 @@ def render():
             printwarning(" disable the option --tdb and building a map without hillshading ")
             print()
 
-      if config['runtime']['installer'] == "yes":
+      if config.has_option('runtime', 'installer'):
         option_mkgmap_installer = " --nsis --tdbfile "
       else:
         option_mkgmap_installer = " "
@@ -240,10 +251,8 @@ def render():
       else:
         option_mkgmap_options = mkgmap_base_opts
 
-      mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
-        
-      if config['runtime']['use_spec_opts'] == "yes":
-        option_mkgmap_spec_opts = mkgmap_spec_opts
+      if config.has_option('runtime', 'use_spec_opts'):
+        option_mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
       else: 
         option_mkgmap_spec_opts = " "
 
@@ -261,16 +270,19 @@ def render():
       os.chdir(layer)
       print()
       printinfo("building " + layer)
+      print()
 
       """
       map rendering
+      
+      
       """
       command_line = ("java -ea " +
-                        config['runtime']['ramsize'] +
+                        config['runtime']['xmx'] +
                         option_mkgmap_logging +
                         " -jar " + option_mkgmap_path +
-                        " --keep-going " +
-                        " --max-jobs " +
+                        option_keep_going +
+                        option_mkgmap_jobs +
                         option_bounds +
                         option_sea +
                         option_style_file +
@@ -293,7 +305,7 @@ def render():
                         WORK_DIR + "tiles/*.o5m " +
                         option_typ_file)
 
-      if config['runtime']['verbose'] == "yes":
+      if config.has_option('runtime', 'verbose'):
         print()
         printinfo(command_line)
         print()

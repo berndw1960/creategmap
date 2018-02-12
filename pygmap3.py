@@ -140,7 +140,9 @@ create a new config if needed
 
 if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
-
+else:
+  build_config.update()
+  
 config.read('pygmap3.cfg')
 
 """
@@ -172,13 +174,6 @@ parser = argparse.ArgumentParser(
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build, default is " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', dest='set_default', default='no', help="set region to build as new default")
-parser.add_argument('-b', '--bbox', dest='bbox', default='no', help="set a bbox from the degrees in W,S,E,N, " + 
-                                                                      "example '-b 6.5,49,8.5,51' or " +
-                                                                      "'-b \"'-18.5',27.4,'-13.1',29.5\"' with negative values, " +
-                                                                      "see http://tools.geofabrik.de/calc/ " + 
-                                                                      "to find the correct values for your map" )
-parser.add_argument('-bn', '--bbox_name', dest='bbox_name', default='bbox_map', help="set the name of the mapfile when a bbox is used ")
-parser.add_argument('-bl', '--bbox_list', dest='bbox_list', action="store_true", help="list the previous used BBOXes ")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default='no', help="which name tag should be used for naming objects, example 'name:en,name:int,name'")
 
 # mapstyle handling
@@ -201,6 +196,8 @@ parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't 
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
 
 # mkgmap options
+parser.add_argument('-mj', '--max_jobs', dest='max_jobs', default='yes', help=" set the used threads to use with mkgmap (yes(max)/no(min=1)/$NUM_THREADS)")
+parser.add_argument('-kg', '--keep_going', action="store_true", help=" set it to 'no' if mkgmap should break on errors, default is 'yes' ")
 parser.add_argument('-i', '--installer', action="store_true", help="create mapsource installer")
 
 # contourlines and hillshading
@@ -208,17 +205,23 @@ parser.add_argument('-tdb', '--tdb', action="store_true", help="create hillshadi
 parser.add_argument('-sw_tdb', '--switch_tdb', action="store_true", help="enable/disable creating hillshading permanent")
 parser.add_argument('-et', '--enable_tdb', dest='enable_tdb', default='no', help="enable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
 parser.add_argument('-dt', '--disable_tdb', dest='disable_tdb', default='no', help="disable the hillshading for one mapstyle, use 'ALL' for every entry in the list")
-parser.add_argument('-lv', '--levels', dest='levels', default=config['maplevel']['levels'], help="This is a number between 0 and 16 (although perhaps numbers above 10 are not usable), with 0 corresponding to the most detailed view. '0:24,1:23,2:22,3:20,4:18,5:16' are tested") 
-parser.add_argument('-dd', '--dem_dists', dest='dem_dists', default=config['demtdb']['demdists'], help="set the distance between two points with height information, a multiple of '3314', example: six levels=0:24,1:23... then use '3314,6628,13256,26512,53024,106048' as example")
+parser.add_argument('-lv', '--levels', dest='levels', default=config['maplevel']['levels'], help="This is a number between 0 and 16 " +
+                                                                                                 "(although perhaps numbers above 10 " +
+                                                                                                  "are not usable), with 0 corresponding " +
+                                                                                                  "to the most detailed view. " +
+                                                                                                  " '0:24,1:23,2:22,3:20,4:18,5:16' are tested") 
+parser.add_argument('-dd', '--dem_dists', dest='dem_dists', default=config['demtdb']['demdists'], help="set the distance between two points with height information, " +
+                                                                                                       "a multiple of '3314', example: six levels=0:24,1:23... then use " +
+                                                                                                       "'3314,6628,13256,26512,53024,106048' as example")
 parser.add_argument('-c', '--contourlines', action="store_true", help="create contourlines layer")
-parser.add_argument('-edu', '--ed_user', dest='ed_user', default='no', help="earthdata-user")
-parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default='no', help="earthdata-password")                    
+parser.add_argument('-edu', '--ed_user', dest='ed_user', default=0, help="earthdata-user")
+parser.add_argument('-edp', '--ed_pwd', dest='ed_pwd', default=0, help="earthdata-password")                    
 
 # image handling
 parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping the images")
 
 # Java options
-parser.add_argument('-rs', '--ramsize', dest='ramsize', default=config['runtime']['ramsize'], help="set the ramsize for Java, example '3G' or '3000M'")
+parser.add_argument('-xmx', '--xmx', dest='xmx', default=config['runtime']['xmx'], help="set the HEAP for Java, min. 500 MB per threads, an example '6G' or '6000M' for a CPU with 4 cores and 8 threads. ")
 
 # maxnodes
 parser.add_argument('-mn', '--maxnodes', dest='maxnodes', default=config['runtime']['maxnodes'], help="set the maxnodes count for splitter")
@@ -231,8 +234,8 @@ parser.add_argument('-v', '--verbose', action="store_true", help="increase verbo
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
 
 # development
-parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use the svn version of mkgmap like housenumbers2")
-parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default='no', help="set the svn version of mkgmap like housenumbers2")
+parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn version of mkgmap")
+parser.add_argument('-ms', '--mkgmap_set', dest='mkgmap_set', default=0, help="set a svn version of mkgmap like housenumbers2")
 
 args = parser.parse_args()
  
@@ -241,47 +244,11 @@ set buildmap
 
 """
 
-if 'bbox' in config == False:
-  config.add_section('bbox')
 
-if args.bbox != "no":
-  config.set('runtime', 'use_bbox', 'yes')
-  config.set('runtime', 'buildmap', args.bbox_name)
-  buildmap = args.bbox_name
-  config.set('runtime', 'bbox', args.bbox)
-  config.set('runtime', 'buildmap', args.bbox)
-  
-  if args.bbox_name != "bbox_map":
-    config.set('bbox', args.bbox_name, args.bbox)
-
-elif args.bbox_name != "bbox_map" and args.bbox == "no" and config.has_option('bbox', args.bbox_name) == True:
-  config.set('runtime', 'use_bbox', 'yes')
-  config.set('runtime', 'buildmap', args.bbox_name)
-  buildmap = args.bbox_name
-  config.set('runtime', 'bbox', config['bbox'][args.bbox_name])
-  
-elif args.bbox_name != "bbox_map" and args.bbox == "no" and config.has_option('bbox', args.bbox_name) == False:
-  print()
-  printerror(" unable to build this map without a BBOX")
-  printerror(" Please add a useful BBOX definition for this map, ")
-  printerror(" use the option -b and set the area outlines in W,S,E,N")
-  printerror(" An example: pygmap3.py -bn " + args.bbox_name + " -b 7,49.5,8.4,52.1 ")
-  print()
-  quit()
-  
-else:
-  config.set('runtime', 'use_bbox', 'no')  
-  buildmap = os.path.splitext(os.path.basename(args.poly))[0]
-  config.set('runtime', 'buildmap', buildmap)
+buildmap = os.path.splitext(os.path.basename(args.poly))[0]
+config.set('runtime', 'buildmap', buildmap)
 
 write_config()
-
-if args.bbox_list:
-  print()
-  for key in (config['bbox']):
-    print ("  " + key + " = " + config['bbox'][key])
-  print()
-  quit()
 
 name_tag_list = args.name_tag_list
 if 'name_tag_list' in config == False:
@@ -359,7 +326,6 @@ def info_styles():
   printinfo("possible styles as overlays are:")
   print("    bikeroute")
   print("    boundary")
-  print("    housenumber")
   print("    fixme")
   print()
   print()
@@ -457,11 +423,11 @@ if args.check_styles:
   quit()
 
 """
-ramsize for java
+HEAP size for java
 """
 
-if args.ramsize != config['runtime']['ramsize']:
-  config.set('runtime', 'ramsize', "-Xmx" + str(args.ramsize))
+if args.xmx != config['runtime']['xmx']:
+  config.set('runtime', 'xmx', "-Xmx" + str(args.xmx))
 
 """
 maxnodes for splitter
@@ -471,6 +437,21 @@ if args.maxnodes != config['runtime']['maxnodes']:
   config.set('runtime', 'maxnodes', args.maxnodes)
   if os.path.exists("areas/" + buildmap + "_areas.list"):
     os.remove("areas/" + buildmap + "_areas.list")
+
+"""
+max-jobs for mkgmap
+
+"""
+if args.max_jobs:
+  config.set('runtime', 'max_jobs', args.max_jobs)
+
+"""
+keep_going on errors
+
+"""
+
+if args.keep_going:
+  config.set('runtime', 'keep_going', "1")
 
 """
 don't use the areas.list
@@ -486,9 +467,7 @@ special opts to debug the raw map data
 """
 
 if args.spec_opts:
-  config.set('runtime', 'use_spec_opts', 'yes')
-else:
-  config.set('runtime', 'use_spec_opts', 'no')
+  config.set('runtime', 'use_spec_opts', '1')
   
 """
 logging
@@ -496,9 +475,7 @@ logging
 """
 
 if args.log:
-  config.set('runtime', 'logging', 'yes')
-else:
-  config.set('runtime', 'logging', 'no')
+  config.set('runtime', 'logging', '1')
 
 """
 verbosity
@@ -506,25 +483,26 @@ verbosity
 """
 
 if args.verbose:
-  config.set('runtime', 'verbose', 'yes')
-else:
-  config.set('runtime', 'verbose', 'no')
-
+  config.set('runtime', 'verbose', '1')
 
 """
 development version of splitter and mkgmap
 
 """
 
-config.set('runtime', 'use_mkgmap_test', 'no')
-
-if args.mkgmap_set != "no":
+if args.mkgmap_set:
   config.set('runtime', 'mkgmap_test', args.mkgmap_set)
-  config.set('runtime', 'use_mkgmap_test', 'yes')
+  write_config()
+  print()
+  printinfo(" MKGMAP test version set to " + args.mkgmap_set)
+  print()
+  printinfo(" use this version with pygmap3 -mt ")
+  print()
+  quit()
 
 if args.mkgmap_test:
   if config.has_option('runtime', 'mkgmap_test') == True:
-    config.set('runtime', 'use_mkgmap_test', 'yes')
+    config.set('runtime', 'use_mkgmap_test', '1')
   else:
     print()
     printwarning("no test version of mkgmap is set in config")
@@ -601,10 +579,10 @@ if args.dem_dists != config['demtdb']['demdists']:
   config.set('demtdb', 'demdists', args.dem_dists)
   write_config()
   
-if args.ed_user != "no":
+if args.ed_user:
   config.set('runtime', 'ed_user', args.ed_user)
 
-if args.ed_pwd != "no":      
+if args.ed_pwd:      
   config.set('runtime', 'ed_pwd', args.ed_pwd)
   
 write_config()
@@ -675,9 +653,7 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 """
 
 if args.old_bounds:
-  config.set('runtime', 'use_old_bounds', 'yes')
-else:
-  config.set('runtime', 'use_old_bounds', 'no')
+  config.set('runtime', 'use_old_bounds', '1')
 
 write_config() 
 
@@ -699,9 +675,7 @@ create an installer for mapsource
 
 """
 if args.installer:
-  config.set('runtime', 'installer', "yes")
-else:
-  config.set('runtime', 'installer', "no")
+  config.set('runtime', 'installer', "1")
   
 if args.contourlines:
   if os.path.exists("styles/contourlines_style") == True:
@@ -737,14 +711,10 @@ if args.keep_data == False:
 
   """
   if args.hourly:
-    config.set('runtime', 'hourly', 'yes')
-  else:
-    config.set('runtime', 'hourly', 'no')
+    config.set('runtime', 'hourly', '1')
 
   if args.minutely:
-    config.set('runtime', 'minutely', 'yes')    
-  else:
-    config.set('runtime', 'minutely', 'no')
+    config.set('runtime', 'minutely', '1')
     
   write_config()
   
@@ -813,26 +783,21 @@ mkgmap.render()
 
 """
 reset to previous options
+
 """
-
-if config['runtime']['logging'] == "yes":
-  config.set('runtime', 'logging', 'no')
-  write_config()
-
 
 if args.use_style != "no":
   print()
   for key in (config['map_styles_backup']):
     config.set('map_styles', key, config['map_styles_backup'][key])
     config.remove_option('map_styles_backup', key)
-    if config['runtime']['verbose'] == "yes":
-      print ("  " + key + " = " + config['map_styles'][key])  
+    print ("  " + key + " = " + config['map_styles'][key])  
   print()    
   write_config()
   printinfo("mapstyles restored")
   print()
 
-
+  
 """
 --stop_after mkgmap
 
@@ -856,9 +821,6 @@ if args.zip_img:
 
 if args.log:
   store.log()
-
-if os.path.exists(WORK_DIR + "o5m/bbox_map") == True:
-  os.remove(WORK_DIR + "o5m/bbox_map")
 
 today = datetime.datetime.now()
 DATE = today.strftime('%Y%m%d_%H%M')
