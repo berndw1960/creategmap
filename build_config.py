@@ -136,6 +136,18 @@ def update():
   remove temporary options
 
   """
+  
+  if config.has_section('map_styles_backup') == True:
+    print('1')
+    for key in (config['map_styles_backup']):
+      config.set('map_styles', key, config['map_styles_backup'][key])
+      config.remove_option('map_styles_backup', key)
+      print ("  " + key + " = " + config['map_styles'][key])  
+    print()    
+    config.remove_section('map_styles_backup')
+    printinfo("mapstyles restored")
+    print()
+  
   if config.has_option('runtime', 'use_bbox'):
     config.remove_option('runtime', 'use_bbox')
     
@@ -178,4 +190,5 @@ def update():
     print()
     printinfo(" config successfully updated, changed in section 'runtime': 'ramsize' to 'xmx'")
     print()
+    
   write_config()  

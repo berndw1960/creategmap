@@ -183,7 +183,7 @@ parser.add_argument('-m', '--map_style', dest='map_style', default='no', help="e
 parser.add_argument('-r', '--rm_style', dest='rm_style', default='no', help="remove a style")
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 parser.add_argument('-dm', '--no_map_styles', action="store_true", help="disable all map_styles")
-parser.add_argument('-u', '--use_style', dest='use_style', default='no', help="use only one style")
+parser.add_argument('-u', '--use_style', dest='use_style', default=0, help="use only one style")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
@@ -243,7 +243,6 @@ args = parser.parse_args()
 set buildmap
 
 """
-
 
 buildmap = os.path.splitext(os.path.basename(args.poly))[0]
 config.set('runtime', 'buildmap', buildmap)
@@ -390,8 +389,8 @@ if args.rm_style != "no":
   print()
   quit()
 
-if args.use_style != "no":
-  if 'map_styles_backup' in config == False:
+if args.use_style:
+  if config.has_section('map_styles_backup') == False:
     config.add_section('map_styles_backup')
   print()
   for key in (config['map_styles']):
@@ -779,23 +778,6 @@ render the map-images
 """
 
 mkgmap.render()
-
-
-"""
-reset to previous options
-
-"""
-
-if args.use_style != "no":
-  print()
-  for key in (config['map_styles_backup']):
-    config.set('map_styles', key, config['map_styles_backup'][key])
-    config.remove_option('map_styles_backup', key)
-    print ("  " + key + " = " + config['map_styles'][key])  
-  print()    
-  write_config()
-  printinfo("mapstyles restored")
-  print()
 
   
 """
