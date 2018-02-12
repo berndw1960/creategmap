@@ -138,7 +138,7 @@ def update():
   """
   
   if config.has_section('map_styles_backup') == True:
-    print('1')
+    print()
     for key in (config['map_styles_backup']):
       config.set('map_styles', key, config['map_styles_backup'][key])
       config.remove_option('map_styles_backup', key)
