@@ -225,7 +225,7 @@ parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping
 parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="set the HEAP for Java, min. 500 MB per threads, an example '6G' or '6000M' for a CPU with 4 cores and 8 threads. ")
 
 # maxnodes
-parser.add_argument('-mn', '--maxnodes', default=0, help="set the maxnodes for splitter, ~1200000 as example")
+parser.add_argument('-mn', '--maxnodes', default=config['maxnodes']['default'], help="set the maxnodes for splitter, ~1200000 as example")
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
