@@ -130,6 +130,7 @@ if args.list_mapset:
   if config.has_section('mapset') == True:
     print()
     printinfo("mapset list includes: ")
+    print()
     for key in (config['mapset']):
       if config['mapset'][key] == "yes":
         print ("  " + key + " = " + config['mapset'][key])
@@ -146,7 +147,7 @@ if args.enable_mapset:
   else:
     print()
     printerror(" mapset list not found!")
-    printerror(" please create one with 'mapset.py -a dach'")
+    printerror(" please create one with 'mapset.py -am dach'")
     print()
     quit()
   write_config()

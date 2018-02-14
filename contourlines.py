@@ -93,12 +93,7 @@ def create_cont():
     if os.path.exists(mapstyle + "/contourlines_style/lines") == False:
       printerror("No contourlines_style found")
       quit()
-    
-    if config['runtime']['use_bbox'] == "yes":
-      bound_opts = " -a " + config['bbox'][buildmap].replace(',',':')
-    else:
-      bound_opts = " --polygon=poly/" + buildmap + ".poly "
-      
+     
     if config.has_option('runtime', 'ed_user') == True:
       ed_user_opts = " --earthexplorer-user=" + config['runtime']['ed_user']
     else:
@@ -125,7 +120,7 @@ def create_cont():
               " --no-zero-contour " +
               " -s 50 " +
               " -c 500,100 " +
-              bound_opts +
+              " --polygon=poly/" + buildmap + ".poly "+
               " -o " + cltemp_dir + buildmap)
 
     """
@@ -135,9 +130,8 @@ def create_cont():
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + config['runtime']['ramsize'] +
+    os.system("java -ea " + config['runtime']['xmx'] +
               " -jar " + mkgmap_path +
-              " --keep-going " +
               " --max-jobs " +
               " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
               " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
