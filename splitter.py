@@ -4,6 +4,7 @@
 import os
 import configparser
 import shutil
+import time
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
@@ -67,17 +68,28 @@ def split():
                    " --keep-complete " +
                    " --overlap=0 ")
 
-  ## split with
+
   areas_list = WORK_DIR + "areas/" + buildmap + "_areas.list"
+
+  if os.path.exists(areas_list):
+    ftime = os.path.getmtime(areas_list)
+    curtime = time.time()
+    difftime = curtime - ftime
+    if difftime > 1741800:
+      print()
+      printwarning(buildmap + "_areas.list is older then 1 month, create a new file")
+      os.remove(areas_list)
+
+  ## split with
   areas = " --split-file=" + areas_list
   ## or
-  max_nodes = (" --max-nodes=" + config['runtime']['maxnodes'] + " ")
+  max_nodes = (" --max-nodes=" + config['maxnodes'][buildmap] + " ")
 
   split_with_areas_list = java_opts + log_opts + splitter_opts + areas + BUILD_O5M
   split_without_areas_list = java_opts + log_opts + splitter_opts + max_nodes + BUILD_O5M
 
 
-  if os.path.exists(areas_list) == True:
+  if os.path.exists(areas_list):
     command_line = split_with_areas_list
   else:
     command_line = split_without_areas_list
@@ -106,7 +118,7 @@ def split():
       os.makedirs(log_dir)
 
     for i in ['densities-out.txt', 'template.args', 'areas.poly', 'splitter.log', 'areas.list']:
-      if os.path.exists(i) == True:
+      if os.path.exists(i):
         shutil.copy2(i, log_dir)
 
 

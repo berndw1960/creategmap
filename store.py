@@ -71,7 +71,7 @@ def zip_img():
       os.remove(unzip_dir + "/" + img)
   
   os.chdir(WORK_DIR)
-  if os.path.exists(unzip_dir) == True:
+  if os.path.exists(unzip_dir):
     shutil.rmtree(unzip_dir)
     
 def kml():

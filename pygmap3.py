@@ -60,6 +60,7 @@ boundaries from navmap.org
 #import sys
 import os
 import datetime
+import time
 import argparse
 import configparser
 import shutil
@@ -106,8 +107,8 @@ if os.path.exists(WORK_DIR) == False:
 
 os.chdir(WORK_DIR)
 
-if os.path.exists("pygmap3.cfg") == True:
-  if os.path.exists("pygmap3.cfg.bak") == True:
+if os.path.exists("pygmap3.cfg"):
+  if os.path.exists("pygmap3.cfg.bak"):
     os.remove("pygmap3.cfg.bak")
 
   shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
@@ -224,11 +225,11 @@ parser.add_argument('-z', '--zip_img', action="store_true", help="enable zipping
 parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="set the HEAP for Java, min. 500 MB per threads, an example '6G' or '6000M' for a CPU with 4 cores and 8 threads. ")
 
 # maxnodes
-parser.add_argument('-mn', '--maxnodes', default=config['runtime']['maxnodes'], help="set the maxnodes count for splitter")
+parser.add_argument('-mn', '--maxnodes', default=0, help="set the maxnodes for splitter, ~1200000 as example")
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help="test the styles")
-parser.add_argument('-st', '--stop_after', default='no', help='build process stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
+parser.add_argument('-st', '--stop_after', default=0, help='build process stop after [get_tools|contourlines|mapdata|splitter|mkgmap]')
 parser.add_argument('-so', '--spec_opts', action="store_true", help="use some special opts to test the raw data")
 parser.add_argument('-v', '--verbose', action="store_true", help="increase verbosity")
 parser.add_argument('-l', '--log', action="store_true", help="enable splitter and mkgmap logging")
@@ -267,7 +268,7 @@ if config.has_option('name_tag_list', buildmap) == False:
 # map build options
 
 if args.list_mapstyle:
-  if config.has_section('map_styles') == True:
+  if config.has_section('map_styles'):
     print()
     printinfo("map_styles list includes: ")
     print()
@@ -283,7 +284,7 @@ if args.list_mapstyle:
   quit()
 
 if args.all_map_styles:
-  if config.has_section('map_styles') == True:
+  if config.has_section('map_styles'):
     print()
     for key in (config['map_styles']):
       config.set('map_styles', key, 'yes')
@@ -296,7 +297,7 @@ if args.all_map_styles:
   quit()
 
 if args.no_map_styles:
-  if config.has_section('map_styles') == True:
+  if config.has_section('map_styles'):
     print()
     for key in (config['map_styles']):
       config.set('map_styles', key, 'no')
@@ -332,7 +333,7 @@ def info_styles():
   print()
 
 if args.add_style:
-  if os.path.exists("styles/" + args.add_style + "_style") == True:
+  if os.path.exists("styles/" + args.add_style + "_style"):
     config.set('map_styles', args.add_style, 'yes')
     print()
     if args.add_style in config == False:
@@ -363,7 +364,7 @@ if args.map_style and args.map_style != "defaultmap":
     quit()
 
 if args.map_style:
-  if config.has_option('map_styles', args.map_style) == True:
+  if config.has_option('map_styles', args.map_style):
     if config['map_styles'][args.map_style] == "yes":
       config.set('map_styles', args.map_style, 'no')
       print()
@@ -381,7 +382,7 @@ if args.map_style:
   quit()
 
 if args.rm_style:
-  if config.has_option('map_styles', args.rm_style) == True:
+  if config.has_option('map_styles', args.rm_style):
     config.remove_option('map_styles', args.rm_style)
     write_config()
   print()
@@ -420,53 +421,14 @@ if args.check_styles:
 
   mkgmap.check()
   quit()
-
-"""
-HEAP size for java
-"""
-
-if args.xmx != config['runtime']['xmx']:
-  config.set('runtime', 'xmx', "-Xmx" + str(args.xmx))
-
-"""
-maxnodes for splitter
-"""
-
-if args.maxnodes != config['runtime']['maxnodes']:
-  config.set('runtime', 'maxnodes', args.maxnodes)
-  if os.path.exists("areas/" + buildmap + "_areas.list"):
-    os.remove("areas/" + buildmap + "_areas.list")
-
-"""
-max-jobs for mkgmap
-
-"""
-if args.max_jobs:
-  config.set('runtime', 'max_jobs', args.max_jobs)
-
-"""
-keep_going on errors
-
-"""
-
-if args.keep_going:
-  config.set('runtime', 'keep_going', "1")
-
-"""
-don't use the areas.list
-
-"""
-
-if args.no_areas_list:
-  if os.path.exists("areas/" + buildmap + "_areas.list"):
-    os.remove("areas/" + buildmap + "_areas.list")
-
+  
 """
 special opts to debug the raw map data
 """
 
 if args.spec_opts:
   config.set('runtime', 'use_spec_opts', '1')
+
   
 """
 logging
@@ -483,6 +445,36 @@ verbosity
 
 if args.verbose:
   config.set('runtime', 'verbose', '1')
+
+"""
+HEAP size for java
+"""
+
+if args.xmx != config['runtime']['xmx']:
+  config.set('runtime', 'xmx', "-Xmx" + str(args.xmx))
+
+"""
+maxnodes for splitter
+
+"""
+
+if config.has_option('maxnodes', buildmap) == False:
+  config.set('maxnodes', buildmap, config['maxnodes']['default'])
+
+if args.maxnodes != config['maxnodes'][buildmap]:
+  config.set('maxnodes', buildmap, args.maxnodes)
+  if os.path.exists("areas/" + buildmap + "_areas.list"):
+    os.remove("areas/" + buildmap + "_areas.list")
+
+"""
+don't use the areas.list
+
+"""
+
+if args.no_areas_list:
+  if os.path.exists("areas/" + buildmap + "_areas.list"):
+    os.remove("areas/" + buildmap + "_areas.list")
+
 
 """
 development version of splitter and mkgmap
@@ -512,10 +504,26 @@ if args.mkgmap_test:
 """"
 set the amount of levels
 """
+
 if args.levels != config['maplevel']['levels']:
   config.set('maplevel', 'levels', args.levels)
   write_config()
-    
+
+"""
+max-jobs for mkgmap
+
+"""
+
+if args.max_jobs:
+  config.set('runtime', 'max_jobs', args.max_jobs)
+
+"""
+keep_going on errors
+
+"""
+
+if args.keep_going:
+  config.set('runtime', 'keep_going', "1")
 """
 create the contourlines and hillshading
 

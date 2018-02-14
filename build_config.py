@@ -39,9 +39,8 @@ def create():
   config['mapid'] = {'next_mapid': '6500',}
 
   config['runtime'] = {}
-  config['runtime'] = {'maxnodes': '512000',
-                       'default': 'germany',
-                       'xmx': '-Xmx6G',}
+  config['runtime'] = {'default': 'germany',
+                       'xmx': '-Xmx4G',}
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -137,20 +136,14 @@ def update():
 
   """
   
-  if config.has_section('map_styles_backup') == True:
+  if config.has_section('map_styles_backup'):
     print()
     for key in (config['map_styles_backup']):
       config.set('map_styles', key, config['map_styles_backup'][key])
       config.remove_option('map_styles_backup', key)
-      print ("  " + key + " = " + config['map_styles'][key])  
-    print()    
     config.remove_section('map_styles_backup')
     printinfo("mapstyles restored")
-    print()
-  
-  if config.has_option('runtime', 'use_bbox'):
-    config.remove_option('runtime', 'use_bbox')
-    
+
   if config.has_option('runtime', 'hourly'):
     config.remove_option('runtime', 'hourly')
     
@@ -177,7 +170,10 @@ def update():
 
   if config.has_option('runtime', 'verbose'):
     config.remove_option('runtime', 'verbose')
-
+    
+  if config.has_option('runtime', 'maxnodes'):
+    config.remove_option('runtime', 'maxnodes')
+    
   """
   add new options
 
@@ -187,6 +183,12 @@ def update():
     
   if config.has_option('demtdb', 'switch_tdb') == False:
     config.set('demtdb', 'switch_tdb', "no")
+    
+  if config.has_section('maxnodes') == False:
+    config.add_section('maxnodes')
+  
+  if config.has_option('maxnodes','default') == False:
+    config.set('maxnodes','default', '1200000')
 
   if config.has_option('runtime', 'ramsize') == True and config.has_option('runtime', 'xmx') == False:
     config.set('runtime', 'xmx', config['runtime']['ramsize'])

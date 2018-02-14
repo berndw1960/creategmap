@@ -39,18 +39,18 @@ def create_o5m():
   config.read('pygmap3.cfg')
   buildmap = config['runtime']['buildmap']
       
-  if os.path.exists("o5m/" + buildmap + "osm.pbf") == True:
+  if os.path.exists("o5m/" + buildmap + "osm.pbf"):
     print()
     printinfo("converting o5m/" + buildmap + ".osm.pbf to o5m/" + buildmap + ".o5m, please wait...")
     os.system("osmconvert o5m/" + buildmap + ".osm.pbf -o=o5m/" + buildmap + ".o5m")
 
-  elif os.path.exists("o5m/" + buildmap + "-latest.osm.pbf") == True:
+  elif os.path.exists("o5m/" + buildmap + "-latest.osm.pbf"):
     print()
     printinfo("converting o5m/" + buildmap + "-latest.osm.pbf to o5m/" + buildmap + ".o5m, please wait...")
     os.system("osmconvert o5m/" + buildmap + "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m") 
     
-  elif os.path.exists("o5m/planet.o5m") == True:
-    if os.path.exists("poly/" + buildmap + ".poly") == True:
+  elif os.path.exists("o5m/planet.o5m"):
+    if os.path.exists("poly/" + buildmap + ".poly"):
       print()
       printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
       os.system("osmconvert o5m/planet.o5m " +
@@ -118,10 +118,10 @@ def update_o5m():
 
   os.chdir("o5m")
 
-  if os.path.exists(buildmap +  "_new.o5m") == True:
+  if os.path.exists(buildmap +  "_new.o5m"):
     os.rename(buildmap + ".o5m", buildmap + "_temp.o5m")
     os.rename(buildmap + "_new.o5m", buildmap + ".o5m")
-    if os.path.exists(buildmap + ".o5m") == True:
+    if os.path.exists(buildmap + ".o5m"):
       os.remove(buildmap + "_temp.o5m")
 
   os.chdir(WORK_DIR)

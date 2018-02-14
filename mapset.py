@@ -118,7 +118,7 @@ if args.add_mapset:
   quit()
 
 if args.rm_mapset:
-  if config.has_section('mapset') == True:
+  if config.has_section('mapset'):
     config.set('mapset', args.rm_mapset, 'no')
     write_config()
   print()
@@ -127,7 +127,7 @@ if args.rm_mapset:
   quit()
 
 if args.list_mapset:
-  if config.has_section('mapset') == True:
+  if config.has_section('mapset'):
     print()
     printinfo("mapset list includes: ")
     print()
@@ -141,7 +141,7 @@ if args.list_mapset:
   quit()
 
 if args.enable_mapset:
-  if config.has_section('mapset') == True:
+  if config.has_section('mapset'):
     for key in (config['mapset']):
       config.set('mapset', key, 'yes')
   else:
@@ -157,7 +157,7 @@ if args.enable_mapset:
   quit()
   
 if args.disable_mapset:
-  if config.has_section('mapset') == True:
+  if config.has_section('mapset'):
     for key in (config['mapset']):
       config.set('mapset', key, 'no')
   write_config()

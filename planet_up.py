@@ -129,10 +129,10 @@ os.system("osmupdate -v --daily --keep-tempfiles o5m/planet.o5m o5m/planet_new.o
 
 os.chdir("o5m/")
 
-if os.path.exists("planet_new.o5m") == True:
+if os.path.exists("planet_new.o5m"):
   os.rename("planet.o5m", "planet_temp.o5m")
   os.rename("planet_new.o5m", "planet.o5m")
-  if os.path.exists("planet.o5m") == True:
+  if os.path.exists("planet.o5m"):
     os.remove("planet_temp.o5m")
 
 os.chdir(WORK_DIR)

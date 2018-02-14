@@ -9,7 +9,8 @@ import shutil
 def printinfo(msg):
   print("II: " + msg)
 
-def printwarning(msg):  print("WW: " + msg)
+def printwarning(msg):
+  print("WW: " + msg)
 
 def printerror(msg):
   print("EE: " + msg)
@@ -38,7 +39,7 @@ def is_there(find, solutionhint):
   on success return 0
   """
 
-  if os.path.exists(find) == True:
+  if os.path.exists(find):
     printinfo(find + " found")
   else:
     printerror(find + " not found")
@@ -85,7 +86,7 @@ def create_cont():
     checkprg("phyghtmap", hint)
 
     global mapstyle
-    if os.path.exists("styles/contourlines_style") == True:
+    if os.path.exists("styles/contourlines_style"):
       mapstyle = "styles"
     else:
       printerror("contourlines_style not found, please disable it in pygmap3.cfg")
@@ -94,12 +95,12 @@ def create_cont():
       printerror("No contourlines_style found")
       quit()
      
-    if config.has_option('runtime', 'ed_user') == True:
+    if config.has_option('runtime', 'ed_user'):
       ed_user_opts = " --earthexplorer-user=" + config['runtime']['ed_user']
     else:
       ed_user_opts = " " 
       
-    if config.has_option('runtime', 'ed_user') == True:
+    if config.has_option('runtime', 'ed_user'):
       ed_pwd_opts = " --earthexplorer-password=" + config['runtime']['ed_pwd']
     else:
       ed_pwd_opts = " "
@@ -113,7 +114,7 @@ def create_cont():
               ed_pwd_opts +
               " --start-node-id=1 " +
               " --start-way-id=1 " +
-              " --max-nodes-per-tile=" + config['runtime']['maxnodes'] +
+              " --max-nodes-per-tile=" + config['maxnodes']['buildmap'] +
               " --max-nodes-per-way=250 " +
               " --jobs=4 " +
               " --o5m " +
@@ -156,7 +157,7 @@ def create_cont():
     my_zip_img.write(img, compress_type=compression)
     my_zip_img.close()
 
-    if os.path.exists(zip_img) == True:
+    if os.path.exists(zip_img):
       os.remove(img)
 
     os.chdir(WORK_DIR)

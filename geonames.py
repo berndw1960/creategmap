@@ -50,7 +50,7 @@ def cities15000():
     with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
       shutil.copyfileobj(response, out_file)
 
-  if os.path.exists(path) == True:
+  if os.path.exists(path):
     ftime = os.path.getmtime(path)
     curtime = time.time()
     difftime = curtime - ftime

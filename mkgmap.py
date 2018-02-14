@@ -187,15 +187,15 @@ def render():
           option_mkgmap_dem = " --dem="
           
           demdir = WORK_DIR + "hgt/COPERNICUS"
-          if os.path.exists(demdir) == True:
+          if os.path.exists(demdir):
             option_mkgmap_dem = option_mkgmap_dem + demdir
         
           hgtdir1 = WORK_DIR + "hgt/VIEW1"
-          if os.path.exists(hgtdir1) == True:
+          if os.path.exists(hgtdir1):
             option_mkgmap_dem = option_mkgmap_dem + "," + hgtdir1
           
           hgtdir3 = WORK_DIR + "hgt/VIEW3"
-          if os.path.exists(hgtdir3) == True:
+          if os.path.exists(hgtdir3):
             option_mkgmap_dem = option_mkgmap_dem + "," + hgtdir3
           
           if option_mkgmap_dem == " --dem=":
@@ -326,7 +326,7 @@ def render():
       if os.path.exists(unzip_dir) == False:
         os.makedirs(unzip_dir)
 
-      if os.path.exists(img) == True:
+      if os.path.exists(img):
         os.remove(img)
 
       shutil.move(layer +"/gmapsupp.img", img)
