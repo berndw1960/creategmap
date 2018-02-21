@@ -188,7 +188,7 @@ def update():
     config.add_section('maxnodes')
   
   if config.has_option('maxnodes','default') == False:
-    config.set('maxnodes','default', '1200000')
+    config.set('maxnodes','default', '1600000')
 
   if config.has_option('runtime', 'ramsize') == True and config.has_option('runtime', 'xmx') == False:
     config.set('runtime', 'xmx', config['runtime']['ramsize'])

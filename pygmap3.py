@@ -177,6 +177,11 @@ parser = argparse.ArgumentParser(
          prog='PROG',
          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+# Java options
+parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="""set the HEAP for Java, min. 500 MB per threads, 
+                                                                               an example '6G' or '6000M' for a CPU with 4 cores 
+                                                                               and 8 threads. """)
+
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build")
 parser.add_argument('-s', '--set_default', dest='set_default', default=0, help="set region to build as new default")
@@ -200,6 +205,7 @@ parser.add_argument('--minutely', action="store_true", help="update the raw mapd
 # splitter options
 parser.add_argument('-na', '--no_areas_list', action="store_true", help=" don't use areas.list to split mapdata")
 parser.add_argument('-ns', '--no_split', action="store_true", help="don't split the mapdata")
+parser.add_argument('-mn', '--maxnodes', help="set the maxnodes for splitter")
 
 # mkgmap options
 parser.add_argument('-mj', '--max_jobs', default='yes', help=" set the used threads to use with mkgmap (yes(max)/no(=1)/$NUM_THREADS)")
@@ -222,14 +228,6 @@ parser.add_argument('-edp', '--ed_pwd', default=0, help=False)
 
 # image handling
 parser.add_argument('-z', '--zip_img', action="store_true", help=False)
-
-# Java options
-parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="""set the HEAP for Java, min. 500 MB per threads, 
-                                                                               an example '6G' or '6000M' for a CPU with 4 cores 
-                                                                               and 8 threads. """)
-
-# maxnodes
-parser.add_argument('-mn', '--maxnodes', default=0, help="set the maxnodes for splitter")
 
 # debugging
 parser.add_argument('-cs', '--check_styles', action="store_true", help=False)
