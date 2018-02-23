@@ -71,7 +71,7 @@ parser = argparse.ArgumentParser(
         '''))
 
 ## mapsets
-parser.add_argument('-am', '--add_mapset', default=0, help="add a new poly to the mapset list")
+parser.add_argument('-am', '--add_mapset', default=0, help="add a new poly to the mapset list. 'ALL' for every poly in " + WORK_DIR + "poly ")
 parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
 parser.add_argument('-rm', '--rm_mapset', default=0, help="remove a poly from the mapset list")
 parser.add_argument('-em', '--enable_mapset', action="store_true", help="enable the whole list")
@@ -100,22 +100,41 @@ set, edit or delete mapset list
 if args.add_mapset:
   if config.has_section('mapset') == False:
     config['mapset'] = {}
-    
-  add_mapset = os.path.splitext(os.path.basename(args.add_mapset))[0]
   
-  if config.has_option('mapset', args.add_mapset) == False:
-    if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
-      print()
-      printerror(WORK_DIR + "poly/" + add_mapset + ".poly not found... ")
-      print("please create or download "+ add_mapset + ".poly")
-      print()
-      quit()
-  config.set('mapset', args.add_mapset, 'yes')
-  write_config()
-  print()
-  printinfo(args.add_mapset + " added to or enabled on list")
-  print()
-  quit()
+  if args.add_mapset == "ALL":
+    path = WORK_DIR + "poly"
+    dir = os.listdir(path)  
+    for file in dir:
+      file = os.path.splitext(file)[0]
+      if config['mapset'][file] == "yes":
+        continue
+      else:
+        config.set('mapset', file, 'no')
+    write_config()
+    print()
+    printwarning(" ALL poly files added to mapset list, but not enabled! ")
+    print()
+    printinfo(" To build a mapset, use '--enable_mapset' for whole list  ")
+    printinfo(" or '--add_mapset' for a special file ")
+    print()
+    quit()
+    
+  else:
+    file = os.path.splitext(os.path.basename(args.add_mapset))[0]
+  
+    if config.has_option('mapset', args.add_mapset) == False:
+      if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
+        print()
+        printerror(WORK_DIR + "poly/" + file + ".poly not found... ")
+        print("please create or download "+ afile + ".poly")
+        print()
+        quit()
+    config.set('mapset', args.add_mapset, 'yes')
+    write_config()
+    print()
+    printinfo(args.add_mapset + " added to or enabled on list")
+    print()
+    quit()
 
 if args.rm_mapset:
   if config.has_section('mapset'):
@@ -163,6 +182,7 @@ if args.disable_mapset:
   write_config()
   print()
   printwarning(" all mapsets disabled on list")
+  print() 
   quit()
 
 if args.set_default:

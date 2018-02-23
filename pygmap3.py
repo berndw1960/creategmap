@@ -184,6 +184,7 @@ parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="""s
 
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build")
+parser.add_argument('-lp', '--list_poly', action="store_true", help="list all poly files in " + WORK_DIR + "poly ")
 parser.add_argument('-s', '--set_default', dest='set_default', default=0, help="set region to build as new default")
 parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default=0, help="which name tag should be used for naming objects")
 
@@ -241,6 +242,19 @@ parser.add_argument('-mt', '--mkgmap_test', action="store_true", help="use a svn
 parser.add_argument('-ms', '--mkgmap_set', default=0, help="set a svn version of mkgmap like dem-tdb")
 
 args = parser.parse_args()
+
+if args.list_poly:
+  path = WORK_DIR + "poly"
+  dir = sorted(os.listdir(path))  
+  print()
+  printinfo(" This poly files are in '" + WORK_DIR +"poly': ")
+  print()
+  for file in dir:
+    file = os.path.splitext(file)[0]
+    print(file)
+  print()  
+  quit()
+
  
 """
 set buildmap
