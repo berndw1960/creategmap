@@ -126,7 +126,7 @@ if args.add_mapset:
       if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
         print()
         printerror(WORK_DIR + "poly/" + file + ".poly not found... ")
-        print("please create or download "+ afile + ".poly")
+        print("please create or download " + file + ".poly")
         print()
         quit()
     config.set('mapset', args.add_mapset, 'yes')
