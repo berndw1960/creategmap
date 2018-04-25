@@ -241,8 +241,8 @@ def render():
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
       mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
-      mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"
-      mkgmap_base_opts = WORK_DIR + "styles/options "
+      mkgmap_style_opts = " -c " + WORK_DIR + "styles/" + layer + "_style/options"
+      mkgmap_base_opts = " -c " + WORK_DIR + "styles/options "
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
@@ -297,7 +297,7 @@ def render():
                         " --family-name=" + config[layer]['family-name'] +
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
-                        " -c " + option_mkgmap_options +
+                        option_mkgmap_options +
                         option_mkgmap_spec_opts +
                         option_mkgmap_index_opts +
                         option_mkgmap_installer +
