@@ -241,15 +241,15 @@ def render():
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
 
       mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
-      mkgmap_style_opts = " -c " + WORK_DIR + "styles/" + layer + "_style/options"
-      mkgmap_base_opts = " -c " + WORK_DIR + "styles/options "
+      mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"
+      mkgmap_base_opts = WORK_DIR + "styles/options "
       
       if layer == "defaultmap":
         option_mkgmap_options = mkgmap_defaultmap_opts
       elif os.path.exists(mkgmap_style_opts):
-        option_mkgmap_options =  mkgmap_style_opts
+        option_mkgmap_options = " -c " + mkgmap_style_opts
       else:
-        option_mkgmap_options = mkgmap_base_opts
+        option_mkgmap_options = " -c " + mkgmap_base_opts
 
       if config.has_option('runtime', 'use_spec_opts'):
         option_mkgmap_spec_opts = " --report-similar-arcs --report-dead-ends "
