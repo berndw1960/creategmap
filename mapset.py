@@ -70,6 +70,9 @@ parser = argparse.ArgumentParser(
           This Program create mapsets for different regions for Garmin PNA
         '''))
 
+## java heap
+parser.add_argument('-agh', '--aggressiveheap', action="store_true", help="""set the HEAP in an aggressive mode, use with care """)
+
 ## mapsets
 parser.add_argument('-am', '--add_mapset', default=0, help="add a new poly to the mapset list. 'ALL' for every poly in " + WORK_DIR + "poly ")
 parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
@@ -200,6 +203,13 @@ if args.set_default:
   quit()
 
 
+## Java HEAP
+
+if args.aggressiveheap:
+  heap = "-agh "
+else:
+  heap = " "
+  
 ## build or additional option for pygmap3
 
 
@@ -243,7 +253,7 @@ if args.spec_opts:
 else:
   so = " "
   
-command_line =  "pygmap3.py -kg " + verbose + stop + cl + mkgmap_test + log + zip + ob
+command_line =  "pygmap3.py -kg " + heap + verbose + stop + cl + mkgmap_test + log + zip + ob
 
 if args.fastbuild:
   buildmap = config['runtime']['default']

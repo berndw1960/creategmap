@@ -35,10 +35,18 @@ def split():
   buildmap = config['runtime']['buildmap']
   buildday = config['time_stamp'][buildmap]
   splitter_path = WORK_DIR + config['runtime']['splitter'] + "/splitter.jar "
-
-  java_opts = ("java -ea " + config['runtime']['xmx'] +
-                  " -jar " + splitter_path)
-
+  """
+  Java HEAP, RAM oder Mode
+     
+  """
+      
+  if config.has_option('runtime', 'agh'):
+    option_java_heap = " -XX:+AggressiveHeap "
+  else:
+    option_java_heap = " " + config['java']['xmx'] + " " + config['java']['xms'] + " " 
+        
+ 
+  java_opts = "java -ea " + option_java_heap + " -jar " + splitter_path
 
   log_opts = " > splitter.log "
 

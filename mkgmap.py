@@ -145,7 +145,17 @@ def render():
             except:
               print()
               print('Could not delete ', file, ' in ', path)
-
+              
+      """
+      Java HEAP, RAM oder Mode
+      
+      """
+      
+      if config.has_option('runtime', 'agh'):
+        option_java_heap = " -XX:+AggressiveHeap "
+      else:
+        option_java_heap = " " + config['java']['xmx'] + " " + config['java']['xms'] + " " 
+        
       """
       mkgmap-options
       """
@@ -278,7 +288,7 @@ def render():
       
       """
       command_line = ("java -ea " +
-                        config['runtime']['xmx'] +
+                        option_java_heap +
                         option_mkgmap_logging +
                         " -jar " + option_mkgmap_path +
                         option_keep_going +

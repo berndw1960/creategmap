@@ -39,8 +39,11 @@ def create():
   config['mapid'] = {'next_mapid': '6500',}
 
   config['runtime'] = {}
-  config['runtime'] = {'default': 'germany',
-                       'xmx': '-Xmx4G',}
+  config['runtime'] = {'default': 'germany', }
+  
+  config['java'] = {}
+  config['java'] = {'xmx': '-Xmx4G',
+                    'xms': '-Xms4G', }
 
   config['map_styles'] = {}
   config['map_styles'] = {'basemap': 'no',
@@ -173,11 +176,19 @@ def update():
     
   if config.has_option('runtime', 'maxnodes'):
     config.remove_option('runtime', 'maxnodes')
-    
+ 
+  if config.has_option('runtime', 'agh'):
+    config.remove_option('runtime', 'agh')
+
   """
   add new options
 
   """
+  if config.has_section('java') == False:
+    config.add_section('java')
+    config.set('java', 'xmx', '-Xmx4G')
+    config.set('java', 'xms', '-Xms4G')
+  
   if config.has_section('demtdb') == False:
     config.add_section('demtdb')
     
@@ -190,11 +201,6 @@ def update():
   if config.has_option('maxnodes','default') == False:
     config.set('maxnodes','default', '1600000')
 
-  if config.has_option('runtime', 'ramsize') == True and config.has_option('runtime', 'xmx') == False:
-    config.set('runtime', 'xmx', config['runtime']['ramsize'])
-    config.remove_option('runtime', 'ramsize')
-    print()
-    printinfo(" config successfully updated, changed in section 'runtime': 'ramsize' to 'xmx'")
-    print()
+
     
   write_config()  

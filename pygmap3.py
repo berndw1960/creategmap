@@ -178,9 +178,12 @@ parser = argparse.ArgumentParser(
          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 # Java options
-parser.add_argument('-xmx', '--xmx', default=config['runtime']['xmx'], help="""set the HEAP for Java, min. 500 MB per threads, 
+parser.add_argument('-xmx', '--xmx', default=config['java']['xmx'], help="""set the HEAP for Java, min. 500 MB per threads, 
                                                                                an example '6G' or '6000M' for a CPU with 4 cores 
                                                                                and 8 threads. """)
+parser.add_argument('-xms', '--xms', default=config['java']['xms'], help="""set the HEAP, could be the same value as -Xmx,
+                                                                               but a different value is possible """)
+parser.add_argument('-agh', '--aggressiveheap', action="store_true", help="""set the HEAP in an aggressive mode, use with care """)
 
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build")
@@ -414,7 +417,6 @@ if args.use_style:
     config.set('map_styles_backup', key, config['map_styles'][key])
     config.set('map_styles', key, 'no')
   config.set('map_styles', args.use_style, 'yes')
-  write_config()
   print()
   printinfo("create a map with " + args.use_style + " style only")
   print()
@@ -445,7 +447,6 @@ special opts to debug the raw map data
 if args.spec_opts:
   config.set('runtime', 'use_spec_opts', '1')
 
-  
 """
 logging
 
@@ -466,8 +467,15 @@ if args.verbose:
 HEAP size for java
 """
 
-if args.xmx != config['runtime']['xmx']:
-  config.set('runtime', 'xmx', "-Xmx" + str(args.xmx))
+if args.aggressiveheap:
+  config.set('runtime', 'agh', '1')
+
+else:
+  if args.xmx != config['java']['xmx']:
+    config.set('java', 'xmx', "-Xmx" + str(args.xmx))
+    
+  if args.xms != config['java']['xms']:
+    config.set('java', 'xms', "-Xms" + str(args.xms))
 
 """
 maxnodes for splitter
@@ -524,7 +532,6 @@ set the amount of levels
 
 if args.levels != config['maplevel']['levels']:
   config.set('maplevel', 'levels', args.levels)
-  write_config()
 
 """
 max-jobs for mkgmap
@@ -541,6 +548,7 @@ keep_going on errors
 
 if args.keep_going:
   config.set('runtime', 'keep_going', "1")
+  
 """
 create the contourlines and hillshading
 
@@ -598,7 +606,6 @@ if args.disable_tdb:
 
 if args.dem_dists != config['demtdb']['demdists']:
   config.set('demtdb', 'demdists', args.dem_dists)
-  write_config()
   
 if args.ed_user:
   config.set('runtime', 'ed_user', args.ed_user)
@@ -606,14 +613,6 @@ if args.ed_user:
 if args.ed_pwd:      
   config.set('runtime', 'ed_pwd', args.ed_pwd)
   
-write_config()
-
-if args.verbose:
-  print()
-  print(" switch_tdb = " + config['demtdb']['switch_tdb'])
-  print("    tdb = " + config['runtime']['tdb'])
-  print()
-
 """
 set or create the mapid
 
@@ -626,6 +625,17 @@ else:
   next_mapid = str(int(option_mapid)+1)
   config.set('mapid', buildmap, option_mapid)
   config.set('mapid', 'next_mapid', next_mapid)
+
+write_config()
+
+
+if args.verbose:
+  print()
+  print(" switch_tdb = " + config['demtdb']['switch_tdb'])
+  print("    tdb = " + config['runtime']['tdb'])
+  print()
+
+
 
 """
 osmupdate and osmconvert
@@ -649,8 +659,7 @@ if config['osmtools']['check'] == "yes":
     checkprg(tool, hint)
 
   config.set('osmtools', 'check', 'no')
-
-write_config()
+  write_config()
 
 """
 get splitter and mkgmap
