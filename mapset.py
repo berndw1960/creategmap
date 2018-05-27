@@ -53,9 +53,19 @@ if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
 else:
   build_config.update()
-  
+
 config.read('pygmap3.cfg')
 
+if config.has_section('mapset_backup'):
+  if config.has_section('mapset'):
+    config.remove_section('mapset')
+  config.add_section('mapset')
+  for key in (config['mapset_backup']):
+    config.set('mapset', key, config['mapset_backup'][key])
+    config.remove_option('mapset_backup', key)
+  config.remove_section('mapset_backup')
+  
+write_config()    
 
 """
 argparse
@@ -74,13 +84,15 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-agh', '--aggressiveheap', action="store_true", help="""set the HEAP in an aggressive mode, use with care """)
 
 ## mapsets
-parser.add_argument('-am', '--add_mapset', default=0, help="add a new poly to the mapset list. 'ALL' for every poly in " + WORK_DIR + "poly ")
+parser.add_argument('-ap', '--add_poly', action="store_true", help="add mapsets using the poly files in " + WORK_DIR + "poly")
+parser.add_argument('-af', '--add_folder', action="store_true", help="add mapsets using the names of the folders in " + WORK_DIR + "gps_ready/zipped")
+parser.add_argument('-am', '--add_mapset', default=0, help="add one mapset")
+parser.add_argument('-em', '--enable_mapset', default=0, help="enable a mapset, ALL for all mapsets on the list")
+parser.add_argument('-dm', '--disable_mapset', default=0, help="disable a mapset, ALL for all mapsets on the list")
+parser.add_argument('-rm', '--remove_mapset', default=0, help="delete a mapset, ALL for all mapsets on the list")
 parser.add_argument('-lm', '--list_mapset', action="store_true", help="print out the mapset list")
-parser.add_argument('-rm', '--rm_mapset', default=0, help="remove a poly from the mapset list")
-parser.add_argument('-em', '--enable_mapset', action="store_true", help="enable the whole list")
-parser.add_argument('-dm', '--disable_mapset', action="store_true", help="disable the whole list")
-parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
 parser.add_argument('-s', '--set_default', default=0, help="set region to fast build a mapset as new default")
+parser.add_argument('-f', '--fastbuild', action="store_true", help="build a mapset for " + config['runtime']['default'])
 parser.add_argument('-ba', '--break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
 
 ## pygmap3
@@ -100,92 +112,128 @@ set, edit or delete mapset list
 
 """
 
-if args.add_mapset:
-  if config.has_section('mapset') == False:
-    config['mapset'] = {}
-  
-  if args.add_mapset == "ALL":
-    path = WORK_DIR + "poly"
-    dir = os.listdir(path)  
-    for file in dir:
-      file = os.path.splitext(file)[0]
-      if config['mapset'][file] == "yes":
-        continue
-      else:
-        config.set('mapset', file, 'no')
-    write_config()
-    print()
-    printwarning(" ALL poly files added to mapset list, but not enabled! ")
-    print()
-    printinfo(" To build a mapset, use '--enable_mapset' for whole list  ")
-    printinfo(" or '--add_mapset' for a special file ")
-    print()
-    quit()
-    
-  else:
-    file = os.path.splitext(os.path.basename(args.add_mapset))[0]
-  
-    if config.has_option('mapset', args.add_mapset) == False:
-      if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
-        print()
-        printerror(WORK_DIR + "poly/" + file + ".poly not found... ")
-        print("please create or download " + file + ".poly")
-        print()
-        quit()
-    config.set('mapset', args.add_mapset, 'yes')
-    write_config()
-    print()
-    printinfo(args.add_mapset + " added to or enabled on list")
-    print()
-    quit()
-
-if args.rm_mapset:
-  if config.has_section('mapset'):
-    config.set('mapset', args.rm_mapset, 'no')
-    write_config()
+if args.add_poly:
+  path = WORK_DIR + "poly"
+  dir = sorted(os.listdir(path))
+  for file in dir:
+    file = os.path.splitext(file)[0]
+    if config.has_option('mapset', file) == True:
+      continue
+    else:
+      config.set('mapset', file, 'no')
+  write_config()
   print()
-  printwarning(args.rm_mapset + " disabled on list")
+  printwarning("ALL poly files added to mapset list, but not enabled! ")
+  print()
+  printinfo("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
+  printinfo("or '--enable_mapset $POLY' for a special mapset ")
+  print()
+  quit()
+    
+
+if args.add_folder:
+  path = WORK_DIR + "gps_ready/zipped"
+  dir = sorted(os.listdir(path))
+  for folder in dir:
+    if config.has_option('mapset', folder) == True:
+      continue
+    else:
+      config.set('mapset', folder, 'no')
+  write_config()
+  print()
+  printwarning("ALL folders in " + path + " added to mapset list, but not enabled! ")
+  print()
+  printinfo("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
+  printinfo("or '--enable_mapset §FOLDER' for a special mapset ")
   print()
   quit()
 
+
+if args.add_mapset:
+  file = os.path.splitext(os.path.basename(args.add_mapset))[0]
+  if config.has_option('mapset', args.add_mapset) == False:
+    if os.path.exists("poly/" + args.add_mapset + ".poly") == False:
+      print()
+      printerror(WORK_DIR + "poly/" + file + ".poly not found... ")
+      print("please create or download " + file + ".poly")
+      print()
+      quit()
+  config.set('mapset', args.add_mapset, 'yes')
+  write_config()
+  print()
+  printinfo(args.add_mapset + " added to the list ")
+  print()
+  quit()
+
+if args.enable_mapset == "ALL":
+  if config.has_section('mapset_backup') == False:
+    config.add_section('mapset_backup')
+  for key in (config['mapset']):
+    config.set('mapset_backup', key, config['mapset'][key])
+  for key in (config['mapset']):
+    config.set('mapset', key, 'yes')
+  write_config()
+  print()
+  printinfo("all mapsets enabled on list for this build process")
+  print()
+elif args.enable_mapset:
+  config.set('mapset', args.enable_mapset, 'yes')
+  write_config()
+  print()
+  printinfo(args.enable_mapset + " enabled!")
+  print()
+  quit()
+
+if args.disable_mapset == "ALL":
+  for key in (config['mapset']):
+    config.set('mapset', key, 'no')
+  write_config()
+  print()
+  printinfo("all mapsets disabled on list")
+  print()
+  quit()  
+elif args.disable_mapset:
+  config.set('mapset', args.disable_mapset, 'no')
+  write_config()
+  print()
+  printwarning(args.disable_mapset + " disabled on list")
+  print()
+  quit()
+
+if args.remove_mapset == "ALL":
+  config.remove_section('mapset')
+  write_config()
+  print()
+  printwarning("all mapsets deleted, list is empty")
+  print() 
+  quit()
+elif args.remove_mapset:
+  config.remove_option('mapset', args.remove_mapset)
+  write_config()
+  print()
+  printwarning( args.remove_mapset + " deleted from the list")
+  print() 
+  quit()
+
+  
 if args.list_mapset:
   if config.has_section('mapset'):
     print()
     printinfo("mapset list includes: ")
     print()
+    print("enabled:")
     for key in (config['mapset']):
       if config['mapset'][key] == "yes":
-        print ("  " + key + " = " + config['mapset'][key])
+        print("  " + key)
+    print()
+    print("disabled:")
+    for key in (config['mapset']):
+      if config['mapset'][key] == "no":
+        print("  " + key)  
   else:
     print()
-    printinfo("mapset list didn't exist or is empty")
+    printinfo("mapset list didn't exist")
   print()
-  quit()
-
-if args.enable_mapset:
-  if config.has_section('mapset'):
-    for key in (config['mapset']):
-      config.set('mapset', key, 'yes')
-  else:
-    print()
-    printerror(" mapset list not found!")
-    printerror(" please create one with 'mapset.py -am dach'")
-    print()
-    quit()
-  write_config()
-  print()
-  printinfo(" all mapsets enabled on list")
-  print()
-  quit()
-  
-if args.disable_mapset:
-  if config.has_section('mapset'):
-    for key in (config['mapset']):
-      config.set('mapset', key, 'no')
-  write_config()
-  print()
-  printwarning(" all mapsets disabled on list")
-  print() 
   quit()
 
 if args.set_default:
@@ -195,11 +243,11 @@ if args.set_default:
     printerror("please create or download "+ args.set_default + ".poly")
     print()
     quit()
-
   config.set('runtime', 'default', args.set_default)
+  write_config()
+  print()
   print(args.set_default + " set as new default region")
   print()
-  write_config()
   quit()
 
 
@@ -256,7 +304,6 @@ else:
 command_line =  "pygmap3.py -kg " + heap + verbose + stop + cl + mkgmap_test + log + zip + ob
 
 if args.fastbuild:
-  buildmap = config['runtime']['default']
   if args.verbose:
     print()
     print(command_line)

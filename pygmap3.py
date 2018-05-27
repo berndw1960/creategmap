@@ -143,8 +143,19 @@ if os.path.exists("pygmap3.cfg") == False:
   build_config.create()
 
 build_config.update()
-  
+
 config.read('pygmap3.cfg')
+
+if config.has_section('map_styles_backup'):
+  if config.has_section('map_styles'):
+    config.remove_section('map_styles')
+  config.add_section('map_styles')  
+  for key in (config['map_styles_backup']):
+    config.set('map_styles', key, config['map_styles_backup'][key])
+    config.remove_option('map_styles_backup', key)
+  config.remove_section('map_styles_backup')
+ 
+write_config()
 
 """
 argparse
@@ -291,14 +302,28 @@ if args.list_mapstyle:
     print()
     printinfo("map_styles list includes: ")
     print()
+    print(" enabled:")
     for key in (config['map_styles']):
-      print("  " + (key) + " = " + config['map_styles'][key])
+      if config['map_styles'][key] == "yes":
+        print("  " + key)
+    print()
+    print(" disabled:")
+    for key in (config['map_styles']):
+      if config['map_styles'][key] == "no":
+        print("  " + key)
     if config.has_section('mapset') == True:
       print()
       printinfo("mapset list includes: ")
       print()
+      print(" enabled:")
       for key in (config['mapset']):
-        print("  " + key + " = " + config['mapset'][key])
+        if config['mapset'][key] == "yes":
+          print("  " + key)
+      print()
+      print(" disabled:")
+      for key in (config['mapset']):
+        if config['mapset'][key] == "no":
+          print("  " + key)
   print()
   quit()
 
@@ -308,7 +333,7 @@ if args.all_map_styles:
     for key in (config['map_styles']):
       config.set('map_styles', key, 'yes')
       write_config()      
-      print ("  " + key + " = " + config['map_styles'][key])
+      print("  " + key + " = " + config['map_styles'][key])
 
     print()
     printinfo("all mapstyles enabled")
@@ -320,7 +345,7 @@ if args.no_map_styles:
     print()
     for key in (config['map_styles']):
       config.set('map_styles', key, 'no')
-      print ("  " + key + " = " + config['map_styles'][key])
+      print("  " + key + " = " + config['map_styles'][key])
 
     write_config()
     print()
@@ -469,8 +494,11 @@ HEAP size for java
 
 if args.aggressiveheap:
   config.set('runtime', 'agh', '1')
-
+  config.set('runtime', 'xmx', '0')
+  config.set('runtime', 'xms', '0')
 else:
+  config.set('runtime', 'agh', '0')
+  
   if args.xmx != config['java']['xmx']:
     config.set('java', 'xmx', "-Xmx" + str(args.xmx))
     
@@ -845,6 +873,7 @@ print()
 print(" ----- " + (DATE) + " ----- " + (buildmap) + " ready! -----")
 print()
 print()
+
 
 quit()
 

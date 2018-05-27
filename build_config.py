@@ -138,15 +138,10 @@ def update():
   remove temporary options
 
   """
-  
-  if config.has_section('map_styles_backup'):
-    print()
-    for key in (config['map_styles_backup']):
-      config.set('map_styles', key, config['map_styles_backup'][key])
-      config.remove_option('map_styles_backup', key)
-    config.remove_section('map_styles_backup')
-    printinfo("mapstyles restored")
-
+    
+  if config.has_section('mapset') == False:
+    config['mapset'] = {}
+    
   if config.has_option('runtime', 'hourly'):
     config.remove_option('runtime', 'hourly')
     
@@ -179,6 +174,14 @@ def update():
  
   if config.has_option('runtime', 'agh'):
     config.remove_option('runtime', 'agh')
+    
+  if config.has_section('mapset') == False:
+    config['mapset'] = {}
+  if config.has_option('runtime', 'xmx'):
+    config.remove_option('runtime', 'xmx')
+
+  if config.has_option('runtime', 'xms'):
+    config.remove_option('runtime', 'xms')
 
   """
   add new options

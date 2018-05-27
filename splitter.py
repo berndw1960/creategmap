@@ -93,8 +93,19 @@ def split():
   ## or
   max_nodes = (" --max-nodes=" + config['maxnodes'][buildmap] + " ")
 
-  split_with_areas_list = java_opts + log_opts + splitter_opts + areas + BUILD_O5M
-  split_without_areas_list = java_opts + log_opts + splitter_opts + max_nodes + BUILD_O5M
+
+  ## splitter.jar command_line
+  split_with_areas_list = java_opts + 
+                          log_opts + 
+                          splitter_opts + 
+                          areas + 
+                          BUILD_O5M
+                          
+  split_without_areas_list = java_opts + 
+                             log_opts + 
+                             splitter_opts + 
+                             max_nodes + 
+                             BUILD_O5M
 
 
   if os.path.exists(areas_list):
