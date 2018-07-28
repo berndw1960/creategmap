@@ -1,0 +1,88 @@
+diff --git a/build_config.py b/build_config.py
+index 7395720..5483c22 100644
+--- a/build_config.py
++++ b/build_config.py
+@@ -55,53 +55,39 @@ def create():
+                           'defaultmap': 'yes',}
+ 
+   config['defaultmap'] = {}
+-  config['defaultmap'] = {'family-id': '1',
+-                          'product-id': '41',
+-                          'family-name': 'Defaultmap',
++  config['defaultmap'] = {'product-id': '1',
+                           'draw-priority': '10',
+                           'mapid_ext': '1001',}
+ 
+   config['basemap'] = {}
+-  config['basemap'] = {'family-id': '4',
+-                       'product-id': '44',
+-                       'family-name': 'Basemap',
++  config['basemap'] = {'product-id': '4',
+                        'draw-priority': '10',
+                        'mapid_ext': '1001',}
+ 
+   config['bikemap'] = {}
+-  config['bikemap'] = {'family-id': '5',
+-                       'product-id': '45',
+-                       'family-name': 'Bikemap',
++  config['bikemap'] = {'product-id': '5',
+                        'draw-priority': '10',
+                        'mapid_ext': '1001',}
+ 
+   config['carmap'] = {}
+-  config['carmap'] = {'family-id': '6',
+-                       'product-id': '46',
+-                       'family-name': 'Carmap',
+-                       'draw-priority': '10',
+-                       'mapid_ext': '1001',}
++  config['carmap'] = {'product-id': '6',
++                      'draw-priority': '10',
++                      'mapid_ext': '1001',}
+ 
+   config['boundary'] = {}
+-  config['boundary'] = {'family-id': '7',
+-                       'product-id': '47',
+-                       'family-name': 'Boundaries',
+-                       'draw-priority': '14',
+-                       'mapid_ext': '4001',}
++  config['boundary'] = {'product-id': '7',
++                        'draw-priority': '14',
++                        'mapid_ext': '4001',}
+ 
+ 
+   config['bikeroute'] = {}
+-  config['bikeroute'] = {'family-id': '9',
+-                      'product-id': '49',
+-                      'family-name': 'Bikeroutes',
+-                      'draw-priority': '16',
+-                      'mapid_ext': '6001',}
++  config['bikeroute'] = {'product-id': '9',
++                         'draw-priority': '16',
++                         'mapid_ext': '6001',}
+ 
+ 
+   config['fixme'] = {}
+-  config['fixme'] = {'family-id': '3',
+-                     'product-id': '33',
+-                     'family-name': 'Fixme',
++  config['fixme'] = {'product-id': '3',
+                      'draw-priority': '16',
+                      'mapid_ext': '7001',}
+   
+diff --git a/mkgmap.py b/mkgmap.py
+index 5eed81a..a021a9a 100644
+--- a/mkgmap.py
++++ b/mkgmap.py
+@@ -302,9 +302,10 @@ def render():
+                         option_mkgmap_dem_dists +
+                         option_mkgmap_poly +
+                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
+-                        " --family-id=" + config[layer]['family-id'] +
++                        " --family-id=" + config['mapid'][buildmap] +
+                         " --product-id=" + config[layer]['product-id'] +
+-                        " --family-name=" + config[layer]['family-name'] +
++                        " --family-name=" + buildmap + "_" + layer +
++                        " --series-name=" + buildmap + "_" + layer +
+                         " --draw-priority=" + config[layer]['draw-priority'] +
+                         " --description=" + buildmap + "_" + buildday + "_" + layer +
+                         option_mkgmap_options +

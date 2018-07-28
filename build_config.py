@@ -55,53 +55,39 @@ def create():
                           'defaultmap': 'yes',}
 
   config['defaultmap'] = {}
-  config['defaultmap'] = {'family-id': '1',
-                          'product-id': '41',
-                          'family-name': 'Defaultmap',
+  config['defaultmap'] = {'product-id': '1',
                           'draw-priority': '10',
                           'mapid_ext': '1001',}
 
   config['basemap'] = {}
-  config['basemap'] = {'family-id': '4',
-                       'product-id': '44',
-                       'family-name': 'Basemap',
+  config['basemap'] = {'product-id': '4',
                        'draw-priority': '10',
                        'mapid_ext': '1001',}
 
   config['bikemap'] = {}
-  config['bikemap'] = {'family-id': '5',
-                       'product-id': '45',
-                       'family-name': 'Bikemap',
+  config['bikemap'] = {'product-id': '5',
                        'draw-priority': '10',
                        'mapid_ext': '1001',}
 
   config['carmap'] = {}
-  config['carmap'] = {'family-id': '6',
-                       'product-id': '46',
-                       'family-name': 'Carmap',
-                       'draw-priority': '10',
-                       'mapid_ext': '1001',}
+  config['carmap'] = {'product-id': '6',
+                      'draw-priority': '10',
+                      'mapid_ext': '1001',}
 
   config['boundary'] = {}
-  config['boundary'] = {'family-id': '7',
-                       'product-id': '47',
-                       'family-name': 'Boundaries',
-                       'draw-priority': '14',
-                       'mapid_ext': '4001',}
+  config['boundary'] = {'product-id': '7',
+                        'draw-priority': '14',
+                        'mapid_ext': '4001',}
 
 
   config['bikeroute'] = {}
-  config['bikeroute'] = {'family-id': '9',
-                      'product-id': '49',
-                      'family-name': 'Bikeroutes',
-                      'draw-priority': '16',
-                      'mapid_ext': '6001',}
+  config['bikeroute'] = {'product-id': '9',
+                         'draw-priority': '16',
+                         'mapid_ext': '6001',}
 
 
   config['fixme'] = {}
-  config['fixme'] = {'family-id': '3',
-                     'product-id': '33',
-                     'family-name': 'Fixme',
+  config['fixme'] = {'product-id': '3',
                      'draw-priority': '16',
                      'mapid_ext': '7001',}
   

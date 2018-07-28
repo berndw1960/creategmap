@@ -302,9 +302,10 @@ def render():
                         option_mkgmap_dem_dists +
                         option_mkgmap_poly +
                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
-                        " --family-id=" + config[layer]['family-id'] +
+                        " --family-id=" + config['mapid'][buildmap] +
                         " --product-id=" + config[layer]['product-id'] +
-                        " --family-name=" + config[layer]['family-name'] +
+                        " --family-name=" + buildmap + "_" + layer +
+                        " --series-name=" + buildmap + "_" + layer +
                         " --draw-priority=" + config[layer]['draw-priority'] +
                         " --description=" + buildmap + "_" + buildday + "_" + layer +
                         option_mkgmap_options +
