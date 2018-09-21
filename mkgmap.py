@@ -151,7 +151,7 @@ def render():
       
       """
       
-      if config.has_option('runtime', 'agh'):
+      if config['java']['agh'] == "1":
         option_java_heap = " -XX:+AggressiveHeap "
       else:
         option_java_heap = " " + config['java']['xmx'] + " " + config['java']['xms'] + " " 

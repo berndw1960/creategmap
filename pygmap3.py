@@ -194,7 +194,8 @@ parser.add_argument('-xmx', '--xmx', default=config['java']['xmx'], help="""set 
                                                                                and 8 threads. """)
 parser.add_argument('-xms', '--xms', default=config['java']['xms'], help="""set the HEAP, could be the same value as -Xmx,
                                                                                but a different value is possible """)
-parser.add_argument('-agh', '--aggressiveheap', action="store_true", help="""set the HEAP in an aggressive mode, use with care """)
+parser.add_argument('-agh', '--aggressiveheap', action="store_true", help="""set the HEAP permanent in an aggressive mode""")
+parser.add_argument('-no_agh', '--no_aggressiveheap', action="store_true", help="""disable the aggressive mode """)
 
 # mapset handling
 parser.add_argument('-p', '--poly', dest='poly', default=config['runtime']['default'], help="set map region to build")
@@ -489,22 +490,22 @@ if args.verbose:
   config.set('runtime', 'verbose', '1')
 
 """
-HEAP size for java
+HEAP size for java, default is aggressiveheap
 """
 
 if args.aggressiveheap:
-  config.set('runtime', 'agh', '1')
-  config.set('runtime', 'xmx', '0')
-  config.set('runtime', 'xms', '0')
-else:
-  config.set('runtime', 'agh', '0')
-  
-  if args.xmx != config['java']['xmx']:
-    config.set('java', 'xmx', "-Xmx" + str(args.xmx))
-    
-  if args.xms != config['java']['xms']:
-    config.set('java', 'xms', "-Xms" + str(args.xms))
+  config.set('java', 'agh', '1')
 
+if args.no_aggressiveheap:
+  config.set('java', 'agh', '0') 
+
+if config['java']['agh'] == "0":
+    if args.xmx != config['java']['xmx']:
+      config.set('java', 'xmx', "-Xmx" + str(args.xmx))
+    if args.xms != config['java']['xms']:
+      config.set('java', 'xms', "-Xms" + str(args.xms))
+
+  
 """
 maxnodes for splitter
 

@@ -125,9 +125,6 @@ def update():
 
   """
     
-  if config.has_section('mapset') == False:
-    config['mapset'] = {}
-    
   if config.has_option('runtime', 'hourly'):
     config.remove_option('runtime', 'hourly')
     
@@ -161,8 +158,6 @@ def update():
   if config.has_option('runtime', 'agh'):
     config.remove_option('runtime', 'agh')
     
-  if config.has_section('mapset') == False:
-    config['mapset'] = {}
   if config.has_option('runtime', 'xmx'):
     config.remove_option('runtime', 'xmx')
 
@@ -173,11 +168,22 @@ def update():
   add new options
 
   """
+  
+  if config.has_section('mapset') == False:
+    config['mapset'] = {}  
+    
   if config.has_section('java') == False:
     config.add_section('java')
+    
+  if config.has_option('java', 'xmx') == False:  
     config.set('java', 'xmx', '-Xmx4G')
+    
+  if config.has_option('java', 'xms') == False:    
     config.set('java', 'xms', '-Xms4G')
-  
+
+  if config.has_option('java', 'agh') == False:
+    config.set('java', 'agh', '0')
+    
   if config.has_section('demtdb') == False:
     config.add_section('demtdb')
     
