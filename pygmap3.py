@@ -214,6 +214,7 @@ parser.add_argument('-u', '--use_style', default=0, help="use only one style")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
+parser.add_argument('-nb', '--no_bounds', action="store_true", help="don't try to get precomp sea or bounds")
 parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
@@ -714,9 +715,20 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
 if args.old_bounds:
   config.set('runtime', 'use_old_bounds', '1')
 
+if args.no_bounds:
+  print()
+  printwarning("don't try to get new precomp sea or bound files")
+  print()
+else:
+  navmap.get_bounds()
+
+
+"""
+write all changes to the config file
+
+"""
 write_config() 
 
-navmap.get_bounds()
 
 """
 --stop_after get_tools

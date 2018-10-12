@@ -96,6 +96,7 @@ parser.add_argument('-f', '--fastbuild', action="store_true", help="build a maps
 parser.add_argument('-ba', '--break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
 
 ## pygmap3
+parser.add_argument('-nb', '--no_bounds', action="store_true", help="don't try to get precomp sea or bounds")
 parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
@@ -131,22 +132,41 @@ if args.add_poly:
   quit()
     
 
+def mapset_backup():
+  if config.has_section('mapset_backup') == False:
+    config.add_section('mapset_backup')
+  for key in (config['mapset']):
+    config.set('mapset_backup', key, config['mapset'][key])
+  print()
+  printinfo("Previous mapset list is backuped!")
+  print()
+  
+def mapset_list():
+  printinfo("These folders in " + path + " are added to mapset list! ")
+  print()
+  for key in (config['mapset']):
+    if config['mapset'][key] == "yes":
+      print("  " + key)   
+  print()  
+  
 if args.add_folder:
+  mapset_backup()
   path = WORK_DIR + "gps_ready/zipped"
   dir = sorted(os.listdir(path))
   for folder in dir:
     if config.has_option('mapset', folder) == True:
       continue
     else:
-      config.set('mapset', folder, 'no')
+      config.set('mapset', folder, 'yes')
+      
+  for key in (config['mapset']):
+    config.set('mapset', key, 'yes')
+  
   write_config()
+  
+  mapset_list()
+  
   print()
-  printwarning("ALL folders in " + path + " added to mapset list, but not enabled! ")
-  print()
-  printinfo("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
-  printinfo("or '--enable_mapset §FOLDER' for a special mapset ")
-  print()
-  quit()
 
 
 if args.add_mapset:
@@ -166,15 +186,14 @@ if args.add_mapset:
   quit()
 
 if args.enable_mapset == "ALL":
-  if config.has_section('mapset_backup') == False:
-    config.add_section('mapset_backup')
-  for key in (config['mapset']):
-    config.set('mapset_backup', key, config['mapset'][key])
+  mapset_backup()
   for key in (config['mapset']):
     config.set('mapset', key, 'yes')
+    
   write_config()
-  print()
-  printinfo("all mapsets enabled on list for this build process")
+
+  mapset_list()
+  
   print()
 elif args.enable_mapset:
   config.set('mapset', args.enable_mapset, 'yes')
@@ -295,13 +314,18 @@ if args.old_bounds:
   ob = "-ob "
 else:
   ob = ""
-
+  
+if args.no_bounds:
+  nb = "-nb "
+else:
+  nb = ""
+  
 if args.spec_opts:
   so = " -so "
 else:
   so = " "
   
-command_line =  "pygmap3.py -kg " + heap + verbose + stop + cl + mkgmap_test + log + zip + ob
+command_line =  "pygmap3.py -kg " + heap + verbose + stop + cl + mkgmap_test + log + zip + ob + nb
 
 if args.fastbuild:
   if args.verbose:

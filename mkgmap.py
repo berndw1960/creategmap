@@ -234,21 +234,23 @@ def render():
       else:
         option_name_tag_list = " --name-tag-list=" + config['name_tag_list']['default']
 
-      bounds_zip = WORK_DIR + "bounds_"+ config['runtime']['bounds'] + ".zip"
       if layer == "fixme" or layer == "boundary":
         option_bounds = " "
-      elif os.path.exists(bounds_zip):
-        option_bounds = " --bounds=" + bounds_zip
       else:
         option_bounds = " --location-autofill=is_in,nearest "
-        
-      sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
-      if layer == "fixme" or layer == "boundary":
-        option_sea = " "
-      elif os.path.exists(sea_zip):
-        option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
-      else:
-        option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+        if config.has_option('bounds', 'bounds'): 
+          bounds_zip = WORK_DIR + "bounds_"+ config['bounds']['bounds'] + ".zip"
+          if os.path.exists(bounds_zip):
+            option_bounds = " --bounds=" + bounds_zip
+
+        if layer == "fixme" or layer == "boundary":
+          option_sea = " "
+        else:
+          option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+          if config.has_option('bounds', 'sea'):
+            sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
+            if os.path.exists(sea_zip):
+              option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
 
       mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
       mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"

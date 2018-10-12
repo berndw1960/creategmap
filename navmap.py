@@ -72,7 +72,7 @@ def get_bounds():
         print()
         break
 
-    config.set('runtime', i, date)
+    config.set('bounds', i, date)
     write_config()
 
 

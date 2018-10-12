@@ -1,88 +1,335 @@
 diff --git a/build_config.py b/build_config.py
-index 7395720..5483c22 100644
+index 8ae521b..f8454fd 100644
 --- a/build_config.py
 +++ b/build_config.py
-@@ -55,53 +55,39 @@ def create():
-                           'defaultmap': 'yes',}
+@@ -113,7 +113,10 @@ def create():
+                               'dach': 'name:de,name',
+                               'germany': 'name:de,name',
+                               'bonn': 'name:de,name',}
+- 
++
++
++  config['bounds'] = {}
++   
+   write_config()
  
-   config['defaultmap'] = {}
--  config['defaultmap'] = {'family-id': '1',
--                          'product-id': '41',
--                          'family-name': 'Defaultmap',
-+  config['defaultmap'] = {'product-id': '1',
-                           'draw-priority': '10',
-                           'mapid_ext': '1001',}
- 
-   config['basemap'] = {}
--  config['basemap'] = {'family-id': '4',
--                       'product-id': '44',
--                       'family-name': 'Basemap',
-+  config['basemap'] = {'product-id': '4',
-                        'draw-priority': '10',
-                        'mapid_ext': '1001',}
- 
-   config['bikemap'] = {}
--  config['bikemap'] = {'family-id': '5',
--                       'product-id': '45',
--                       'family-name': 'Bikemap',
-+  config['bikemap'] = {'product-id': '5',
-                        'draw-priority': '10',
-                        'mapid_ext': '1001',}
- 
-   config['carmap'] = {}
--  config['carmap'] = {'family-id': '6',
--                       'product-id': '46',
--                       'family-name': 'Carmap',
--                       'draw-priority': '10',
--                       'mapid_ext': '1001',}
-+  config['carmap'] = {'product-id': '6',
-+                      'draw-priority': '10',
-+                      'mapid_ext': '1001',}
- 
-   config['boundary'] = {}
--  config['boundary'] = {'family-id': '7',
--                       'product-id': '47',
--                       'family-name': 'Boundaries',
--                       'draw-priority': '14',
--                       'mapid_ext': '4001',}
-+  config['boundary'] = {'product-id': '7',
-+                        'draw-priority': '14',
-+                        'mapid_ext': '4001',}
- 
- 
-   config['bikeroute'] = {}
--  config['bikeroute'] = {'family-id': '9',
--                      'product-id': '49',
--                      'family-name': 'Bikeroutes',
+ def update():
+@@ -172,6 +175,13 @@ def update():
+   if config.has_section('mapset') == False:
+     config['mapset'] = {}  
+     
++  if config.has_section('bounds') == False:
++    config['bounds'] = {} 
++    for i in ['sea', 'bounds']:
++      if config.has_option('runtime', i ):
++        config.set('bounds', i, config['runtime'][i])
++        config.remove_option('runtime', i )
++      
+   if config.has_section('java') == False:
+     config.add_section('java')
+     
+diff --git a/diff.txt b/diff.txt
+index a7e2802..e69de29 100644
+--- a/diff.txt
++++ b/diff.txt
+@@ -1,88 +0,0 @@
+-diff --git a/build_config.py b/build_config.py
+-index 7395720..5483c22 100644
+---- a/build_config.py
+-+++ b/build_config.py
+-@@ -55,53 +55,39 @@ def create():
+-                           'defaultmap': 'yes',}
+- 
+-   config['defaultmap'] = {}
+--  config['defaultmap'] = {'family-id': '1',
+--                          'product-id': '41',
+--                          'family-name': 'Defaultmap',
+-+  config['defaultmap'] = {'product-id': '1',
+-                           'draw-priority': '10',
+-                           'mapid_ext': '1001',}
+- 
+-   config['basemap'] = {}
+--  config['basemap'] = {'family-id': '4',
+--                       'product-id': '44',
+--                       'family-name': 'Basemap',
+-+  config['basemap'] = {'product-id': '4',
+-                        'draw-priority': '10',
+-                        'mapid_ext': '1001',}
+- 
+-   config['bikemap'] = {}
+--  config['bikemap'] = {'family-id': '5',
+--                       'product-id': '45',
+--                       'family-name': 'Bikemap',
+-+  config['bikemap'] = {'product-id': '5',
+-                        'draw-priority': '10',
+-                        'mapid_ext': '1001',}
+- 
+-   config['carmap'] = {}
+--  config['carmap'] = {'family-id': '6',
+--                       'product-id': '46',
+--                       'family-name': 'Carmap',
+--                       'draw-priority': '10',
+--                       'mapid_ext': '1001',}
+-+  config['carmap'] = {'product-id': '6',
+-+                      'draw-priority': '10',
+-+                      'mapid_ext': '1001',}
+- 
+-   config['boundary'] = {}
+--  config['boundary'] = {'family-id': '7',
+--                       'product-id': '47',
+--                       'family-name': 'Boundaries',
+--                       'draw-priority': '14',
+--                       'mapid_ext': '4001',}
+-+  config['boundary'] = {'product-id': '7',
+-+                        'draw-priority': '14',
+-+                        'mapid_ext': '4001',}
+- 
+- 
+-   config['bikeroute'] = {}
+--  config['bikeroute'] = {'family-id': '9',
+--                      'product-id': '49',
+--                      'family-name': 'Bikeroutes',
+--                      'draw-priority': '16',
+--                      'mapid_ext': '6001',}
+-+  config['bikeroute'] = {'product-id': '9',
+-+                         'draw-priority': '16',
+-+                         'mapid_ext': '6001',}
+- 
+- 
+-   config['fixme'] = {}
+--  config['fixme'] = {'family-id': '3',
+--                     'product-id': '33',
+--                     'family-name': 'Fixme',
+-+  config['fixme'] = {'product-id': '3',
 -                      'draw-priority': '16',
--                      'mapid_ext': '6001',}
-+  config['bikeroute'] = {'product-id': '9',
-+                         'draw-priority': '16',
-+                         'mapid_ext': '6001',}
+-                      'mapid_ext': '7001',}
+-   
+-diff --git a/mkgmap.py b/mkgmap.py
+-index 5eed81a..a021a9a 100644
+---- a/mkgmap.py
+-+++ b/mkgmap.py
+-@@ -302,9 +302,10 @@ def render():
+-                         option_mkgmap_dem_dists +
+-                         option_mkgmap_poly +
+-                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
+--                        " --family-id=" + config[layer]['family-id'] +
+-+                        " --family-id=" + config['mapid'][buildmap] +
+-                         " --product-id=" + config[layer]['product-id'] +
+--                        " --family-name=" + config[layer]['family-name'] +
+-+                        " --family-name=" + buildmap + "_" + layer +
+-+                        " --series-name=" + buildmap + "_" + layer +
+-                         " --draw-priority=" + config[layer]['draw-priority'] +
+-                         " --description=" + buildmap + "_" + buildday + "_" + layer +
+-                         option_mkgmap_options +
+diff --git a/mapset.py b/mapset.py
+index d1bfc24..9673670 100755
+--- a/mapset.py
++++ b/mapset.py
+@@ -96,6 +96,7 @@ parser.add_argument('-f', '--fastbuild', action="store_true", help="build a maps
+ parser.add_argument('-ba', '--break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
+ 
+ ## pygmap3
++parser.add_argument('-nb', '--no_bounds', action="store_true", help="don't try to get precomp sea or bounds")
+ parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
+ parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
+ parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
+@@ -131,22 +132,41 @@ if args.add_poly:
+   quit()
+     
+ 
++def mapset_backup():
++  if config.has_section('mapset_backup') == False:
++    config.add_section('mapset_backup')
++  for key in (config['mapset']):
++    config.set('mapset_backup', key, config['mapset'][key])
++  print()
++  printinfo("Previous mapset list is backuped!")
++  print()
++  
++def mapset_list():
++  printinfo("These folders in " + path + " are added to mapset list! ")
++  print()
++  for key in (config['mapset']):
++    if config['mapset'][key] == "yes":
++      print("  " + key)   
++  print()  
++  
+ if args.add_folder:
++  mapset_backup()
+   path = WORK_DIR + "gps_ready/zipped"
+   dir = sorted(os.listdir(path))
+   for folder in dir:
+     if config.has_option('mapset', folder) == True:
+       continue
+     else:
+-      config.set('mapset', folder, 'no')
++      config.set('mapset', folder, 'yes')
++      
++  for key in (config['mapset']):
++    config.set('mapset', key, 'yes')
++  
+   write_config()
++  
++  mapset_list()
++  
+   print()
+-  printwarning("ALL folders in " + path + " added to mapset list, but not enabled! ")
+-  print()
+-  printinfo("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
+-  printinfo("or '--enable_mapset §FOLDER' for a special mapset ")
+-  print()
+-  quit()
  
  
-   config['fixme'] = {}
--  config['fixme'] = {'family-id': '3',
--                     'product-id': '33',
--                     'family-name': 'Fixme',
-+  config['fixme'] = {'product-id': '3',
-                      'draw-priority': '16',
-                      'mapid_ext': '7001',}
+ if args.add_mapset:
+@@ -166,15 +186,14 @@ if args.add_mapset:
+   quit()
+ 
+ if args.enable_mapset == "ALL":
+-  if config.has_section('mapset_backup') == False:
+-    config.add_section('mapset_backup')
+-  for key in (config['mapset']):
+-    config.set('mapset_backup', key, config['mapset'][key])
++  mapset_backup()
+   for key in (config['mapset']):
+     config.set('mapset', key, 'yes')
++    
+   write_config()
+-  print()
+-  printinfo("all mapsets enabled on list for this build process")
++
++  mapset_list()
++  
+   print()
+ elif args.enable_mapset:
+   config.set('mapset', args.enable_mapset, 'yes')
+@@ -295,13 +314,18 @@ if args.old_bounds:
+   ob = "-ob "
+ else:
+   ob = ""
+-
++  
++if args.no_bounds:
++  nb = "-nb "
++else:
++  nb = ""
++  
+ if args.spec_opts:
+   so = " -so "
+ else:
+   so = " "
    
+-command_line =  "pygmap3.py -kg " + heap + verbose + stop + cl + mkgmap_test + log + zip + ob
++command_line =  "pygmap3.py -kg " + heap + verbose + stop + cl + mkgmap_test + log + zip + ob + nb
+ 
+ if args.fastbuild:
+   if args.verbose:
 diff --git a/mkgmap.py b/mkgmap.py
-index 5eed81a..a021a9a 100644
+index e91b744..d13eed1 100644
 --- a/mkgmap.py
 +++ b/mkgmap.py
-@@ -302,9 +302,10 @@ def render():
-                         option_mkgmap_dem_dists +
-                         option_mkgmap_poly +
-                         " --mapname=" + config['mapid'][buildmap] + config[layer]['mapid_ext'] +
--                        " --family-id=" + config[layer]['family-id'] +
-+                        " --family-id=" + config['mapid'][buildmap] +
-                         " --product-id=" + config[layer]['product-id'] +
--                        " --family-name=" + config[layer]['family-name'] +
-+                        " --family-name=" + buildmap + "_" + layer +
-+                        " --series-name=" + buildmap + "_" + layer +
-                         " --draw-priority=" + config[layer]['draw-priority'] +
-                         " --description=" + buildmap + "_" + buildday + "_" + layer +
-                         option_mkgmap_options +
+@@ -234,21 +234,23 @@ def render():
+       else:
+         option_name_tag_list = " --name-tag-list=" + config['name_tag_list']['default']
+ 
+-      bounds_zip = WORK_DIR + "bounds_"+ config['runtime']['bounds'] + ".zip"
+       if layer == "fixme" or layer == "boundary":
+         option_bounds = " "
+-      elif os.path.exists(bounds_zip):
+-        option_bounds = " --bounds=" + bounds_zip
+       else:
+         option_bounds = " --location-autofill=is_in,nearest "
+-        
+-      sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
+-      if layer == "fixme" or layer == "boundary":
+-        option_sea = " "
+-      elif os.path.exists(sea_zip):
+-        option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
+-      else:
+-        option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
++        if config.has_option('bounds', 'bounds'): 
++          bounds_zip = WORK_DIR + "bounds_"+ config['bounds']['bounds'] + ".zip"
++          if os.path.exists(bounds_zip):
++            option_bounds = " --bounds=" + bounds_zip
++
++        if layer == "fixme" or layer == "boundary":
++          option_sea = " "
++        else:
++          option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
++          if config.has_option('bounds', 'sea'):
++            sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
++            if os.path.exists(sea_zip):
++              option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
+ 
+       mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
+       mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"
+diff --git a/navmap.py b/navmap.py
+index 43a55d8..c3577ed 100644
+--- a/navmap.py
++++ b/navmap.py
+@@ -72,7 +72,7 @@ def get_bounds():
+         print()
+         break
+ 
+-    config.set('runtime', i, date)
++    config.set('bounds', i, date)
+     write_config()
+ 
+ 
+diff --git a/pygmap3.py b/pygmap3.py
+index 627ed8b..2051f3a 100755
+--- a/pygmap3.py
++++ b/pygmap3.py
+@@ -214,6 +214,7 @@ parser.add_argument('-u', '--use_style', default=0, help="use only one style")
+ 
+ # mapdata
+ parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
++parser.add_argument('-nb', '--no_bounds', action="store_true", help="don't try to get precomp sea or bounds")
+ parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
+ parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
+ parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
+@@ -714,9 +715,20 @@ bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
+ if args.old_bounds:
+   config.set('runtime', 'use_old_bounds', '1')
+ 
++if args.no_bounds:
++  print()
++  printwarning("don't try to get new precomp sea or bound files")
++  print()
++else:
++  navmap.get_bounds()
++
++
++"""
++write all changes to the config file
++
++"""
+ write_config() 
+ 
+-navmap.get_bounds()
+ 
+ """
+ --stop_after get_tools
+diff --git a/splitter.py b/splitter.py
+index 858e879..550f95f 100644
+--- a/splitter.py
++++ b/splitter.py
+@@ -55,12 +55,12 @@ def split():
+   """
+ 
+   BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
+-
+-  sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
+-  if os.path.exists(sea_zip):
+-    option_sea = " --precomp-sea=" + sea_zip
+-  else:
+-    option_sea = " "
++  
++  option_sea = " "
++  if config.has_option('bounds', 'sea'):
++    sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
++    if os.path.exists(sea_zip):
++      option_sea = " --precomp-sea=" + sea_zip
+ 
+   cities15000 = WORK_DIR + "cities15000.zip"
+   if os.path.exists(cities15000):

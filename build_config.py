@@ -113,7 +113,10 @@ def create():
                               'dach': 'name:de,name',
                               'germany': 'name:de,name',
                               'bonn': 'name:de,name',}
- 
+
+
+  config['bounds'] = {}
+   
   write_config()
 
 def update():
@@ -172,6 +175,13 @@ def update():
   if config.has_section('mapset') == False:
     config['mapset'] = {}  
     
+  if config.has_section('bounds') == False:
+    config['bounds'] = {} 
+    for i in ['sea', 'bounds']:
+      if config.has_option('runtime', i ):
+        config.set('bounds', i, config['runtime'][i])
+        config.remove_option('runtime', i )
+      
   if config.has_section('java') == False:
     config.add_section('java')
     

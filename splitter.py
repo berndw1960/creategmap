@@ -55,12 +55,12 @@ def split():
   """
 
   BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
-
-  sea_zip = WORK_DIR + "sea_"+ config['runtime']['sea'] + ".zip"
-  if os.path.exists(sea_zip):
-    option_sea = " --precomp-sea=" + sea_zip
-  else:
-    option_sea = " "
+  
+  option_sea = " "
+  if config.has_option('bounds', 'sea'):
+    sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
+    if os.path.exists(sea_zip):
+      option_sea = " --precomp-sea=" + sea_zip
 
   cities15000 = WORK_DIR + "cities15000.zip"
   if os.path.exists(cities15000):
