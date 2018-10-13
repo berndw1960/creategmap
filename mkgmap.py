@@ -243,14 +243,14 @@ def render():
           if os.path.exists(bounds_zip):
             option_bounds = " --bounds=" + bounds_zip
 
-        if layer == "fixme" or layer == "boundary":
-          option_sea = " "
-        else:
-          option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
-          if config.has_option('bounds', 'sea'):
-            sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
-            if os.path.exists(sea_zip):
-              option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
+      if layer == "fixme" or layer == "boundary":
+        option_sea = " "
+      else:
+        option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
+        if config.has_option('bounds', 'sea'):
+          sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
+          if os.path.exists(sea_zip):
+            option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
 
       mkgmap_defaultmap_opts = " --split-name-index --route --housenumbers --index "
       mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"
