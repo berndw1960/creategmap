@@ -210,12 +210,12 @@ parser.add_argument('-m', '--map_style', default=0, help="enable/disable a style
 parser.add_argument('-r', '--rm_style', default=0, help="remove a style")
 parser.add_argument('-am', '--all_map_styles', action="store_true", help="enable all map_styles")
 parser.add_argument('-dm', '--no_map_styles', action="store_true", help="disable all map_styles")
-parser.add_argument('-u', '--use_style', default=0, help="use only one style")
+parser.add_argument('-u', '--use_style', default=0, nargs='*', help="use only one style")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
 parser.add_argument('-nb', '--no_bounds', action="store_true", help="don't try to get precomp sea or bounds")
-parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
+parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous  precomp sea or bounds, need a internet connection!")
 parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
 
@@ -316,6 +316,11 @@ if args.list_mapstyle:
     if config.has_section('mapset') == True:
       print()
       printinfo("mapset list includes: ")
+      
+      if config.has_option('runtime', 'default'):
+        print()
+        print(" default:")
+        print("  " + config['runtime']['default']) 
       print()
       print(" enabled:")
       for key in (config['mapset']):
@@ -439,15 +444,18 @@ if args.rm_style:
 if args.use_style:
   if config.has_section('map_styles_backup') == False:
     config.add_section('map_styles_backup')
-  print()
   for key in (config['map_styles']):
     config.set('map_styles_backup', key, config['map_styles'][key])
     config.set('map_styles', key, 'no')
-  config.set('map_styles', args.use_style, 'yes')
   print()
-  printinfo("create a map with " + args.use_style + " style only")
+  printinfo("create a map with these styles: ")
   print()
-
+  for i in args.use_style:
+    config.set('map_styles', i, 'yes')
+    print("   " + i)
+    
+  print()
+  
 if args.set_default:
   if os.path.exists("poly/" + args.set_default + ".poly") == False:
     print()
@@ -657,7 +665,6 @@ else:
   config.set('mapid', 'next_mapid', next_mapid)
 
 write_config()
-
 
 if args.verbose:
   print()
