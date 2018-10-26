@@ -47,12 +47,6 @@ def zip_img():
 
   import zipfile
 
-  try:
-    
-    compression = zipfile.ZIP_DEFLATED
-  except:
-    compression = zipfile.ZIP_STORED
-
   for layer in config['map_styles']:
 
     if config['map_styles'][layer]== "yes":
@@ -60,7 +54,7 @@ def zip_img():
       img = bl + "_gmapsupp.img"
       zip_img = img + ".zip"
       my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
-      my_zip_img.write(img, compress_type=compression)
+      my_zip_img.write(img, compress_type=zipfile.ZIP_DEFLATED)
       my_zip_img.close()
 
       if os.path.exists(zip_dir + "/" + zip_img) == True:

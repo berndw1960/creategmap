@@ -44,9 +44,7 @@ def checkprg(programmtofind, solutionhint):
     search follows $PATH
   """
 
-  if os.system("which " + programmtofind) == 0:
-    printinfo(programmtofind + " found")
-  else:
+  if os.system("which " + programmtofind) == 1:
     printerror(programmtofind + " not found")
     print(solutionhint)
     quit()
@@ -58,9 +56,7 @@ def is_there(find, solutionhint):
     on success return 0
   """
 
-  if os.path.exists(find) == True:
-     printinfo(find + " found")
-  else:
+  if os.path.exists(find) == False:
     printerror(find + " not found")
     print(solutionhint)
 
@@ -75,16 +71,14 @@ for tool in ['osmconvert', 'osmupdate']:
   checkprg(tool, hint)
 
 if os.path.exists("planet.o5m") == True:
+  print()
   printerror("please move planet.o5m to " + WORK_DIR + "o5m/")
   quit()
 
-hint = ("No Planet-File found! ")
-is_there("o5m/planet.o5m", hint)
-
-
 if os.path.exists("o5m/planet.o5m") == False:
+  print()
   os.chdir("o5m/")
-  printinfo("Download started. Size ~30 Gigabytes... please wait! ")
+  printinfo("Download started. Size ~50 Gigabytes... please wait! ")
   os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
   os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
   os.remove("planet-latest.osm.pbf")
@@ -124,7 +118,7 @@ DATE = today.strftime('%Y%m%d')
 config.set('planet', 'buildday', (DATE))
 write_config()
 
-
+print()
 os.system("osmupdate -v --daily --keep-tempfiles o5m/planet.o5m o5m/planet_new.o5m")
 
 os.chdir("o5m/")
@@ -135,7 +129,45 @@ if os.path.exists("planet_new.o5m"):
   if os.path.exists("planet.o5m"):
     os.remove("planet_temp.o5m")
 
+"""
+create the bounds from planet
+
+"""
+option_mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
+
+if config['java']['agh'] == "1":
+  option_java_heap = " -XX:+AggressiveHeap "
+else:
+  option_java_heap = " " + config['java']['xmx'] + " " + config['java']['xms'] + " " 
+
+print()
+command_line = ("osmfilter -v planet.o5m  --keep-nodes= --keep-ways-relations='boundary=administrative =postal_code postal_code=' --drop-tags='created_by= source= building= highway= maxspeed= surface= oneway= note= natural= lit=' -o=bounds_data.o5m")
+print()
+os.system(command_line)
+
+
+command_line = ("java -ea " +
+                option_java_heap +
+                " -cp " +
+                option_mkgmap_path +
+                " uk.me.parabola.mkgmap.reader.osm.boundary.BoundaryPreprocessor " +
+                " bounds_data.o5m bounds ")
+print()
+os.system(command_line)
+
+
+import shutil
+
+zipf = "bounds_" + DATE
+shutil.make_archive(zipf, 'zip', "bounds")
+shutil.move("bounds_" + DATE + ".zip", WORK_DIR)
+shutil.rmtree("bounds")
+os.remove("bounds_data.o5m")
+
 os.chdir(WORK_DIR)
+
+config.set('bounds', 'bounds', DATE)
+write_config()
 
 printinfo("Habe fertig!")
 quit()

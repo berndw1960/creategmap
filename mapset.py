@@ -92,8 +92,6 @@ parser.add_argument('-f', '--fastbuild', default=0, nargs='*', help="a space sep
 parser.add_argument('-ba', '--break_after', default=0, help="break mapset creating after this changeset, use '-lm' for the list")
 
 ## pygmap3
-parser.add_argument('-nb', '--no_bounds', action="store_true", help="don't try to get precomp sea or bounds")
-parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous used bounds")
 parser.add_argument('-nz', '--no_zip', action="store_true", help="don't zip the images after build")
 parser.add_argument('-c', '--contourlines', action="store_true", help="enable countourlines layer creation")
 parser.add_argument('-st', '--stop_after', default=0, help='build process stop after [tests|contourlines|mapdata|splitter|mkgmap]')
@@ -285,22 +283,12 @@ if args.log:
 else:
   log = ""
 
-if args.old_bounds:
-  ob = "-ob "
-else:
-  ob = ""
-  
-if args.no_bounds:
-  nb = "-nb "
-else:
-  nb = ""
-  
 if args.spec_opts:
   so = " -so "
 else:
   so = " "
   
-command_line =  "pygmap3.py -kg " + verbose + stop + cl + mkgmap_test + log + zip + ob + nb
+command_line =  "pygmap3.py -kg " + verbose + stop + cl + mkgmap_test + log + zip
 
 for buildmap in config['mapset']:
   if config['mapset'][buildmap] == "yes":
