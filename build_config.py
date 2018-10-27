@@ -122,7 +122,42 @@ def create():
 def update():
   
   config.read('pygmap3.cfg')
+  
+  """
+  add new options
 
+  """
+  
+  if config.has_section('mapset') == False:
+    config['mapset'] = {}  
+    
+  if config.has_section('bounds') == False:
+    config['bounds'] = {} 
+      
+  if config.has_section('java') == False:
+    config.add_section('java')
+    
+  if config.has_option('java', 'xmx') == False:  
+    config.set('java', 'xmx', '-Xmx4G')
+    
+  if config.has_option('java', 'xms') == False:    
+    config.set('java', 'xms', '-Xms4G')
+
+  if config.has_option('java', 'agh') == False:
+    config.set('java', 'agh', '0')
+    
+  if config.has_section('demtdb') == False:
+    config.add_section('demtdb')
+    
+  if config.has_option('demtdb', 'switch_tdb') == False:
+    config.set('demtdb', 'switch_tdb', "no")
+    
+  if config.has_section('maxnodes') == False:
+    config.add_section('maxnodes')
+  
+  if config.has_option('maxnodes','default') == False:
+    config.set('maxnodes','default', '1600000')
+    
   """
   remove temporary options
 
@@ -136,10 +171,7 @@ def update():
 
   if config.has_option('runtime', 'use_mkgmap_test'):
     config.remove_option('runtime', 'use_mkgmap_test')
-  
-  if config.has_option('runtime', 'use_old_bounds'):
-    config.remove_option('runtime', 'use_old_bounds')
-  
+
   if config.has_option('runtime', 'installer'):
     config.remove_option('runtime', 'installer')
 
@@ -166,46 +198,9 @@ def update():
 
   if config.has_option('runtime', 'xms'):
     config.remove_option('runtime', 'xms')
-
-  """
-  add new options
-
-  """
   
-  if config.has_section('mapset') == False:
-    config['mapset'] = {}  
-    
-  if config.has_section('bounds') == False:
-    config['bounds'] = {} 
-    for i in ['sea', 'bounds']:
-      if config.has_option('runtime', i ):
-        config.set('bounds', i, config['runtime'][i])
-        config.remove_option('runtime', i )
-      
-  if config.has_section('java') == False:
-    config.add_section('java')
-    
-  if config.has_option('java', 'xmx') == False:  
-    config.set('java', 'xmx', '-Xmx4G')
-    
-  if config.has_option('java', 'xms') == False:    
-    config.set('java', 'xms', '-Xms4G')
-
-  if config.has_option('java', 'agh') == False:
-    config.set('java', 'agh', '0')
-    
-  if config.has_section('demtdb') == False:
-    config.add_section('demtdb')
-    
-  if config.has_option('demtdb', 'switch_tdb') == False:
-    config.set('demtdb', 'switch_tdb', "no")
-    
-  if config.has_section('maxnodes') == False:
-    config.add_section('maxnodes')
+  config.set('bounds', 'bounds', "bounds-latest.zip")
   
-  if config.has_option('maxnodes','default') == False:
-    config.set('maxnodes','default', '1600000')
-
-
-    
+  config.set('bounds', 'sea', "sea-latest.zip")
+   
   write_config()  

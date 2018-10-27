@@ -84,6 +84,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-am', '--add_mapset', default=0, nargs='*', help="add  a space separated list of mapsets")
 parser.add_argument('-ap', '--add_poly', action="store_true", help="add mapsets using all poly files in " + WORK_DIR + "poly")
 parser.add_argument('-af', '--add_folder', action="store_true", help="add mapsets using the names of the folders in " + WORK_DIR + "gps_ready/zipped")
+parser.add_argument('-ao', '--add_o5m', action="store_true", help="add mapsets using the names of the o5m files in " + WORK_DIR + "o5m")
 parser.add_argument('-em', '--enable_mapset', default=0, nargs='*', help="enable a space separated list of mapsets, ALL for all mapsets on the list")
 parser.add_argument('-dm', '--disable_mapset', default=0, nargs='*', help="disable a space separated list of mapsets, ALL for all mapsets on the list")
 parser.add_argument('-rm', '--remove_mapset', default=0, nargs='*', help="delete a space separated list of mapsets, ALL for all mapsets on the list")
@@ -169,6 +170,17 @@ if args.add_mapset:
         quit()
     config.set('mapset', i, 'yes')
     print("  " + i + " added to the list ")
+  write_config()
+  print()
+
+if args.add_o5m:
+  mapset_backup()
+  print()
+  for i in os.listdir("o5m"):
+    file = os.path.splitext(os.path.basename(i))[0]
+    if config.has_option('mapset', file) == False:
+      config.set('mapset', file, 'yes')
+    print("  " + file + " added to the list ")
   write_config()
   print()
 

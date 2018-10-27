@@ -119,7 +119,7 @@ create dir o5m, areas, poly and tiles
 
 """
 
-for dir in ['o5m', 'areas', 'poly', 'tiles']:
+for dir in ['o5m', 'areas', 'poly', 'tiles', 'precomp']:
   if os.path.exists(dir) == False:
     os.mkdir(dir)
 
@@ -215,7 +215,9 @@ parser.add_argument('-u', '--use_style', default=0, nargs='*', help="use only on
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true", help="don't update the mapdata")
 parser.add_argument('-nb', '--new_bounds', action="store_true", help="try to get precomp sea or bounds")
-parser.add_argument('-ob', '--old_bounds', action="store_true", help="use the previous precomp sea or bounds")
+parser.add_argument('-ub', '--use_bounds', default=0, help="use a special bounds file")
+parser.add_argument('-us', '--use_sea', default=0, help="use a special sea file")
+parser.add_argument('-lb', '--list_bounds', action="store_true", help="list the local precomp sea or bounds")
 parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
 
@@ -672,8 +674,6 @@ if args.verbose:
   print("    tdb = " + config['runtime']['tdb'])
   print()
 
-
-
 """
 osmupdate and osmconvert
 
@@ -715,21 +715,29 @@ get the geonames file
 geonames.cities15000()
 
 """
-bounds and precomp_sea from osm2.pleiades.uni-wuppertal.de
+bounds and precomp_sea
 
 """
-
 if args.new_bounds:
-  navmap.get_bounds()
-elif args.old_bounds:
-  config.set('runtime', 'use_old_bounds', '1')
+  navmap.latest_bounds()
+  config.set('bounds', 'bounds', "bounds-latest.zip")
+  config.set('bounds', 'sea', "sea-latest.zip")
+
+if args.list_bounds:
+  navmap.list_bounds()
+  quit()
+
+if args.use_bounds:
+  config.set('bounds', 'bounds', args.use_bounds)
+
+if args.use_sea:
+  config.set('bounds', 'sea', args.use_sea)
 
 """
 write all changes to the config file
 
 """
 write_config() 
-
 
 """
 --stop_after get_tools

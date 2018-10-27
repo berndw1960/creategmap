@@ -2,11 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import http.client
-import re
 import configparser
-import urllib.request
-import shutil
 
 def printinfo(msg):
   print("II: " + msg)
@@ -25,55 +21,38 @@ def write_config():
   with open('pygmap3.cfg', 'w') as configfile:
     config.write(configfile)
 
-def get_bounds():
-
+def latest_bounds():
+  config.read('pygmap3.cfg')
+  os.chdir(WORK_DIR + "precomp")
+  
   for i in ['sea', 'bounds']:
-    config.read('pygmap3.cfg')
-    www = "osm2.pleiades.uni-wuppertal.de"
-    path =  "/" + (i) + "/"
+    
+    www = "osm.thkukuk.de"
+    path =  "/data/"
 
     try:
-      target = http.client.HTTPConnection(www)
-      target.request("GET", (path))
-      htmlcontent =  target.getresponse()
-      data = htmlcontent.read()
-      data = data.decode('utf8')
-      pattern = re.compile('20\d{6}')
-      date_new = sorted(pattern.findall(data), reverse=True)[1]
-      date_pre = sorted(pattern.findall(data), reverse=True)[2]
-      target.close()
+      url = "http://" + www + path + i + "-latest.zip"
+      print()
+      printinfo("download " + url)
+      os.system("wget " + url)
 
     except:
       print()
-      printerror("Oops, something went wrong, while trying to get the versions of " + i + "*.zip")
+      printerror("failed download " + url)
       print()
       break
 
-    if config.has_option('runtime', 'use_old_bounds'):
-      date = date_pre
-    else:
-      date = date_new
+  os.chdir(WORK_DIR)
 
-    file = i + "_" + date + ".zip"
-
-    if os.path.exists(file) == False:
-
-      try:
-        url = "http://" + www + path + date + "/" + file
-        print()
-        printinfo("download " + url)
-
-        with urllib.request.urlopen(url) as response, open(file, 'wb') as out_file:
-          shutil.copyfileobj(response, out_file)
-
-      except:
-        print()
-        printerror("failed download " + file)
-        print()
-        break
-
-    config.set('bounds', i, date)
-    write_config()
-
-
-
+def list_bounds():
+  config.read('pygmap3.cfg')
+  os.chdir(WORK_DIR + "precomp")
+  for i in ['sea', 'bounds']:
+    print()
+    list_zip = [x for x in os.listdir() if x.startswith(i) if x.endswith(".zip")]
+    list_zip = sorted(list_zip, reverse=True)
+    for i in list_zip: 
+      print(i)
+  print()  
+    
+    

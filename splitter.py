@@ -58,7 +58,7 @@ def split():
   
   option_sea = " "
   if config.has_option('bounds', 'sea'):
-    sea_zip = WORK_DIR + "sea_"+ config['bounds']['sea'] + ".zip"
+    sea_zip = WORK_DIR + "precomp/"+ config['bounds']['sea']
     if os.path.exists(sea_zip):
       option_sea = " --precomp-sea=" + sea_zip
 

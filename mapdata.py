@@ -49,11 +49,11 @@ def create_o5m():
     printinfo("converting o5m/" + buildmap + "-latest.osm.pbf to o5m/" + buildmap + ".o5m, please wait...")
     os.system("osmconvert o5m/" + buildmap + "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m") 
     
-  elif os.path.exists("o5m/planet.o5m"):
+  elif os.path.exists("planet/planet.o5m"):
     if os.path.exists("poly/" + buildmap + ".poly"):
       print()
       printinfo("now extracting " + buildmap + ".o5m from Planet, please wait...")
-      os.system("osmconvert o5m/planet.o5m " +
+      os.system("osmconvert planet/planet.o5m " +
               "--complete-ways --complex-ways --drop-version " +
               " -B=poly/" + buildmap + ".poly " +
               " -o=o5m/" + buildmap + ".o5m")
@@ -85,7 +85,7 @@ def create_o5m():
     print("    If you have a " + buildmap + ".poly stored in " + WORK_DIR + "poly,")
     print("    then the missed " + buildmap + ".o5m can be extracted from a planet file by pygmap3.py. ") 
     print("    You can download the complete planet file wth planet_up.py,")
-    print("    but the planet file has a size of more then 20 GiB, so it is the second best solution ")
+    print("    but the planet file has a size of more then 50 GiB")
     print("    If you had download this file, backup it and it can be updated with planet_up.py,too.")
     print()
     quit()
@@ -111,9 +111,14 @@ def update_o5m():
     
   print()
   printinfo("updating " + buildmap + ".o5m, please wait...")
-  os.system("osmupdate --daily" + update_opts + 
-            " -B=poly/" + buildmap +".poly "
-	        " --keep-tempfiles o5m/" + buildmap +
+  option_poly = " "
+  if os.path.exists("poly/" + buildmap +".poly"):
+    option_poly = " -B=poly/" + buildmap +".poly "
+  os.system("osmupdate --daily" + 
+            update_opts + 
+            option_poly +
+	        " --keep-tempfiles o5m/" + 
+	        buildmap +
 	        ".o5m  o5m/" + buildmap +  "_new.o5m")
 
   os.chdir("o5m")
