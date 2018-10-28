@@ -199,8 +199,5 @@ def update():
   if config.has_option('runtime', 'xms'):
     config.remove_option('runtime', 'xms')
   
-  config.set('bounds', 'bounds', "bounds-latest.zip")
-  
-  config.set('bounds', 'sea', "sea-latest.zip")
-   
+ 
   write_config()  
