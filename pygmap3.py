@@ -718,26 +718,24 @@ geonames.cities15000()
 bounds and precomp_sea
 
 """
+if args.list_bounds:
+  navmap.list_bounds()
+  quit()
+
 if args.new_bounds:
   navmap.latest_bounds()
   config.set('bounds', 'bounds', "bounds-latest.zip")
   config.set('bounds', 'sea', "sea-latest.zip")
 
-if args.list_bounds:
-  navmap.list_bounds()
-  quit()
-
 if args.use_bounds:
   config.set('bounds', 'bounds', args.use_bounds)
-
 if args.use_sea:
   config.set('bounds', 'sea', args.use_sea)
 
-"""
-write all changes to the config file
-
-"""
 write_config() 
+
+if args.list_bounds or args.use_bounds:
+  navmap.fetch_bounds()
 
 """
 --stop_after get_tools
