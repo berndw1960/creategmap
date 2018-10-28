@@ -139,9 +139,10 @@ def update():
     
   if config.has_section('precomp') == False:
     config.add_section('precomp')
-    config.set('precomp', 'sea' , config['bounds']['sea'])
-    config.set('precomp', 'bounds' , config['bounds']['bounds'])
-    config.set('bounds', 'remove_section', 'yes')
+    config.set('precomp', 'sea' , 'sea-latest.zip')
+    config.set('precomp', 'bounds' , 'bounds-latest.zip')
+    if config.has_section('bounds') == True:
+      config.remove_section('bounds')
     
   if config.has_option('java', 'xmx') == False:  
     config.set('java', 'xmx', '-Xmx4G')
