@@ -82,10 +82,10 @@ def latest_bounds():
     
     www = "osm.thkukuk.de"
     path =  "/data/"
-    
+    url = "http://" + www + path + i + "-latest.zip"
+    file_name = i + "-latest.zip"    
+
     try:
-      url = "http://" + www + path + i + "-latest.zip"
-      file_name = i + "-latest.zip"
       print()
       if os.path.exists(file_name):
         os.remove(file_name)
