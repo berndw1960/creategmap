@@ -89,7 +89,7 @@ parser = argparse.ArgumentParser(
          prog='PROG',
          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-parser.add_argument('-nb', '--new_bounds', action="store_true", help="""create new boundaries""")
+parser.add_argument('-cb', '--create_bounds', action="store_true", help="""create new boundaries""")
 
 args = parser.parse_args()
 
@@ -161,7 +161,7 @@ if os.path.exists("planet_new.o5m"):
 create the bounds from planet
 
 """
-if args.new_bounds:
+if args.create_bounds:
   option_mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
   if config['java']['agh'] == "1":
