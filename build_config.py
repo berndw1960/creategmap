@@ -137,6 +137,12 @@ def update():
   if config.has_section('java') == False:
     config.add_section('java')
     
+  if config.has_section('precomp') == False:
+    config.add_section('precomp')
+    config.set('precomp', 'sea' , config['bounds']['sea'])
+    config.set('precomp', 'bounds' , config['bounds']['bounds'])
+    config.set('bounds', 'remove_section', 'yes')
+    
   if config.has_option('java', 'xmx') == False:  
     config.set('java', 'xmx', '-Xmx4G')
     

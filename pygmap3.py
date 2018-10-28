@@ -51,9 +51,6 @@ mkgmap and splitter from
 http://www.mkgmap.org.uk
 and some other things
 
-This files should downloaded manually
-precomp_sea from navmap.org
-boundaries from navmap.org
 
 """
 
@@ -68,7 +65,7 @@ import shutil
 ## local modules
 import build_config
 import get_tools
-import navmap
+import precomp
 import geonames
 import contourlines
 import mapdata
@@ -218,6 +215,7 @@ parser.add_argument('-nb', '--new_bounds', action="store_true", help="try to get
 parser.add_argument('-ub', '--use_bounds', default=0, help="use a special bounds file")
 parser.add_argument('-us', '--use_sea', default=0, help="use a special sea file")
 parser.add_argument('-lb', '--list_bounds', action="store_true", help="list the local precomp sea or bounds")
+parser.add_argument('-rb', '--reset_bounds', action="store_true", help="use the latest precomp sea or bounds")
 parser.add_argument('--hourly', action="store_true", help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true", help="update the raw mapdata with the minutely files")
 
@@ -634,7 +632,7 @@ if args.disable_tdb:
     print()
     for key in (config['tdblayer']):
       config.set('tdblayer', key, "no")
-      print ("  " + key + " = " + config['tdblayer'][key])
+      print("  " + key + " = " + config['tdblayer'][key])
     print()
   else:
     config.set('tdblayer', args.disable_tdb, "no")
@@ -719,23 +717,32 @@ bounds and precomp_sea
 
 """
 if args.list_bounds:
-  navmap.list_bounds()
+  precomp.list_bounds()
+  quit()
+
+if args.reset_bounds:
+  config.set('precomp', 'bounds', "bounds-latest.zip")
+  config.set('precomp', 'sea', "sea-latest.zip")
+  write_config() 
   quit()
 
 if args.new_bounds:
-  navmap.latest_bounds()
-  config.set('bounds', 'bounds', "bounds-latest.zip")
-  config.set('bounds', 'sea', "sea-latest.zip")
+  os.chdir(WORK_DIR + "precomp")
+  for i in ['sea', 'bounds']:
+    if os.path.exists(i + "-latest.zip"):
+      os.remove(i + "-latest.zip")
+  config.set('precomp', 'bounds', "bounds-latest.zip")
+  config.set('precomp', 'sea', "sea-latest.zip")
+  os.chdir(WORK_DIR)
 
 if args.use_bounds:
-  config.set('bounds', 'bounds', args.use_bounds)
+  config.set('precomp', 'bounds', args.use_bounds)
 if args.use_sea:
-  config.set('bounds', 'sea', args.use_sea)
+  config.set('precomp', 'sea', args.use_sea)
 
 write_config() 
 
-if args.list_bounds or args.use_bounds:
-  navmap.fetch_bounds()
+precomp.fetch_bounds()
 
 """
 --stop_after get_tools

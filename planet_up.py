@@ -187,9 +187,9 @@ if args.create_bounds:
 
   import shutil
 
-  zipf = "bounds_" + DATE
+  zipf = "bounds-" + DATE
   shutil.make_archive(zipf, 'zip', "bounds")
-  shutil.move("bounds_" + DATE + ".zip", WORK_DIR + "precomp")
+  shutil.move(zipf + ".zip", WORK_DIR + "precomp")
   shutil.rmtree("bounds")
   os.remove("bounds_data.o5m")
 
