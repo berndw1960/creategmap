@@ -238,8 +238,8 @@ def render():
         option_bounds = " "
       else:
         option_bounds = " --location-autofill=is_in,nearest "
-        if config.has_option('bounds', 'bounds'): 
-          bounds_zip = WORK_DIR + "precomp/"+ config['bounds']['bounds']
+        if config.has_option('precomp', 'bounds'): 
+          bounds_zip = WORK_DIR + "precomp/"+ config['precomp']['bounds']
           if os.path.exists(bounds_zip):
             option_bounds = " --bounds=" + bounds_zip
 
@@ -247,8 +247,8 @@ def render():
         option_sea = " "
       else:
         option_sea = " --generate-sea=extend-sea-sectors,close-gaps=6000,floodblocker,land-tag=natural=background "
-        if config.has_option('bounds', 'sea'):
-          sea_zip = WORK_DIR + "precomp/"+ config['bounds']['sea']
+        if config.has_option('precomp', 'sea'):
+          sea_zip = WORK_DIR + "precomp/"+ config['precomp']['sea']
           if os.path.exists(sea_zip):
             option_sea = " --precomp-sea=" + sea_zip + " --generate-sea "
 

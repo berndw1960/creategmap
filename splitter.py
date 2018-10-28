@@ -57,8 +57,8 @@ def split():
   BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
   
   option_sea = " "
-  if config.has_option('bounds', 'sea'):
-    sea_zip = WORK_DIR + "precomp/"+ config['bounds']['sea']
+  if config.has_option('precomp', 'sea'):
+    sea_zip = WORK_DIR + "precomp/"+ config['precomp']['sea']
     if os.path.exists(sea_zip):
       option_sea = " --precomp-sea=" + sea_zip
 

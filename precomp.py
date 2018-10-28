@@ -92,10 +92,7 @@ def fetch_bounds():
     file_name = config['precomp'][i]
     url = "http://" + www + path + file_name      
       
-    if os.path.exists(file_name):
-      printinfo("file exists:  " + file_name)
-      print()
-    else:
+    if os.path.exists(file_name) == False:
       try:
         print()
         printinfo("download " + url)
