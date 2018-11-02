@@ -109,39 +109,66 @@ def create_cont():
     use phyghtmap to get the raw-data from the internet,
     downloaded files will be stored for later builds
     """
-    os.system("phyghtmap --source=view1,view3,srtm1,srtm3 " +
-              ed_user_opts +
-              ed_pwd_opts +
-              " --start-node-id=1 " +
-              " --start-way-id=1 " +
-              " --max-nodes-per-tile=" + config['maxnodes']['buildmap'] +
-              " --max-nodes-per-way=250 " +
-              " --jobs=4 " +
-              " --o5m " +
-              " --no-zero-contour " +
-              " -s 50 " +
-              " -c 500,100 " +
-              " --polygon=poly/" + buildmap + ".poly "+
-              " -o " + cltemp_dir + buildmap)
+    command_line = ("phyghtmap --source=view1,view3,srtm1,srtm3 " +
+                    ed_user_opts +
+                    ed_pwd_opts +
+                    " --start-node-id=1 " +
+                    " --start-way-id=1 " +
+                    " --max-nodes-per-tile=" + 
+                    config['maxnodes'][buildmap] +
+                    " --max-nodes-per-way=250 " +
+                    " --jobs=4 " +
+                    " --o5m " +
+                    " --no-zero-contour " +
+                    " -s 50 " +
+                    " -c 500,100 " +
+                    " --polygon=poly/" + buildmap + ".poly " +
+                    " -o " + cltemp_dir + buildmap)
+    
+    if config.has_option('runtime', 'verbose'):
+      print()
+      printinfo(command_line)
+      print()
+
+    os.system(command_line)
+
+    """
+    Java HEAP, RAM oder Mode
+     
+    """
+      
+    if config['java']['agh'] == "1":
+      option_java_heap = " -XX:+AggressiveHeap "
+    else:
+      option_java_heap = " " + config['java']['xmx'] + " " + config['java']['xms'] + " " 
 
     """
     contourlines-build with mkgmap
-    """
 
+    """
     os.chdir(cltemp_dir)
     printinfo("entered " + os.getcwd())
 
-    os.system("java -ea " + config['runtime']['xmx'] +
-              " -jar " + mkgmap_path +
-              " --max-jobs " +
-              " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
-              " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
-              " --mapname=" + config['mapid'][ buildmap] + "8001" +
-              " --description=" + buildmap + "_contourlines " +
-              " --family-name=Contourlines" +
-              " --draw-priority=" + config['contourlines']['draw-priority'] +
-              " --gmapsupp " +
-              " *.o5m ")
+    command_line = ("java -ea " + 
+                    option_java_heap +
+                    " -jar " + mkgmap_path +
+                    " --max-jobs " +
+                    " --read-config=" + WORK_DIR + mapstyle + "/contourlines_style/options" +
+                    " --style-file=" + WORK_DIR + mapstyle + "/contourlines_style" +
+                    " --mapname=" + config['mapid'][ buildmap] + "8001" +
+                    " --description=" + buildmap + "_contourlines " +
+                    " --family-name=Contourlines" +
+                    " --draw-priority=" + config['contourlines']['draw-priority'] +
+                    " --gmapsupp " +
+                    " *.o5m ")
+
+    if config.has_option('runtime', 'verbose'):
+      print()
+      printinfo(command_line)
+      print()
+
+    os.system(command_line)
+
     
     import zipfile
     
