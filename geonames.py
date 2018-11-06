@@ -23,50 +23,39 @@ WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 
 def printinfo(msg):
-  print("II: " + msg)
+    print("II: " + msg)
+
 
 def printwarning(msg):
-  print("WW: " + msg)
+    print("WW: " + msg)
+
 
 def printerror(msg):
-  print("EE: " + msg)
+    print("EE: " + msg)
+
 
 def cities15000():
 
-  """
-  get the geonames for splitter
+    """
+    get the geonames for splitter
+    """
 
-  """
+    file = (WORK_DIR + "cities15000.zip")
 
-  file = (WORK_DIR + "cities15000.zip")
-
-  def download():
-    url = "http://download.geonames.org/export/dump/cities15000.zip"
-    file_name = "cities15000.zip"
-    print()
-    printinfo("download " + url)
-
-    # Download the file from `url` and save it locally under `file_name`:
-    with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
-      shutil.copyfileobj(response, out_file)
-
-  if os.path.exists(file):
-    ftime = os.path.getmtime(file)
-    curtime = time.time()
-    difftime = curtime - ftime
-    if difftime > 1741800:
-      os.rename(file, file + ".bak")
-      print()
-      printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
-      try:
-        download()
-      except:
+    if os.path.exists(file):
+        ftime = os.path.getmtime(file)
+        curtime = time.time()
+        difftime = curtime - ftime
+        if difftime > 1741800:
+            print()
+            printwarning("""cities15000.zip is older then 1 month!""")
+    else:
+        url = "http://download.geonames.org/export/dump/cities15000.zip"
+        file = "cities15000.zip"
         print()
-        printwarning("can't get a new cities15000.zip")
-        os.rename(file + ".bak", file)
-  else:
-    try:
-      download()
-    except:
-      print()
-      printwarning("can't get a cities15000.zip")
+        printinfo("download " + url)
+
+        # Download the file from `url` and save it locally under `file_name`:
+        urlopen = urllib.request.urlopen
+        with urlopen(url) as response, open(file, 'wb') as out_file:
+            shutil.copyfileobj(response, out_file)
