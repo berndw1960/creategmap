@@ -122,7 +122,7 @@ def render():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config['runtime']['buildmap']
-  buildday = config['time_stamp'][buildmap]
+  buildday = config['runtime'][buildmap]
 
   global layer
   for layer in config['map_styles']:

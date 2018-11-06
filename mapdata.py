@@ -131,10 +131,7 @@ def update_o5m():
 
   os.chdir(WORK_DIR)
 
-  if config.has_section('time_stamp') == False:
-    config.add_section('time_stamp')
-
-  config.set('time_stamp', buildmap, DATE)
+  config.set('runtime', buildmap, DATE)
 
   write_config()
   

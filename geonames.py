@@ -38,7 +38,7 @@ def cities15000():
 
   """
 
-  path = (WORK_DIR + "cities15000.zip")
+  file = (WORK_DIR + "cities15000.zip")
 
   def download():
     url = "http://download.geonames.org/export/dump/cities15000.zip"
@@ -50,12 +50,12 @@ def cities15000():
     with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
       shutil.copyfileobj(response, out_file)
 
-  if os.path.exists(path):
-    ftime = os.path.getmtime(path)
+  if os.path.exists(file):
+    ftime = os.path.getmtime(file)
     curtime = time.time()
     difftime = curtime - ftime
     if difftime > 1741800:
-      os.rename(path, path + ".bak")
+      os.rename(file, file + ".bak")
       print()
       printwarning("cities15000.zip is older then 1 month, try to fetch a newer one")
       try:
@@ -63,7 +63,7 @@ def cities15000():
       except:
         print()
         printwarning("can't get a new cities15000.zip")
-        os.rename(path + ".bak", path)
+        os.rename(file + ".bak", file)
   else:
     try:
       download()

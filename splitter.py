@@ -33,7 +33,7 @@ def split():
   os.chdir(WORK_DIR)
   config.read('pygmap3.cfg')
   buildmap = config['runtime']['buildmap']
-  buildday = config['time_stamp'][buildmap]
+  buildday = config['runtime'][buildmap]
   splitter_path = WORK_DIR + config['runtime']['splitter'] + "/splitter.jar "
   """
   Java HEAP, RAM oder Mode
