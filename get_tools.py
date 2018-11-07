@@ -56,7 +56,7 @@ def from_mkgmap_org():
             i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
             i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
-            target.close()
+        target.close()
 
         if not os.path.exists(i_rev):
             if os.path.isfile(i_rev + ".tar.gz"):

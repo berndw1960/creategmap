@@ -142,16 +142,12 @@ if 'planet' not in config:
     write_config()
 
 
-# set date for info
-
-
-today = datetime.datetime.now()
-DATE = today.strftime('%Y%m%d')
-
-config.set('planet', 'buildday', (DATE))
 write_config()
 
+
 print()
+
+
 os.system(" osmupdate -v --daily --keep-tempfiles " +
           "planet/planet.o5m planet/planet_new.o5m")
 
@@ -178,6 +174,7 @@ if args.create_bounds:
                             " " + config['java']['xms'] + " ")
 
     print()
+
     command_line = ("osmfilter -v planet.o5m  --keep-nodes= " +
                     "--keep-ways-relations='boundary=administrative " +
                     "=postal_code postal_code=' " +
@@ -185,6 +182,7 @@ if args.create_bounds:
                     "=highway maxspeed= surface= oneway= note= natural=" +
                     " lit=' -o=bounds_data.o5m")
     print()
+
     os.system(command_line)
 
     command_line = ("java -ea " +
@@ -195,8 +193,13 @@ if args.create_bounds:
                     "boundary.BoundaryPreprocessor " +
                     " bounds_data.o5m bounds ")
     print()
+
     os.system(command_line)
 
+    # set date for info
+
+    today = datetime.datetime.now()
+    DATE = today.strftime('%Y%m%d')
     zipf = "bounds-" + DATE
     shutil.make_archive(zipf, 'zip', "bounds")
     shutil.move(zipf + ".zip", WORK_DIR + "precomp")

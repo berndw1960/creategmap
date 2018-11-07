@@ -33,7 +33,6 @@ def split():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
     buildmap = config['runtime']['buildmap']
-    buildday = config['runtime'][buildmap]
     splitter_path = (WORK_DIR + config['runtime']['splitter'] +
                      "/splitter.jar ")
 
@@ -116,7 +115,7 @@ def split():
     os.system(command_line)
 
     if config.has_option('runtime', 'logging'):
-        log_dir = (WORK_DIR + "log/splitter/" + buildmap + "/" + buildday)
+        log_dir = (WORK_DIR + "log/splitter/" + buildmap)
 
         if os.path.exists(log_dir):
             path = log_dir

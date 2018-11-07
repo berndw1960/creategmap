@@ -3,7 +3,6 @@
 
 
 import os
-import datetime
 import configparser
 
 
@@ -86,17 +85,13 @@ def update_o5m():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
     buildmap = config['runtime']['buildmap']
-    time = datetime.datetime.now()
 
     if config.has_option('runtime', 'minutely'):
         update_opts = " --hourly -- minutely "
-        DATE = time.strftime('%Y%m%d_%H%M')
     elif config.has_option('runtime', 'hourly'):
         update_opts = " --hourly "
-        DATE = time.strftime('%Y%m%d_%H00')
     else:
         update_opts = " "
-        DATE = time.strftime('%Y%m%d_0000')
 
     print()
     info("updating " + buildmap + ".o5m, please wait...")
@@ -119,7 +114,5 @@ def update_o5m():
             os.remove(buildmap + "_temp.o5m")
 
     os.chdir(WORK_DIR)
-
-    config.set('runtime', buildmap, DATE)
 
     write_config()

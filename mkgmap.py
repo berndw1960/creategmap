@@ -135,7 +135,6 @@ def render():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
     buildmap = config['runtime']['buildmap']
-    buildday = config['runtime'][buildmap]
 
     global layer
     for layer in config['map_styles']:
@@ -319,8 +318,7 @@ def render():
                             " --series-name=" + buildmap + "_" + layer +
                             " --draw-priority=" +
                             config[layer]['draw-priority'] +
-                            " --description=" + buildmap + "_" + buildday +
-                            "_" + layer +
+                            " --description=" + buildmap + "_" + layer +
                             option_mkgmap_options +
                             option_mkgmap_spec_opts +
                             option_mkgmap_index_opts +

@@ -74,8 +74,7 @@ def log():
     for layer in config['map_styles']:
         if config['map_styles'][layer] == "yes":
             buildmap = config['runtime']['buildmap']
-            buildday = config['time_stamp'][buildmap]
-            log_dir = ("log/mkgmap/" + buildmap + "/" + layer + "/" + buildday)
+            log_dir = ("log/mkgmap/" + buildmap + "/" + layer)
 
             if os.path.exists(log_dir):
                 shutil.rmtree(log_dir)
