@@ -6,45 +6,43 @@ import configparser
 import shutil
 
 
-def printinfo(msg):
+def info(msg):
     print("II: " + msg)
 
 
-def printwarning(msg):
+def warning(msg):
     print("WW: " + msg)
 
 
-def printerror(msg):
+def error(msg):
     print("EE: " + msg)
 
 
 def checkprg(programmtofind, solutionhint):
-    """
-    test if an executable can be found by
-    following $PATH
-    raise message if fails and returns 1
-    on success return 0
-    search follows $PATH
-    """
+
+    # test if an executable can be found by
+    # following $PATH
+    # raise message if fails and returns 1
+    # on success return 0
+    # search follows $PATH
 
     if os.system("which " + programmtofind) == 0:
-        printinfo(programmtofind + " found")
+        info(programmtofind + " found")
     else:
-        printerror(programmtofind + " not found")
+        error(programmtofind + " not found")
         print(solutionhint)
 
 
 def is_there(find, solutionhint):
-    """
-    test if a file or dir can be found at a predefined place
-    raise message if fails and returns 1
-    on success return 0
-    """
+
+    # test if a file or dir can be found at a predefined place
+    # raise message if fails and returns 1
+    # on success return 0
 
     if os.path.exists(find):
-        printinfo(find + " found")
+        info(find + " found")
     else:
-        printerror(find + " not found")
+        error(find + " not found")
         print(solutionhint)
 
 
@@ -53,9 +51,7 @@ WORK_DIR = (os.environ['HOME'] + "/map_build/")
 config = configparser.ConfigParser()
 
 
-"""
-create the contourlines
-"""
+# create the contourlines
 
 
 def create_cont():
@@ -87,7 +83,7 @@ def create_cont():
         checkprg("phyghtmap", hint)
 
         if not os.path.exists("styles/contourlines_style/lines"):
-            printerror("No contourlines_style found")
+            error("No contourlines_style found")
             quit()
 
         if config.has_option('runtime', 'ed_user'):
@@ -102,10 +98,9 @@ def create_cont():
         else:
             ed_pwd_opts = " "
 
-        """
-        use phyghtmap to get the raw-data from the internet,
-        downloaded files will be stored for later builds
-        """
+        # use phyghtmap to get the raw-data from the internet,
+        # downloaded files will be stored for later builds
+
         command_line = ("phyghtmap --source=view1,view3,srtm1,srtm3 " +
                         ed_user_opts +
                         ed_pwd_opts +
@@ -124,14 +119,12 @@ def create_cont():
 
         if config.has_option('runtime', 'verbose'):
             print()
-            printinfo(command_line)
+            info(command_line)
             print()
 
         os.system(command_line)
 
-        """
-        Java HEAP, RAM oder Mode
-        """
+        # Java HEAP, RAM oder Mode
 
         if config['java']['agh'] == "1":
             option_java_heap = " -XX:+AggressiveHeap "
@@ -139,12 +132,10 @@ def create_cont():
             option_java_heap = (" " + config['java']['xmx'] + " " +
                                 config['java']['xms'] + " ")
 
-        """
-        contourlines-build with mkgmap
+        # contourlines-build with mkgmap
 
-        """
         os.chdir(cltemp_dir)
-        printinfo("entered " + os.getcwd())
+        info("entered " + os.getcwd())
 
         command_line = ("java -ea " +
                         option_java_heap +
@@ -166,7 +157,7 @@ def create_cont():
 
         if config.has_option('runtime', 'verbose'):
             print()
-            printinfo(command_line)
+            info(command_line)
             print()
 
         os.system(command_line)

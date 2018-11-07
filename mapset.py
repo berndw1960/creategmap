@@ -10,45 +10,30 @@ import build_config
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 
-def printerror(msg):
+# set prefix for messages
+
+
+def info(msg):
+    print("II: " + msg)
+
+
+def warning(msg):
+    print("WW: " + msg)
+
+
+def error(msg):
     print("EE: " + msg)
 
 
-"""
-test if a file or dir can be found at a predefined place
-raise message if fails and returns 1
-on success return 0
-"""
-
 if not os.path.exists(WORK_DIR):
-    printerror("Please create" + WORK_DIR)
+    error("Please create" + WORK_DIR)
     quit()
+
 
 os.chdir(WORK_DIR)
 
 
-"""
-set prefix for messages
-
-"""
-
-
-def printinfo(msg):
-    print("II: " + msg)
-
-
-def printwarning(msg):
-    print("WW: " + msg)
-
-
-def printerror(msg):
-    print("EE: " + msg)
-
-
-"""
-configparser
-
-"""
+# configparser
 
 
 def write_config():
@@ -79,10 +64,9 @@ if config.has_section('mapset_backup'):
 
 write_config()
 
-"""
-argparse
 
-"""
+# argparse
+
 
 parser = argparse.ArgumentParser(
         prog='PROG',
@@ -146,22 +130,17 @@ def mapset_backup():
         config.add_section('mapset_backup')
     for key in (config['mapset']):
         config.set('mapset_backup', key, config['mapset'][key])
-    print()
-    printinfo("Previous mapset list is backuped!")
 
 
 def mapset_list():
-    printinfo("These mapsets are added to mapset list! ")
+    info("These mapsets are added to mapset list! ")
     print()
     for key in (config['mapset']):
         if config['mapset'][key] == "yes":
             print("  " + key)
 
 
-"""
-set, edit or delete mapset list
-
-"""
+# set, edit or delete mapset list
 
 
 if args.add_poly:
@@ -175,10 +154,10 @@ if args.add_poly:
             config.set('mapset', file, 'no')
     write_config()
     print()
-    printwarning("ALL poly files added to mapset list, but not enabled! ")
+    warning("ALL poly files added to mapset list, but not enabled! ")
     print()
-    printinfo("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
-    printinfo("or '--enable_mapset $POLY' for a special mapset ")
+    info("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
+    info("or '--enable_mapset $POLY' for a special mapset ")
     print()
     quit()
 
@@ -192,7 +171,6 @@ if args.add_folder:
             config.set('mapset', folder, 'yes')
     for key in (config['mapset']):
         config.set('mapset', key, 'yes')
-    write_config()
     mapset_list()
     print()
 
@@ -206,7 +184,6 @@ if args.add_o5m:
             config.set('mapset', file, 'yes')
         for key in (config['mapset']):
             config.set('mapset', key, 'yes')
-    write_config()
     mapset_list()
     print()
 
@@ -218,12 +195,11 @@ if args.add_mapset:
         if not config.has_option('mapset', i):
             if not os.path.exists("poly/" + i + ".poly"):
                 print()
-                printerror(WORK_DIR + "poly/" + file + ".poly not found... ")
+                error(WORK_DIR + "poly/" + file + ".poly not found... ")
                 print("please create or download " + file + ".poly")
                 print()
                 quit()
         config.set('mapset', i, 'yes')
-        print("  " + i + " added to the list ")
     write_config()
     print()
     quit()
@@ -233,14 +209,12 @@ if args.enable_mapset == "ALL":
     mapset_backup()
     for key in (config['mapset']):
         config.set('mapset', key, 'yes')
-    write_config()
     mapset_list()
     print()
 elif args.enable_mapset:
     print()
     for i in args.enable_mapset:
         config.set('mapset', i, 'yes')
-        printinfo("  " + i + " enabled!")
     write_config()
     print()
     quit()
@@ -251,36 +225,36 @@ if args.disable_mapset == "ALL":
         config.set('mapset', key, 'no')
     write_config()
     print()
-    printinfo("all mapsets disabled on list")
+    info("all mapsets disabled on list")
     print()
+    quit()
 elif args.disable_mapset:
     print()
     for i in args.disable_mapset:
         config.set('mapset', i, 'no')
-        printwarning("  " + i + " disabled on list")
     write_config()
-    print()
+    quit()
 
 
 if args.remove_mapset == "ALL":
     config.remove_section('mapset')
     write_config()
     print()
-    printwarning("all mapsets deleted, list is empty")
+    warning("all mapsets deleted, list is empty")
     print()
+    quit()
 elif args.remove_mapset:
     print()
     for i in args.remove_mapset:
         config.remove_option('mapset', i)
-        printwarning("   " + i + " deleted from the list")
     write_config()
-    print()
+    quit()
 
 
 if args.list_mapset:
     if config.has_section('mapset'):
         print()
-        printinfo("mapset list includes: ")
+        info("mapset list includes: ")
         print()
         print("enabled:")
         for key in (config['mapset']):
@@ -293,11 +267,11 @@ if args.list_mapset:
                 print("  " + key)
     else:
         print()
-        printinfo("mapset list didn't exist")
+        info("mapset list didn't exist")
     print()
-
-if args.disable_mapset or args.remove_mapset or args.list_mapset:
+    write_config()
     quit()
+
 
 if args.fastbuild:
     mapset_backup()
@@ -306,9 +280,6 @@ if args.fastbuild:
     print()
     for i in args.fastbuild:
         config.set('mapset', i, 'yes')
-        printinfo("  " + i + " enabled!")
-
-    print()
 
 write_config()
 
@@ -366,11 +337,11 @@ for buildmap in config['mapset']:
     if config['mapset'][buildmap] == "yes":
         if buildmap == args.break_after:
             print()
-            printwarning("Stopping creating mapsets after this mapset")
+            warning("Stopping creating mapsets after this mapset")
         if os.path.exists("stop"):
             os.remove("stop")
             print()
-            printwarning("stopped build_process")
+            warning("stopped build_process")
             print()
             quit()
 

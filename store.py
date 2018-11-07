@@ -10,27 +10,6 @@ import zipfile
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 
-def printinfo(msg):
-    print("II: " + msg)
-
-
-def printwarning(msg):
-    print("WW: " + msg)
-
-
-def printerror(msg):
-    print("EE: " + msg)
-
-
-def checkprg(programmtofind, solutionhint):
-    if os.system("which " + programmtofind) == 0:
-        printinfo(programmtofind + " found")
-    else:
-        printerror(programmtofind + " not found")
-        print(solutionhint)
-        quit()
-
-
 config = configparser.ConfigParser()
 
 
@@ -38,9 +17,7 @@ def zip_img():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
 
-    """
-    zipp the images and mv them to separate dirs
-    """
+    # zip the images and move them to separate dirs
 
     buildmap = config['runtime']['buildmap']
     unzip_dir = WORK_DIR + "gps_ready/unzipped/" + buildmap
@@ -89,9 +66,8 @@ def kml():
 
 def log():
 
-    """
-    save the mkgmap-log for errors
-    """
+    # save the mkgmap-log for errors
+
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
 

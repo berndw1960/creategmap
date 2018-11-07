@@ -11,29 +11,10 @@ def write_config():
 
 config = configparser.ConfigParser()
 
-"""
-set prefix for messages
-
-"""
-
-
-def printinfo(msg):
-    print("II: " + msg)
-
-
-def printwarning(msg):
-    print("WW: " + msg)
-
-
-def printerror(msg):
-    print("EE: " + msg)
-
 
 def create():
 
-    """
-    create a default config
-    """
+    # create a default config
 
     config['DEFAULT'] = {}
 
@@ -103,7 +84,10 @@ def create():
     config['tdblayer'] = {}
     config['tdblayer'] = {'basemap': 'yes',
                           'bikemap': 'yes',
-                          'carmap': 'no', }
+                          'carmap': 'no',
+                          'defaultmap': 'yes',
+                          'fixme': 'no',
+                          'boundary': 'no', }
 
     config['contourlines'] = {}
     config['contourlines'] = {'draw-priority': '16', }
@@ -114,8 +98,6 @@ def create():
                                'germany': 'name:de,name',
                                'bonn': 'name:de,name', }
 
-    config['bounds'] = {}
-
     write_config()
 
 
@@ -123,9 +105,7 @@ def update():
 
     config.read('pygmap3.cfg')
 
-    """
-    add new options
-    """
+    # add new options
 
     if not config.has_section('mapset'):
         config['mapset'] = {}
@@ -156,16 +136,19 @@ def update():
     if not config.has_option('demtdb', 'switch_tdb'):
         config.set('demtdb', 'switch_tdb', "no")
 
+    if not config.has_option('tdblayer', 'fixme'):
+        config.set('tdblayer', 'fixme', "no")
+
+    if not config.has_option('tdblayer', 'boundary'):
+        config.set('tdblayer', 'boundary', "no")
+
     if not config.has_section('maxnodes'):
         config.add_section('maxnodes')
 
     if not config.has_option('maxnodes', 'default'):
         config.set('maxnodes', 'default', '1600000')
 
-    """
-    remove temporary options
-
-    """
+    # remove temporary options
 
     if config.has_option('runtime', 'hourly'):
         config.remove_option('runtime', 'hourly')

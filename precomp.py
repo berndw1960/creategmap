@@ -9,16 +9,8 @@ import urllib.request
 import shutil
 
 
-def printinfo(msg):
+def info(msg):
     print("II: " + msg)
-
-
-def printwarning(msg):
-    print("WW: " + msg)
-
-
-def printerror(msg):
-    print("EE: " + msg)
 
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
@@ -35,7 +27,7 @@ def list_bounds():
     config.read('pygmap3.cfg')
 
     print()
-    printinfo("set as used files:")
+    info("set as used files:")
     print()
     for key in (config['precomp']):
         print("  " + config['precomp'][key])
@@ -43,7 +35,7 @@ def list_bounds():
 
     os.chdir(WORK_DIR + "precomp")
 
-    printinfo("local files:")
+    info("local files:")
     for i in ['sea', 'bounds']:
         print()
         dir = os.listdir()
@@ -56,7 +48,7 @@ def list_bounds():
     www = "osm.thkukuk.de"
     path = "/data/"
 
-    printinfo("files on thkukuk.de (*-latest not listed):")
+    info("files on thkukuk.de (*-latest not listed):")
     for i in ['sea', 'bounds']:
         print()
         target = http.client.HTTPConnection(www)
@@ -95,7 +87,7 @@ def fetch_bounds():
 
     if not os.path.exists(file_name):
         print()
-        printinfo("download " + url)
+        info("download " + url)
         print()
         urlopen = urllib.request.urlopen
         with urlopen(url) as response, open(file_name, 'wb') as out_file:

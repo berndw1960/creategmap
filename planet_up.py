@@ -10,9 +10,9 @@
   GNU Affero General Public License for more details.
   You should have received a copy of this license along
   with this program; if not, see http://www.gnu.org/licenses/.
-
-
 """
+
+
 __version__ = "0.0.2"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
@@ -31,42 +31,40 @@ import default_config
 WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 
-def printinfo(msg):
+def info(msg):
     print(("II: " + msg))
 
 
-def printwarning(msg):
+def warning(msg):
     print(("WW: " + msg))
 
 
-def printerror(msg):
+def error(msg):
     print(("EE: " + msg))
 
 
 def checkprg(programmtofind, solutionhint):
-    """
-    test if an executable can be found by
-    following $PATH
-    raise message if fails and returns 1
-    on success return 0
-    search follows $PATH
-    """
+
+    # test if an executable can be found by
+    # following $PATH
+    # raise message if fails and returns 1
+    # on success return 0
+    # search follows $PATH
 
     if os.system("which " + programmtofind) == 1:
-        printerror(programmtofind + " not found")
+        error(programmtofind + " not found")
         print(solutionhint)
         quit()
 
 
 def is_there(find, solutionhint):
-    """
-    test if a file or dir can be found at a predefined place
-    raise message if fails and returns 1
-    on success return 0
-    """
+
+    # test if a file or dir can be found at a predefined place
+    # raise message if fails and returns 1
+    # on success return 0
 
     if not os.path.exists(find):
-        printerror(find + " not found")
+        error(find + " not found")
         print(solutionhint)
 
 
@@ -75,10 +73,8 @@ is_there(WORK_DIR, hint)
 
 os.chdir(WORK_DIR)
 
-"""
-argparse
+# argparse
 
-"""
 
 parser = argparse.ArgumentParser(
         prog='PROG',
@@ -98,7 +94,7 @@ parser = argparse.ArgumentParser(
          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('-cb', '--create_bounds', action="store_true",
-                    help="""create new boundaries""")
+                    help="create new boundaries")
 
 args = parser.parse_args()
 
@@ -109,22 +105,21 @@ for tool in ['osmconvert', 'osmupdate']:
 
 if os.path.exists("o5m/planet.o5m"):
     print()
-    printerror("please move planet.o5m to " + WORK_DIR + "planet/")
+    error("please move planet.o5m to " + WORK_DIR + "planet/")
     quit()
 
 if not os.path.exists("planet/planet.o5m"):
     print()
     os.chdir("planet/")
-    printinfo("Download started. Size ~50 Gigabytes... please wait! ")
-    os.system("""wget http://ftp5.gwdg.de/pub/misc/openstreetmap/""" +
-              """planet.openstreetmap.org/pbf/planet-latest.osm.pbf""")
+    info("Download started. Size ~50 Gigabytes... please wait! ")
+    os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/" +
+              "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
     os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
     os.remove("planet-latest.osm.pbf")
     os.chdir(WORK_DIR)
 
-"""
-check for pygmap3.cfg
-"""
+
+# check for pygmap3.cfg
 
 
 config = configparser.ConfigParser()
@@ -146,10 +141,8 @@ if 'planet' not in config:
     config.add_section('planet')
     write_config()
 
-"""
-set date for info
 
-"""
+# set date for info
 
 
 today = datetime.datetime.now()
@@ -159,8 +152,8 @@ config.set('planet', 'buildday', (DATE))
 write_config()
 
 print()
-os.system(""" osmupdate -v --daily --keep-tempfiles """ +
-          """planet/planet.o5m planet/planet_new.o5m""")
+os.system(" osmupdate -v --daily --keep-tempfiles " +
+          "planet/planet.o5m planet/planet_new.o5m")
 
 os.chdir("planet/")
 
@@ -170,10 +163,10 @@ if os.path.exists("planet_new.o5m"):
     if os.path.exists("planet.o5m"):
         os.remove("planet_temp.o5m")
 
-"""
-create the bounds from planet
 
-"""
+# create the bounds from planet
+
+
 if args.create_bounds:
     option_mkgmap_path = (WORK_DIR +
                           config['runtime']['mkgmap'] + "/mkgmap.jar ")
@@ -212,5 +205,5 @@ if args.create_bounds:
 
     os.chdir(WORK_DIR)
 
-printinfo("Habe fertig!")
+info("Habe fertig!")
 quit()

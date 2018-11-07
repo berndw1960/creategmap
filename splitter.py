@@ -10,16 +10,12 @@ import time
 WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 
-def printinfo(msg):
+def info(msg):
     print("II: " + msg)
 
 
-def printwarning(msg):
+def warning(msg):
     print("WW: " + msg)
-
-
-def printerror(msg):
-    print("EE: " + msg)
 
 
 def write_config():
@@ -30,10 +26,7 @@ def write_config():
 config = configparser.ConfigParser()
 
 
-"""
-split raw-data
-
-"""
+# split raw-data
 
 
 def split():
@@ -44,10 +37,7 @@ def split():
     splitter_path = (WORK_DIR + config['runtime']['splitter'] +
                      "/splitter.jar ")
 
-    """
-    Java HEAP, RAM oder Mode
-
-    """
+    # Java HEAP, RAM oder Mode
 
     if config['java']['agh'] == "1":
         option_java_heap = " -XX:+AggressiveHeap "
@@ -58,9 +48,7 @@ def split():
     java_opts = "java -ea " + option_java_heap + " -jar " + splitter_path
     log_opts = " > splitter.log "
 
-    """
-    splitter-options
-    """
+    # splitter-options
 
     BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
 
@@ -92,8 +80,8 @@ def split():
         difftime = curtime - ftime
         if difftime > 1741800:
             print()
-            printwarning(buildmap + "_areas.list is older then 1 month, " +
-                         "create a new file")
+            warning(buildmap + "_areas.list is older then 1 month, " +
+                    "create a new file")
             os.remove(areas_list)
 
     # split with
@@ -121,7 +109,7 @@ def split():
 
     if config.has_option('runtime', 'verbose'):
         print()
-        printinfo(command_line)
+        info(command_line)
         print()
 
     os.chdir("tiles")
@@ -148,5 +136,5 @@ def split():
 
     if not os.path.exists(areas_list):
         shutil.copy2("areas.list", areas_list)
-    datei = open(buildmap + "_split.ready", "w")
-    datei.close()
+    file = open(buildmap + "_split.ready", "w")
+    file.close()

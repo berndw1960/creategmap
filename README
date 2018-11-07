@@ -1,12 +1,42 @@
-A python3-script to build maps for Garmin PNAs from OpenStreetMap-Data
-www.openstreetmap.org
+pygmap3.py, a script to build maps for GARMIN PNAs
+
+Work in progress, be sure, that you use it in
+the knowledge, that it can be harmful for your data,
+but i hope, it's safe.
 
 tested with
 eTrex Vista Hcx
 eTrex Legend
-Oregon 450
-Oregon 650
+Oregon 4x0
+Oregon 6x0
+Oregom 7x0
 some Nüvis
+
+
+Tools will be installed by the script:
+
+    mkgmap and splitter from
+    http://www.mkgmap.org.uk
+    and some other things
+
+
+You can use the bash script mk_osmtools in this repository
+to create this tools, needs cc installed
+
+    osmconvert
+    http://wiki.openstreetmap.org/wiki/Osmconvert
+    osmupdate
+    http://wiki.openstreetmap.org/wiki/Osmupdate
+    osmfilter
+    http://wiki.openstreetmap.org/wiki/Osmfilter
+
+
+phyghtmap comes with an install routine
+
+    phyghtmap (to create the contourlines)
+    http://katze.tfiu.de/projects/phyghtmap/
+    please the version 2.20 or later!
+
 
 
 Description:

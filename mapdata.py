@@ -10,22 +10,15 @@ import configparser
 WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 
-def printinfo(msg):
+def info(msg):
     print("II: " + msg)
 
 
-def printwarning(msg):
-    print("WW: " + msg)
-
-
-def printerror(msg):
+def error(msg):
     print("EE: " + msg)
 
 
-"""
-configparser
-
-"""
+# configparser
 
 
 def write_config():
@@ -36,10 +29,7 @@ def write_config():
 config = configparser.ConfigParser()
 
 
-"""
-cut data from planet-file
-
-"""
+# cut data from planet-file
 
 
 def create_o5m():
@@ -50,43 +40,43 @@ def create_o5m():
 
     if os.path.exists("o5m/" + buildmap + "osm.pbf"):
         print()
-        printinfo("""converting o5m/""" + buildmap +
-                  """.osm.pbf to o5m/""" + buildmap +
-                  """.o5m, please wait...""")
-        os.system("""osmconvert o5m/""" + buildmap +
-                  """.osm.pbf -o=o5m/""" + buildmap +
-                  """.o5m""")
+        info("converting o5m/" + buildmap +
+             ".osm.pbf to o5m/" + buildmap +
+             ".o5m, please wait...")
+        os.system("osmconvert o5m/" + buildmap +
+                  ".osm.pbf -o=o5m/" + buildmap +
+                  ".o5m")
 
     elif os.path.exists("o5m/" + buildmap + "-latest.osm.pbf"):
         print()
-        printinfo("""converting o5m/""" + buildmap +
-                  """-latest.osm.pbf to o5m/""" + buildmap +
-                  """.o5m, please wait...""")
-        os.system("""osmconvert o5m/""" + buildmap +
-                  """-latest.osm.pbf -o=o5m/""" + buildmap + """.o5m""")
+        info("converting o5m/" + buildmap +
+             "-latest.osm.pbf to o5m/" + buildmap +
+             ".o5m, please wait...")
+        os.system("osmconvert o5m/" + buildmap +
+                  "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m")
 
     elif os.path.exists("planet/planet.o5m"):
         if os.path.exists("poly/" + buildmap + ".poly"):
             print()
-            printinfo("""now extracting """ + buildmap +
-                      """.o5m from Planet, please wait...""")
+            info("now extracting " + buildmap +
+                 ".o5m from Planet, please wait...")
             os.system("osmconvert planet/planet.o5m " +
                       "--complete-ways --complex-ways --drop-version " +
                       " -B=poly/" + buildmap + ".poly " +
                       " -o=o5m/" + buildmap + ".o5m")
         else:
             print()
-            printerror("missing poly/" + buildmap + ".poly")
+            error("missing poly/" + buildmap + ".poly")
             print()
-            printinfo("""created it or try to get one from
-                http://download.geofabrik.de """)
+            info("created it or try to get one from" +
+                 " http://download.geofabrik.de ")
             print("    or use another source for this file")
             print()
             quit()
 
     else:
         print()
-        printerror((WORK_DIR) + "o5m/" + buildmap + ".o5m not found! ")
+        error((WORK_DIR) + "o5m/" + buildmap + ".o5m not found! ")
         print()
         quit()
 
@@ -109,7 +99,7 @@ def update_o5m():
         DATE = time.strftime('%Y%m%d_0000')
 
     print()
-    printinfo("updating " + buildmap + ".o5m, please wait...")
+    info("updating " + buildmap + ".o5m, please wait...")
     option_poly = " "
     if os.path.exists("poly/" + buildmap + ".poly"):
         option_poly = " -B=poly/" + buildmap + ".poly "
