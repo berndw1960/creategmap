@@ -95,12 +95,12 @@ def update_o5m():
 
     print()
     info("updating " + buildmap + ".o5m, please wait...")
-    option_poly = " "
+    poly = " "
     if os.path.exists("poly/" + buildmap + ".poly"):
-        option_poly = " -B=poly/" + buildmap + ".poly "
+        poly = " -B=poly/" + buildmap + ".poly "
     os.system("osmupdate --daily" +
               update_opts +
-              option_poly +
+              poly +
               " --keep-tempfiles o5m/" +
               buildmap +
               ".o5m  o5m/" + buildmap + "_new.o5m")

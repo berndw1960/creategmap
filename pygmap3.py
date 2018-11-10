@@ -45,8 +45,6 @@ WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 
 # set prefix for messages
-
-
 def info(msg):
     print("II: " + msg)
 
@@ -77,16 +75,12 @@ if os.path.exists("pygmap3.cfg"):
 
 
 # create dir o5m, areas, poly and tiles
-
-
 for dir in ['o5m', 'areas', 'poly', 'tiles', 'precomp']:
     if not os.path.exists(dir):
         os.mkdir(dir)
 
 
 # configparser
-
-
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
         config.write(configfile)
@@ -96,8 +90,6 @@ config = configparser.ConfigParser()
 
 
 # create a new config if needed
-
-
 if not os.path.exists("pygmap3.cfg"):
     build_config.create()
 
@@ -122,8 +114,6 @@ write_config()
 
 
 # argparse
-
-
 parser = argparse.ArgumentParser(
         prog='PROG',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -263,13 +253,15 @@ parser.add_argument('-l', '--log', action="store_true",
                     help=False)
 
 # development
-parser.add_argument('-mt', '--mkgmap_test', action="store_true",
+parser.add_argument('-spt', '--splitter_test', default=0,
+                    help="use a svn version of splitter")
+parser.add_argument('-mt', '--test', default=0,
                     help="use a svn version of mkgmap")
-parser.add_argument('-ms', '--mkgmap_set', default=0,
-                    help="set a svn version of mkgmap like dem-tdb")
 
 args = parser.parse_args()
 
+
+# list the poly files
 if args.list_poly:
     path = WORK_DIR + "poly"
     dir = sorted(os.listdir(path))
@@ -284,8 +276,6 @@ if args.list_poly:
 
 
 # set buildmap
-
-
 buildmap = os.path.splitext(os.path.basename(args.poly))[0]
 config.set('runtime', 'buildmap', buildmap)
 
@@ -313,8 +303,6 @@ if not config.has_option('name_tag_list', buildmap):
 
 
 # map build options
-
-
 if args.list_mapstyle:
     if config.has_section('map_styles'):
         print()
@@ -502,28 +490,20 @@ if args.check_styles:
 
 
 # special opts to debug the raw map data
-
-
 if args.spec_opts:
     config.set('runtime', 'use_spec_opts', '1')
 
 # logging
-
-
 if args.log:
     config.set('runtime', 'logging', '1')
 
 
 # verbosity
-
-
 if args.verbose:
     config.set('runtime', 'verbose', '1')
 
 
 # HEAP size for java, default is aggressiveheap
-
-
 if args.aggressiveheap:
     config.set('java', 'agh', '1')
 
@@ -540,8 +520,6 @@ if config['java']['agh'] == "0":
 
 
 # maxnodes for splitter
-
-
 if not config.has_option('maxnodes', buildmap):
     config.set('maxnodes', buildmap, config['maxnodes']['default'])
 
@@ -554,81 +532,56 @@ if args.maxnodes:
 
 
 # don't use the areas.list
-
-
 if args.no_areas_list:
     if os.path.exists("areas/" + buildmap + "_areas.list"):
         os.remove("areas/" + buildmap + "_areas.list")
 
 
 # development version of splitter and mkgmap
-
-
-if args.mkgmap_set:
-    config.set('runtime', 'mkgmap_test', args.mkgmap_set)
+if args.splitter_test:
+    config.set('splitter', 'test', args.test)
     write_config()
     print()
-    info(" MKGMAP test version set to " + args.mkgmap_set)
-    print()
-    info(" use this version with pygmap3 -mt ")
-    print()
-    quit()
+    info(" SPLITTER test version set to " + args.splitter_test)
 
 
-if args.mkgmap_test:
-    if config.has_option('runtime', 'mkgmap_test'):
-        config.set('runtime', 'use_mkgmap_test', '1')
-    else:
-        print()
-        warning("no test version of mkgmap is set in config")
-        warning("please use '-ms/--mkgmap_set' to set one version")
-        print()
-        quit()
+if args.test:
+    config.set('mkgmap', 'test', args.test)
+    write_config()
+    print()
+    info(" MKGMAP test version set to " + args.test)
 
 
 # set the amount of levels
-
-
 if args.levels != config['maplevel']['levels']:
     config.set('maplevel', 'levels', args.levels)
 
 
 # max-jobs for mkgmap
-
-
 if args.max_jobs:
     config.set('runtime', 'max_jobs', args.max_jobs)
 
 
 # keep_going on errors
-
-
 if args.keep_going:
     config.set('runtime', 'keep_going', "1")
 
 
 # create the contourlines and hillshading
-
-
 if args.switch_tdb and config['demtdb']['switch_tdb'] == "no":
     config.set('demtdb', 'switch_tdb', "yes")
-    config.set('runtime', 'tdb', "yes")
     print()
     info("hillshading enabled")
     print()
+    write_config()
+    quit()
 elif args.switch_tdb and config['demtdb']['switch_tdb'] == "yes":
     config.set('demtdb', 'switch_tdb', "no")
-    config.set('runtime', 'tdb', "no")
     print()
     info("hillshading disabled")
     print()
-elif config['demtdb']['switch_tdb'] == "yes":
-    config.set('runtime', 'tdb', "yes")
-elif args.tdb:
-    config.set('runtime', 'tdb', "yes")
-else:
-    config.set('demtdb', 'switch_tdb', "no")
-    config.set('runtime', 'tdb', "no")
+    write_config()
+    quit()
 
 
 if args.enable_tdb:
@@ -676,14 +629,12 @@ if args.ed_pwd:
 
 
 # set or create the mapid
-
-
 if config.has_option('mapid', buildmap):
-    option_mapid = config['mapid'][buildmap]
+    mapid = config['mapid'][buildmap]
 else:
-    option_mapid = config['mapid']['next_mapid']
-    next_mapid = str(int(option_mapid)+1)
-    config.set('mapid', buildmap, option_mapid)
+    mapid = config['mapid']['next_mapid']
+    next_mapid = str(int(mapid)+1)
+    config.set('mapid', buildmap, mapid)
     config.set('mapid', 'next_mapid', next_mapid)
 
 write_config()
@@ -696,8 +647,6 @@ if args.verbose:
 
 
 # osmupdate and osmconvert
-
-
 if config['osmtools']['check'] == "yes":
     def checkprg(programmtofind, solutionhint):
         if os.system("which " + programmtofind) == 0:
@@ -720,22 +669,16 @@ if config['osmtools']['check'] == "yes":
 
 
 # get splitter and mkgmap
-
-
-get_tools.from_mkgmap_org()
+get_tools.from_org()
 
 config.read('pygmap3.cfg')
 
 
 # get the geonames file
-
-
 geonames.cities15000()
 
 
 # bounds and precomp_sea
-
-
 if args.list_bounds:
     precomp.list_bounds()
     quit()
@@ -773,8 +716,6 @@ precomp.fetch_bounds()
 
 
 # --stop_after get_tools
-
-
 config.read('pygmap3.cfg')
 if args.stop_after == "get_tools":
     print()
@@ -784,8 +725,6 @@ if args.stop_after == "get_tools":
 
 
 # create an installer for mapsource
-
-
 if args.installer:
     config.set('runtime', 'installer', "1")
 
@@ -797,9 +736,8 @@ if args.contourlines:
         warning("dir styles/contourlines_style not found")
 
 
+# --stop_after contourlines
 config.read('pygmap3.cfg')
-
-
 if args.stop_after == "contourlines":
     print()
     info("stop after contourlines creation")
@@ -808,8 +746,6 @@ if args.stop_after == "contourlines":
 
 
 # mapdata to use
-
-
 os.chdir(WORK_DIR)
 
 if not args.keep_data:
@@ -817,7 +753,6 @@ if not args.keep_data:
         mapdata.create_o5m()
 
     # update mapdata
-
     if args.hourly:
         config.set('runtime', 'hourly', '1')
 
@@ -830,11 +765,7 @@ if not args.keep_data:
 
 
 # --stop_after mapdata
-
-
 config.read('pygmap3.cfg')
-
-
 if args.stop_after == "mapdata":
     print()
     info(" Mapdata for " + buildmap + " " +
@@ -845,8 +776,6 @@ if args.stop_after == "mapdata":
 
 
 # split mapdata
-
-
 def remove_old_tiles():
     path = 'tiles'
     for file in os.listdir(path):
@@ -869,11 +798,7 @@ else:
 
 
 # --stop_after splitter
-
-
 config.read('pygmap3.cfg')
-
-
 if args.stop_after == "splitter":
     print()
     info(buildmap + ".o5m successful splitted")
@@ -882,14 +807,10 @@ if args.stop_after == "splitter":
 
 
 # render the map-images
-
-
 mkgmap.render()
 
 
 # --stop_after mkgmap
-
-
 if args.stop_after == "mkgmap":
     config.read('pygmap3.cfg')
     print()
@@ -899,8 +820,6 @@ if args.stop_after == "mkgmap":
 
 
 # zip the images, save the kml and log
-
-
 if args.zip_img:
     store.zip_img()
     store.kml()

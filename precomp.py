@@ -51,16 +51,22 @@ def list_bounds():
     info("files on thkukuk.de (*-latest not listed):")
     for i in ['sea', 'bounds']:
         print()
-        target = http.client.HTTPConnection(www)
-        target.request("GET", (path))
-        htmlcontent = target.getresponse()
-        data = htmlcontent.read()
-        data = data.decode('utf8')
-        if i == "bounds":
-            pattern = re.compile('bounds-20\d{6}.zip')
-        elif i == "sea":
-            pattern = re.compile('sea-20\d{12}.zip')
-        target.close()
+        try:
+            target = http.client.HTTPConnection(www)
+            target.request("GET", (path))
+            htmlcontent = target.getresponse()
+            data = htmlcontent.read()
+            data = data.decode('utf8')
+            if i == "bounds":
+                pattern = re.compile('bounds-20\d{6}.zip')
+            elif i == "sea":
+                pattern = re.compile('sea-20\d{12}.zip')
+            target.close()
+        except http.client.NotConnected:
+            print()
+            print(" can't connect to " + target)
+            print()
+            break
 
         list = sorted(pattern.findall(data), reverse=True)
         list_new = []
@@ -82,15 +88,21 @@ def fetch_bounds():
     path = "/data/"
 
     for i in ['sea', 'bounds']:
-        file_name = config['precomp'][i]
-        url = "http://" + www + path + file_name
+        file = config['precomp'][i]
+        url = "http://" + www + path + file
 
-    if not os.path.exists(file_name):
-        print()
-        info("download " + url)
-        print()
-        urlopen = urllib.request.urlopen
-        with urlopen(url) as response, open(file_name, 'wb') as out_file:
-            shutil.copyfileobj(response, out_file)
+        if not os.path.exists(file):
+            print()
+            info("download " + url)
+            print()
+            try:
+                uo = urllib.request.urlopen
+                with uo(url) as response, open(file, 'wb') as out_file:
+                    shutil.copyfileobj(response, out_file)
+            except urllib.error.URLError:
+                print()
+                print(" can't download " + file)
+                print()
+                break
 
     os.chdir(WORK_DIR)

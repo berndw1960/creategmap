@@ -107,11 +107,14 @@ def update():
 
     # add new options
 
-    if not config.has_section('mapset'):
-        config['mapset'] = {}
-
-    if not config.has_section('java'):
-        config.add_section('java')
+    for i in ['splitter',
+              'mkgmap',
+              'java',
+              'demtdb',
+              'maxnodes',
+              'mapset']:
+        if not config.has_section(i):
+            config.add_section(i)
 
     if not config.has_section('precomp'):
         config.add_section('precomp')
@@ -130,9 +133,6 @@ def update():
     if not config.has_option('java', 'agh'):
         config.set('java', 'agh', '0')
 
-    if not config.has_section('demtdb'):
-        config.add_section('demtdb')
-
     if not config.has_option('demtdb', 'switch_tdb'):
         config.set('demtdb', 'switch_tdb', "no")
 
@@ -141,9 +141,6 @@ def update():
 
     if not config.has_option('tdblayer', 'boundary'):
         config.set('tdblayer', 'boundary', "no")
-
-    if not config.has_section('maxnodes'):
-        config.add_section('maxnodes')
 
     if not config.has_option('maxnodes', 'default'):
         config.set('maxnodes', 'default', '1600000')
@@ -156,8 +153,9 @@ def update():
     if config.has_option('runtime', 'minutely'):
         config.remove_option('runtime', 'minutely')
 
-    if config.has_option('runtime', 'use_mkgmap_test'):
-        config.remove_option('runtime', 'use_mkgmap_test')
+    for i in ['mkgmap', 'splitter']:
+        if config.has_option(i, 'test'):
+            config.remove_option(i, 'test')
 
     if config.has_option('runtime', 'installer'):
         config.remove_option('runtime', 'installer')

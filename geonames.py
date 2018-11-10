@@ -24,8 +24,7 @@ def error(msg):
 def cities15000():
 
     # get the geonames for splitter
-
-    file = (WORK_DIR + "cities15000.zip")
+    file = "cities15000.zip"
 
     if os.path.exists(file):
         ftime = os.path.getmtime(file)
@@ -38,14 +37,15 @@ def cities15000():
 
     if not os.path.exists(file):
         url = "http://download.geonames.org/export/dump/cities15000.zip"
-        file = "cities15000.zip"
-        print()
-        info("download " + url)
-
-        # Download the file from `url` and save it locally under `file_name`:
-
-        urlopen = urllib.request.urlopen
-        with urlopen(url) as response, open(file, 'wb') as out_file:
-            shutil.copyfileobj(response, out_file)
-
-        os.remove(file + ".bak")
+        # Download the file from `url` and save it locally under `file`:
+        try:
+            uo = urllib.request.urlopen
+            with uo(url) as response, open(file, 'wb') as out_file:
+                shutil.copyfileobj(response, out_file)
+            os.remove(file + ".bak")
+        except urllib.error.URLError:
+            print()
+            print(" can't download " + file)
+            print()
+            if os.path.exists(file + ".bak"):
+                os.rename(file + ".bak", file)

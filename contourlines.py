@@ -61,7 +61,7 @@ def create_cont():
     config.read('pygmap3.cfg')
 
     buildmap = config['runtime']['buildmap']
-    mkgmap_path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
+    path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
     cl_dir = "gps_ready/zipped/" + buildmap + "/"
     cltemp_dir = "cl_temp/"
@@ -127,10 +127,9 @@ def create_cont():
         # Java HEAP, RAM oder Mode
 
         if config['java']['agh'] == "1":
-            option_java_heap = " -XX:+AggressiveHeap "
+            heap = " -XX:+AggressiveHeap "
         else:
-            option_java_heap = (" " + config['java']['xmx'] + " " +
-                                config['java']['xms'] + " ")
+            heap = (config['java']['xmx'] + " " + config['java']['xms'])
 
         # contourlines-build with mkgmap
 
@@ -138,8 +137,8 @@ def create_cont():
         info("entered " + os.getcwd())
 
         command_line = ("java -ea " +
-                        option_java_heap +
-                        " -jar " + mkgmap_path +
+                        heap +
+                        " -jar " + path +
                         " --max-jobs " +
                         " --read-config=" +
                         WORK_DIR + "styles/contourlines_style/options" +

@@ -11,8 +11,6 @@ WORK_DIR = os.environ['HOME'] + "/map_build/"
 
 
 # set prefix for messages
-
-
 def info(msg):
     print("II: " + msg)
 
@@ -34,8 +32,6 @@ os.chdir(WORK_DIR)
 
 
 # configparser
-
-
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
         config.write(configfile)
@@ -66,8 +62,6 @@ write_config()
 
 
 # argparse
-
-
 parser = argparse.ArgumentParser(
         prog='PROG',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -117,7 +111,7 @@ parser.add_argument('-l', '--log', action="store_true",
                     help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true",
                     help="increase verbosity")
-parser.add_argument('-mt', '--mkgmap_test', action="store_true",
+parser.add_argument('-mt', '--test', action="store_true",
                     help="use a svn version of mkgmap like housenumbers2")
 parser.add_argument('-so', '--spec_opts', action="store_true",
                     help="use some special opts to test the raw data")
@@ -141,8 +135,6 @@ def mapset_list():
 
 
 # set, edit or delete mapset list
-
-
 if args.add_poly:
     path = WORK_DIR + "poly"
     dir = sorted(os.listdir(path))
@@ -285,8 +277,6 @@ write_config()
 
 
 # build or additional option for pygmap3
-
-
 if args.stop_after:
     stop = "-st " + args.stop_after + " "
 else:
@@ -299,10 +289,10 @@ else:
     cl = ""
 
 
-if args.mkgmap_test and config.has_option('runtime', 'mkgmap_test'):
-    mkgmap_test = "-mt "
+if args.test and config.has_option('runtime', 'test'):
+    test = "-mt "
 else:
-    mkgmap_test = ""
+    test = ""
 
 
 if args.no_zip:
@@ -330,7 +320,7 @@ else:
 
 
 command_line = ("pygmap3.py -kg " +
-                verbose + stop + cl + mkgmap_test + log + zip)
+                verbose + stop + cl + test + log + zip)
 
 
 for buildmap in config['mapset']:

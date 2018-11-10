@@ -26,7 +26,8 @@ import argparse
 import configparser
 import datetime
 import shutil
-import default_config
+import build_config
+
 
 WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
@@ -82,24 +83,26 @@ parser = argparse.ArgumentParser(
         description=('''\
 
             To create and update a local copy of the OSM planet file
-            There is only one option to create new precomp boundaries
+            There is a option to create new precomp boundaries
             from the planet file, useful if the server thkukuk.de is
             not reachable
 
         '''))
 
-
 parser = argparse.ArgumentParser(
+
          prog='PROG',
          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('-cb', '--create_bounds', action="store_true",
                     help="create new boundaries")
+parser.add_argument('-v', '--verbose', action="store_true",
+                    help=False)
 
 args = parser.parse_args()
 
 
-for tool in ['osmconvert', 'osmupdate']:
+for tool in ['osmconvert', 'osmupdate', 'osmfilter']:
     hint = tool + " missed, please use mk_osmtools to build it from sources"
     checkprg(tool, hint)
 
@@ -131,7 +134,7 @@ def write_config():
 
 
 if not os.path.exists("pygmap3.cfg"):
-    default_config.create()
+    build_config.create()
 
 
 config.read('pygmap3.cfg')
@@ -145,13 +148,24 @@ if 'planet' not in config:
 write_config()
 
 
+command_line = (" osmupdate -v --daily --keep-tempfiles " +
+                "planet/planet.o5m planet/planet_new.o5m")
+
+
+if args.verbose:
+    print()
+    print(command_line)
+    print()
+
+
+os.system(command_line)
+
+
 print()
 
 
-os.system(" osmupdate -v --daily --keep-tempfiles " +
-          "planet/planet.o5m planet/planet_new.o5m")
-
 os.chdir("planet/")
+
 
 if os.path.exists("planet_new.o5m"):
     os.rename("planet.o5m", "planet_temp.o5m")
@@ -164,16 +178,6 @@ if os.path.exists("planet_new.o5m"):
 
 
 if args.create_bounds:
-    option_mkgmap_path = (WORK_DIR +
-                          config['runtime']['mkgmap'] + "/mkgmap.jar ")
-
-    if config['java']['agh'] == "1":
-        option_java_heap = " -XX:+AggressiveHeap "
-    else:
-        option_java_heap = (" " + config['java']['xmx'] +
-                            " " + config['java']['xms'] + " ")
-
-    print()
 
     command_line = ("osmfilter -v planet.o5m  --keep-nodes= " +
                     "--keep-ways-relations='boundary=administrative " +
@@ -181,23 +185,40 @@ if args.create_bounds:
                     "--drop-tags='created_by= source= building= " +
                     "=highway maxspeed= surface= oneway= note= natural=" +
                     " lit=' -o=bounds_data.o5m")
-    print()
+
+    if args.verbose:
+        print()
+        print(command_line)
+        print()
 
     os.system(command_line)
+
+    print()
+
+    mkgmap = WORK_DIR + config['mkgmap']['rev'] + "/mkgmap.jar "
+
+    if config['java']['agh'] == "1":
+        heap = " -XX:+AggressiveHeap "
+    else:
+        heap = config['java']['xmx'] + config['java']['xms']
 
     command_line = ("java -ea " +
-                    option_java_heap +
+                    heap +
                     " -cp " +
-                    option_mkgmap_path +
+                    mkgmap +
                     " uk.me.parabola.mkgmap.reader.osm." +
                     "boundary.BoundaryPreprocessor " +
-                    " bounds_data.o5m bounds ")
-    print()
+                    "bounds_data.o5m bounds ")
+    if args.verbose:
+        print()
+        print(command_line)
+        print()
 
     os.system(command_line)
 
-    # set date for info
+    print()
 
+    # set date for info
     today = datetime.datetime.now()
     DATE = today.strftime('%Y%m%d')
     zipf = "bounds-" + DATE

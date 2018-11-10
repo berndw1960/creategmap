@@ -1,5 +1,5 @@
 # The default level FINE, WARNING, INFO, SEVERE
-# use with java -Dlog.config=d:\dbg\mkgmap_log.props ...
+# use with java -Dlog.config=d:\dbg\log.props ...
 .level=WARNING
 #handlers: java.util.logging.ConsoleHandler
 handlers: java.util.logging.FileHandler java.util.logging.ConsoleHandler

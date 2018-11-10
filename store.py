@@ -14,11 +14,9 @@ config = configparser.ConfigParser()
 
 
 def zip_img():
+    # zip the images and move them to separate dirs
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-
-    # zip the images and move them to separate dirs
-
     buildmap = config['runtime']['buildmap']
     unzip_dir = WORK_DIR + "gps_ready/unzipped/" + buildmap
     zip_dir = WORK_DIR + "gps_ready/zipped/" + buildmap
@@ -65,9 +63,7 @@ def kml():
 
 
 def log():
-
     # save the mkgmap-log for errors
-
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
 

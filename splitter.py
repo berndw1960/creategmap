@@ -27,35 +27,29 @@ config = configparser.ConfigParser()
 
 
 # split raw-data
-
-
 def split():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
     buildmap = config['runtime']['buildmap']
-    splitter_path = (WORK_DIR + config['runtime']['splitter'] +
-                     "/splitter.jar ")
+    splitter = config['splitter']['rev'] + "/splitter.jar "
 
     # Java HEAP, RAM oder Mode
-
     if config['java']['agh'] == "1":
-        option_java_heap = " -XX:+AggressiveHeap "
+        heap = " -XX:+AggressiveHeap "
     else:
-        option_java_heap = (" " + config['java']['xmx'] +
-                            " " + config['java']['xms'] + " ")
+        heap = (config['java']['xmx'] + config['java']['xms'])
 
-    java_opts = "java -ea " + option_java_heap + " -jar " + splitter_path
+    java_opts = "java -ea " + heap + " -jar " + WORK_DIR + splitter
     log_opts = " > splitter.log "
 
     # splitter-options
+    BUILD_O5M = WORK_DIR + "o5m/" + buildmap + ".o5m"
 
-    BUILD_O5M = " " + WORK_DIR + "o5m/" + buildmap + ".o5m"
-
-    option_sea = " "
+    sea = " "
     if config.has_option('precomp', 'sea'):
         sea_zip = WORK_DIR + "precomp/" + config['precomp']['sea']
         if os.path.exists(sea_zip):
-            option_sea = " --precomp-sea=" + sea_zip
+            sea = " --precomp-sea=" + sea_zip
 
     cities15000 = WORK_DIR + "cities15000.zip"
     if os.path.exists(cities15000):
@@ -66,12 +60,12 @@ def split():
     splitter_opts = (geonames +
                      " --mapid=" + config['mapid'][buildmap] + "0001 " +
                      " --output=o5m " +
-                     option_sea +
+                     sea +
                      " --write-kml=" + buildmap + ".kml " +
                      " --keep-complete " +
                      " --overlap=0 ")
 
-    areas_list = WORK_DIR + "areas/" + buildmap + "_areas.list"
+    areas_list = "areas/" + buildmap + "_areas.list "
 
     if os.path.exists(areas_list):
         ftime = os.path.getmtime(areas_list)
@@ -115,7 +109,7 @@ def split():
     os.system(command_line)
 
     if config.has_option('runtime', 'logging'):
-        log_dir = (WORK_DIR + "log/splitter/" + buildmap)
+        log_dir = WORK_DIR + "log/splitter/" + buildmap
 
         if os.path.exists(log_dir):
             path = log_dir
@@ -133,7 +127,7 @@ def split():
             if os.path.exists(i):
                 shutil.copy2(i, log_dir)
 
-    if not os.path.exists(areas_list):
+    if os.path.exists(areas_list):
         shutil.copy2("areas.list", areas_list)
     file = open(buildmap + "_split.ready", "w")
     file.close()

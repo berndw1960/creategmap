@@ -26,54 +26,51 @@ config = configparser.ConfigParser()
 
 def typ_txt_test():
     os.chdir(WORK_DIR)
-    global option_typ_file
-    global option_style_file
-    typ_file = "styles/styles_typ.typ"
-    txt_file = "styles/styles_typ.txt"
+    global typ_file
+    global style_file
+    typ_file = WORK_DIR + "styles/styles_typ.typ"
+    txt_file = WORK_DIR + "styles/styles_typ.txt"
 
     if (layer == "defaultmap"):
-        option_typ_file = " "
-        option_style_file = ("--style-file=" + WORK_DIR +
-                             config['runtime']['mkgmap'] +
-                             "/examples/styles/default/ ")
+        typ_file = " "
+        style_file = ("--style-file=" + WORK_DIR +
+                      config['mkgmap']['rev'] +
+                      "/examples/styles/default/ ")
     else:
         if os.path.exists(typ_file) and os.path.exists(txt_file):
             m1 = os.path.getmtime(typ_file)
             m2 = os.path.getmtime(txt_file)
             if m1 > m2:
-                option_typ_file = " " + WORK_DIR + typ_file
+                typ_file = typ_file
             elif m2 > m1:
-                option_typ_file = " " + WORK_DIR + txt_file
+                typ_file = txt_file
                 print()
                 warning("styles_typ.typ and styles_typ.txt exist, " +
                         " use the newer file")
                 print()
-                info("typ_file   = " + option_typ_file)
+                info("typ_file   = " + typ_file)
                 print()
-        elif os.path.exists("styles/" + layer + "_typ.typ"):
-            option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.typ"
-        elif os.path.exists("styles/" + layer + "_typ.txt"):
-            option_typ_file = " " + WORK_DIR + "styles/" + layer + "_typ.txt"
+        elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.typ"):
+            typ_file = WORK_DIR + "styles/" + layer + "_typ.typ"
+        elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.txt"):
+            typ_file = WORK_DIR + "styles/" + layer + "_typ.txt"
         elif os.path.exists(typ_file):
-            option_typ_file = " " + WORK_DIR + typ_file
+            typ_file = typ_file
         elif os.path.exists(txt_file):
-            option_typ_file = " " + WORK_DIR + txt_file
+            typ_file = txt_file
         else:
             print()
             warning(layer + " build without a typ_file")
-            option_typ_file = " "
-        option_style_file = (" --style-file=" +
-                             WORK_DIR + "styles/" + layer + "_style ")
+            typ_file = " "
+        style_file = (" --style-file=" + WORK_DIR +
+                      "styles/" + layer + "_style ")
 
 
 # style check
-
-
 def check():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-    option_mkgmap_path = (WORK_DIR +
-                          config['runtime']['mkgmap'] + "/mkgmap.jar ")
+    mkgmap = config['mkgmap']['rev'] + "/mkgmap.jar "
 
     global layer
     for layer in config['map_styles']:
@@ -83,33 +80,32 @@ def check():
             info("checking needed files to build " + layer)
             typ_txt_test()
             print()
-            info("typ_file   = " + option_typ_file)
+            info("typ_file   = " + WORK_DIR + typ_file)
             print()
-            info("style_file = " + option_style_file)
+            info("style_file = " + WORK_DIR + style_file)
             print()
 
-            mkgmap_defaultmap_opts = (" --split-name-index " +
-                                      " --route " +
-                                      " --housenumbers " +
-                                      " --index ")
-            mkgmap_style_opts = (WORK_DIR + "styles/" +
-                                 (layer) + "_style/options")
-            mkgmap_base_opts = WORK_DIR + "styles/options "
+            defaultmap_opts = (" --split-name-index " +
+                               " --route " +
+                               " --housenumbers " +
+                               " --index ")
+            style_opts = WORK_DIR + "styles/" + (layer) + "_style/options "
+            base_opts = WORK_DIR + "styles/options "
 
             if layer == "defaultmap":
-                option_mkgmap_options = mkgmap_defaultmap_opts
-            elif os.path.exists(mkgmap_style_opts):
-                option_mkgmap_options = mkgmap_style_opts
+                options = defaultmap_opts
+            elif os.path.exists(style_opts):
+                options = style_opts
             else:
-                option_mkgmap_options = mkgmap_base_opts
+                options = base_opts
 
             os.system("java -jar " +
-                      option_mkgmap_path +
-                      " -c " + option_mkgmap_options +
+                      WORK_DIR + mkgmap +
+                      " -c " + options +
                       " --style-file=" +
-                      option_style_file +
+                      style_file +
                       " --check-styles " +
-                      option_typ_file)
+                      typ_file)
     print()
 
     os.chdir(WORK_DIR)
@@ -129,8 +125,6 @@ def check():
 
 
 # map rendering
-
-
 def render():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
@@ -140,7 +134,6 @@ def render():
     for layer in config['map_styles']:
 
         if config['map_styles'][layer] == "yes":
-            os.chdir(WORK_DIR)
 
             # Test for (layer)-dir and remove old data from there
 
@@ -155,138 +148,130 @@ def render():
             # Java HEAP, RAM oder Mode
 
             if config['java']['agh'] == "1":
-                option_java_heap = " -XX:+AggressiveHeap "
+                heap = " -XX:+AggressiveHeap "
             else:
-                option_java_heap = (" " + config['java']['xmx'] +
-                                    " " + config['java']['xms'] + " ")
+                heap = (config['java']['xmx'] + config['java']['xms'])
 
             # mkgmap-options
 
-            option_mkgmap_path = (WORK_DIR + config['runtime']['mkgmap'] +
-                                  "/mkgmap.jar ")
-            option_mkgmap_jobs = " "
+            mkgmap = (config['mkgmap']['rev'] + "/mkgmap.jar ")
+            max_jobs = " "
             if config['runtime']['max_jobs'] != "yes":
                 if config['runtime']['max_jobs'] == "no":
-                    option_mkgmap_jobs = " --max-jobs=1 "
+                    max_jobs = " --max-jobs=1 "
                 else:
-                    option_mkgmap_jobs = (" --max-jobs=" +
-                                          config['runtime']['max_jobs'])
+                    max_jobs = (" --max-jobs=" + config['runtime']['max_jobs'])
             else:
-                option_mkgmap_jobs = " --max-jobs "
+                max_jobs = " --max-jobs "
 
-            option_keep_going = " "
+            keep_going = " "
             if config.has_option('runtime', 'keep_going'):
-                option_keep_going = " --keep-going "
+                keep_going = " --keep-going "
 
-            option_mkgmap_logging = " "
+            logging = " "
             if config.has_option('runtime', 'logging'):
-                option_mkgmap_logging = (" -Dlog.config=" +
-                                         WORK_DIR + "mkgmap_log.props ")
+                logging = (" -Dlog.config=log.props ")
 
             # options to create hillshading
+            dem = " "
+            dem_dists = " "
+            poly = " "
+            conf_1 = config['demtdb']['switch_tdb']
+            conf_2 = config['tdblayer'][layer]
 
-            option_mkgmap_dem = " "
-            option_mkgmap_dem_dists = " "
-            option_mkgmap_poly = " "
-            conf_1 = config['runtime']['tdb']
-            conf_2 = config['demtdb']['switch_tdb']
-            conf_3 = config['tdblayer'][layer]
+            if conf_1 == "yes" and conf_2 == "yes":
+                dem_dists = (" --dem-dists=" + config['demtdb']['demdists'])
+                poly = (" --dem-poly=" +
+                        WORK_DIR + "poly/" + buildmap + ".poly ")
 
-            if (conf_1 == "yes" or conf_2 == "yes") and conf_3 == "yes":
-                # if conf_3 == "yes":
-                option_mkgmap_dem_dists = (" --dem-dists=" +
-                                           config['demtdb']['demdists'] +
-                                           " ")
-                option_mkgmap_poly = (" --dem-poly=" +
-                                      WORK_DIR + "poly/" +
-                                      buildmap + ".poly ")
-
-                option_mkgmap_dem = " --dem="
+                dem = " --dem="
                 demdir = WORK_DIR + "hgt/COPERNICUS"
                 if os.path.exists(demdir):
-                    option_mkgmap_dem = option_mkgmap_dem + demdir
+                    dem = dem + demdir
                 hgtdir1 = WORK_DIR + "hgt/VIEW1"
                 if os.path.exists(hgtdir1):
-                    option_mkgmap_dem = option_mkgmap_dem + "," + hgtdir1
+                    dem = dem + "," + hgtdir1
                 hgtdir3 = WORK_DIR + "hgt/VIEW3"
                 if os.path.exists(hgtdir3):
-                    option_mkgmap_dem = option_mkgmap_dem + "," + hgtdir3
+                    dem = dem + "," + hgtdir3
 
-                if option_mkgmap_dem == " --dem=":
-                    option_mkgmap_dem = " "
-                    option_mkgmap_dem_dists = " "
-                    option_mkgmap_poly = " "
+                if dem == " --dem=":
+                    dem = " "
+                    dem_dists = " "
+                    poly = " "
                     warning(" building a map without hillshading ")
                     print()
 
+            # create a windows installer
             if config.has_option('runtime', 'installer'):
-                option_mkgmap_installer = " --nsis --tdbfile "
+                installer = " --nsis --tdbfile "
             else:
-                option_mkgmap_installer = " "
+                installer = " "
 
+            # set the name tag list
             if layer == "fixme" or layer == "boundary":
-                option_name_tag_list = " "
+                name_tag_list = " "
             elif config.has_option('name_tag_list', buildmap):
-                option_name_tag_list = (" --name-tag-list=" +
-                                        config['name_tag_list'][buildmap])
+                name_tag_list = (" --name-tag-list=" +
+                                 config['name_tag_list'][buildmap])
             else:
-                option_name_tag_list = (" --name-tag-list=" +
-                                        config['name_tag_list']['default'])
+                name_tag_list = (" --name-tag-list=" +
+                                 config['name_tag_list']['default'])
 
+            # settings for precomp bounds and sea
             if layer == "fixme" or layer == "boundary":
-                option_bounds = " "
+                bounds = " "
             else:
-                option_bounds = " --location-autofill=is_in,nearest "
+                bounds = " --location-autofill=is_in,nearest "
                 if config.has_option('precomp', 'bounds'):
                     bounds_zip = (WORK_DIR + "precomp/" +
                                   config['precomp']['bounds'])
                     if os.path.exists(bounds_zip):
-                        option_bounds = " --bounds=" + bounds_zip
+                        bounds = " --bounds=" + bounds_zip
 
             if layer == "fixme" or layer == "boundary":
-                option_sea = " "
+                sea = " "
             else:
-                option_sea = (" --generate-sea=extend-sea-sectors," +
-                              "close-gaps=6000,floodblocker," +
-                              "land-tag=natural=background ")
+                sea = (" --generate-sea=extend-sea-sectors," +
+                       "close-gaps=6000,floodblocker," +
+                       "land-tag=natural=background ")
                 if config.has_option('precomp', 'sea'):
                     sea_zip = WORK_DIR + "precomp/" + config['precomp']['sea']
                     if os.path.exists(sea_zip):
-                        option_sea = (" --precomp-sea=" +
-                                      sea_zip + " --generate-sea ")
+                        sea = (" --precomp-sea=" +
+                               sea_zip + " --generate-sea ")
 
-            mkgmap_defaultmap_opts = (" --split-name-index " +
-                                      " --route " +
-                                      " --housenumbers " +
-                                      " --index ")
-            mkgmap_style_opts = WORK_DIR + "styles/" + layer + "_style/options"
-            mkgmap_base_opts = WORK_DIR + "styles/options "
+            # style options
+            defaultmap_opts = (" --split-name-index " +
+                               " --route " +
+                               " --housenumbers " +
+                               " --index ")
+            style_opts = WORK_DIR + "styles/" + layer + "_style/options"
+            base_opts = WORK_DIR + "styles/options "
 
             if layer == "defaultmap":
-                option_mkgmap_options = mkgmap_defaultmap_opts
-            elif os.path.exists(mkgmap_style_opts):
-                option_mkgmap_options = " -c " + mkgmap_style_opts
+                options = defaultmap_opts
+            elif os.path.exists(style_opts):
+                options = " -c " + style_opts
             else:
-                option_mkgmap_options = " -c " + mkgmap_base_opts
+                options = " -c " + base_opts
 
             if config.has_option('runtime', 'use_spec_opts'):
-                option_mkgmap_spec_opts = (" --report-similar-arcs " +
-                                           " --report-dead-ends ")
+                spec_opts = (" --report-similar-arcs --report-dead-ends ")
             else:
-                option_mkgmap_spec_opts = " "
+                spec_opts = " "
 
-            mkgmap_index_file = (WORK_DIR +
-                                 config['runtime']['mkgmap'] +
-                                 "/examples/roadNameConfig.txt")
-
+            # street name index options
+            index = (WORK_DIR + config['mkgmap']['rev'] +
+                     "/examples/roadNameConfig.txt")
             if layer == "fixme" or layer == "boundary":
-                option_mkgmap_index_opts = " "
-            elif os.path.exists(mkgmap_index_file):
-                option_mkgmap_index_opts = (" --road-name-config=" +
-                                            mkgmap_index_file)
+                index_opts = " "
+            elif os.path.exists(index):
+                index_opts = (" --road-name-config=" + index)
             else:
-                option_mkgmap_index_opts = " "
+                index_opts = " "
 
+            # use  TYP or TXT
             typ_txt_test()
 
             os.chdir(layer)
@@ -295,21 +280,20 @@ def render():
             print()
 
             # map rendering
-
             command_line = ("java -ea " +
-                            option_java_heap +
-                            option_mkgmap_logging +
-                            " -jar " + option_mkgmap_path +
-                            option_keep_going +
-                            option_mkgmap_jobs +
-                            option_bounds +
-                            option_sea +
-                            option_style_file +
-                            option_name_tag_list +
+                            heap +
+                            logging +
+                            " -jar " + WORK_DIR + mkgmap +
+                            keep_going +
+                            max_jobs +
+                            bounds +
+                            sea +
+                            style_file +
+                            name_tag_list +
                             " --levels=" + config['maplevel']['levels'] +
-                            option_mkgmap_dem +
-                            option_mkgmap_dem_dists +
-                            option_mkgmap_poly +
+                            dem +
+                            dem_dists +
+                            poly +
                             " --mapname=" + config['mapid'][buildmap] +
                             config[layer]['mapid_ext'] +
                             " --family-id=" + config['mapid'][buildmap] +
@@ -319,13 +303,13 @@ def render():
                             " --draw-priority=" +
                             config[layer]['draw-priority'] +
                             " --description=" + buildmap + "_" + layer +
-                            option_mkgmap_options +
-                            option_mkgmap_spec_opts +
-                            option_mkgmap_index_opts +
-                            option_mkgmap_installer +
+                            options +
+                            spec_opts +
+                            index_opts +
+                            installer +
                             " --gmapsupp " +
                             WORK_DIR + "tiles/*.o5m " +
-                            option_typ_file)
+                            typ_file)
 
             if config.has_option('runtime', 'verbose'):
                 print()

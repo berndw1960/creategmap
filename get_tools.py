@@ -28,35 +28,38 @@ def write_config():
 
 
 # get splitter and mkgmap
-
-
-def from_mkgmap_org():
+def from_org():
     config.read('pygmap3.cfg')
 
     for i in ['splitter', 'mkgmap']:
-        target = http.client.HTTPConnection("www.mkgmap.org.uk")
-        target.request("GET", "/download/" + i + ".html")
-        htmlcontent = target.getresponse()
-        data = htmlcontent.read()
-        data = data.decode('utf8')
+        try:
+            target = http.client.HTTPConnection("www.mkgmap.org.uk")
+            target.request("GET", "/download/" + i + ".html")
+            htmlcontent = target.getresponse()
+            data = htmlcontent.read()
+            data = data.decode('utf8')
 
-        if config.has_option('runtime', 'use_mkgmap_test') and i == "mkgmap":
-            mkgmap_test = config['runtime']['mkgmap_test']
-
-            pattern = re.compile("mkgmap-" + mkgmap_test + "-r\d{4}.zip")
-            i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-            i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
-
-        else:
             if i == "splitter":
-                pattern = re.compile('splitter-r\d{3}.zip')
+                file = "-r\d{3}.zip"
             elif i == "mkgmap":
-                pattern = re.compile('mkgmap-r\d{4}.zip')
+                file = "-r\d{4}.zip"
+
+            if config.has_option(i, 'test'):
+                test = config[i]['test']
+                pattern = re.compile(i + "-" + test + file)
+            else:
+                pattern = re.compile(i + file)
 
             i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
             i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
 
-        target.close()
+            target.close()
+
+        except http.client.NotConnected:
+            print()
+            print(" can't connect to " + target)
+            print()
+            break
 
         if not os.path.exists(i_rev):
             if os.path.isfile(i_rev + ".tar.gz"):
@@ -70,18 +73,23 @@ def from_mkgmap_org():
                 info("download " + url)
 
                 # Download the file from `url` and save it under `file_name`:
-
-                urlopen = urllib.request.urlopen
-                with urlopen(url) as response, open(file, 'wb') as out_file:
-                    shutil.copyfileobj(response, out_file)
+                try:
+                    uo = urllib.request.urlopen
+                    with uo(url) as response, open(file, 'wb') as out_file:
+                        shutil.copyfileobj(response, out_file)
+                except urllib.error.URLError:
+                    print()
+                    print(" can't download " + file)
+                    print()
+                    break
 
                 tar = tarfile.open((i_rev) + ".tar.gz")
                 tar.extractall()
                 tar.close()
 
-        if config.has_option('runtime', 'use_mkgmap_test') and i == "mkgmap":
+        if config.has_option(i, 'test'):
             print()
             info("using " + i_rev)
 
-        config.set('runtime', i, i_rev)
+        config.set(i, 'rev', i_rev)
         write_config()
