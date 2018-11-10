@@ -255,7 +255,7 @@ parser.add_argument('-l', '--log', action="store_true",
 # development
 parser.add_argument('-spt', '--splitter_test', default=0,
                     help="use a svn version of splitter")
-parser.add_argument('-mt', '--test', default=0,
+parser.add_argument('-mt', '--mkgmap_test', default=0,
                     help="use a svn version of mkgmap")
 
 args = parser.parse_args()
@@ -545,7 +545,7 @@ if args.splitter_test:
     info(" SPLITTER test version set to " + args.splitter_test)
 
 
-if args.test:
+if args.mkgmap_test:
     config.set('mkgmap', 'test', args.test)
     write_config()
     print()
