@@ -65,16 +65,16 @@ def split():
                      " --overlap=0 ")
 
     # maxnodes
-    if not config.has_option('maxnodes', buildmap):
-        maxnodes = (" --max-nodes=" + config['maxnodes']['default'] + " ")
+    if config.has_option('maxnodes', buildmap):
+        maxnodes = config['maxnodes'][buildmap]
     else:
-        maxnodes = (" --max-nodes=" + config['maxnodes'][buildmap] + " ")
+        maxnodes = config['maxnodes']['default']
 
     # splitter.jar command_line
     command_line = (java_opts +
                     log_opts +
                     splitter_opts +
-                    maxnodes +
+                    " --max-nodes=" + maxnodes + " " +
                     BUILD_O5M)
 
     if config.has_option('runtime', 'verbose'):

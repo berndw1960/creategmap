@@ -19,9 +19,8 @@ def info(msg):
 
 config = configparser.ConfigParser()
 
+
 # config writer
-
-
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
         config.write(configfile)
