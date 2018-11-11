@@ -4,7 +4,6 @@
 import os
 import configparser
 import shutil
-import time
 
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
@@ -65,40 +64,18 @@ def split():
                      " --keep-complete " +
                      " --overlap=0 ")
 
-    areas_list = "areas/" + buildmap + "_areas.list "
-
-    if os.path.exists(areas_list):
-        ftime = os.path.getmtime(areas_list)
-        curtime = time.time()
-        difftime = curtime - ftime
-        if difftime > 1741800:
-            print()
-            warning(buildmap + "_areas.list is older then 1 month, " +
-                    "create a new file")
-            os.remove(areas_list)
-
-    # split with
-    areas = " --split-file=" + areas_list
-    # or
-    max_nodes = (" --max-nodes=" + config['maxnodes'][buildmap] + " ")
+    # maxnodes
+    if not config.has_option('maxnodes', buildmap):
+        maxnodes = (" --max-nodes=" + config['maxnodes']['default'] + " ")
+    else:
+        maxnodes = (" --max-nodes=" + config['maxnodes'][buildmap] + " ")
 
     # splitter.jar command_line
-    split_with_areas_list = (java_opts +
-                             log_opts +
-                             splitter_opts +
-                             areas +
-                             BUILD_O5M)
-
-    split_without_areas_list = (java_opts +
-                                log_opts +
-                                splitter_opts +
-                                max_nodes +
-                                BUILD_O5M)
-
-    if os.path.exists(areas_list):
-        command_line = split_with_areas_list
-    else:
-        command_line = split_without_areas_list
+    command_line = (java_opts +
+                    log_opts +
+                    splitter_opts +
+                    maxnodes +
+                    BUILD_O5M)
 
     if config.has_option('runtime', 'verbose'):
         print()
@@ -127,7 +104,5 @@ def split():
             if os.path.exists(i):
                 shutil.copy2(i, log_dir)
 
-    if os.path.exists(areas_list):
-        shutil.copy2("areas.list", areas_list)
     file = open(buildmap + "_split.ready", "w")
     file.close()

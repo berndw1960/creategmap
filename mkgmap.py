@@ -176,7 +176,7 @@ def render():
             dem = " "
             dem_dists = " "
             poly = " "
-            conf_1 = config['demtdb']['switch_tdb']
+            conf_1 = config['demtdb']['tdb']
             conf_2 = config['tdblayer'][layer]
 
             if conf_1 == "yes" and conf_2 == "yes":
@@ -321,9 +321,7 @@ def render():
             os.chdir(WORK_DIR)
 
             # move gmapsupp.img to unzip_dir as buildmap_(layer)_gmapsupp.img
-
             unzip_dir = "gps_ready/unzipped/" + buildmap
-
             bl = buildmap + "_" + layer
             img = unzip_dir + "/" + bl + "_gmapsupp.img"
 

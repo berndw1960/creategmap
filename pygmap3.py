@@ -33,7 +33,7 @@ import store
 
 __version__ = "0.9.50"
 __author__ = "Bernd Weigelt"
-__copyright__ = "Copyright 2014 Bernd Weigelt"
+__copyright__ = "Copyright 2018 Bernd Weigelt"
 __credits__ = "Franco B."
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
@@ -74,8 +74,8 @@ if os.path.exists("pygmap3.cfg"):
     shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
 
 
-# create dir o5m, areas, poly and tiles
-for dir in ['o5m', 'areas', 'poly', 'tiles', 'precomp']:
+# create dir o5m, poly and tiles
+for dir in ['o5m', 'poly', 'tiles', 'precomp']:
     if not os.path.exists(dir):
         os.mkdir(dir)
 
@@ -201,8 +201,6 @@ parser.add_argument('--minutely', action="store_true",
                     help="update the raw mapdata with the minutely files")
 
 # splitter options
-parser.add_argument('-na', '--no_areas_list', action="store_true",
-                    help=" don't use areas.list to split mapdata")
 parser.add_argument('-ns', '--no_split', action="store_true",
                     help="don't split the mapdata")
 parser.add_argument('-mn', '--maxnodes',
@@ -218,13 +216,11 @@ parser.add_argument('-i', '--installer', action="store_true",
 
 # contourlines and hillshading
 parser.add_argument('-tdb', '--tdb', action="store_true",
-                    help="create hillshading only for the next build process")
-parser.add_argument('-sw_tdb', '--switch_tdb', action="store_true",
                     help="enable/disable creating hillshading permanent")
 parser.add_argument('-et', '--enable_tdb', default=0,
-                    help="enable the hillshading ")
+                    help="enable the hillshading for a mapstyle")
 parser.add_argument('-dt', '--disable_tdb', default=0,
-                    help="disable the hillshading for one mapstyle")
+                    help="disable the hillshading for a mapstyle")
 parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
                     help="This is a number between 0 and 16")
 parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'],
@@ -520,34 +516,21 @@ if config['java']['agh'] == "0":
 
 
 # maxnodes for splitter
-if not config.has_option('maxnodes', buildmap):
-    config.set('maxnodes', buildmap, config['maxnodes']['default'])
-
-
-if args.maxnodes:
-    if args.maxnodes != config['maxnodes'][buildmap]:
-        config.set('maxnodes', buildmap, args.maxnodes)
-        if os.path.exists("areas/" + buildmap + "_areas.list"):
-            os.remove("areas/" + buildmap + "_areas.list")
-
-
-# don't use the areas.list
-if args.no_areas_list:
-    if os.path.exists("areas/" + buildmap + "_areas.list"):
-        os.remove("areas/" + buildmap + "_areas.list")
+if args.maxnodes and args.maxnodes != config['maxnodes']['default']:
+    config.set('maxnodes', buildmap, args.maxnodes)
+elif args.maxnodes and args.maxnodes == config['maxnodes']['default']:
+    config.remove_option('maxnodes', buildmap)
 
 
 # development version of splitter and mkgmap
 if args.splitter_test:
     config.set('splitter', 'test', args.test)
-    write_config()
     print()
     info(" SPLITTER test version set to " + args.splitter_test)
 
 
 if args.mkgmap_test:
     config.set('mkgmap', 'test', args.test)
-    write_config()
     print()
     info(" MKGMAP test version set to " + args.test)
 
@@ -568,15 +551,15 @@ if args.keep_going:
 
 
 # create the contourlines and hillshading
-if args.switch_tdb and config['demtdb']['switch_tdb'] == "no":
-    config.set('demtdb', 'switch_tdb', "yes")
+if args.tdb and config['demtdb']['tdb'] == "no":
+    config.set('demtdb', 'tdb', "yes")
     print()
     info("hillshading enabled")
     print()
     write_config()
     quit()
-elif args.switch_tdb and config['demtdb']['switch_tdb'] == "yes":
-    config.set('demtdb', 'switch_tdb', "no")
+elif args.tdb and config['demtdb']['tdb'] == "yes":
+    config.set('demtdb', 'tdb', "no")
     print()
     info("hillshading disabled")
     print()
@@ -638,12 +621,6 @@ else:
     config.set('mapid', 'next_mapid', next_mapid)
 
 write_config()
-
-if args.verbose:
-    print()
-    print(" switch_tdb = " + config['demtdb']['switch_tdb'])
-    print("    tdb = " + config['runtime']['tdb'])
-    print()
 
 
 # osmupdate and osmconvert

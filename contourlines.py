@@ -86,6 +86,11 @@ def create_cont():
             error("No contourlines_style found")
             quit()
 
+        if config.has_option('maxnodes', buildmap):
+            maxnodes = config['maxnodes'][buildmap]
+        else:
+            maxnodes = config['maxnodes']['default']
+
         if config.has_option('runtime', 'ed_user'):
             ed_user_opts = (" --earthexplorer-user=" +
                             config['runtime']['ed_user'])
@@ -107,7 +112,7 @@ def create_cont():
                         " --start-node-id=1 " +
                         " --start-way-id=1 " +
                         " --max-nodes-per-tile=" +
-                        config['maxnodes'][buildmap] +
+                        maxnodes +
                         " --max-nodes-per-way=250 " +
                         " --jobs=4 " +
                         " --o5m " +

@@ -133,17 +133,14 @@ def update():
     if not config.has_option('java', 'agh'):
         config.set('java', 'agh', '0')
 
-    if not config.has_option('demtdb', 'switch_tdb'):
-        config.set('demtdb', 'switch_tdb', "no")
+    if not config.has_option('demtdb', 'tdb'):
+        config.set('demtdb', 'tdb', "no")
 
     if not config.has_option('tdblayer', 'fixme'):
         config.set('tdblayer', 'fixme', "no")
 
     if not config.has_option('tdblayer', 'boundary'):
         config.set('tdblayer', 'boundary', "no")
-
-    if not config.has_option('maxnodes', 'default'):
-        config.set('maxnodes', 'default', '1600000')
 
     # remove temporary options
 
@@ -171,9 +168,6 @@ def update():
 
     if config.has_option('runtime', 'verbose'):
         config.remove_option('runtime', 'verbose')
-
-    if config.has_option('runtime', 'maxnodes'):
-        config.remove_option('runtime', 'maxnodes')
 
     if config.has_option('runtime', 'agh'):
         config.remove_option('runtime', 'agh')
