@@ -524,15 +524,15 @@ elif args.maxnodes and args.maxnodes == config['maxnodes']['default']:
 
 # development version of splitter and mkgmap
 if args.splitter_test:
-    config.set('splitter', 'test', args.test)
+    config.set('splitter', 'test', args.splitter_test)
     print()
     info(" SPLITTER test version set to " + args.splitter_test)
 
 
 if args.mkgmap_test:
-    config.set('mkgmap', 'test', args.test)
+    config.set('mkgmap', 'test', args.mkgmap_test)
     print()
-    info(" MKGMAP test version set to " + args.test)
+    info(" MKGMAP test version set to " + args.mkgmap_test)
 
 
 # set the amount of levels
