@@ -249,6 +249,8 @@ parser.add_argument('-l', '--log', action="store_true",
                     help=False)
 
 # development
+parser.add_argument('-lt', '--list_test_version', action="store_true",
+                    help="list the test versions of splitter and mkgmap")
 parser.add_argument('-spt', '--splitter_test', default=0,
                     help="use a svn version of splitter")
 parser.add_argument('-mt', '--mkgmap_test', default=0,
@@ -523,6 +525,11 @@ elif args.maxnodes and args.maxnodes == config['maxnodes']['default']:
 
 
 # development version of splitter and mkgmap
+if args.list_test_version:
+    get_tools.list_test_version()
+    quit()
+
+
 if args.splitter_test:
     config.set('splitter', 'test', args.splitter_test)
     print()
@@ -646,7 +653,7 @@ if config['osmtools']['check'] == "yes":
 
 
 # get splitter and mkgmap
-get_tools.from_org()
+get_tools.get_tools()
 
 config.read('pygmap3.cfg')
 

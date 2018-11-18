@@ -26,8 +26,49 @@ def write_config():
         config.write(configfile)
 
 
+def list_test_version():
+    config.read('pygmap3.cfg')
+    print()
+    for i in ['splitter', 'mkgmap']:
+        try:
+            target = http.client.HTTPConnection("www.mkgmap.org.uk")
+            target.request("GET", "/download/" + i + ".html")
+            htmlcontent = target.getresponse()
+            data = htmlcontent.read()
+            data = data.decode('utf8')
+            target.close()
+        except http.client.NotConnected:
+            print()
+            print(" can't connect to " + target)
+            print()
+            break
+        data = re.findall(i + r"\S*.zip", data)
+        list_new = []
+        for x in data:
+            x = os.path.splitext(os.path.basename(x))[0]
+            x = x.replace("-src", "")
+            x = x.replace(i + "-", "")
+            x = re.sub(r"\d+", "", x)
+            if x.endswith("-r"):
+                x = x[:-2]
+            elif x.endswith("r"):
+                x = x[:-1]
+            if x != '':
+                if x not in list_new:
+                    list_new.append(x)
+
+        info("Testversions of " + i)
+        print()
+        if list_new:
+            for x in list_new:
+                print("    " + x)
+        else:
+            print("    No test versions found for " + i + "!")
+        print()
+
+
 # get splitter and mkgmap
-def from_org():
+def get_tools():
     config.read('pygmap3.cfg')
 
     for i in ['splitter', 'mkgmap']:
@@ -39,9 +80,9 @@ def from_org():
             data = data.decode('utf8')
 
             if i == "splitter":
-                file = "-r\d{3}.zip"
+                file = r"-r\d{3}.zip"
             elif i == "mkgmap":
-                file = "-r\d{4}.zip"
+                file = r"-r\d{4}.zip"
 
             if config.has_option(i, 'test'):
                 test = config[i]['test']

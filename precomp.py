@@ -50,7 +50,6 @@ def list_bounds():
 
     info("files on thkukuk.de (*-latest not listed):")
     for i in ['sea', 'bounds']:
-        print()
         try:
             target = http.client.HTTPConnection(www)
             target.request("GET", (path))
@@ -58,9 +57,9 @@ def list_bounds():
             data = htmlcontent.read()
             data = data.decode('utf8')
             if i == "bounds":
-                pattern = re.compile('bounds-20\d{6}.zip')
+                pattern = re.compile(r'bounds-20\d{6}.zip')
             elif i == "sea":
-                pattern = re.compile('sea-20\d{12}.zip')
+                pattern = re.compile(r'sea-20\d{12}.zip')
             target.close()
         except http.client.NotConnected:
             print()
@@ -75,9 +74,7 @@ def list_bounds():
                 list_new.append(i)
         for i in list_new:
             print("  " + i)
-
-    print()
-
+        print()
 
 def fetch_bounds():
 
@@ -94,7 +91,6 @@ def fetch_bounds():
         if not os.path.exists(file):
             print()
             info("download " + url)
-            print()
             try:
                 uo = urllib.request.urlopen
                 with uo(url) as response, open(file, 'wb') as out_file:
