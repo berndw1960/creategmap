@@ -90,9 +90,6 @@ def get_tools():
             else:
                 pattern = re.compile(i + file)
 
-            i_rev_pre = sorted(pattern.findall(data), reverse=True)[0]
-            i_rev = os.path.splitext(os.path.basename(i_rev_pre))[0]
-
             target.close()
 
         except http.client.NotConnected:
@@ -100,6 +97,9 @@ def get_tools():
             print(" can't connect to " + target)
             print()
             break
+
+        i_rev = sorted(pattern.findall(data), reverse=True)[0]
+        i_rev = os.path.splitext(os.path.basename(i_rev))[0]
 
         if not os.path.exists(i_rev):
             if os.path.isfile(i_rev + ".tar.gz"):
@@ -112,7 +112,7 @@ def get_tools():
                 print()
                 info("download " + url)
 
-                # Download the file from `url` and save it under `file_name`:
+                # Download the file and save it
                 try:
                     uo = urllib.request.urlopen
                     with uo(url) as response, open(file, 'wb') as out_file:
