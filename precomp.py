@@ -56,10 +56,6 @@ def list_bounds():
             htmlcontent = target.getresponse()
             data = htmlcontent.read()
             data = data.decode('utf8')
-            if i == "bounds":
-                pattern = re.compile(r'bounds-20\d{6}.zip')
-            elif i == "sea":
-                pattern = re.compile(r'sea-20\d{12}.zip')
             target.close()
         except http.client.NotConnected:
             print()
@@ -67,14 +63,20 @@ def list_bounds():
             print()
             break
 
-        list = sorted(pattern.findall(data), reverse=True)
+        if i == "bounds":
+            pattern = re.compile(r'bounds-20\d{6}.zip')
+        elif i == "sea":
+            pattern = re.compile(r'sea-20\d{12}.zip')
+
+        data = sorted(pattern.findall(data), reverse=True)
         list_new = []
-        for i in list:
+        for i in data:
             if i not in list_new:
                 list_new.append(i)
         for i in list_new:
             print("  " + i)
         print()
+
 
 def fetch_bounds():
 
