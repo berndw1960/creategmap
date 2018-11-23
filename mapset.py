@@ -181,7 +181,6 @@ if args.add_o5m:
 
 
 if args.add_mapset:
-    print()
     for i in args.add_mapset:
         file = os.path.splitext(os.path.basename(i))[0]
         if not config.has_option('mapset', i):
@@ -193,7 +192,6 @@ if args.add_mapset:
                 quit()
         config.set('mapset', i, 'yes')
     write_config()
-    print()
     quit()
 
 
@@ -204,11 +202,9 @@ if args.enable_mapset == "ALL":
     mapset_list()
     print()
 elif args.enable_mapset:
-    print()
     for i in args.enable_mapset:
         config.set('mapset', i, 'yes')
     write_config()
-    print()
     quit()
 
 
@@ -268,10 +264,9 @@ if args.fastbuild:
     mapset_backup()
     for key in (config['mapset']):
         config.set('mapset', key, 'no')
-    print()
     for i in args.fastbuild:
         config.set('mapset', i, 'yes')
-
+    print()
 write_config()
 
 

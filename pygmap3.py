@@ -227,6 +227,12 @@ parser.add_argument('-dlt', '--disable_layer_tdb', default=0, nargs='*',
                     help="disable the hillshading for a map layer")
 parser.add_argument('-dft', '--default_layer_tdb', default=0, nargs='*',
                     help="set the default layers with hillshading")
+parser.add_argument('-af', '--add_folder', action="store_true",
+                    help="add hillshading using the names of the folders in " +
+                    WORK_DIR + "gps_ready/zipped")
+parser.add_argument('-ao', '--add_o5m', action="store_true",
+                    help="add hillshading using the names of the o5m files " +
+                    "in " + WORK_DIR + "o5m")
 parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
                     help="This is a number between 0 and 16")
 parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'],
@@ -562,7 +568,7 @@ if args.max_jobs:
 if args.keep_going:
     config.set('runtime', 'keep_going', "1")
 
-
+# hillshading
 if args.list_tdb:
     for r in args.list_tdb:
         if r in config and "tdb" in config[r]:
@@ -587,6 +593,31 @@ if args.default_layer_tdb:
         config['tdblayer'] = {}
         for key in args.default_layer_tdb:
             config.set('tdblayer', key, "1")
+    write_config()
+    quit()
+
+
+if args.add_folder:
+    path = WORK_DIR + "gps_ready/zipped"
+    dir = sorted(os.listdir(path))
+    for folder in dir:
+        if not config.has_section(folder):
+            config.add_section(folder)
+        config.set(folder, 'tdb', "1")
+        for key in config['tdblayer']:
+            config.set(folder, key, config['tdblayer'][key])
+    write_config()
+    quit()
+
+
+if args.add_o5m:
+    for i in os.listdir("o5m"):
+        file = os.path.splitext(os.path.basename(i))[0]
+        if not config.has_section(file):
+            config.add_section(file)
+        config.set(file, 'tdb', "1")
+        for key in config['tdblayer']:
+            config.set(file, key, config['tdblayer'][key])
     write_config()
     quit()
 
