@@ -15,7 +15,7 @@ def info(msg):
     print("II: " + msg)
 
 
-def warning(msg):
+def warn(msg):
     print("WW: " + msg)
 
 
@@ -146,7 +146,7 @@ if args.add_poly:
             config.set('mapset', file, 'no')
     write_config()
     print()
-    warning("ALL poly files added to mapset list, but not enabled! ")
+    warn("ALL poly files added to mapset list, but not enabled! ")
     print()
     info("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
     info("or '--enable_mapset $POLY' for a special mapset ")
@@ -232,7 +232,7 @@ if args.remove_mapset == "ALL":
     config.remove_section('mapset')
     write_config()
     print()
-    warning("all mapsets deleted, list is empty")
+    warn("all mapsets deleted, list is empty")
     print()
     quit()
 elif args.remove_mapset:
@@ -261,7 +261,6 @@ if args.list_mapset:
         print()
         info("mapset list didn't exist")
     print()
-    write_config()
     quit()
 
 
@@ -327,11 +326,11 @@ for buildmap in config['mapset']:
     if config['mapset'][buildmap] == "yes":
         if buildmap == args.break_after:
             print()
-            warning("Stopping creating mapsets after this mapset")
+            warn("Stopping creating mapsets after this mapset")
         if os.path.exists("stop"):
             os.remove("stop")
             print()
-            warning("stopped build_process")
+            warn("stopped build_process")
             print()
             quit()
 

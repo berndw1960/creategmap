@@ -13,7 +13,7 @@ def info(msg):
     print("II: " + msg)
 
 
-def warning(msg):
+def warn(msg):
     print("WW: " + msg)
 
 
@@ -57,7 +57,7 @@ def split():
         geonames = " "
 
     splitter_opts = (geonames +
-                     " --mapid=" + config['mapid'][buildmap] + "0001 " +
+                     " --mapid=" + config[buildmap]['mapid'] + "0001 " +
                      " --output=o5m " +
                      sea +
                      " --write-kml=" + buildmap + ".kml " +

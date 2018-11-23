@@ -36,7 +36,7 @@ def info(msg):
     print(("II: " + msg))
 
 
-def warning(msg):
+def warn(msg):
     print(("WW: " + msg))
 
 

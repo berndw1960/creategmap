@@ -49,7 +49,7 @@ def info(msg):
     print("II: " + msg)
 
 
-def warning(msg):
+def warn(msg):
     print("WW: " + msg)
 
 
@@ -143,7 +143,7 @@ parser = argparse.ArgumentParser(
 
 # Java options
 parser.add_argument('-xmx', '--xmx', default=config['java']['xmx'],
-                    help=" set the HEAP for Java, min. 500 MB per threads," +
+                    help=" set the HEAP for Java, min. 500 MB per thread," +
                          " an example '6G' or '6000M' for a CPU with 4 cores" +
                          " and 8 threads. ")
 parser.add_argument('-xms', '--xms', default=config['java']['xms'],
@@ -215,12 +215,18 @@ parser.add_argument('-i', '--installer', action="store_true",
                     help="create mapsource installer")
 
 # contourlines and hillshading
-parser.add_argument('-tdb', '--tdb', action="store_true",
-                    help="enable/disable creating hillshading permanent")
-parser.add_argument('-et', '--enable_tdb', default=0,
-                    help="enable the hillshading for a mapstyle")
-parser.add_argument('-dt', '--disable_tdb', default=0,
-                    help="disable the hillshading for a mapstyle")
+parser.add_argument('-lst', '--list_tdb', default=0, nargs='*',
+                    help="list the options for hillshading")
+parser.add_argument('-ert', '--enable_region_tdb', default=0, nargs='*',
+                    help="enable the hillshading for a map region")
+parser.add_argument('-elt', '--enable_layer_tdb', default=0, nargs='*',
+                    help="enable the hillshading for a map layer")
+parser.add_argument('-drt', '--disable_region_tdb', default=0, nargs='*',
+                    help="disable the hillshading for a map region")
+parser.add_argument('-dlt', '--disable_layer_tdb', default=0, nargs='*',
+                    help="disable the hillshading for a map layer")
+parser.add_argument('-dft', '--default_layer_tdb', default=0, nargs='*',
+                    help="set the default layers with hillshading")
 parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
                     help="This is a number between 0 and 16")
 parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'],
@@ -294,9 +300,9 @@ if args.name_tag_list:
 
 if not config.has_option('name_tag_list', buildmap):
     print()
-    warning("for this mapset the MKGMAP option" +
-            " '--name-tag-list' isn't set")
-    warning("using the default 'name:en,name:int,name'")
+    warn("for this mapset the MKGMAP option" +
+         " '--name-tag-list' isn't set")
+    warn("using the default 'name:en,name:int,name'")
     print()
 
 
@@ -307,12 +313,12 @@ if args.list_mapstyle:
         info("map_styles list includes: ")
         print()
         print(" enabled:")
-        for key in (config['map_styles']):
+        for key in config['map_styles']:
             if config['map_styles'][key] == "yes":
                 print("  " + key)
         print()
         print(" disabled:")
-        for key in (config['map_styles']):
+        for key in config['map_styles']:
             if config['map_styles'][key] == "no":
                 print("  " + key)
         if config.has_section('mapset'):
@@ -427,7 +433,7 @@ if args.map_style:
         if config['map_styles'][args.map_style] == "yes":
             config.set('map_styles', args.map_style, 'no')
             print()
-            warning(args.map_style + " style disabled")
+            warn(args.map_style + " style disabled")
         elif config['map_styles'][args.map_style] == "no":
             config.set('map_styles', args.map_style, 'yes')
             print()
@@ -557,52 +563,79 @@ if args.keep_going:
     config.set('runtime', 'keep_going', "1")
 
 
-# create the contourlines and hillshading
-if args.tdb and config['demtdb']['tdb'] == "no":
-    config.set('demtdb', 'tdb', "yes")
+if args.list_tdb:
+    for r in args.list_tdb:
+        if r in config and "tdb" in config[r]:
+            print()
+            info("Hillshading enabled for " + r + ":")
+            for key in config[r]:
+                if key != "tdb" and key != "mapid":
+                    print("    " + key)
+        else:
+            print()
+            warn("for " + r + " hillshading is disabled!")
     print()
-    info("hillshading enabled")
+    info("default layer, if hillshading for a region should be enabled:")
+    for key in config['tdblayer']:
+        print("    " + key)
     print()
-    write_config()
-    quit()
-elif args.tdb and config['demtdb']['tdb'] == "yes":
-    config.set('demtdb', 'tdb', "no")
-    print()
-    info("hillshading disabled")
-    print()
-    write_config()
     quit()
 
 
-if args.enable_tdb:
-    if args.enable_tdb == "ALL":
-        print()
-    for key in (config['tdblayer']):
-        config.set('tdblayer', key, "yes")
-        print("  " + key + " = " + config['tdblayer'][key])
-        print()
-    else:
-        config.set('tdblayer', args.enable_tdb, "yes")
-        print()
-        print("  enabled hillshading for " + args.enable_tdb + " layer! ")
-        print()
+if args.default_layer_tdb:
+    if config.has_section('tdblayer'):
+        config['tdblayer'] = {}
+        for key in args.default_layer_tdb:
+            config.set('tdblayer', key, "1")
     write_config()
     quit()
 
 
-if args.disable_tdb:
-    if args.disable_tdb == "ALL":
-        print()
-        for key in (config['tdblayer']):
-            config.set('tdblayer', key, "no")
-            print("  " + key + " = " + config['tdblayer'][key])
-        print()
-    else:
-        config.set('tdblayer', args.disable_tdb, "no")
-        print()
-        print("  disabled hillshading for " + args.disable_tdb + " layer! ")
-        print()
+if args.enable_region_tdb and args.enable_layer_tdb:
+    for r in args.enable_region_tdb:
+        if r not in config:
+            config.add_section(r)
+        config.set(r, 'tdb', "1")
+        for key in args.enable_layer_tdb:
+            if key != "tdb":
+                config.set(r, key, "1")
     write_config()
+    quit()
+elif args.enable_region_tdb:
+    for r in args.enable_region_tdb:
+        if r not in config:
+            config.add_section(r)
+        config.set(r, 'tdb', "1")
+        for key in config['tdblayer']:
+            config.set(r, key, config['tdblayer'][key])
+    write_config()
+    quit()
+elif args.enable_layer_tdb and not args.enable_region_tdb:
+    print()
+    error("At least one region is needed to enable a layer!")
+    print()
+    quit()
+
+
+if args.disable_region_tdb and args.disable_layer_tdb:
+    for r in args.disable_region_tdb:
+        if r in config:
+            for key in args.disable_layer_tdb:
+                if config.has_option(r, key):
+                    config.remove_option(r, key)
+    write_config()
+    quit()
+elif args.disable_region_tdb:
+    for r in args.disable_region_tdb:
+        if r in config:
+            if config.has_option(r, "tdb"):
+                config.remove_option(r, "tdb")
+    write_config()
+    quit()
+elif args.disable_layer_tdb and not args.disable_region_tdb:
+    print()
+    error("At least one region is needed to disable a layer!")
+    print()
     quit()
 
 
@@ -619,12 +652,15 @@ if args.ed_pwd:
 
 
 # set or create the mapid
-if config.has_option('mapid', buildmap):
-    mapid = config['mapid'][buildmap]
+if not config.has_section(buildmap):
+    config.add_section(buildmap)
+
+if config.has_option(buildmap, 'mapid'):
+    mapid = config[buildmap]['mapid']
 else:
     mapid = config['mapid']['next_mapid']
     next_mapid = str(int(mapid)+1)
-    config.set('mapid', buildmap, mapid)
+    config.set(buildmap, 'mapid',  mapid)
     config.set('mapid', 'next_mapid', next_mapid)
 
 write_config()
@@ -717,7 +753,7 @@ if args.contourlines:
     if os.path.exists("styles/contourlines_style"):
         contourlines.create_cont()
     else:
-        warning("dir styles/contourlines_style not found")
+        warn("dir styles/contourlines_style not found")
 
 
 # --stop_after contourlines
@@ -770,7 +806,7 @@ def remove_old_tiles():
 if args.no_split:
     if not os.path.exists(WORK_DIR + "tiles/" + buildmap + "_split.ready"):
         print()
-        warning("can't find tiles/" + buildmap + "_split.ready")
+        warn("can't find tiles/" + buildmap + "_split.ready")
         print("--no_split/-ns makes no sense, ignoring it")
         splitter.split()
 else:

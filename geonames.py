@@ -13,7 +13,7 @@ def info(msg):
     print("II: " + msg)
 
 
-def warning(msg):
+def warn(msg):
     print("WW: " + msg)
 
 
@@ -32,7 +32,7 @@ def cities15000():
         difftime = curtime - ftime
         if difftime > 1741800:
             print()
-            warning("cities15000.zip is older then 1 month!")
+            warn("cities15000.zip is older then 1 month!")
             os.rename(file, file + ".bak")
 
     if not os.path.exists(file):

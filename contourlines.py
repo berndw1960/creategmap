@@ -10,7 +10,7 @@ def info(msg):
     print("II: " + msg)
 
 
-def warning(msg):
+def warn(msg):
     print("WW: " + msg)
 
 
@@ -150,7 +150,7 @@ def create_cont():
                         " --style-file=" +
                         WORK_DIR + "styles/contourlines_style" +
                         " --mapname=" +
-                        config['mapid'][buildmap] + "8001" +
+                        config[buildmap]['mapid'] + "8001" +
                         " --description=" +
                         buildmap + "_contourlines " +
                         " --family-name=Contourlines" +

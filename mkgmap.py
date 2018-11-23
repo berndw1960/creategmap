@@ -13,7 +13,7 @@ def info(msg):
     print("II: " + msg)
 
 
-def warning(msg):
+def warn(msg):
     print("WW: " + msg)
 
 
@@ -45,8 +45,8 @@ def typ_txt_test():
             elif m2 > m1:
                 typ_file = txt_file
                 print()
-                warning("styles_typ.typ and styles_typ.txt exist, " +
-                        " use the newer file")
+                warn("styles_typ.typ and styles_typ.txt exist, " +
+                     " use the newer file")
                 print()
                 info("typ_file   = " + typ_file)
                 print()
@@ -60,7 +60,7 @@ def typ_txt_test():
             typ_file = txt_file
         else:
             print()
-            warning(layer + " build without a typ_file")
+            warn(layer + " build without a typ_file")
             typ_file = " "
         style_file = (" --style-file=" + WORK_DIR +
                       "styles/" + layer + "_style ")
@@ -176,31 +176,23 @@ def render():
             dem = " "
             dem_dists = " "
             poly = " "
-            conf_1 = config['demtdb']['tdb']
-            conf_2 = config['tdblayer'][layer]
 
-            if conf_1 == "yes" and conf_2 == "yes":
-                dem_dists = (" --dem-dists=" + config['demtdb']['demdists'])
-                poly = (" --dem-poly=" +
-                        WORK_DIR + "poly/" + buildmap + ".poly ")
-
-                dem = " --dem="
-                demdir = WORK_DIR + "hgt/COPERNICUS"
-                if os.path.exists(demdir):
-                    dem = dem + demdir
-                hgtdir1 = WORK_DIR + "hgt/VIEW1"
-                if os.path.exists(hgtdir1):
-                    dem = dem + "," + hgtdir1
-                hgtdir3 = WORK_DIR + "hgt/VIEW3"
-                if os.path.exists(hgtdir3):
-                    dem = dem + "," + hgtdir3
-
-                if dem == " --dem=":
-                    dem = " "
-                    dem_dists = " "
-                    poly = " "
-                    warning(" building a map without hillshading ")
-                    print()
+            if buildmap in config:
+                if layer in config[buildmap]:
+                    dem_dists = (" --dem-dists=" +
+                                 config['demtdb']['demdists'])
+                    poly = (" --dem-poly=" +
+                            WORK_DIR + "poly/" + buildmap + ".poly ")
+                    dem = " --dem="
+                    demdir = WORK_DIR + "hgt/COPERNICUS"
+                    if os.path.exists(demdir):
+                        dem = dem + demdir
+                    hgtdir1 = WORK_DIR + "hgt/VIEW1"
+                    if os.path.exists(hgtdir1):
+                        dem = dem + "," + hgtdir1
+                    hgtdir3 = WORK_DIR + "hgt/VIEW3"
+                    if os.path.exists(hgtdir3):
+                        dem = dem + "," + hgtdir3
 
             # create a windows installer
             if config.has_option('runtime', 'installer'):
@@ -294,9 +286,9 @@ def render():
                             dem +
                             dem_dists +
                             poly +
-                            " --mapname=" + config['mapid'][buildmap] +
+                            " --mapname=" + config[buildmap]['mapid'] +
                             config[layer]['mapid_ext'] +
-                            " --family-id=" + config['mapid'][buildmap] +
+                            " --family-id=" + config[buildmap]['mapid'] +
                             " --product-id=" + config[layer]['product-id'] +
                             " --family-name=" + buildmap + "_" + layer +
                             " --series-name=" + buildmap + "_" + layer +
