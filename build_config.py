@@ -85,6 +85,7 @@ def create():
     config['tdblayer'] = {'basemap': 'yes',
                           'bikemap': 'yes',
                           'carmap': 'no',
+                          'olddev': 'no',
                           'defaultmap': 'yes',
                           'fixme': 'no',
                           'boundary': 'no', }
@@ -141,6 +142,9 @@ def update():
 
     if not config.has_option('tdblayer', 'boundary'):
         config.set('tdblayer', 'boundary', "no")
+
+    if not config.has_option('tdblayer', 'olddev'):
+        config.set('tdblayer', 'olddev', "no")
 
     # remove temporary options
 
