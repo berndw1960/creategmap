@@ -350,31 +350,17 @@ if args.list_mapstyle:
 
 if args.all_map_styles:
     if config.has_section('map_styles'):
-        print()
         for key in (config['map_styles']):
             config.set('map_styles', key, 'yes')
             write_config()
-            print("  " + key + " = " + config['map_styles'][key])
-
-        print()
-        info("all mapstyles enabled")
-        print()
     quit()
 
 
 if args.no_map_styles:
     if config.has_section('map_styles'):
-        print()
-    for key in (config['map_styles']):
-        config.set('map_styles', key, 'no')
-        print("  " + key + " = " + config['map_styles'][key])
-
-        write_config()
-        print()
-        info("all mapstyles disabled,")
-        info("please enable at least one mapstyle before the next build")
-        info("as example 'pygmap3.py -m basemap'")
-        print()
+        for key in (config['map_styles']):
+            config.set('map_styles', key, 'no')
+            write_config()
     quit()
 
 
@@ -382,19 +368,17 @@ def info_styles():
     print()
     error(args.add_style + "_style - dir not found")
     print()
-    print()
     info("possible styles for routable layers are: ")
     print("    basemap")
     print("    bikemap")
     print("    carmap")
-    print()
+    print("    olddev")
     print("    defaultmap")
     print()
     info("possible styles as overlays are:")
     print("    bikeroute")
     print("    boundary")
     print("    fixme")
-    print()
     print()
     print("    or your own style files!")
     print()
@@ -403,13 +387,13 @@ def info_styles():
 if args.add_style:
     if os.path.exists("styles/" + args.add_style + "_style"):
         config.set('map_styles', args.add_style, 'yes')
-        print()
         if args.add_style not in config:
+            print()
             info("please add a section [" + args.add_style + "] ")
             print(" to pygmap3.cfg")
             print(" see the existing entries for the fixme layer as example")
             print(" for family-id and product-id increase the values")
-            print(" mapid_ext and draw_priotity could be the same values")
+            print(" mapid_ext and draw_priority could be the same values")
             print(" family_name is a free text value")
             print()
             info("please read mkgmap's manual for more infos")
@@ -418,12 +402,11 @@ if args.add_style:
             for key in config['fixme']:
                 print("  " + key + " = " + config['fixme'][key])
             print()
-        info(args.add_style + " added to map_styles list")
     elif args.add_style == "defaultmap":
         config.set('map_styles', args.add_style, 'yes')
     else:
         info_styles()
-    print()
+        quit()
     write_config()
     quit()
 
@@ -438,17 +421,12 @@ if args.map_style:
     if config.has_option('map_styles', args.map_style):
         if config['map_styles'][args.map_style] == "yes":
             config.set('map_styles', args.map_style, 'no')
-            print()
-            warn(args.map_style + " style disabled")
         elif config['map_styles'][args.map_style] == "no":
             config.set('map_styles', args.map_style, 'yes')
-            print()
-            info(args.map_style + " style enabled")
     else:
         config.set('map_styles', args.map_style, 'yes')
         print()
         info(args.map_style + " style added and enabled")
-
     write_config()
     quit()
 
@@ -457,10 +435,8 @@ if args.rm_style:
     if config.has_option('map_styles', args.rm_style):
         config.remove_option('map_styles', args.rm_style)
         write_config()
-    print()
-    info(args.rm_style + " removed from map_styles list")
-    print()
     quit()
+
 
 if args.use_style:
     if not config.has_section('map_styles_backup'):
@@ -468,13 +444,6 @@ if args.use_style:
     for key in (config['map_styles']):
         config.set('map_styles_backup', key, config['map_styles'][key])
         config.set('map_styles', key, 'no')
-    print()
-    info("create a map with these styles: ")
-    print()
-    for i in args.use_style:
-        config.set('map_styles', i, 'yes')
-        print("   " + i)
-    print()
 
 
 if args.set_default:
@@ -486,15 +455,11 @@ if args.set_default:
               args.set_default + ".poly")
         print()
         quit()
-
     config.set('runtime', 'default', args.set_default)
-    print(args.set_default + " set as new default region")
-
     write_config()
     quit()
 
 if args.check_styles:
-
     mkgmap.check()
     quit()
 
