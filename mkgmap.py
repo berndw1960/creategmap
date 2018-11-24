@@ -181,18 +181,23 @@ def render():
                 if layer in config[buildmap]:
                     dem_dists = (" --dem-dists=" +
                                  config['demtdb']['demdists'])
-                    poly = (" --dem-poly=" +
-                            WORK_DIR + "poly/" + buildmap + ".poly ")
-                    dem = " --dem="
+                    poly_file = WORK_DIR + "poly/" + buildmap + ".poly"
+                    if os.path.exists(poly_file):
+                        poly = (" --dem-poly=" + poly_file)
                     demdir = WORK_DIR + "hgt/COPERNICUS"
                     if os.path.exists(demdir):
-                        dem = dem + demdir
+                        dem_temp = demdir
+                        hs = "1"
                     hgtdir1 = WORK_DIR + "hgt/VIEW1"
                     if os.path.exists(hgtdir1):
-                        dem = dem + "," + hgtdir1
+                        dem_temp = dem_temp + "," + hgtdir1
+                        hs = "1"
                     hgtdir3 = WORK_DIR + "hgt/VIEW3"
                     if os.path.exists(hgtdir3):
-                        dem = dem + "," + hgtdir3
+                        dem_temp = dem_temp + "," + hgtdir3
+                        hs = "1"
+                    if hs == "1":
+                        dem = " --dem=" + dem_temp
 
             # create a windows installer
             if config.has_option('runtime', 'installer'):
@@ -304,7 +309,6 @@ def render():
                             typ_file)
 
             if config.has_option('runtime', 'verbose'):
-                print()
                 info(command_line)
                 print()
 

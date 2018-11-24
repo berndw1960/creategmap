@@ -126,14 +126,6 @@ def mapset_backup():
         config.set('mapset_backup', key, config['mapset'][key])
 
 
-def mapset_list():
-    info("These mapsets are added to mapset list! ")
-    print()
-    for key in (config['mapset']):
-        if config['mapset'][key] == "yes":
-            print("  " + key)
-
-
 # set, edit or delete mapset list
 if args.add_poly:
     path = WORK_DIR + "poly"
@@ -163,21 +155,16 @@ if args.add_folder:
             config.set('mapset', folder, 'yes')
     for key in (config['mapset']):
         config.set('mapset', key, 'yes')
-    mapset_list()
-    print()
 
 
 if args.add_o5m:
     mapset_backup()
-    print()
     for i in os.listdir("o5m"):
         file = os.path.splitext(os.path.basename(i))[0]
         if not config.has_option('mapset', file):
             config.set('mapset', file, 'yes')
         for key in (config['mapset']):
             config.set('mapset', key, 'yes')
-    mapset_list()
-    print()
 
 
 if args.add_mapset:
@@ -199,8 +186,6 @@ if args.enable_mapset == "ALL":
     mapset_backup()
     for key in (config['mapset']):
         config.set('mapset', key, 'yes')
-    mapset_list()
-    print()
 elif args.enable_mapset:
     for i in args.enable_mapset:
         config.set('mapset', i, 'yes')
@@ -212,12 +197,8 @@ if args.disable_mapset == "ALL":
     for key in (config['mapset']):
         config.set('mapset', key, 'no')
     write_config()
-    print()
-    info("all mapsets disabled on list")
-    print()
     quit()
 elif args.disable_mapset:
-    print()
     for i in args.disable_mapset:
         config.set('mapset', i, 'no')
     write_config()
@@ -227,12 +208,8 @@ elif args.disable_mapset:
 if args.remove_mapset == "ALL":
     config.remove_section('mapset')
     write_config()
-    print()
-    warn("all mapsets deleted, list is empty")
-    print()
     quit()
 elif args.remove_mapset:
-    print()
     for i in args.remove_mapset:
         config.remove_option('mapset', i)
     write_config()
@@ -244,15 +221,15 @@ if args.list_mapset:
         print()
         info("mapset list includes: ")
         print()
-        print("enabled:")
+        print("    enabled:")
         for key in (config['mapset']):
             if config['mapset'][key] == "yes":
-                print("  " + key)
+                print("      " + key)
         print()
-        print("disabled:")
+        print("    disabled:")
         for key in (config['mapset']):
             if config['mapset'][key] == "no":
-                print("  " + key)
+                print("      " + key)
     else:
         print()
         info("mapset list didn't exist")
