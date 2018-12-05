@@ -443,7 +443,10 @@ if args.use_style:
         config.add_section('map_styles_backup')
     for key in (config['map_styles']):
         config.set('map_styles_backup', key, config['map_styles'][key])
-        config.set('map_styles', key, 'no')
+        config.remove_option('map_styles', key)
+    for i in args.use_style:
+        config.set('map_styles', i, 'yes')
+    write_config()
 
 
 if args.set_default:
@@ -453,6 +456,14 @@ if args.set_default:
               args.set_default + ".poly not found... ")
         error("please create or download " +
               args.set_default + ".poly")
+        print()
+        quit()
+    elif not os.path.exists("o5m/" + args.set_default + ".o5m"):
+        print()
+        error((WORK_DIR) + "o5m/" +
+              args.set_default + ".o5m not found... ")
+        error("please create or download " +
+              args.set_default + ".o5m")
         print()
         quit()
     config.set('runtime', 'default', args.set_default)
