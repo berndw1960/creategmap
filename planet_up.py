@@ -123,8 +123,6 @@ if not os.path.exists("planet/planet.o5m"):
 
 
 # check for pygmap3.cfg
-
-
 config = configparser.ConfigParser()
 
 
@@ -142,7 +140,6 @@ config.read('pygmap3.cfg')
 
 if 'planet' not in config:
     config.add_section('planet')
-    write_config()
 
 
 write_config()

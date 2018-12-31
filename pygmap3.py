@@ -153,16 +153,19 @@ parser.add_argument('-agh', '--aggressiveheap', action="store_true",
                     help=" set the HEAP permanent in an aggressive mode")
 parser.add_argument('-no_agh', '--no_aggressiveheap', action="store_true",
                     help=" disable the aggressive mode ")
+# interactive mode
+parser.add_argument('-i', '--interactive', action="store_true")
 
 # mapset handling
-parser.add_argument('-p', '--poly', dest='poly',
-                    default=config['runtime']['default'],
-                    help=" set map region to build")
+parser.add_argument('-p', '--poly', default=0,
+                    help=" set the poly file for the map region to build")
 parser.add_argument('-lp',  '--list_poly', action="store_true",
                     help="list all poly files in " + WORK_DIR + "poly ")
-parser.add_argument('-s', '--set_default', dest='set_default', default=0,
+parser.add_argument('-o', '--list_o5m', action="store_true",
+                    help=" list all O5M files in " + WORK_DIR + "o5m ")
+parser.add_argument('-s', '--set_default', default=0,
                     help="set region to build as new default")
-parser.add_argument('-ntl', '--name-tag-list', dest='name_tag_list', default=0,
+parser.add_argument('-ntl', '--name-tag-list', action="store_true",
                     help="which name tag should be used for naming objects")
 
 # mapstyle handling
@@ -211,7 +214,7 @@ parser.add_argument('-mj', '--max_jobs', default='yes',
                     help=" set the used threads to use with mkgmap")
 parser.add_argument('-kg', '--keep_going', action="store_true",
                     help=False)
-parser.add_argument('-i', '--installer', action="store_true",
+parser.add_argument('-in', '--installer', action="store_true",
                     help="create mapsource installer")
 
 # contourlines and hillshading
@@ -285,24 +288,90 @@ if args.list_poly:
     quit()
 
 
-# set buildmap
-buildmap = os.path.splitext(os.path.basename(args.poly))[0]
+# list the O5M files
+if args.list_o5m:
+    path = WORK_DIR + "o5m"
+    dir = sorted(os.listdir(path))
+    print()
+    info(" This O5M files are in '" + WORK_DIR + "o5m': ")
+    print()
+    for file in dir:
+        file = os.path.splitext(file)[0]
+        print(file)
+    print()
+    quit()
+
+
+def check_data():
+    if not os.path.exists("poly/" + buildmap + ".poly"):
+        print()
+        error((WORK_DIR) + "poly/" +
+              buildmap + ".poly not found... ")
+        error("please create or download " +
+              buildmap + ".poly")
+        print()
+        quit()
+    elif not os.path.exists("o5m/" + buildmap + ".o5m"):
+        print()
+        error((WORK_DIR) + "o5m/" +
+              buildmap + ".o5m not found... ")
+        error("please create or download " +
+              buildmap + ".o5m")
+        print()
+        quit()
+
+
+# set default buildmap
+if args.set_default or not config.has_option('runtime', 'default'):
+    buildmap = input(" \n " +
+                     "  Which should be your default map region? \n\n" +
+                     "  please enter a region:   ")
+    buildmap = os.path.splitext(buildmap)[0]
+    check_data()
+    config.set('runtime', 'default', buildmap)
+    write_config()
+    quit()
+
+
+# set the buildmap
+if args.interactive:
+    buildmap = input(" \n" +
+                     "  Which map region should be build? \n\n" +
+                     "  please enter a region:   ")
+elif args.poly:
+    buildmap = args.poly
+elif args.o5m:
+    buildmap = args.o5m
+else:
+    buildmap = config['runtime']['default']
+
+
+buildmap = os.path.splitext(buildmap)[0]
+check_data()
 config.set('runtime', 'buildmap', buildmap)
 
 
-write_config()
-
-
-name_tag_list = args.name_tag_list
-if not config.has_section('name_tag_list'):
-    config.add_section('name_tag_list')
-    config.set('name_tag_list', 'default', 'name:en,name:int,name')
-    write_config()
-
-
-if args.name_tag_list:
+if args.name_tag_list or args.interactive:
+    language = input(" \n" +
+                     "   Which language do you prefer for naming \n" +
+                     "   objects in your map?\n\n " +
+                     "  'name:en,name:int,name' is the english value,\n" +
+                     "   but you can use german, french, dutch or spanish\n" +
+                     "   press 'Enter' for the default english value\n\n" +
+                     "   please enter a language:   ")
+    if language == "german":
+        name_tag_list = 'name:de,name:int,name'
+    elif language == "french":
+        name_tag_list = 'name:fr,name:int,name'
+    elif language == "dutch":
+        name_tag_list = 'name:nl,name:int,name'
+    elif language == "spanish":
+        name_tag_list = 'name:es,name:int,name'
+    else:
+        info('You choose a value that is not defined, using the default one\n')
+        name_tag_list = 'name:en,name:int,name'
     config.set('name_tag_list', buildmap, name_tag_list)
-
+    print()
 
 if not config.has_option('name_tag_list', buildmap):
     print()
@@ -386,7 +455,6 @@ def info_styles():
 
 if args.add_style:
     if os.path.exists("styles/" + args.add_style + "_style"):
-        config.set('map_styles', args.add_style, 'yes')
         if args.add_style not in config:
             print()
             info("please add a section [" + args.add_style + "] ")
@@ -402,6 +470,8 @@ if args.add_style:
             for key in config['fixme']:
                 print("  " + key + " = " + config['fixme'][key])
             print()
+        config.set('map_styles', args.add_style, 'yes')
+
     elif args.add_style == "defaultmap":
         config.set('map_styles', args.add_style, 'yes')
     else:
@@ -449,27 +519,6 @@ if args.use_style:
     write_config()
 
 
-if args.set_default:
-    if not os.path.exists("poly/" + args.set_default + ".poly"):
-        print()
-        error((WORK_DIR) + "poly/" +
-              args.set_default + ".poly not found... ")
-        error("please create or download " +
-              args.set_default + ".poly")
-        print()
-        quit()
-    elif not os.path.exists("o5m/" + args.set_default + ".o5m"):
-        print()
-        error((WORK_DIR) + "o5m/" +
-              args.set_default + ".o5m not found... ")
-        error("please create or download " +
-              args.set_default + ".o5m")
-        print()
-        quit()
-    config.set('runtime', 'default', args.set_default)
-    write_config()
-    quit()
-
 if args.check_styles:
     mkgmap.check()
     quit()
@@ -478,6 +527,7 @@ if args.check_styles:
 # special opts to debug the raw map data
 if args.spec_opts:
     config.set('runtime', 'use_spec_opts', '1')
+
 
 # logging
 if args.log:
@@ -543,6 +593,7 @@ if args.max_jobs:
 # keep_going on errors
 if args.keep_going:
     config.set('runtime', 'keep_going', "1")
+
 
 # hillshading
 if args.list_tdb:
@@ -726,6 +777,7 @@ if args.new_bounds:
     config.set('precomp', 'bounds', "bounds-latest.zip")
     config.set('precomp', 'sea', "sea-latest.zip")
     os.chdir(WORK_DIR)
+    quit()
 
 
 if args.use_bounds:

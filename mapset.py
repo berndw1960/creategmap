@@ -5,6 +5,7 @@ import configparser
 import os
 import argparse
 import build_config
+import time
 
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"
@@ -225,11 +226,23 @@ if args.list_mapset:
         for key in (config['mapset']):
             if config['mapset'][key] == "yes":
                 print("      " + key)
+                if config.has_option('name_tag_list', key):
+                    print("      " + config['name_tag_list'][key])
+                    print()
+                else:
+                    print("name:en,name:int,name")
+                    print()
         print()
         print("    disabled:")
         for key in (config['mapset']):
             if config['mapset'][key] == "no":
                 print("      " + key)
+                if config.has_option('name_tag_list', key):
+                    print("      " + config['name_tag_list'][key])
+                    print()
+                else:
+                    print("name:en,name:int,name")
+                    print()
     else:
         print()
         info("mapset list didn't exist")
@@ -292,6 +305,17 @@ else:
 
 command_line = ("pygmap3.py -kg " +
                 verbose + stop + cl + test + log + zip)
+
+
+print()
+info("Ready to start?   ")
+print()
+print("    In the next 5 seconds you can stop ")
+print("    building the maps with STRG+C ")
+i = 5
+while i > 0:
+    i -= 1
+    time.sleep(1)
 
 
 for buildmap in config['mapset']:

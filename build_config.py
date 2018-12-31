@@ -24,9 +24,6 @@ def create():
     config['mapid'] = {}
     config['mapid'] = {'next_mapid': '6500', }
 
-    config['runtime'] = {}
-    config['runtime'] = {'default': 'germany', }
-
     config['java'] = {}
     config['java'] = {'xmx': '-Xmx4G',
                       'xms': '-Xms4G', }
@@ -173,4 +170,7 @@ def update():
     if config.has_option('runtime', 'xms'):
         config.remove_option('runtime', 'xms')
 
+    if not config.has_section('name_tag_list'):
+        config.add_section('name_tag_list')
+        config.set('name_tag_list', 'default', 'name:en,name:int,name')
     write_config()
