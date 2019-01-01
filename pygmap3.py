@@ -323,9 +323,9 @@ buildmap = os.path.splitext(buildmap)[0]
 config.set('runtime', 'buildmap', buildmap)
 
 
-if not os.path.exists("poly/" + buildmap + ".poly"):
+if not os.path.exists(WORK_DIR + "poly/" + buildmap + ".poly"):
     build = "no"
-elif not os.path.exists("o5m/" + buildmap + ".o5m"):
+elif not os.path.exists(WORK_DIR + "o5m/" + buildmap + ".o5m"):
     build = "no"
 else:
     build = "yes"
