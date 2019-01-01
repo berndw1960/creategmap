@@ -153,10 +153,19 @@ parser.add_argument('-agh', '--aggressiveheap', action="store_true",
                     help=" set the HEAP permanent in an aggressive mode")
 parser.add_argument('-no_agh', '--no_aggressiveheap', action="store_true",
                     help=" disable the aggressive mode ")
+
 # interactive mode
-parser.add_argument('-i', '--interactive', action="store_true")
+parser.add_argument('-i', '--interactive', action="store_true",
+                    help=" an interactive mode to set the region")
+
+# edit options interactive
+parser.add_argument('-e', '--edit_opts', default=0, nargs='*',
+                    help=" list and edit the options for the maps")
 
 # mapset handling
+parser.add_argument('-r', '--region', default=0,
+                    help=" set the map region to build " +
+                         " need at least a poly or a O%M file ")
 parser.add_argument('-p', '--poly', default=0,
                     help=" set the poly file for the map region to build")
 parser.add_argument('-lp',  '--list_poly', action="store_true",
@@ -167,17 +176,15 @@ parser.add_argument('-lo', '--list_o5m', action="store_true",
                     help=" list all O5M files in " + WORK_DIR + "o5m ")
 parser.add_argument('-s', '--set_default', default=0,
                     help="set region to build as new default")
-parser.add_argument('-ntl', '--name-tag-list', action="store_true",
-                    help="which name tag should be used for naming objects")
 
 # mapstyle handling
 parser.add_argument('-lm', '--list_mapstyle', action="store_true",
                     help="list the style settings")
-parser.add_argument('-a', '--add_style', default=0,
+parser.add_argument('-as', '--add_style', default=0,
                     help="add a new style")
-parser.add_argument('-m', '--map_style', default=0,
+parser.add_argument('-ms', '--map_style', default=0,
                     help="enable/disable a style")
-parser.add_argument('-r', '--rm_style', default=0,
+parser.add_argument('-rs', '--rm_style', default=0,
                     help="remove a style")
 parser.add_argument('-am', '--all_map_styles', action="store_true",
                     help="enable all map_styles")
@@ -185,7 +192,6 @@ parser.add_argument('-dm', '--no_map_styles', action="store_true",
                     help="disable all map_styles")
 parser.add_argument('-u', '--use_style', default=0, nargs='*',
                     help="use only one style")
-
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true",
@@ -219,25 +225,7 @@ parser.add_argument('-kg', '--keep_going', action="store_true",
 parser.add_argument('-in', '--installer', action="store_true",
                     help="create mapsource installer")
 
-# contourlines and hillshading
-parser.add_argument('-lst', '--list_tdb', default=0, nargs='*',
-                    help="list the options for hillshading")
-parser.add_argument('-ert', '--enable_region_tdb', default=0, nargs='*',
-                    help="enable the hillshading for a map region")
-parser.add_argument('-elt', '--enable_layer_tdb', default=0, nargs='*',
-                    help="enable the hillshading for a map layer")
-parser.add_argument('-drt', '--disable_region_tdb', default=0, nargs='*',
-                    help="disable the hillshading for a map region")
-parser.add_argument('-dlt', '--disable_layer_tdb', default=0, nargs='*',
-                    help="disable the hillshading for a map layer")
-parser.add_argument('-dft', '--default_layer_tdb', default=0, nargs='*',
-                    help="set the default layers with hillshading")
-parser.add_argument('-af', '--add_folder', action="store_true",
-                    help="add hillshading using the names of the folders in " +
-                    WORK_DIR + "gps_ready/zipped")
-parser.add_argument('-ao', '--add_o5m', action="store_true",
-                    help="add hillshading using the names of the o5m files " +
-                    "in " + WORK_DIR + "o5m")
+# editable with commandline options
 parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
                     help="This is a number between 0 and 16")
 parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'],
@@ -304,42 +292,25 @@ if args.list_o5m:
     quit()
 
 
-def check_data():
-    if not os.path.exists("poly/" + buildmap + ".poly"):
-        print()
-        error((WORK_DIR) + "poly/" +
-              buildmap + ".poly not found... ")
-        error("please create or download " +
-              buildmap + ".poly")
-        print()
-        quit()
-    elif not os.path.exists("o5m/" + buildmap + ".o5m"):
-        print()
-        error((WORK_DIR) + "o5m/" +
-              buildmap + ".o5m not found... ")
-        error("please create or download " +
-              buildmap + ".o5m")
-        print()
-        quit()
-
-
 # set default buildmap
 if args.set_default or not config.has_option('runtime', 'default'):
-    buildmap = input(" \n " +
-                     "  Which should be your default map region? \n\n" +
-                     "  please enter a region:   ")
+    buildmap = input(" \n\n " +
+                     "    Which should be your default map region? \n" +
+                     "    You can build this region without any option\n" +
+                     "    for pygmap3.py in the future.\n\n" +
+                     "    please enter a region:    ")
     buildmap = os.path.splitext(buildmap)[0]
-    check_data()
     config.set('runtime', 'default', buildmap)
     write_config()
-    quit()
 
 
 # set the buildmap
 if args.interactive:
-    buildmap = input(" \n" +
-                     "  Which map region should be build? \n\n" +
-                     "  please enter a region:   ")
+    buildmap = input(" \n\n" +
+                     "    Which map region should be build? \n\n" +
+                     "    please enter a region:    ")
+elif args.region:
+    buildmap = args.region
 elif args.poly:
     buildmap = args.poly
 elif args.o5m:
@@ -349,33 +320,63 @@ else:
 
 
 buildmap = os.path.splitext(buildmap)[0]
-check_data()
 config.set('runtime', 'buildmap', buildmap)
 
 
-if args.name_tag_list or args.interactive:
-    language = input(" \n" +
-                     "   Which language do you prefer for naming \n" +
-                     "   objects in your map?\n\n " +
-                     "  'name:en,name:int,name' is the english value,\n" +
-                     "   but you can use german, french, dutch or spanish\n" +
-                     "   press 'Enter' for the default english value\n\n" +
-                     "   please enter a language:   ")
-    if language == "german":
-        name_tag_list = 'name:de,name:int,name'
-    elif language == "french":
-        name_tag_list = 'name:fr,name:int,name'
-    elif language == "dutch":
-        name_tag_list = 'name:nl,name:int,name'
-    elif language == "spanish":
-        name_tag_list = 'name:es,name:int,name'
-    else:
-        info('You choose a value that is not defined, using the default one\n')
-        name_tag_list = 'name:en,name:int,name'
-    config.set('name_tag_list', buildmap, name_tag_list)
-    print()
+if not os.path.exists("poly/" + buildmap + ".poly"):
+    build = "no"
+elif not os.path.exists("o5m/" + buildmap + ".o5m"):
+    build = "no"
+else:
+    build = "yes"
 
-if not config.has_option('name_tag_list', buildmap):
+if build == "no":
+    print()
+    error(buildmap + ": Poly or O5M not found... ")
+    print()
+    quit()
+
+
+# move old name_tag_list entries to buildmap options
+if config.has_option('name_tag_list', buildmap):
+    ntl_temp = config['name_tag_list'][buildmap]
+    config.set(buildmap, 'name_tag_list', ntl_temp)
+    config.remove_option('name_tag_list', buildmap)
+    write_config()
+
+
+if config['runtime']['mapset'] == "0":
+    if not config.has_option(buildmap, 'name_tag_list'):
+        if config.has_option(buildmap, 'name_tag_list'):
+            print()
+            info("this is the name tag list in the config file")
+            print()
+            print("    " + buildmap + " --> " +
+                  config[buildmap]['name_tag_list'])
+        text = (" \n\n" +
+                "    Which language do you prefer for naming \n" +
+                "    objects in your map?\n\n " +
+                "   'name:en,name:int,name' is the english value,\n" +
+                "    but you can use german, french, dutch or spanish\n" +
+                "    press 'Enter' for the default english value\n\n" +
+                "    please enter a language:   ")
+        language = input(text)
+        if language == "german":
+            name_tag_list = 'name:de,name:int,name'
+        elif language == "french":
+            name_tag_list = 'name:fr,name:int,name'
+        elif language == "dutch":
+            name_tag_list = 'name:nl,name:int,name'
+        elif language == "spanish":
+            name_tag_list = 'name:es,name:int,name'
+        else:
+            name_tag_list = 'name:en,name:int,name'
+        config.set(buildmap, 'name_tag_list', name_tag_list)
+        write_config()
+        print()
+
+
+if not config.has_option(buildmap, 'name_tag_list'):
     print()
     warn("for this mapset the MKGMAP option" +
          " '--name-tag-list' isn't set")
@@ -521,6 +522,89 @@ if args.use_style:
     write_config()
 
 
+# set or create the mapid
+if not config.has_section(buildmap):
+    config.add_section(buildmap)
+
+if config.has_option(buildmap, 'mapid'):
+    mapid = config[buildmap]['mapid']
+else:
+    mapid = config['mapid']['next_mapid']
+    next_mapid = str(int(mapid)+1)
+    config.set(buildmap, 'mapid',  mapid)
+    config.set('mapid', 'next_mapid', next_mapid)
+
+
+write_config()
+
+
+if args.edit_opts:
+    print()
+    info("Options for the region:")
+    for r in args.edit_opts:
+        print()
+        print(" " + r)
+        for key in config[r]:
+            print("    " + key + "    " + config[r][key])
+        print()
+        text = ("    Should this options be edited? [y|N]    ")
+        edit = input(text)
+        if edit == "y":
+            edit_opts = ['name_tag_list',
+                         'basemap',
+                         'bikemap',
+                         'carmap',
+                         'defaultmap',
+                         'fixme',
+                         'boundary']
+            print("    Possible entries are:\n\n" +
+                  "    tdb --> build with hillshading, only for maplayer\n" +
+                  "    1   --> build withouthill shading, for all layer\n" +
+                  "    0   --> layer disabled \n")
+            for key in config[r]:
+                if key not in edit_opts:
+                    print()
+                    print("    " + key + "    " + config[r][key])
+                    print()
+                    text = ("      edit? [y|N|(d)elete]:    ")
+                    edit_key = input(text)
+                    if edit_key == "y":
+                        text = ("      new value:    ")
+                        edit_value = input(text)
+                        config.set(r, key, edit_value)
+                    elif edit_key == "d":
+                        config.remove_option(r, key)
+                    write_config()
+            for key in edit_opts:
+                if key in config[r]:
+                    print()
+                    print("    " + key + "    " + config[r][key])
+                    print()
+                    text = ("      edit? [y|N|(d)elete]:    ")
+                    edit_key = input(text)
+                    if edit_key == "y":
+                        text = ("      new value:    ")
+                        edit_value = input(text)
+                        config.set(r, key, edit_value)
+                    elif edit_key == "d":
+                        config.remove_option(r, key)
+                    write_config()
+                else:
+                    print()
+                    print("  " + key + " !!!")
+                    print()
+                    text = ("    create new value? [Y|n]   ")
+                    create_value = input(text)
+                    if create_value != "n":
+                        print("    create key: " + key)
+                        text = ("      enter value:    ")
+                        value = input(text)
+                        config.set(r, key, value)
+                    write_config()
+    print()
+    quit()
+
+
 if args.check_styles:
     mkgmap.check()
     quit()
@@ -597,108 +681,6 @@ if args.keep_going:
     config.set('runtime', 'keep_going', "1")
 
 
-# hillshading
-if args.list_tdb:
-    for r in args.list_tdb:
-        if r in config and "tdb" in config[r]:
-            print()
-            info("Hillshading enabled for " + r + ":")
-            for key in config[r]:
-                if key != "tdb" and key != "mapid":
-                    print("    " + key)
-        else:
-            print()
-            warn("for " + r + " hillshading is disabled!")
-    print()
-    info("default layer, if hillshading for a region should be enabled:")
-    for key in config['tdblayer']:
-        print("    " + key)
-    print()
-    quit()
-
-
-if args.default_layer_tdb:
-    if config.has_section('tdblayer'):
-        config['tdblayer'] = {}
-        for key in args.default_layer_tdb:
-            config.set('tdblayer', key, "1")
-    write_config()
-    quit()
-
-
-if args.add_folder:
-    path = WORK_DIR + "gps_ready/zipped"
-    dir = sorted(os.listdir(path))
-    for folder in dir:
-        if not config.has_section(folder):
-            config.add_section(folder)
-        config.set(folder, 'tdb', "1")
-        for key in config['tdblayer']:
-            config.set(folder, key, config['tdblayer'][key])
-    write_config()
-    quit()
-
-
-if args.add_o5m:
-    for i in os.listdir("o5m"):
-        file = os.path.splitext(os.path.basename(i))[0]
-        if not config.has_section(file):
-            config.add_section(file)
-        config.set(file, 'tdb', "1")
-        for key in config['tdblayer']:
-            config.set(file, key, config['tdblayer'][key])
-    write_config()
-    quit()
-
-
-if args.enable_region_tdb and args.enable_layer_tdb:
-    for r in args.enable_region_tdb:
-        if r not in config:
-            config.add_section(r)
-        config.set(r, 'tdb', "1")
-        for key in args.enable_layer_tdb:
-            if key != "tdb":
-                config.set(r, key, "1")
-    write_config()
-    quit()
-elif args.enable_region_tdb:
-    for r in args.enable_region_tdb:
-        if r not in config:
-            config.add_section(r)
-        config.set(r, 'tdb', "1")
-        for key in config['tdblayer']:
-            config.set(r, key, config['tdblayer'][key])
-    write_config()
-    quit()
-elif args.enable_layer_tdb and not args.enable_region_tdb:
-    print()
-    error("At least one region is needed to enable a layer!")
-    print()
-    quit()
-
-
-if args.disable_region_tdb and args.disable_layer_tdb:
-    for r in args.disable_region_tdb:
-        if r in config:
-            for key in args.disable_layer_tdb:
-                if config.has_option(r, key):
-                    config.remove_option(r, key)
-    write_config()
-    quit()
-elif args.disable_region_tdb:
-    for r in args.disable_region_tdb:
-        if r in config:
-            if config.has_option(r, "tdb"):
-                config.remove_option(r, "tdb")
-    write_config()
-    quit()
-elif args.disable_layer_tdb and not args.disable_region_tdb:
-    print()
-    error("At least one region is needed to disable a layer!")
-    print()
-    quit()
-
-
 if args.dem_dists != config['demtdb']['demdists']:
     config.set('demtdb', 'demdists', args.dem_dists)
 
@@ -710,18 +692,6 @@ if args.ed_user:
 if args.ed_pwd:
     config.set('runtime', 'ed_pwd', args.ed_pwd)
 
-
-# set or create the mapid
-if not config.has_section(buildmap):
-    config.add_section(buildmap)
-
-if config.has_option(buildmap, 'mapid'):
-    mapid = config[buildmap]['mapid']
-else:
-    mapid = config['mapid']['next_mapid']
-    next_mapid = str(int(mapid)+1)
-    config.set(buildmap, 'mapid',  mapid)
-    config.set('mapid', 'next_mapid', next_mapid)
 
 write_config()
 

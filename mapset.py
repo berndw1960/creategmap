@@ -226,23 +226,11 @@ if args.list_mapset:
         for key in (config['mapset']):
             if config['mapset'][key] == "yes":
                 print("      " + key)
-                if config.has_option('name_tag_list', key):
-                    print("      " + config['name_tag_list'][key])
-                    print()
-                else:
-                    print("name:en,name:int,name")
-                    print()
         print()
         print("    disabled:")
         for key in (config['mapset']):
             if config['mapset'][key] == "no":
                 print("      " + key)
-                if config.has_option('name_tag_list', key):
-                    print("      " + config['name_tag_list'][key])
-                    print()
-                else:
-                    print("name:en,name:int,name")
-                    print()
     else:
         print()
         info("mapset list didn't exist")
@@ -318,6 +306,10 @@ while i > 0:
     time.sleep(1)
 
 
+config.set('runtime', 'mapset', "1")
+write_config()
+
+
 for buildmap in config['mapset']:
     if config['mapset'][buildmap] == "yes":
         if buildmap == args.break_after:
@@ -334,6 +326,10 @@ for buildmap in config['mapset']:
 
     if buildmap == args.break_after:
         quit()
+
+
+config.set('runtime', 'mapset', "0")
+write_config()
 
 
 print()

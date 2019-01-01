@@ -133,7 +133,7 @@ def render():
     global layer
     for layer in config['map_styles']:
 
-        if config['map_styles'][layer] == "yes":
+        if config[buildmap][layer] == "1" or config[buildmap][layer] == "tdb":
 
             # Test for (layer)-dir and remove old data from there
 
@@ -177,8 +177,8 @@ def render():
             dem_dists = " "
             poly = " "
 
-            if buildmap in config:
-                if layer in config[buildmap]:
+            if layer != "fixme" or layer != "boundary":
+                if config[buildmap][layer] == "tdb":
                     demdir = WORK_DIR + "hgt/COPERNICUS"
                     if os.path.exists(demdir):
                         dem_temp = demdir
@@ -208,9 +208,9 @@ def render():
             # set the name tag list
             if layer == "fixme" or layer == "boundary":
                 name_tag_list = " "
-            elif config.has_option('name_tag_list', buildmap):
+            elif config.has_option(buildmap, 'name_tag_list'):
                 name_tag_list = (" --name-tag-list=" +
-                                 config['name_tag_list'][buildmap])
+                                 config[buildmap]['name_tag_list'])
             else:
                 name_tag_list = (" --name-tag-list=" +
                                  config['name_tag_list']['default'])

@@ -4,6 +4,7 @@
 
 import os
 import configparser
+import time
 
 
 WORK_DIR = (os.environ['HOME'] + "/map_build/")
@@ -11,6 +12,10 @@ WORK_DIR = (os.environ['HOME'] + "/map_build/")
 
 def info(msg):
     print("II: " + msg)
+
+
+def warn(msg):
+    print("WW: " + msg)
 
 
 def error(msg):
@@ -55,6 +60,13 @@ def create_o5m():
                   "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m")
 
     elif os.path.exists("planet/planet.o5m"):
+        ftime = os.path.getmtime("planet/planet.o5m")
+        curtime = time.time()
+        difftime = curtime - ftime
+        if difftime > 1741800:
+            print()
+            warn("Your planet file is older then one month")
+            print(" You should update it.")
         if os.path.exists("poly/" + buildmap + ".poly"):
             print()
             info("now extracting " + buildmap +

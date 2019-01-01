@@ -78,11 +78,6 @@ def create():
     config['demtdb'] = {}
     config['demtdb'] = {'demdists': '3314,6628,13256,26512,53024,106048', }
 
-    config['tdblayer'] = {}
-    config['tdblayer'] = {'basemap': '1',
-                          'bikemap': '1',
-                          'defaultmap': '1', }
-
     config['contourlines'] = {}
     config['contourlines'] = {'draw-priority': '16', }
 
@@ -105,7 +100,6 @@ def update():
               'mkgmap',
               'java',
               'demtdb',
-              'tdblayer',
               'maxnodes',
               'mapset']:
         if not config.has_section(i):
@@ -119,12 +113,6 @@ def update():
     if config.has_section('bounds'):
         config.remove_section('bounds')
 
-    if not config.has_option('tdblayer', 'basemap'):
-        config.set('tdblayer', 'basemap', '1')
-
-    if not config.has_option('tdblayer', 'bikemap'):
-        config.set('tdblayer', 'bikemap', '1')
-
     if not config.has_option('java', 'xmx'):
         config.set('java', 'xmx', '-Xmx4G')
 
@@ -133,6 +121,9 @@ def update():
 
     if not config.has_option('java', 'agh'):
         config.set('java', 'agh', '0')
+
+    if not config.has_option('runtime', 'mapset'):
+        config.set('runtime', 'mapset', '0')
 
     # remove temporary options
 
