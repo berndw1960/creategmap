@@ -84,10 +84,9 @@ def create():
     config['contourlines'] = {'draw-priority': '16', }
 
     config['name_tag_list'] = {}
-    config['name_tag_list'] = {'default': 'name:en,name:int,name',
-                               'dach': 'name:de,name',
-                               'germany': 'name:de,name',
-                               'bonn': 'name:de,name', }
+    config['name_tag_list'] = {'default': 'name:en,name:int,name' }
+
+    config['runtime'] = {}
 
     write_config()
 
@@ -103,7 +102,8 @@ def update():
               'java',
               'demtdb',
               'maxnodes',
-              'mapset']:
+              'mapset',
+              'runtime']:
         if not config.has_section(i):
             config.add_section(i)
 
