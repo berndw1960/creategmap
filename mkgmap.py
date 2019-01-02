@@ -133,7 +133,8 @@ def render():
     global layer
     for layer in config['map_styles']:
 
-        if config[buildmap][layer] == "yes" or config[buildmap][layer] == "tdb":
+        if (config[buildmap][layer] == "yes" or
+                config[buildmap][layer] == "tdb"):
 
             # Test for (layer)-dir and remove old data from there
 

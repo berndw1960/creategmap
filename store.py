@@ -27,7 +27,8 @@ def zip_img():
     os.chdir(unzip_dir)
 
     for layer in config['map_styles']:
-        if config[buildmap][layer] == "1" or config[buildmap][layer] == "tdb":
+        if (config[buildmap][layer] == "yes" or
+                config[buildmap][layer] == "tdb"):
             bl = buildmap + "_" + layer
             img = bl + "_gmapsupp.img"
             zip_img = img + ".zip"
