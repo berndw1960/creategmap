@@ -33,9 +33,9 @@ def typ_txt_test():
 
     if (layer == "defaultmap"):
         typ_file = " "
-        style_file = ("--style-file=" + WORK_DIR +
-                      config['mkgmap']['rev'] +
-                      "/examples/styles/default/ ")
+        style_file = ("--style-file=" + WORK_DIR
+                      + config['mkgmap']['rev']
+                      + "/examples/styles/default/ ")
     else:
         if os.path.exists(typ_file) and os.path.exists(txt_file):
             m1 = os.path.getmtime(typ_file)
@@ -45,8 +45,8 @@ def typ_txt_test():
             elif m2 > m1:
                 typ_file = txt_file
                 print()
-                warn("styles_typ.typ and styles_typ.txt exist, " +
-                     " use the newer file")
+                warn("styles_typ.typ and styles_typ.txt exist, "
+                     + " use the newer file")
                 print()
                 info("typ_file   = " + typ_file)
                 print()
@@ -62,8 +62,8 @@ def typ_txt_test():
             print()
             warn(layer + " build without a typ_file")
             typ_file = " "
-        style_file = (" --style-file=" + WORK_DIR +
-                      "styles/" + layer + "_style ")
+        style_file = (" --style-file=" + WORK_DIR
+                      + "styles/" + layer + "_style ")
 
 
 # style check
@@ -85,10 +85,10 @@ def check():
             info("style_file = " + WORK_DIR + style_file)
             print()
 
-            defaultmap_opts = (" --split-name-index " +
-                               " --route " +
-                               " --housenumbers " +
-                               " --index ")
+            defaultmap_opts = (" --split-name-index "
+                               + " --route "
+                               + " --housenumbers "
+                               + " --index ")
             style_opts = WORK_DIR + "styles/" + (layer) + "_style/options "
             base_opts = WORK_DIR + "styles/options "
 
@@ -99,13 +99,13 @@ def check():
             else:
                 options = base_opts
 
-            os.system("java -jar " +
-                      WORK_DIR + mkgmap +
-                      " -c " + options +
-                      " --style-file=" +
-                      style_file +
-                      " --check-styles " +
-                      typ_file)
+            os.system("java -jar "
+                      + WORK_DIR + mkgmap
+                      + " -c " + options
+                      + " --style-file="
+                      + style_file
+                      + " --check-styles "
+                      + typ_file)
     print()
 
     os.chdir(WORK_DIR)
@@ -194,8 +194,8 @@ def render():
                         hs = "1"
                     if hs == "1":
                         dem = " --dem=" + dem_temp
-                        dem_dists = (" --dem-dists=" +
-                                     config['demtdb']['demdists'])
+                        dem_dists = (" --dem-dists="
+                                     + config['demtdb']['demdists'])
                         poly_file = WORK_DIR + "poly/" + buildmap + ".poly"
                         if os.path.exists(poly_file):
                             poly = (" --dem-poly=" + poly_file)
@@ -210,11 +210,11 @@ def render():
             if layer == "fixme" or layer == "boundary":
                 name_tag_list = " "
             elif config.has_option(buildmap, 'name_tag_list'):
-                name_tag_list = (" --name-tag-list=" +
-                                 config[buildmap]['name_tag_list'])
+                name_tag_list = (" --name-tag-list="
+                                 + config[buildmap]['name_tag_list'])
             else:
-                name_tag_list = (" --name-tag-list=" +
-                                 config['name_tag_list']['default'])
+                name_tag_list = (" --name-tag-list="
+                                 + config['name_tag_list']['default'])
 
             # settings for precomp bounds and sea
             if layer == "fixme" or layer == "boundary":
@@ -222,28 +222,28 @@ def render():
             else:
                 bounds = " --location-autofill=is_in,nearest "
                 if config.has_option('precomp', 'bounds'):
-                    bounds_zip = (WORK_DIR + "precomp/" +
-                                  config['precomp']['bounds'])
+                    bounds_zip = (WORK_DIR + "precomp/"
+                                  + config['precomp']['bounds'])
                     if os.path.exists(bounds_zip):
                         bounds = " --bounds=" + bounds_zip
 
             if layer == "fixme" or layer == "boundary":
                 sea = " "
             else:
-                sea = (" --generate-sea=extend-sea-sectors," +
-                       "close-gaps=6000,floodblocker," +
-                       "land-tag=natural=background ")
+                sea = (" --generate-sea=extend-sea-sectors,"
+                       + "close-gaps=6000,floodblocker,"
+                       + "land-tag=natural=background ")
                 if config.has_option('precomp', 'sea'):
                     sea_zip = WORK_DIR + "precomp/" + config['precomp']['sea']
                     if os.path.exists(sea_zip):
-                        sea = (" --precomp-sea=" +
-                               sea_zip + " --generate-sea ")
+                        sea = (" --precomp-sea="
+                               + sea_zip + " --generate-sea ")
 
             # style options
-            defaultmap_opts = (" --split-name-index " +
-                               " --route " +
-                               " --housenumbers " +
-                               " --index ")
+            defaultmap_opts = (" --split-name-index "
+                               + " --route "
+                               + " --housenumbers "
+                               + " --index ")
             style_opts = WORK_DIR + "styles/" + layer + "_style/options"
             base_opts = WORK_DIR + "styles/options "
 
@@ -278,36 +278,36 @@ def render():
             print()
 
             # map rendering
-            command_line = ("java -ea " +
-                            heap +
-                            logging +
-                            " -jar " + WORK_DIR + mkgmap +
-                            keep_going +
-                            max_jobs +
-                            bounds +
-                            sea +
-                            style_file +
-                            name_tag_list +
-                            " --levels=" + config['maplevel']['levels'] +
-                            dem +
-                            dem_dists +
-                            poly +
-                            " --mapname=" + config[buildmap]['mapid'] +
-                            config[layer]['mapid_ext'] +
-                            " --family-id=" + config[buildmap]['mapid'] +
-                            " --product-id=" + config[layer]['product-id'] +
-                            " --family-name=" + buildmap + "_" + layer +
-                            " --series-name=" + buildmap + "_" + layer +
-                            " --draw-priority=" +
-                            config[layer]['draw-priority'] +
-                            " --description=" + buildmap + "_" + layer +
-                            options +
-                            spec_opts +
-                            index_opts +
-                            installer +
-                            " --gmapsupp " +
-                            WORK_DIR + "tiles/*.o5m " +
-                            typ_file)
+            command_line = ("java -ea "
+                            + heap
+                            + logging
+                            + " -jar " + WORK_DIR + mkgmap
+                            + keep_going
+                            + max_jobs
+                            + bounds
+                            + sea
+                            + style_file
+                            + name_tag_list
+                            + " --levels=" + config['maplevel']['levels']
+                            + dem
+                            + dem_dists
+                            + poly
+                            + " --mapname=" + config[buildmap]['mapid']
+                            + config[layer]['mapid_ext']
+                            + " --family-id=" + config[buildmap]['mapid']
+                            + " --product-id=" + config[layer]['product-id']
+                            + " --family-name=" + buildmap + "_" + layer
+                            + " --series-name=" + buildmap + "_" + layer
+                            + " --draw-priority="
+                            + config[layer]['draw-priority']
+                            + " --description=" + buildmap + "_" + layer
+                            + options
+                            + spec_opts
+                            + index_opts
+                            + installer
+                            + " --gmapsupp "
+                            + WORK_DIR + "tiles/*.o5m "
+                            + typ_file)
 
             if config.has_option('runtime', 'verbose'):
                 info(command_line)

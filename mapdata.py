@@ -44,18 +44,18 @@ def create_o5m():
 
     if os.path.exists("o5m/" + buildmap + "osm.pbf"):
         print()
-        info("converting o5m/" + buildmap +
-             ".osm.pbf to o5m/" + buildmap +
-             ".o5m, please wait...")
-        os.system("osmconvert o5m/" + buildmap +
-                  ".osm.pbf -o=o5m/" + buildmap +
-                  ".o5m")
+        info("converting o5m/" + buildmap
+             + ".osm.pbf to o5m/" + buildmap
+             + ".o5m, please wait...")
+        os.system("osmconvert o5m/" + buildmap
+                  + ".osm.pbf -o=o5m/" + buildmap
+                  + ".o5m")
 
     elif os.path.exists("o5m/" + buildmap + "-latest.osm.pbf"):
         print()
-        info("converting o5m/" + buildmap +
-             "-latest.osm.pbf to o5m/" + buildmap +
-             ".o5m, please wait...")
+        info("converting o5m/" + buildmap
+             + "-latest.osm.pbf to o5m/" + buildmap
+             + ".o5m, please wait...")
         os.system("osmconvert o5m/" + buildmap +
                   "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m")
 
@@ -69,19 +69,19 @@ def create_o5m():
             print(" You should update it.")
         if os.path.exists("poly/" + buildmap + ".poly"):
             print()
-            info("now extracting " + buildmap +
-                 ".o5m from Planet, please wait...")
-            os.system("osmconvert planet/planet.o5m " +
-                      "--complete-ways --complex-ways --drop-version " +
-                      " -B=poly/" + buildmap + ".poly " +
-                      " -o=o5m/" + buildmap + ".o5m")
+            info("now extracting " + buildmap
+                 + ".o5m from Planet, please wait...")
+            os.system("osmconvert planet/planet.o5m "
+                      + "--complete-ways --complex-ways --drop-version "
+                      + " -B=poly/" + buildmap + ".poly "
+                      + " -o=o5m/" + buildmap + ".o5m")
         else:
             print()
             error("missing poly/" + buildmap + ".poly")
             print()
-            info("created it or try to get one from \n\n" +
-                 " http://download.geofabrik.de \n\n " +
-                 " or use another source for this file")
+            info("created it or try to get one from \n\n"
+                 + " http://download.geofabrik.de \n\n "
+                 + " or use another source for this file")
             print()
             quit()
 
@@ -110,11 +110,11 @@ def update_o5m():
     poly = " "
     if os.path.exists("poly/" + buildmap + ".poly"):
         poly = " -B=poly/" + buildmap + ".poly "
-    os.system("osmupdate --daily" +
-              update_opts +
-              poly +
-              " --keep-tempfiles o5m/" +
-              buildmap +
+    os.system("osmupdate --daily"
+              + update_opts
+              + poly
+              + " --keep-tempfiles o5m/"
+              + buildmap +
               ".o5m  o5m/" + buildmap + "_new.o5m")
 
     os.chdir("o5m")

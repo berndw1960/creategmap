@@ -84,7 +84,7 @@ def create():
     config['contourlines'] = {'draw-priority': '16', }
 
     config['name_tag_list'] = {}
-    config['name_tag_list'] = {'default': 'name:en,name:int,name' }
+    config['name_tag_list'] = {'default': 'name:en,name:int,name', }
 
     config['runtime'] = {}
 
