@@ -32,10 +32,12 @@ def create():
     config['map_styles'] = {'basemap': 'no',
                             'bikemap': 'no',
                             'carmap': 'no',
+                            'defaultmap': 'yes',
+                            'oldev': 'no',
                             'fixme': 'no',
                             'bikeroute': 'no',
                             'boundary': 'no',
-                            'defaultmap': 'yes', }
+                            }
 
     config['defaultmap'] = {}
     config['defaultmap'] = {'product-id': '1',

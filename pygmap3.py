@@ -100,19 +100,6 @@ build_config.update()
 config.read('pygmap3.cfg')
 
 
-if config.has_section('map_styles_backup'):
-    if config.has_section('map_styles'):
-        config.remove_section('map_styles')
-    config.add_section('map_styles')
-    for key in (config['map_styles_backup']):
-        config.set('map_styles', key, config['map_styles_backup'][key])
-        config.remove_option('map_styles_backup', key)
-    config.remove_section('map_styles_backup')
-
-
-write_config()
-
-
 # argparse
 parser = argparse.ArgumentParser(
         prog='PROG',
@@ -159,13 +146,15 @@ parser.add_argument('-i', '--interactive', action="store_true",
                     help=" an interactive mode to set the region")
 
 # edit options interactive
-parser.add_argument('-e', '--edit_opts', default=0, nargs='*',
+parser.add_argument('-e', '--edit_opts', default=0,
                     help=" list and edit the options for the maps")
+parser.add_argument('-et', '--edit_template', action="store_true",
+                    help=" list and edit the template for the options")
 
 # mapset handling
 parser.add_argument('-r', '--region', default=0,
                     help=" set the map region to build " +
-                         " need at least a poly or a O%M file ")
+                         " need at least a poly or a O5M file ")
 parser.add_argument('-p', '--poly', default=0,
                     help=" set the poly file for the map region to build")
 parser.add_argument('-lp',  '--list_poly', action="store_true",
@@ -182,16 +171,8 @@ parser.add_argument('-lm', '--list_mapstyle', action="store_true",
                     help="list the style settings")
 parser.add_argument('-as', '--add_style', default=0,
                     help="add a new style")
-parser.add_argument('-ms', '--map_style', default=0,
-                    help="enable/disable a style")
 parser.add_argument('-rs', '--rm_style', default=0,
                     help="remove a style")
-parser.add_argument('-am', '--all_map_styles', action="store_true",
-                    help="enable all map_styles")
-parser.add_argument('-dm', '--no_map_styles', action="store_true",
-                    help="disable all map_styles")
-parser.add_argument('-u', '--use_style', default=0, nargs='*',
-                    help="use only one style")
 
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true",
@@ -311,9 +292,17 @@ if args.interactive:
                      "    please enter a region:    ")
 elif args.region:
     buildmap = args.region
+elif args.edit_opts:
+    buildmap = args.edit_opts
 elif args.poly:
+    print()
+    warn("the option -p/--poly will be removed in further releases,\n" +
+         " please use -r/--region instead")
     buildmap = args.poly
 elif args.o5m:
+    print()
+    warn("the option -o/--o5m will be removed in further releases,\n" +
+         " please use -r/--region instead")
     buildmap = args.o5m
 else:
     buildmap = config['runtime']['default']
@@ -323,18 +312,26 @@ buildmap = os.path.splitext(buildmap)[0]
 config.set('runtime', 'buildmap', buildmap)
 
 
-if not os.path.exists(WORK_DIR + "poly/" + buildmap + ".poly"):
-    build = "no"
-elif not os.path.exists(WORK_DIR + "o5m/" + buildmap + ".o5m"):
-    build = "no"
-else:
-    build = "yes"
-
-if build == "no":
-    print()
-    error(buildmap + ": Poly or O5M not found... ")
-    print()
-    quit()
+if not config.has_section(buildmap):
+    config.add_section(buildmap)
+    for key in config['map_styles']:
+        config.set(buildmap, key, config['map_styles'][key])
+        print_warn = "1"
+    config.set(buildmap, 'name_tag_list', config['name_tag_list']['default'])
+    print_warn = "1"
+    write_config()
+    text = ("Some options are set to default values\n" +
+            "    you can edit them with pygmap3.py -e")
+    if print_warn == "1":
+        print()
+        warn(text)
+        question = ("\n Do you want to edit the configuration? [y|N]   ")
+        want_edit = input(question)
+        if want_edit == "y":
+            print()
+            info("please use 'pygmap3.py -e " + buildmap + "'")
+            print()
+            quit()
 
 
 # move old name_tag_list entries to buildmap options
@@ -342,46 +339,144 @@ if config.has_option('name_tag_list', buildmap):
     ntl_temp = config['name_tag_list'][buildmap]
     config.set(buildmap, 'name_tag_list', ntl_temp)
     config.remove_option('name_tag_list', buildmap)
-    write_config()
 
 
-if config['runtime']['mapset'] == "0":
-    if not config.has_option(buildmap, 'name_tag_list'):
-        if config.has_option(buildmap, 'name_tag_list'):
-            print()
-            info("this is the name tag list in the config file")
-            print()
-            print("    " + buildmap + " --> " +
-                  config[buildmap]['name_tag_list'])
-        text = (" \n\n" +
-                "    Which language do you prefer for naming \n" +
-                "    objects in your map?\n\n " +
-                "   'name:en,name:int,name' is the english value,\n" +
-                "    but you can use german, french, dutch or spanish\n" +
-                "    press 'Enter' for the default english value\n\n" +
-                "    please enter a language:   ")
-        language = input(text)
-        if language == "german":
-            name_tag_list = 'name:de,name:int,name'
-        elif language == "french":
-            name_tag_list = 'name:fr,name:int,name'
-        elif language == "dutch":
-            name_tag_list = 'name:nl,name:int,name'
-        elif language == "spanish":
-            name_tag_list = 'name:es,name:int,name'
-        else:
-            name_tag_list = 'name:en,name:int,name'
-        config.set(buildmap, 'name_tag_list', name_tag_list)
+for style in config['map_styles']:
+    if not config.has_option(buildmap, style):
+        config.set(buildmap, style, config['map_styles'][style])
         write_config()
-        print()
 
 
-if not config.has_option(buildmap, 'name_tag_list'):
+if args.edit_opts:
     print()
-    warn("for this mapset the MKGMAP option" +
-         " '--name-tag-list' isn't set")
-    warn("using the default 'name:en,name:int,name'")
+    info("Options for the region '" + buildmap + "':\n")
+    for key in config[buildmap]:
+        print("    " + key + "    " + config[buildmap][key])
     print()
+    text = ("    Should this options be edited? [y|N|a|d]    ")
+    edit = input(text)
+    if edit == "y":
+        print("\n to end editing set a value to 'q'\n\n")
+        finish = "no"
+        while finish == "no":
+            text = ("  Add the key to edit:   ")
+            new_key = input(text)
+            if new_key != "name_tag_list":
+                text = ("  Add the new value:     ")
+                new_value = input(text)
+                if new_value == 'q':
+                    finish = "yes"
+                else:
+                    config.set(buildmap, new_key, new_value)
+            else:
+                if config.has_option(buildmap, 'name_tag_list'):
+                    print()
+                    info("this is the name tag list in the config file")
+                    print()
+                    print("    " + buildmap + " --> " +
+                          config[buildmap]['name_tag_list'])
+                text = (" \n\n" +
+                        "    Which language do you prefer for naming \n" +
+                        "    objects in your map?\n\n " +
+                        "   'name:en,name:int,name' is the english value,\n" +
+                        "    you can use german, french, dutch or spanish\n" +
+                        "    press 'Enter' for the default english value\n\n" +
+                        "    please enter a language:   ")
+                language = input(text)
+                if language == "german":
+                    name_tag_list = 'name:de,name:int,name'
+                elif language == "french":
+                    name_tag_list = 'name:fr,name:int,name'
+                elif language == "dutch":
+                    name_tag_list = 'name:nl,name:int,name'
+                elif language == "spanish":
+                    name_tag_list = 'name:es,name:int,name'
+                else:
+                    name_tag_list = 'name:en,name:int,name'
+                config.set(buildmap, 'name_tag_list', name_tag_list)
+            write_config()
+    elif edit == "a":
+        print("\n to end editing set a value to 'q'\n\n")
+        finish = "no"
+        while finish == "no":
+            text = ("Add the new key:   ")
+            new_key = input(text)
+            text = ("Add the new value:   ")
+            new_value = input(text)
+            if new_value == "q":
+                finish = "yes"
+            else:
+                config.set(buildmap, new_key, new_value)
+        write_config()
+    elif edit == "d":
+        text = ("Really delete the options for '" + buildmap + "'? [y|N]   ")
+        kill_opts = input(text)
+        if kill_opts == "y":
+            for key in config[buildmap]:
+                config.remove_option(key)
+            config.remove_section(buildmap)
+            write_config()
+            print()
+            quit()
+            print()
+    print()
+    info("These are the new values in section " +
+         buildmap + ":\n\n")
+    for key in config[buildmap]:
+        print("    " + key + "  " + config[buildmap][key])
+    print()
+    quit()
+
+
+if args.edit_template:
+    print()
+    print("\n\n" +
+          "  These are the template options:\n")
+    for key in config['template_region']:
+        print("    " + key + "    " + config['template_region'][key])
+    print()
+    text = ("    Should this options be edited? [y|N|a|d]    ")
+    edit = input(text)
+    if edit == "y":
+        print("\n to end editing set a value to 'q'\n\n")
+        finish = "no"
+        while finish == "no":
+            text = ("  Add the key to edit:   ")
+            new_key = input(text)
+            text = ("  Add the new value:     ")
+            new_value = input(text)
+            if new_value == 'q':
+                finish = "yes"
+            else:
+                config.set('template_region', new_key, new_value)
+    elif edit == "a":
+        print("\n to end editing set a value to 'q'\n\n")
+        finish = "no"
+        while finish == "no":
+            text = ("  Add the new key:   ")
+            new_key = input(text)
+            text = ("  Add the new value:   ")
+            new_value = input(text)
+            if new_value == 'q':
+                finish = "yes"
+            else:
+                config.set('template_region', new_key, new_value)
+    elif edit == "d":
+        print("\n to finish hit 'q'\n\n")
+        finish = "no"
+        while finish == "no":
+            text = ("  which key should be deleted?   ")
+            del_key = input(text)
+            if del_key == 'q':
+                finish = "yes"
+            else:
+                text = ("    Really delete this'" + del_key + "'? [y|N]   ")
+                kill_key = input(text)
+                if kill_key == "y":
+                    config.remove_option('template_region', del_key)
+    write_config()
+    print()
+    quit()
 
 
 # map build options
@@ -390,15 +485,9 @@ if args.list_mapstyle:
         print()
         info("map_styles list includes: ")
         print()
-        print(" enabled:")
         for key in config['map_styles']:
-            if config['map_styles'][key] == "yes":
-                print("  " + key)
+            print("  " + key)
         print()
-        print(" disabled:")
-        for key in config['map_styles']:
-            if config['map_styles'][key] == "no":
-                print("  " + key)
         if config.has_section('mapset'):
             print()
             info("mapset list includes: ")
@@ -417,22 +506,6 @@ if args.list_mapstyle:
                 if config['mapset'][key] == "no":
                     print("  " + key)
     print()
-    quit()
-
-
-if args.all_map_styles:
-    if config.has_section('map_styles'):
-        for key in (config['map_styles']):
-            config.set('map_styles', key, 'yes')
-            write_config()
-    quit()
-
-
-if args.no_map_styles:
-    if config.has_section('map_styles'):
-        for key in (config['map_styles']):
-            config.set('map_styles', key, 'no')
-            write_config()
     quit()
 
 
@@ -473,33 +546,13 @@ if args.add_style:
             for key in config['fixme']:
                 print("  " + key + " = " + config['fixme'][key])
             print()
-        config.set('map_styles', args.add_style, 'yes')
+        config.set('map_styles', args.add_style, '1')
 
     elif args.add_style == "defaultmap":
-        config.set('map_styles', args.add_style, 'yes')
+        config.set('map_styles', args.add_style, '1')
     else:
         info_styles()
         quit()
-    write_config()
-    quit()
-
-
-if args.map_style and args.map_style != "defaultmap":
-    if not os.path.exists("styles/" + args.map_style + "_style"):
-        info_styles()
-        quit()
-
-
-if args.map_style:
-    if config.has_option('map_styles', args.map_style):
-        if config['map_styles'][args.map_style] == "yes":
-            config.set('map_styles', args.map_style, 'no')
-        elif config['map_styles'][args.map_style] == "no":
-            config.set('map_styles', args.map_style, 'yes')
-    else:
-        config.set('map_styles', args.map_style, 'yes')
-        print()
-        info(args.map_style + " style added and enabled")
     write_config()
     quit()
 
@@ -511,21 +564,7 @@ if args.rm_style:
     quit()
 
 
-if args.use_style:
-    if not config.has_section('map_styles_backup'):
-        config.add_section('map_styles_backup')
-    for key in (config['map_styles']):
-        config.set('map_styles_backup', key, config['map_styles'][key])
-        config.remove_option('map_styles', key)
-    for i in args.use_style:
-        config.set('map_styles', i, 'yes')
-    write_config()
-
-
 # set or create the mapid
-if not config.has_section(buildmap):
-    config.add_section(buildmap)
-
 if config.has_option(buildmap, 'mapid'):
     mapid = config[buildmap]['mapid']
 else:
@@ -536,73 +575,6 @@ else:
 
 
 write_config()
-
-
-if args.edit_opts:
-    print()
-    info("Options for the region:")
-    for r in args.edit_opts:
-        print()
-        print(" " + r)
-        for key in config[r]:
-            print("    " + key + "    " + config[r][key])
-        print()
-        text = ("    Should this options be edited? [y|N]    ")
-        edit = input(text)
-        if edit == "y":
-            edit_opts = ['name_tag_list',
-                         'basemap',
-                         'bikemap',
-                         'carmap',
-                         'defaultmap',
-                         'fixme',
-                         'boundary']
-            print("    Possible entries are:\n\n" +
-                  "    tdb --> build with hillshading, only for maplayer\n" +
-                  "    1   --> build withouthill shading, for all layer\n" +
-                  "    0   --> layer disabled \n")
-            for key in config[r]:
-                if key not in edit_opts:
-                    print()
-                    print("    " + key + "    " + config[r][key])
-                    print()
-                    text = ("      edit? [y|N|(d)elete]:    ")
-                    edit_key = input(text)
-                    if edit_key == "y":
-                        text = ("      new value:    ")
-                        edit_value = input(text)
-                        config.set(r, key, edit_value)
-                    elif edit_key == "d":
-                        config.remove_option(r, key)
-                    write_config()
-            for key in edit_opts:
-                if key in config[r]:
-                    print()
-                    print("    " + key + "    " + config[r][key])
-                    print()
-                    text = ("      edit? [y|N|(d)elete]:    ")
-                    edit_key = input(text)
-                    if edit_key == "y":
-                        text = ("      new value:    ")
-                        edit_value = input(text)
-                        config.set(r, key, edit_value)
-                    elif edit_key == "d":
-                        config.remove_option(r, key)
-                    write_config()
-                else:
-                    print()
-                    print("  " + key + " !!!")
-                    print()
-                    text = ("    create new value? [Y|n]   ")
-                    create_value = input(text)
-                    if create_value != "n":
-                        print("    create key: " + key)
-                        text = ("      enter value:    ")
-                        value = input(text)
-                        config.set(r, key, value)
-                    write_config()
-    print()
-    quit()
 
 
 if args.check_styles:

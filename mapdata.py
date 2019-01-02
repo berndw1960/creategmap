@@ -79,9 +79,9 @@ def create_o5m():
             print()
             error("missing poly/" + buildmap + ".poly")
             print()
-            info("created it or try to get one from" +
-                 " http://download.geofabrik.de ")
-            print("    or use another source for this file")
+            info("created it or try to get one from \n\n" +
+                 " http://download.geofabrik.de \n\n " +
+                 " or use another source for this file")
             print()
             quit()
 
