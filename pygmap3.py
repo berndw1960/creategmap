@@ -296,13 +296,13 @@ elif args.edit_opts:
     buildmap = args.edit_opts
 elif args.poly:
     print()
-    warn("the option -p/--poly will be removed in further releases,\n" +
-         " please use -r/--region instead")
+    warn("The option -p/--poly will be removed in further releases,\n" +
+         "    please use -r/--region instead")
     buildmap = args.poly
 elif args.o5m:
     print()
-    warn("the option -o/--o5m will be removed in further releases,\n" +
-         " please use -r/--region instead")
+    warn("The option -o/--o5m will be removed in further releases,\n" +
+         "    please use -r/--region instead")
     buildmap = args.o5m
 else:
     buildmap = config['runtime']['default']
