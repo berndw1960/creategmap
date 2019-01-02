@@ -15,6 +15,7 @@ config = configparser.ConfigParser()
 
 def zip_img():
     # zip the images and move them to separate dirs
+    print("\n\n Please wait, zipping the images...\n")
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
     buildmap = config['runtime']['buildmap']
@@ -25,22 +26,18 @@ def zip_img():
         os.makedirs(zip_dir)
 
     os.chdir(unzip_dir)
+    dir = os.listdir()
+    for img in dir:
+        zip_img = img + ".zip"
+        my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
+        my_zip_img.write(img, compress_type=zipfile.ZIP_DEFLATED)
+        my_zip_img.close()
 
-    for layer in config['map_styles']:
-        if (config[buildmap][layer] == "yes" or
-                config[buildmap][layer] == "tdb"):
-            bl = buildmap + "_" + layer
-            img = bl + "_gmapsupp.img"
-            zip_img = img + ".zip"
-            my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
-            my_zip_img.write(img, compress_type=zipfile.ZIP_DEFLATED)
-            my_zip_img.close()
+        if os.path.exists(zip_dir + "/" + zip_img):
+            os.remove(zip_dir + "/" + zip_img)
 
-            if os.path.exists(zip_dir + "/" + zip_img):
-                os.remove(zip_dir + "/" + zip_img)
-
-            shutil.move(zip_img, zip_dir)
-            os.remove(unzip_dir + "/" + img)
+        shutil.move(zip_img, zip_dir)
+        os.remove(unzip_dir + "/" + img)
 
     os.chdir(WORK_DIR)
     if os.path.exists(unzip_dir):
