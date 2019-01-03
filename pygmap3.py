@@ -146,9 +146,11 @@ parser.add_argument('-i', '--interactive', action="store_true",
                     help=" an interactive mode to set the region")
 
 # edit options interactive
-parser.add_argument('-e', '--edit_opts', default=0,
-                    help=" list and edit the options for the maps\n"
-                         + " use '-e 'template_region' for the defaults")
+parser.add_argument('-ls', '--list_sections', action="store_true",
+                    help=" list the sections in configuration")
+parser.add_argument('-e', '--edit_opts', default=0, nargs='*',
+                    help=" list and edit the optionsin one section\n"
+                         + " use '-e $SECTION' to edit the configuration")
 
 # mapset handling
 parser.add_argument('-r', '--region', default=0,
@@ -291,8 +293,6 @@ if args.interactive:
                      + "    please enter a region:    ")
 elif args.region:
     buildmap = args.region
-elif args.edit_opts:
-    buildmap = args.edit_opts
 elif args.poly:
     print()
     warn("The option -p/--poly will be removed in further releases,\n"
@@ -341,107 +341,122 @@ if config.has_option('name_tag_list', buildmap):
 
 
 for style in config['map_styles']:
-    if not config.has_option(buildmap, style):
-        config.set(buildmap, style, config['map_styles'][style])
-        write_config()
+    if (not config.has_option(buildmap, style) and
+            not config.has_option(buildmap, 'lock')):
+            config.set(buildmap, style, config['map_styles'][style])
+            write_config()
     if not config.has_option('template_region', style):
         config.set('template_region', style, config['map_styles'][style])
         write_config()
 
 
-if args.edit_opts:
+if args.list_sections:
     print()
-    info("Options for '" + buildmap + "':\n")
-    my_list = []
-    for key in config['template_region']:
-        my_list.append(key)
-    for key in my_list:
-        print("    " + str(my_list.index(key)+1) + "     " + key)
-    print()
-    text = ("    Should this options be edited? [y|N|a|d]    ")
-    edit = input(text)
-    if edit == "y":
-        print("\n    to end editing set a key to 'q'\n")
-        finish = "no"
-        while finish != "q":
-            text = ("    Enter the number of the key to edit:   ")
-            new_key = input(text)
-            if new_key == "q":
-                break
-            new_key = int(new_key)-1
-            new_key = my_list[new_key]
-            if new_key != "name_tag_list":
-                print("\n    Old value:   "
-                      + new_key + " = " + config[buildmap][new_key] + "\n")
-                text = ("    Add the new value:     ")
-                new_value = input(text)
-                if new_value != config[buildmap][key]:
-                    config.set(buildmap, new_key, new_value)
-                    write_config()
-            else:
-                text = (" \n\n" +
-                        "    Which language do you prefer for naming \n"
-                        + "    objects in your map?\n\n "
-                        + "   'name:en,name:int,name' is the english value,\n"
-                        + "    you can also use:\n\n"
-                        + "    german (de)\n"
-                        + "    french (fr)\n"
-                        + "    dutch (nl)\n"
-                        + "    spanish (es)\n"
-                        + "    italian (it)\n"
-                        + "    other by enter the ISO Code\n\n"
-                        + "    press 'Enter' for the default english value\n"
-                        + "    'q' breaks without changings\n\n"
-                        + "    please enter a language or ISO code:   ")
-                language = input(text)
-                if language == "q":
-                    break
-                elif language == "german" or language == "de":
-                    name_tag_list = 'name:de,name:int,name'
-                elif language == "french" or language == "fr":
-                    name_tag_list = 'name:fr,name:int,name'
-                elif language == "dutch" or language == "nl":
-                    name_tag_list = 'name:nl,name:int,name'
-                elif language == "spanish" or language == "es":
-                    name_tag_list = 'name:es,name:int,name'
-                elif language == "italian" or language == "it":
-                    name_tag_list = 'name:es,name:int,name'
-                elif language:
-                    name_tag_list = "name:" + language + ",name:int,name"
-                else:
-                    name_tag_list = 'name:en,name:int,name'
-                config.set(buildmap, 'name_tag_list', name_tag_list)
-            write_config()
-    elif edit == "a":
-        print("\n    to end editing set a key to 'q'\n")
-        finish = "no"
-        while finish != "q":
-            text = ("    Add the new key:   ")
-            new_key = input(text)
-            if new_key == "q":
-                break
-            text = ("    Add the new value:   ")
-            new_value = input(text)
-            config.set(buildmap, new_key, new_value)
-            write_config()
-    elif edit == "d":
-        text = ("    Really delete ALL options for '"
-                + buildmap + "'? [y|N]   ")
-        kill_opts = input(text)
-        if kill_opts == "y":
-            for key in config[buildmap]:
-                config.remove_option(key)
-            config.remove_section(buildmap)
-            write_config()
-            print()
-            quit()
-            print()
-    print()
-    info("These are the new values in section " + buildmap + ":\n")
-    for key in config[buildmap]:
-        print("    " + key + "  " + config[buildmap][key])
+    info("These are the section in pygmap3.cfg.\n"
+         + "  You can edit this sections 'with pygmap3.py -e $SECTION'\n\n")
+    for section in config.sections():
+        print("    " + section)
     print()
     quit()
+
+
+if args.edit_opts:
+    for opts_section in args.edit_opts:
+        print()
+        info("Options for '" + opts_section + "':\n")
+        my_list = []
+        for key in config[opts_section]:
+            my_list.append(key)
+        for key in my_list:
+            print("    " + str(my_list.index(key)+1) + "     "
+                  + key + "    " + config[opts_section][key])
+        print()
+        text = ("    Should this options to be edited? [y|N|a|d]    ")
+        edit = input(text)
+        if edit == "y":
+            print("\n    to end editing set a key to 'q'\n")
+            finish = "no"
+            while finish != "q":
+                text = ("    Enter the number of the key to edit:   ")
+                new_key = input(text)
+                if new_key == "q":
+                    break
+                new_key = int(new_key)-1
+                new_key = my_list[new_key]
+                if new_key != "name_tag_list":
+                    print("\n    Old value:   " + new_key
+                          + " = " + config[opts_section][new_key] + "\n")
+                    text = ("    Add the new value:     ")
+                    new_value = input(text)
+                    if new_value != config[opts_section][key]:
+                        config.set(opts_section, new_key, new_value)
+                        write_config()
+                else:
+                    text = (" \n\n"
+                            + "    Which language do you prefer for naming \n"
+                            + "    objects in your map?\n\n "
+                            + "   'name:en,name:int,name' is the english"
+                            + " value,\n"
+                            + "    you can also use:\n\n"
+                            + "    german (de)\n"
+                            + "    french (fr)\n"
+                            + "    dutch (nl)\n"
+                            + "    spanish (es)\n"
+                            + "    italian (it)\n"
+                            + "    other by enter the ISO Code\n\n"
+                            + "    press 'Enter' for the default english value"
+                            + "\n    'q' breaks without changings\n\n"
+                            + "    please enter a language or ISO code:   ")
+                    language = input(text)
+                    if language == "q":
+                        break
+                    elif language == "german" or language == "de":
+                        name_tag_list = 'name:de,name:int,name'
+                    elif language == "french" or language == "fr":
+                        name_tag_list = 'name:fr,name:int,name'
+                    elif language == "dutch" or language == "nl":
+                        name_tag_list = 'name:nl,name:int,name'
+                    elif language == "spanish" or language == "es":
+                        name_tag_list = 'name:es,name:int,name'
+                    elif language == "italian" or language == "it":
+                        name_tag_list = 'name:es,name:int,name'
+                    elif language:
+                        name_tag_list = "name:" + language + ",name:int,name"
+                    else:
+                        name_tag_list = 'name:en,name:int,name'
+                    config.set(opts_section, 'name_tag_list', name_tag_list)
+                write_config()
+        elif edit == "a":
+            print("\n    to end editing set a key to 'q'\n")
+            finish = "no"
+            while finish != "q":
+                text = ("    Add the new key:   ")
+                new_key = input(text)
+                if new_key == "q":
+                    break
+                text = ("    Add the new value:   ")
+                new_value = input(text)
+                config.set(opts_section, new_key, new_value)
+                write_config()
+        elif edit == "d":
+            text = ("    Really delete ALL options for '"
+                    + opts_section + "'? [y|N]   ")
+            kill_opts = input(text)
+            if kill_opts == "y":
+                for key in config[opts_section]:
+                    config.remove_option(key)
+                config.remove_opts_section(opts_section)
+                write_config()
+                print()
+                quit()
+                print()
+        print()
+        info("These are the new values in opts_section "
+             + opts_section + ":\n")
+        for key in config[opts_section]:
+            print("    " + key + "  " + config[opts_section][key])
+        print()
+        quit()
 
 
 # map build options
