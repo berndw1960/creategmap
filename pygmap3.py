@@ -147,9 +147,8 @@ parser.add_argument('-i', '--interactive', action="store_true",
 
 # edit options interactive
 parser.add_argument('-e', '--edit_opts', default=0,
-                    help=" list and edit the options for the maps")
-parser.add_argument('-et', '--edit_template', action="store_true",
-                    help=" list and edit the template for the options")
+                    help=" list and edit the options for the maps\n"
+                         + " use '-e 'template_region' for the defaults")
 
 # mapset handling
 parser.add_argument('-r', '--region', default=0,
@@ -352,7 +351,7 @@ for style in config['map_styles']:
 
 if args.edit_opts:
     print()
-    info("Options for the region '" + buildmap + "':\n")
+    info("Options for '" + buildmap + "':\n")
     my_list = []
     for key in config['template_region']:
         my_list.append(key)
@@ -441,104 +440,6 @@ if args.edit_opts:
     info("These are the new values in section " + buildmap + ":\n")
     for key in config[buildmap]:
         print("    " + key + "  " + config[buildmap][key])
-    print()
-    quit()
-
-
-if args.edit_template:
-    print("\n" +
-          "  These are the template options:\n")
-    my_list = []
-    for key in config['template_region']:
-        my_list.append(key)
-    for key in my_list:
-        print("    " + str(my_list.index(key)+1) + "     " + key)
-    print()
-    text = ("    Should this options be edited? [y|N|a|d]    ")
-    edit = input(text)
-    if edit == "y":
-        print("\n    to end editing set a key to 'q'\n\n")
-        finish = "no"
-        while finish != "q":
-            text = ("    Enter the number of the key to edit:   ")
-            new_key = input(text)
-            if new_key == 'q':
-                break
-            new_key = int(new_key)-1
-            new_key = my_list[new_key]
-            if new_key != "name_tag_list":
-                print("\n    Old value:   " + new_key
-                      + " = " + config['template_region'][new_key] + "\n")
-                text = ("    Add the new value for " + new_key + ":     ")
-                new_value = input(text)
-                if new_value != config['template_region'][key]:
-                    config.set('template_region', new_key, new_value)
-                    write_config()
-            else:
-                text = (" \n\n" +
-                        "    Which language do you prefer for naming \n"
-                        + "    objects in your map?\n\n "
-                        + "   'name:en,name:int,name' is the english value,\n"
-                        + "    you can also use:\n\n"
-                        + "    german (de)\n"
-                        + "    french (fr)\n"
-                        + "    dutch (nl)\n"
-                        + "    spanish (es)\n"
-                        + "    italian (it)\n"
-                        + "    other by enter the ISO Code\n\n"
-                        + "    press 'Enter' for the default english value\n"
-                        + "    'q' breaks without changings\n\n"
-                        + "    please enter a language or ISO code:   ")
-                language = input(text)
-                if language == "q":
-                    break
-                elif language == "german" or language == "de":
-                    name_tag_list = 'name:de,name:int,name'
-                elif language == "french" or language == "fr":
-                    name_tag_list = 'name:fr,name:int,name'
-                elif language == "dutch" or language == "nl":
-                    name_tag_list = 'name:nl,name:int,name'
-                elif language == "spanish" or language == "es":
-                    name_tag_list = 'name:es,name:int,name'
-                elif language == "italian" or language == "it":
-                    name_tag_list = 'name:es,name:int,name'
-                elif language:
-                    name_tag_list = "name:" + language + ",name:int,name"
-                else:
-                    name_tag_list = 'name:en,name:int,name'
-                config.set(buildmap, 'name_tag_list', name_tag_list)
-            write_config()
-    elif edit == "a":
-        print("\n    to end editing set a key to 'q'\n\n")
-        finish = "no"
-        while finish != "q":
-            text = ("    Add the new key:   ")
-            new_key = input(text)
-            if new_value == 'q':
-                break
-            text = ("    Add the new value:   ")
-            new_value = input(text)
-            config.set('template_region', new_key, new_value)
-            write_config()
-    elif edit == "d":
-        print("\n    to finish hit 'q'\n")
-        finish = "no"
-        while finish != "q":
-            text = ("    Enter the number of the key to delete?   ")
-            del_key = input(text)
-            if del_key == 'q':
-                break
-            del_key = int(del_key)-1
-            del_key = my_list[del_key]
-            text = ("    Really delete '" + del_key + "'? [y|N]   ")
-            kill_key = input(text)
-            if kill_key == "y":
-                config.remove_option('template_region', del_key)
-    write_config()
-    print()
-    info("  These are the new values in section 'template_region':\n")
-    for key in config['template_region']:
-        print("      " + key + "  " + config['template_region'][key])
     print()
     quit()
 
