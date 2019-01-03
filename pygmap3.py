@@ -31,7 +31,7 @@ import mkgmap
 import store
 
 
-__version__ = "0.9.50"
+__version__ = "0.9.60"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2018 Bernd Weigelt"
 __credits__ = "Franco B."
@@ -130,12 +130,12 @@ parser = argparse.ArgumentParser(
 
 # Java options
 parser.add_argument('-xmx', '--xmx', default=config['java']['xmx'],
-                    help=" set the HEAP for Java, min. 500 MB per thread," +
-                         " an example '6G' or '6000M' for a CPU with 4 cores" +
-                         " and 8 threads. ")
+                    help=" set the HEAP for Java, min. 500 MB per thread,"
+                         + " '4G' or '4000M' for a CPU with 4 cores"
+                         + " and 8 threads. ")
 parser.add_argument('-xms', '--xms', default=config['java']['xms'],
-                    help=" set the HEAP, could be the same value as -Xmx," +
-                         " but a different value is possible ")
+                    help=" set the HEAP, could be the same value as -Xmx,"
+                         + " but a different value is possible ")
 parser.add_argument('-agh', '--aggressiveheap', action="store_true",
                     help=" set the HEAP permanent in an aggressive mode")
 parser.add_argument('-no_agh', '--no_aggressiveheap', action="store_true",
@@ -275,11 +275,11 @@ if args.list_o5m:
 
 # set default buildmap
 if args.set_default or not config.has_option('runtime', 'default'):
-    buildmap = input(" \n\n " +
-                     "    Which should be your default map region? \n" +
-                     "    You can build this region without any option\n" +
-                     "    for pygmap3.py in the future.\n\n" +
-                     "    please enter a region:    ")
+    buildmap = input(" \n\n "
+                     + "    Which should be your default map region? \n"
+                     + "    You can build this region without any option\n"
+                     + "    for pygmap3.py in the future.\n\n"
+                     + "    please enter a region:    ")
     buildmap = os.path.splitext(buildmap)[0]
     config.set('runtime', 'default', buildmap)
     write_config()
@@ -287,22 +287,22 @@ if args.set_default or not config.has_option('runtime', 'default'):
 
 # set the buildmap
 if args.interactive:
-    buildmap = input(" \n\n" +
-                     "    Which map region should be build? \n\n" +
-                     "    please enter a region:    ")
+    buildmap = input(" \n\n"
+                     + "    Which map region should be build? \n\n"
+                     + "    please enter a region:    ")
 elif args.region:
     buildmap = args.region
 elif args.edit_opts:
     buildmap = args.edit_opts
 elif args.poly:
     print()
-    warn("The option -p/--poly will be removed in further releases,\n" +
-         "    please use -r/--region instead")
+    warn("The option -p/--poly will be removed in further releases,\n"
+         + "    please use -r/--region instead")
     buildmap = args.poly
 elif args.o5m:
     print()
-    warn("The option -o/--o5m will be removed in further releases,\n" +
-         "    please use -r/--region instead")
+    warn("The option -o/--o5m will be removed in further releases,\n"
+         + "    please use -r/--region instead")
     buildmap = args.o5m
 else:
     buildmap = config['runtime']['default']
@@ -320,8 +320,8 @@ if not config.has_section(buildmap):
     config.set(buildmap, 'name_tag_list', config['name_tag_list']['default'])
     print_warn = "1"
     write_config()
-    text = ("Some options are set to default values\n" +
-            "    you can edit them with pygmap3.py -e")
+    text = ("Some options are set to default values\n"
+            + "    you can edit them with pygmap3.py -e")
     if print_warn == "1":
         print()
         warn(text)
@@ -376,12 +376,12 @@ if args.edit_opts:
                     print("    " + buildmap + " --> " +
                           config[buildmap]['name_tag_list'])
                 text = (" \n\n" +
-                        "    Which language do you prefer for naming \n" +
-                        "    objects in your map?\n\n " +
-                        "   'name:en,name:int,name' is the english value,\n" +
-                        "    you can use german, french, dutch or spanish\n" +
-                        "    press 'Enter' for the default english value\n\n" +
-                        "    please enter a language:   ")
+                        "    Which language do you prefer for naming \n"
+                        + "    objects in your map?\n\n "
+                        + "   'name:en,name:int,name' is the english value,\n"
+                        + "    you can use german, french, dutch or spanish\n"
+                        + "    press 'Enter' for the default english value\n\n"
+                        + "    please enter a language:   ")
                 language = input(text)
                 if language == "german":
                     name_tag_list = 'name:de,name:int,name'
@@ -420,8 +420,8 @@ if args.edit_opts:
             quit()
             print()
     print()
-    info("These are the new values in section " +
-         buildmap + ":\n\n")
+    info("These are the new values in section "
+         + buildmap + ":\n\n")
     for key in config[buildmap]:
         print("    " + key + "  " + config[buildmap][key])
     print()
@@ -681,8 +681,8 @@ if config['osmtools']['check'] == "yes":
             quit()
 
     for tool in ['osmconvert', 'osmupdate']:
-        hint = (tool + " missed, please use mk_osmtools " +
-                       "to build it from sources")
+        hint = (tool + " missed, please use mk_osmtools "
+                       + "to build it from sources")
         print()
         checkprg(tool, hint)
 
@@ -791,9 +791,9 @@ if not args.keep_data:
 config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
     print()
-    info(" Mapdata for " + buildmap + " " +
-         config['time_stamp'][buildmap] +
-         " successful extracted/updated")
+    info(" Mapdata for " + buildmap + " "
+         + config['time_stamp'][buildmap]
+         + " successful extracted/updated")
     print()
     quit()
 

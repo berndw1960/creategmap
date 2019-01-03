@@ -13,7 +13,7 @@
 """
 
 
-__version__ = "0.0.2"
+__version__ = "0.9.60"
 __author__ = "Bernd Weigelt"
 __copyright__ = "Copyright 2012 Bernd Weigelt"
 __license__ = "AGPLv3"
@@ -115,8 +115,8 @@ if not os.path.exists("planet/planet.o5m"):
     print()
     os.chdir("planet/")
     info("Download started. Size ~50 Gigabytes... please wait! ")
-    os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/" +
-              "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
+    os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/"
+              + "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
     os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
     os.remove("planet-latest.osm.pbf")
     os.chdir(WORK_DIR)
@@ -145,8 +145,8 @@ if 'planet' not in config:
 write_config()
 
 
-command_line = (" osmupdate -v --daily --keep-tempfiles " +
-                "planet/planet.o5m planet/planet_new.o5m")
+command_line = (" osmupdate -v --daily --keep-tempfiles "
+                + "planet/planet.o5m planet/planet_new.o5m")
 
 
 if args.verbose:
@@ -176,12 +176,12 @@ if os.path.exists("planet_new.o5m"):
 
 if args.create_bounds:
 
-    command_line = ("osmfilter -v planet.o5m  --keep-nodes= " +
-                    "--keep-ways-relations='boundary=administrative " +
-                    "=postal_code postal_code=' " +
-                    "--drop-tags='created_by= source= building= " +
-                    "=highway maxspeed= surface= oneway= note= natural=" +
-                    " lit=' -o=bounds_data.o5m")
+    command_line = ("osmfilter -v planet.o5m  --keep-nodes= "
+                    + "--keep-ways-relations='boundary=administrative "
+                    + "=postal_code postal_code=' "
+                    + "--drop-tags='created_by= source= building= "
+                    + "=highway maxspeed= surface= oneway= note= natural="
+                    + " lit=' -o=bounds_data.o5m")
 
     if args.verbose:
         print()
@@ -203,9 +203,9 @@ if args.create_bounds:
                     heap +
                     " -cp " +
                     mkgmap +
-                    " uk.me.parabola.mkgmap.reader.osm." +
-                    "boundary.BoundaryPreprocessor " +
-                    "bounds_data.o5m bounds ")
+                    " uk.me.parabola.mkgmap.reader.osm."
+                    + "boundary.BoundaryPreprocessor "
+                    + "bounds_data.o5m bounds ")
     if args.verbose:
         print()
         print(command_line)

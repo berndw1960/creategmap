@@ -57,12 +57,12 @@ def split():
         geonames = " "
 
     splitter_opts = (geonames +
-                     " --mapid=" + config[buildmap]['mapid'] + "0001 " +
-                     " --output=o5m " +
-                     sea +
-                     " --write-kml=" + buildmap + ".kml " +
-                     " --keep-complete " +
-                     " --overlap=0 ")
+                     " --mapid=" + config[buildmap]['mapid'] + "0001 "
+                     + " --output=o5m "
+                     + sea
+                     + " --write-kml=" + buildmap + ".kml "
+                     + " --keep-complete "
+                     + " --overlap=0 ")
 
     # maxnodes
     if config.has_option('maxnodes', buildmap):
@@ -71,11 +71,11 @@ def split():
         maxnodes = config['maxnodes']['default']
 
     # splitter.jar command_line
-    command_line = (java_opts +
-                    log_opts +
-                    splitter_opts +
-                    " --max-nodes=" + maxnodes + " " +
-                    BUILD_O5M)
+    command_line = (java_opts
+                    + log_opts
+                    + splitter_opts
+                    + " --max-nodes=" + maxnodes + " "
+                    + BUILD_O5M)
 
     if config.has_option('runtime', 'verbose'):
         print()
