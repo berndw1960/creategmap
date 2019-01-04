@@ -128,14 +128,14 @@ def check():
 def render():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-    buildmap = config['runtime']['buildmap']
+    region = config['runtime']['region']
 
     global layer
     for layer in config['map_styles']:
 
-        if (layer in config[buildmap] and
-            (config[buildmap][layer] == "yes" or
-                config[buildmap][layer] == "tdb")):
+        if (layer in config[region] and
+            (config[region][layer] == "yes" or
+                config[region][layer] == "tdb")):
 
             # Test for (layer)-dir and remove old data from there
 
@@ -180,7 +180,7 @@ def render():
             poly = " "
 
             if layer != "fixme" or layer != "boundary":
-                if config[buildmap][layer] == "tdb":
+                if config[region][layer] == "tdb":
                     demdir = WORK_DIR + "hgt/COPERNICUS"
                     if os.path.exists(demdir):
                         dem_temp = demdir
@@ -197,7 +197,7 @@ def render():
                         dem = " --dem=" + dem_temp
                         dem_dists = (" --dem-dists="
                                      + config['demtdb']['demdists'])
-                        poly_file = WORK_DIR + "poly/" + buildmap + ".poly"
+                        poly_file = WORK_DIR + "poly/" + region + ".poly"
                         if os.path.exists(poly_file):
                             poly = (" --dem-poly=" + poly_file)
 
@@ -210,9 +210,9 @@ def render():
             # set the name tag list
             if layer == "fixme" or layer == "boundary":
                 name_tag_list = " "
-            elif config.has_option(buildmap, 'name_tag_list'):
+            elif config.has_option(region, 'name_tag_list'):
                 name_tag_list = (" --name-tag-list="
-                                 + config[buildmap]['name_tag_list'])
+                                 + config[region]['name_tag_list'])
             else:
                 name_tag_list = (" --name-tag-list="
                                  + config['name_tag_list']['default'])
@@ -293,15 +293,15 @@ def render():
                             + dem
                             + dem_dists
                             + poly
-                            + " --mapname=" + config[buildmap]['mapid']
+                            + " --mapname=" + config[region]['mapid']
                             + config[layer]['mapid_ext']
-                            + " --family-id=" + config[buildmap]['mapid']
+                            + " --family-id=" + config[region]['mapid']
                             + " --product-id=" + config[layer]['product-id']
-                            + " --family-name=" + buildmap + "_" + layer
-                            + " --series-name=" + buildmap + "_" + layer
+                            + " --family-name=" + region + "_" + layer
+                            + " --series-name=" + region + "_" + layer
                             + " --draw-priority="
                             + config[layer]['draw-priority']
-                            + " --description=" + buildmap + "_" + layer
+                            + " --description=" + region + "_" + layer
                             + options
                             + spec_opts
                             + index_opts
@@ -318,9 +318,9 @@ def render():
 
             os.chdir(WORK_DIR)
 
-            # move gmapsupp.img to unzip_dir as buildmap_(layer)_gmapsupp.img
-            unzip_dir = "gps_ready/unzipped/" + buildmap
-            bl = buildmap + "_" + layer
+            # move gmapsupp.img to unzip_dir as region_(layer)_gmapsupp.img
+            unzip_dir = "gps_ready/unzipped/" + region
+            bl = region + "_" + layer
             img = unzip_dir + "/" + bl + "_gmapsupp.img"
 
             if not os.path.exists(unzip_dir):

@@ -40,24 +40,24 @@ def create_o5m():
 
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-    buildmap = config['runtime']['buildmap']
+    region = config['runtime']['region']
 
-    if os.path.exists("o5m/" + buildmap + "osm.pbf"):
+    if os.path.exists("o5m/" + region + "osm.pbf"):
         print()
-        info("converting o5m/" + buildmap
-             + ".osm.pbf to o5m/" + buildmap
+        info("converting o5m/" + region
+             + ".osm.pbf to o5m/" + region
              + ".o5m, please wait...")
-        os.system("osmconvert o5m/" + buildmap
-                  + ".osm.pbf -o=o5m/" + buildmap
+        os.system("osmconvert o5m/" + region
+                  + ".osm.pbf -o=o5m/" + region
                   + ".o5m")
 
-    elif os.path.exists("o5m/" + buildmap + "-latest.osm.pbf"):
+    elif os.path.exists("o5m/" + region + "-latest.osm.pbf"):
         print()
-        info("converting o5m/" + buildmap
-             + "-latest.osm.pbf to o5m/" + buildmap
+        info("converting o5m/" + region
+             + "-latest.osm.pbf to o5m/" + region
              + ".o5m, please wait...")
-        os.system("osmconvert o5m/" + buildmap +
-                  "-latest.osm.pbf -o=o5m/" + buildmap + ".o5m")
+        os.system("osmconvert o5m/" + region +
+                  "-latest.osm.pbf -o=o5m/" + region + ".o5m")
 
     elif os.path.exists("planet/planet.o5m"):
         ftime = os.path.getmtime("planet/planet.o5m")
@@ -67,17 +67,17 @@ def create_o5m():
             print()
             warn("Your planet file is older then one month")
             print(" You should update it.")
-        if os.path.exists("poly/" + buildmap + ".poly"):
+        if os.path.exists("poly/" + region + ".poly"):
             print()
-            info("now extracting " + buildmap
+            info("now extracting " + region
                  + ".o5m from Planet, please wait...")
             os.system("osmconvert planet/planet.o5m "
                       + "--complete-ways --complex-ways --drop-version "
-                      + " -B=poly/" + buildmap + ".poly "
-                      + " -o=o5m/" + buildmap + ".o5m")
+                      + " -B=poly/" + region + ".poly "
+                      + " -o=o5m/" + region + ".o5m")
         else:
             print()
-            error("missing poly/" + buildmap + ".poly")
+            error("missing poly/" + region + ".poly")
             print()
             info("created it or try to get one from \n\n"
                  + " http://download.geofabrik.de \n\n "
@@ -87,7 +87,7 @@ def create_o5m():
 
     else:
         print()
-        error((WORK_DIR) + "o5m/" + buildmap + ".o5m not found! ")
+        error((WORK_DIR) + "o5m/" + region + ".o5m not found! ")
         print()
         quit()
 
@@ -96,7 +96,7 @@ def update_o5m():
 
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-    buildmap = config['runtime']['buildmap']
+    region = config['runtime']['region']
 
     if config.has_option('runtime', 'minutely'):
         update_opts = " --hourly -- minutely "
@@ -106,24 +106,24 @@ def update_o5m():
         update_opts = " "
 
     print()
-    info("updating " + buildmap + ".o5m, please wait...")
+    info("updating " + region + ".o5m, please wait...")
     poly = " "
-    if os.path.exists("poly/" + buildmap + ".poly"):
-        poly = " -B=poly/" + buildmap + ".poly "
+    if os.path.exists("poly/" + region + ".poly"):
+        poly = " -B=poly/" + region + ".poly "
     os.system("osmupdate --daily"
               + update_opts
               + poly
               + " --keep-tempfiles o5m/"
-              + buildmap +
-              ".o5m  o5m/" + buildmap + "_new.o5m")
+              + region +
+              ".o5m  o5m/" + region + "_new.o5m")
 
     os.chdir("o5m")
 
-    if os.path.exists(buildmap + "_new.o5m"):
-        os.rename(buildmap + ".o5m", buildmap + "_temp.o5m")
-        os.rename(buildmap + "_new.o5m", buildmap + ".o5m")
-        if os.path.exists(buildmap + ".o5m"):
-            os.remove(buildmap + "_temp.o5m")
+    if os.path.exists(region + "_new.o5m"):
+        os.rename(region + ".o5m", region + "_temp.o5m")
+        os.rename(region + "_new.o5m", region + ".o5m")
+        if os.path.exists(region + ".o5m"):
+            os.remove(region + "_temp.o5m")
 
     os.chdir(WORK_DIR)
 

@@ -310,9 +310,9 @@ config.set('runtime', 'mapset', "1")
 write_config()
 
 
-for buildmap in config['mapset']:
-    if config['mapset'][buildmap] == "yes":
-        if buildmap == args.break_after:
+for region in config['mapset']:
+    if config['mapset'][region] == "yes":
+        if region == args.break_after:
             print()
             warn("Stopping creating mapsets after this mapset")
         if os.path.exists("stop"):
@@ -322,9 +322,9 @@ for buildmap in config['mapset']:
             print()
             quit()
 
-        os.system(command_line + "-p " + buildmap)
+        os.system(command_line + "-p " + region)
 
-    if buildmap == args.break_after:
+    if region == args.break_after:
         quit()
 
 

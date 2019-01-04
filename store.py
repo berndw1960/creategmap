@@ -18,9 +18,9 @@ def zip_img():
     print("\n\n Please wait, zipping the images...\n")
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-    buildmap = config['runtime']['buildmap']
-    unzip_dir = WORK_DIR + "gps_ready/unzipped/" + buildmap
-    zip_dir = WORK_DIR + "gps_ready/zipped/" + buildmap
+    region = config['runtime']['region']
+    unzip_dir = WORK_DIR + "gps_ready/unzipped/" + region
+    zip_dir = WORK_DIR + "gps_ready/zipped/" + region
 
     if not os.path.exists(zip_dir):
         os.makedirs(zip_dir)
@@ -46,18 +46,18 @@ def zip_img():
 
 def kml():
     os.chdir(WORK_DIR)
-    buildmap = config['runtime']['buildmap']
-    kml_dir = "gps_ready/zipped/" + buildmap
+    region = config['runtime']['region']
+    kml_dir = "gps_ready/zipped/" + region
 
     if not os.path.exists(kml_dir):
         os.makedirs(kml_dir)
 
-    if os.path.exists("tiles/" + buildmap + ".kml"):
-        kml = kml_dir + "/" + buildmap + ".kml"
+    if os.path.exists("tiles/" + region + ".kml"):
+        kml = kml_dir + "/" + region + ".kml"
         if os.path.exists(kml):
             os.remove(kml)
 
-        shutil.move("tiles/" + buildmap + ".kml", kml_dir)
+        shutil.move("tiles/" + region + ".kml", kml_dir)
 
 
 def log():
@@ -67,8 +67,8 @@ def log():
 
     for layer in config['map_styles']:
         if config['map_styles'][layer] == "yes":
-            buildmap = config['runtime']['buildmap']
-            log_dir = ("log/mkgmap/" + buildmap + "/" + layer)
+            region = config['runtime']['region']
+            log_dir = ("log/mkgmap/" + region + "/" + layer)
 
             if os.path.exists(log_dir):
                 shutil.rmtree(log_dir)

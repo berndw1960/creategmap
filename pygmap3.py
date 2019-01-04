@@ -148,9 +148,8 @@ parser.add_argument('-i', '--interactive', action="store_true",
 # edit options interactive
 parser.add_argument('-ls', '--list_sections', action="store_true",
                     help=" list the sections in configuration")
-parser.add_argument('-e', '--edit_opts', default=0, nargs='*',
-                    help=" list and edit the optionsin one section\n"
-                         + " use '-e $SECTION' to edit the configuration")
+parser.add_argument('-e', '--edit_opts', action="store_true",
+                    help=" list and edit the options in configuration")
 
 # mapset handling
 parser.add_argument('-r', '--region', default=0,
@@ -274,77 +273,66 @@ if args.list_o5m:
     quit()
 
 
-# set default buildmap
+# set default region
 if args.set_default or not config.has_option('runtime', 'default'):
-    buildmap = input(" \n\n "
-                     + "    Which should be your default map region? \n"
-                     + "    You can build this region without any option\n"
-                     + "    for pygmap3.py in the future.\n\n"
-                     + "    please enter a region:    ")
-    buildmap = os.path.splitext(buildmap)[0]
-    config.set('runtime', 'default', buildmap)
+    region = input(" \n\n "
+                   + "    Which should be your default map region? \n"
+                   + "    You can build this region without any option\n"
+                   + "    for pygmap3.py in the future.\n\n"
+                   + "    please enter a region:    ")
+    region = os.path.splitext(region)[0]
+    config.set('runtime', 'default', region)
     write_config()
 
 
-# set the buildmap
+# set the region
 if args.interactive:
-    buildmap = input(" \n\n"
-                     + "    Which map region should be build? \n\n"
-                     + "    please enter a region:    ")
+    region = input(" \n\n"
+                   + "    Which map region should be build? \n\n"
+                   + "    please enter a region:    ")
 elif args.region:
-    buildmap = args.region
+    region = args.region
 elif args.poly:
     print()
     warn("The option -p/--poly will be removed in further releases,\n"
          + "    please use -r/--region instead")
-    buildmap = args.poly
+    region = args.poly
 elif args.o5m:
     print()
     warn("The option -o/--o5m will be removed in further releases,\n"
          + "    please use -r/--region instead")
-    buildmap = args.o5m
+    region = args.o5m
 else:
-    buildmap = config['runtime']['default']
+    region = config['runtime']['default']
 
 
-buildmap = os.path.splitext(buildmap)[0]
-config.set('runtime', 'buildmap', buildmap)
+region = os.path.splitext(region)[0]
+config.set('runtime', 'region', region)
 
 
-if not config.has_section(buildmap):
-    config.add_section(buildmap)
+if not config.has_section(region):
+    config.add_section(region)
     for key in config['map_styles']:
-        config.set(buildmap, key, config['map_styles'][key])
-        print_warn = "1"
-    config.set(buildmap, 'name_tag_list', config['name_tag_list']['default'])
-    print_warn = "1"
+        config.set(region, key, config['map_styles'][key])
+    config.set(region, 'name_tag_list', config['name_tag_list']['default'])
     write_config()
-    text = ("Some options are set to default values\n"
-            + "    you can edit them with pygmap3.py -e")
-    if print_warn == "1":
-        print()
-        warn(text)
-        question = ("\n Do you want to edit the configuration? [y|N]   ")
-        want_edit = input(question)
-        if want_edit == "y":
-            print()
-            info("please use 'pygmap3.py -e " + buildmap + "'")
-            print()
-            quit()
+    warn("Some options are set to default values\n"
+         + "    you can edit them with pygmap3.py -e")
 
 
-# move old name_tag_list entries to buildmap options
-if config.has_option('name_tag_list', buildmap):
-    ntl_temp = config['name_tag_list'][buildmap]
-    config.set(buildmap, 'name_tag_list', ntl_temp)
-    config.remove_option('name_tag_list', buildmap)
+# move old name_tag_list entries to region options
+if config.has_option('name_tag_list', region):
+    ntl_temp = config['name_tag_list'][region]
+    config.set(region, 'name_tag_list', ntl_temp)
+    config.remove_option('name_tag_list', region)
 
 
+# copy style config to new regions
 for style in config['map_styles']:
-    if (not config.has_option(buildmap, style) and
-            not config.has_option(buildmap, 'lock')):
-            config.set(buildmap, style, config['map_styles'][style])
-            write_config()
+    if (not config.has_option(region, style) and
+       not config.has_option(region, 'lock')):
+        config.set(region, style, config['map_styles'][style])
+        write_config()
     if not config.has_option('template_region', style):
         config.set('template_region', style, config['map_styles'][style])
         write_config()
@@ -353,7 +341,7 @@ for style in config['map_styles']:
 if args.list_sections:
     print()
     info("These are the section in pygmap3.cfg.\n"
-         + "  You can edit this sections 'with pygmap3.py -e $SECTION'\n\n")
+         + "  You can edit this sections 'with pygmap3.py -e\n\n")
     for section in config.sections():
         print("    " + section)
     print()
@@ -361,22 +349,38 @@ if args.list_sections:
 
 
 if args.edit_opts:
-    for opts_section in args.edit_opts:
+    text = ("\n    Please enter the name of the section:\n\n"
+            + "    Enter the name, 'q' to exit: ")
+    opts_section = input(text)
+    if opts_section == "q":
         print()
-        info("Options for '" + opts_section + "':\n")
+        quit()
+    else:
         my_list = []
-        for key in config[opts_section]:
-            my_list.append(key)
-        for key in my_list:
-            print("    " + str(my_list.index(key)+1) + "     "
-                  + key + "    " + config[opts_section][key])
-        print()
-        text = ("    Should this options to be edited? [y|N|a|d]    ")
-        edit = input(text)
-        if edit == "y":
+        if config.has_section(opts_section):
+            print()
+            info("Options in section '" + opts_section + "':\n")
+            for key in config[opts_section]:
+                my_list.append(key)
+            for key in my_list:
+                print("    " + str(my_list.index(key)+1) + "     "
+                      + key + "    " + config[opts_section][key])
+            text = ("\n\n    You can edit, add and delete sections and options"
+                    + " in pygmap3.cfg. \n\n"
+                    + "    [q]uit | [e]dit | [a]dd | [d]elete \n\n"
+                    + "    Enter your choice:    ")
+            edit = input(text)
+        else:
+            print()
+            info("This is a new section, please add some keys.")
+            edit = "a"
+        if edit == "q":
+            print()
+            quit()
+        elif edit == "e":
             print("\n    to end editing set a key to 'q'\n")
-            finish = "no"
-            while finish != "q":
+            fin = "no"
+            while fin != "q":
                 text = ("    Enter the number of the key to edit:   ")
                 new_key = input(text)
                 if new_key == "q":
@@ -426,30 +430,91 @@ if args.edit_opts:
                         name_tag_list = 'name:en,name:int,name'
                     config.set(opts_section, 'name_tag_list', name_tag_list)
                 write_config()
+                break
         elif edit == "a":
-            print("\n    to end editing set a key to 'q'\n")
-            finish = "no"
-            while finish != "q":
-                text = ("    Add the new key:   ")
-                new_key = input(text)
-                if new_key == "q":
-                    break
-                text = ("    Add the new value:   ")
-                new_value = input(text)
-                config.set(opts_section, new_key, new_value)
-                write_config()
-        elif edit == "d":
-            text = ("    Really delete ALL options for '"
-                    + opts_section + "'? [y|N]   ")
-            kill_opts = input(text)
-            if kill_opts == "y":
-                for key in config[opts_section]:
-                    config.remove_option(key)
-                config.remove_opts_section(opts_section)
-                write_config()
+            if not config.has_section(opts_section):
+                config.add_section(opts_section)
+                fin = "no"
+                while fin != "q":
+                    print("\n    to end editing set a key to 'q'\n")
+                    text = ("    Add the new key:   ")
+                    new_key = input(text)
+                    if new_key == "q":
+                        break
+                    text = ("    Add the new value:   ")
+                    new_value = input(text)
+                    config.set(opts_section, new_key, new_value)
+                    write_config()
+            text = ("\n    Do you want to add sections or options"
+                    + " to pygmap3.cfg?\n\n"
+                    + "    [q]uit | [s]ection | [o]ption \n\n"
+                    + "    Enter your choice:    ")
+            choice = input(text)
+            if choice == "q":
                 print()
                 quit()
-                print()
+            elif choice == "o":
+                fin = "no"
+                while fin != "q":
+                    print("\n    to end editing set a key to 'q'\n")
+                    text = ("    Add the new key:   ")
+                    new_key = input(text)
+                    if new_key == "q":
+                        break
+                    text = ("    Add the new value:   ")
+                    new_value = input(text)
+                    config.set(opts_section, new_key, new_value)
+                    write_config()
+            elif choice == "s":
+                fin = "no"
+                while fin != "q":
+                    print("\n    to end editing set a key to 'q'\n")
+                    text = ("    Add the new section:   ")
+                    new_section = input(text)
+                    if new_section == "q":
+                        break
+                    fin_1 = "no"
+                    while fin_1 != "q":
+                        print("\n    to end editing set a key to 'q'\n")
+                        text = ("    Add at least one new key:   ")
+                        new_key = input(text)
+                        if new_key == "q":
+                            break
+                        text = ("    Add a new value:   ")
+                        new_value = input(text)
+                        config.set(new_section, new_key, new_value)
+                        write_config()
+        elif edit == "d":
+            text = ("\n    You can delete [a]ll, [s]ome or [N]o option\n"
+                    + "    Use [q] to exit without changes. \n\n"
+                    + "    Enter your choice:  ")
+            kill_opts = input(text)
+            if kill_opts == "q":
+                quit()
+            elif kill_opts == "a":
+                text = ("    Really delete ALL options for '"
+                        + opts_section + "'? [y|N]   ")
+                rem_section = input(text)
+                if rem_section == "y":
+                    config.remove_section(opts_section)
+                    write_config()
+                    print("\n    " + opts_section + " removed!\n")
+                    quit()
+                else:
+                    print()
+                    quit()
+            elif kill_opts == "s":
+                print("\n    Use [q] to exit without changes. \n\n ")
+                fin = "no"
+                while fin != "q":
+                    text = ("    Enter the number of the key to delete:   ")
+                    rem_option = input(text)
+                    if rem_option == "q":
+                        break
+                    rem_option = int(rem_option)-1
+                    rem_option = my_list[rem_option]
+                    config.remove_option(opts_section, rem_option)
+                    write_config()
         print()
         info("These are the new values in opts_section "
              + opts_section + ":\n")
@@ -545,12 +610,12 @@ if args.rm_style:
 
 
 # set or create the mapid
-if config.has_option(buildmap, 'mapid'):
-    mapid = config[buildmap]['mapid']
+if config.has_option(region, 'mapid'):
+    mapid = config[region]['mapid']
 else:
     mapid = config['mapid']['next_mapid']
     next_mapid = str(int(mapid)+1)
-    config.set(buildmap, 'mapid',  mapid)
+    config.set(region, 'mapid',  mapid)
     config.set('mapid', 'next_mapid', next_mapid)
 
 
@@ -595,9 +660,9 @@ if config['java']['agh'] == "0":
 
 # maxnodes for splitter
 if args.maxnodes and args.maxnodes != config['maxnodes']['default']:
-    config.set('maxnodes', buildmap, args.maxnodes)
+    config.set('maxnodes', region, args.maxnodes)
 elif args.maxnodes and args.maxnodes == config['maxnodes']['default']:
-    config.remove_option('maxnodes', buildmap)
+    config.remove_option('maxnodes', region)
 
 
 # development version of splitter and mkgmap
@@ -752,7 +817,7 @@ if args.stop_after == "contourlines":
 os.chdir(WORK_DIR)
 
 if not args.keep_data:
-    if not os.path.exists("o5m/" + buildmap + ".o5m"):
+    if not os.path.exists("o5m/" + region + ".o5m"):
         mapdata.create_o5m()
 
     # update mapdata
@@ -771,8 +836,8 @@ if not args.keep_data:
 config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
     print()
-    info(" Mapdata for " + buildmap + " "
-         + config['time_stamp'][buildmap]
+    info(" Mapdata for " + region + " "
+         + config['time_stamp'][region]
          + " successful extracted/updated")
     print()
     quit()
@@ -787,9 +852,9 @@ def remove_old_tiles():
 
 
 if args.no_split:
-    if not os.path.exists(WORK_DIR + "tiles/" + buildmap + "_split.ready"):
+    if not os.path.exists(WORK_DIR + "tiles/" + region + "_split.ready"):
         print()
-        warn("can't find tiles/" + buildmap + "_split.ready")
+        warn("can't find tiles/" + region + "_split.ready")
         print("--no_split/-ns makes no sense, ignoring it")
         splitter.split()
 else:
@@ -804,7 +869,7 @@ else:
 config.read('pygmap3.cfg')
 if args.stop_after == "splitter":
     print()
-    info(buildmap + ".o5m successful splitted")
+    info(region + ".o5m successful splitted")
     print()
     quit()
 
@@ -817,7 +882,7 @@ mkgmap.render()
 if args.stop_after == "mkgmap":
     config.read('pygmap3.cfg')
     print()
-    info(" Mapset for " + buildmap + " successful created")
+    info(" Mapset for " + region + " successful created")
     print()
     quit()
 
@@ -841,7 +906,7 @@ config.read('pygmap3.cfg')
 
 print()
 print()
-print(" ----- " + (DATE) + " ----- " + (buildmap) + " ready! -----")
+print(" ----- " + (DATE) + " ----- " + (region) + " ready! -----")
 print()
 print()
 

@@ -29,7 +29,7 @@ config = configparser.ConfigParser()
 def split():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
-    buildmap = config['runtime']['buildmap']
+    region = config['runtime']['region']
     splitter = config['splitter']['rev'] + "/splitter.jar "
 
     # Java HEAP, RAM oder Mode
@@ -42,7 +42,7 @@ def split():
     log_opts = " > splitter.log "
 
     # splitter-options
-    BUILD_O5M = WORK_DIR + "o5m/" + buildmap + ".o5m"
+    BUILD_O5M = WORK_DIR + "o5m/" + region + ".o5m"
 
     sea = " "
     if config.has_option('precomp', 'sea'):
@@ -57,16 +57,16 @@ def split():
         geonames = " "
 
     splitter_opts = (geonames +
-                     " --mapid=" + config[buildmap]['mapid'] + "0001 "
+                     " --mapid=" + config[region]['mapid'] + "0001 "
                      + " --output=o5m "
                      + sea
-                     + " --write-kml=" + buildmap + ".kml "
+                     + " --write-kml=" + region + ".kml "
                      + " --keep-complete "
                      + " --overlap=0 ")
 
     # maxnodes
-    if config.has_option('maxnodes', buildmap):
-        maxnodes = config['maxnodes'][buildmap]
+    if config.has_option('maxnodes', region):
+        maxnodes = config['maxnodes'][region]
     else:
         maxnodes = config['maxnodes']['default']
 
@@ -86,7 +86,7 @@ def split():
     os.system(command_line)
 
     if config.has_option('runtime', 'logging'):
-        log_dir = WORK_DIR + "log/splitter/" + buildmap
+        log_dir = WORK_DIR + "log/splitter/" + region
 
         if os.path.exists(log_dir):
             path = log_dir
@@ -104,5 +104,5 @@ def split():
             if os.path.exists(i):
                 shutil.copy2(i, log_dir)
 
-    file = open(buildmap + "_split.ready", "w")
+    file = open(region + "_split.ready", "w")
     file.close()
