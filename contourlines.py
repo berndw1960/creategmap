@@ -60,10 +60,10 @@ def create_cont():
 
     config.read('pygmap3.cfg')
 
-    buildmap = config['runtime']['buildmap']
+    region = config['runtime']['region']
     path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
-    cl_dir = "gps_ready/zipped/" + buildmap + "/"
+    cl_dir = "gps_ready/zipped/" + region + "/"
     cltemp_dir = "cl_temp/"
 
     for dir in [cltemp_dir, cl_dir]:
@@ -75,9 +75,9 @@ def create_cont():
         if os.path.isfile(os.path.join(path, file)):
             os.remove(os.path.join(path, file))
 
-    print("searching for " + buildmap + "_contourlines_gmapsupp.img.zip")
+    print("searching for " + region + "_contourlines_gmapsupp.img.zip")
 
-    if not os.path.exists(cl_dir + buildmap +
+    if not os.path.exists(cl_dir + region +
                           "_contourlines_gmapsupp.img.zip"):
         hint = "Install phyghtmap to create contourlines if needed"
         checkprg("phyghtmap", hint)
@@ -86,8 +86,8 @@ def create_cont():
             error("No contourlines_style found")
             quit()
 
-        if config.has_option('maxnodes', buildmap):
-            maxnodes = config['maxnodes'][buildmap]
+        if config.has_option('maxnodes', region):
+            maxnodes = config['maxnodes'][region]
         else:
             maxnodes = config['maxnodes']['default']
 
@@ -119,8 +119,8 @@ def create_cont():
                         + " --no-zero-contour "
                         + " -s 50 "
                         + " -c 500,100 "
-                        + " --polygon=poly/" + buildmap + ".poly "
-                        + " -o " + cltemp_dir + buildmap)
+                        + " --polygon=poly/" + region + ".poly "
+                        + " -o " + cltemp_dir + region)
 
         if config.has_option('runtime', 'verbose'):
             print()
@@ -150,9 +150,9 @@ def create_cont():
                         + " --style-file="
                         + WORK_DIR + "styles/contourlines_style"
                         + " --mapname="
-                        + config[buildmap]['mapid'] + "8001"
+                        + config[region]['mapid'] + "8001"
                         + " --description="
-                        + buildmap + "_contourlines "
+                        + region + "_contourlines "
                         + " --family-name=Contourlines"
                         + " --draw-priority="
                         + config['contourlines']['draw-priority']
@@ -168,7 +168,7 @@ def create_cont():
 
         import zipfile
 
-        img = buildmap + "_contourlines_gmapsupp.img"
+        img = region + "_contourlines_gmapsupp.img"
         shutil.move("gmapsupp.img", img)
         zip_img = img + ".zip"
         my_zip_img = zipfile.ZipFile(zip_img, 'w', allowZip64=True)
@@ -180,4 +180,4 @@ def create_cont():
 
         os.chdir(WORK_DIR)
         file = "_contourlines_gmapsupp.img.zip"
-        shutil.move(cltemp_dir + buildmap + file, cl_dir + buildmap + file)
+        shutil.move(cltemp_dir + region + file, cl_dir + region + file)
