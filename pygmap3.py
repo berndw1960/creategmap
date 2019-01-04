@@ -292,16 +292,16 @@ if args.interactive:
                    + "    please enter a region:    ")
 elif args.region:
     region = args.region
-elif args.poly:
-    print()
-    warn("The option -p/--poly will be removed in further releases,\n"
-         + "    please use -r/--region instead")
-    region = args.poly
 elif args.o5m:
     print()
     warn("The option -o/--o5m will be removed in further releases,\n"
          + "    please use -r/--region instead")
     region = args.o5m
+elif args.poly:
+    print()
+    warn("The option -p/--poly will be removed in further releases,\n"
+         + "    please use -r/--region instead")
+    region = args.poly
 else:
     region = config['runtime']['default']
 

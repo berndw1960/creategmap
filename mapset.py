@@ -322,7 +322,7 @@ for region in config['mapset']:
             print()
             quit()
 
-        os.system(command_line + "-p " + region)
+        os.system(command_line + "-r " + region)
 
     if region == args.break_after:
         quit()
