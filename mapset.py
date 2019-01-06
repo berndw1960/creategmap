@@ -32,6 +32,15 @@ if not os.path.exists(WORK_DIR):
 os.chdir(WORK_DIR)
 
 
+if os.path.exists(WORK_DIR + "stop"):
+    os.remove(WORK_DIR + "stop")
+    print()
+    warn("Oops! Something went wrong\n"
+         + "    stopped build_process using the " + WORK_DIR + "stop file!")
+    print()
+    quit()
+
+
 # configparser
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
@@ -311,21 +320,26 @@ write_config()
 
 
 for region in config['mapset']:
+    if not os.path.exists(WORK_DIR + "stop"):
+        file = open('stop', 'w')
+        file.write("\n\n emergency break for mapset.py\n"
+                   + " this file should not exist, if the last"
+                   + " run was successful")
+        file.close()
+
     if config['mapset'][region] == "yes":
+
         if region == args.break_after:
             print()
             warn("Stopping creating mapsets after this mapset")
-        if os.path.exists("stop"):
-            os.remove("stop")
-            print()
-            warn("stopped build_process")
-            print()
-            quit()
 
         os.system(command_line + "-r " + region)
 
     if region == args.break_after:
         quit()
+
+    if os.path.exists(WORK_DIR + "stop"):
+        os.remove(WORK_DIR + "stop")
 
 
 config.set('runtime', 'mapset', "0")

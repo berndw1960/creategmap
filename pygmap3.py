@@ -349,179 +349,162 @@ if args.list_sections:
 
 
 if args.edit_opts:
+    text_new_section = ("    Add the new section:   ")
+    text_new_key = ("    Add the new key:   ")
+    text_new_value = ("    Add the new value:   ")
+    text_end = ("\n    to end editing set a key to 'q'")
+    text_ntl = (" \n"
+                + "    Which language do you prefer for naming \n"
+                + "    objects in your map?\n\n "
+                + "    default is the english value,\n\n"
+                + "    'name:en,name:int,name'\n\n"
+                + "    you can also use:\n\n"
+                + "    de --> german\n"
+                + "    fr --> french\n"
+                + "    nl --> dutch\n"
+                + "    es --> spanish\n"
+                + "    it --> italian\n"
+                + "    or other by enter the ISO Code\n\n"
+                + "    press 'Enter' for the default english value\n\n"
+                + "    'q' breaks without changings\n\n"
+                + "    please enter only a ISO code:   ")
+
     text = ("\n    Please enter the name of the section:\n\n"
             + "    Enter the name, 'q' to exit: ")
     opts_section = input(text)
     if opts_section == "q":
         print()
         quit()
-    else:
-        my_list = []
-        if config.has_section(opts_section):
-            print()
-            info("Options in section '" + opts_section + "':\n")
-            for key in config[opts_section]:
-                my_list.append(key)
-            for key in my_list:
-                print("    " + str(my_list.index(key)+1) + "     "
-                      + key + "    " + config[opts_section][key])
-            text = ("\n\n    You can edit, add and delete sections and options"
-                    + " in pygmap3.cfg. \n\n"
-                    + "    [q]uit | [e]dit | [a]dd | [d]elete \n\n"
-                    + "    Enter your choice:    ")
-            edit = input(text)
-        else:
-            print()
-            info("This is a new section, please add some keys.")
-            edit = "a"
-        if edit == "q":
-            print()
-            quit()
-        elif edit == "e":
-            print("\n    to end editing set a key to 'q'\n")
-            fin = "no"
-            while fin != "q":
-                text = ("    Enter the number of the key to edit:   ")
-                new_key = input(text)
-                if new_key == "q":
-                    break
-                new_key = int(new_key)-1
-                new_key = my_list[new_key]
-                if new_key != "name_tag_list":
-                    print("\n    Old value:   " + new_key
-                          + " = " + config[opts_section][new_key] + "\n")
-                    text = ("    Add the new value:     ")
-                    new_value = input(text)
-                    if new_value != config[opts_section][key]:
-                        config.set(opts_section, new_key, new_value)
-                        write_config()
-                else:
-                    text = (" \n\n"
-                            + "    Which language do you prefer for naming \n"
-                            + "    objects in your map?\n\n "
-                            + "   'name:en,name:int,name' is the english"
-                            + " value,\n"
-                            + "    you can also use:\n\n"
-                            + "    german (de)\n"
-                            + "    french (fr)\n"
-                            + "    dutch (nl)\n"
-                            + "    spanish (es)\n"
-                            + "    italian (it)\n"
-                            + "    other by enter the ISO Code\n\n"
-                            + "    press 'Enter' for the default english value"
-                            + "\n    'q' breaks without changings\n\n"
-                            + "    please enter a language or ISO code:   ")
-                    language = input(text)
-                    if language == "q":
-                        break
-                    elif language == "german" or language == "de":
-                        name_tag_list = 'name:de,name:int,name'
-                    elif language == "french" or language == "fr":
-                        name_tag_list = 'name:fr,name:int,name'
-                    elif language == "dutch" or language == "nl":
-                        name_tag_list = 'name:nl,name:int,name'
-                    elif language == "spanish" or language == "es":
-                        name_tag_list = 'name:es,name:int,name'
-                    elif language == "italian" or language == "it":
-                        name_tag_list = 'name:es,name:int,name'
-                    elif language:
-                        name_tag_list = "name:" + language + ",name:int,name"
-                    else:
-                        name_tag_list = 'name:en,name:int,name'
-                    config.set(opts_section, 'name_tag_list', name_tag_list)
-                write_config()
-                break
-        elif edit == "a":
-            if not config.has_section(opts_section):
-                config.add_section(opts_section)
-                fin = "no"
-                while fin != "q":
-                    print("\n    to end editing set a key to 'q'\n")
-                    text = ("    Add the new key:   ")
-                    new_key = input(text)
-                    if new_key == "q":
-                        break
-                    text = ("    Add the new value:   ")
-                    new_value = input(text)
-                    config.set(opts_section, new_key, new_value)
-                    write_config()
-            text = ("\n    Do you want to add sections or options"
-                    + " to pygmap3.cfg?\n\n"
-                    + "    [q]uit | [s]ection | [o]ption \n\n"
-                    + "    Enter your choice:    ")
-            choice = input(text)
-            if choice == "q":
-                print()
-                quit()
-            elif choice == "o":
-                fin = "no"
-                while fin != "q":
-                    print("\n    to end editing set a key to 'q'\n")
-                    text = ("    Add the new key:   ")
-                    new_key = input(text)
-                    if new_key == "q":
-                        break
-                    text = ("    Add the new value:   ")
-                    new_value = input(text)
-                    config.set(opts_section, new_key, new_value)
-                    write_config()
-            elif choice == "s":
-                fin = "no"
-                while fin != "q":
-                    print("\n    to end editing set a key to 'q'\n")
-                    text = ("    Add the new section:   ")
-                    new_section = input(text)
-                    if new_section == "q":
-                        break
-                    fin_1 = "no"
-                    while fin_1 != "q":
-                        print("\n    to end editing set a key to 'q'\n")
-                        text = ("    Add at least one new key:   ")
-                        new_key = input(text)
-                        if new_key == "q":
-                            break
-                        text = ("    Add a new value:   ")
-                        new_value = input(text)
-                        config.set(new_section, new_key, new_value)
-                        write_config()
-        elif edit == "d":
-            text = ("\n    You can delete [a]ll, [s]ome or [N]o option\n"
-                    + "    Use [q] to exit without changes. \n\n"
-                    + "    Enter your choice:  ")
-            kill_opts = input(text)
-            if kill_opts == "q":
-                quit()
-            elif kill_opts == "a":
-                text = ("    Really delete ALL options for '"
-                        + opts_section + "'? [y|N]   ")
-                rem_section = input(text)
-                if rem_section == "y":
-                    config.remove_section(opts_section)
-                    write_config()
-                    print("\n    " + opts_section + " removed!\n")
-                    quit()
-                else:
-                    print()
-                    quit()
-            elif kill_opts == "s":
-                print("\n    Use [q] to exit without changes. \n\n ")
-                fin = "no"
-                while fin != "q":
-                    text = ("    Enter the number of the key to delete:   ")
-                    rem_option = input(text)
-                    if rem_option == "q":
-                        break
-                    rem_option = int(rem_option)-1
-                    rem_option = my_list[rem_option]
-                    config.remove_option(opts_section, rem_option)
-                    write_config()
+
+    my_list = []
+    if config.has_section(opts_section):
         print()
-        info("These are the new values in opts_section "
-             + opts_section + ":\n")
+        info("Options in section '" + opts_section + "':\n")
         for key in config[opts_section]:
-            print("    " + key + "  " + config[opts_section][key])
+            my_list.append(key)
+        for key in my_list:
+            print("    " + str(my_list.index(key)+1) + "     "
+                  + key + "    " + config[opts_section][key])
+        text = ("\n\n    You can edit, add and delete sections "
+                + "and options in pygmap3.cfg. \n\n"
+                + "    [e]dit | [a]dd | [d]elete | [q]uit \n\n"
+                + "    Enter your choice:    ")
+        edit = input(text)
+    else:
+        print()
+        warn("This is a new section, please at least one key.\n"
+             + "    see the section [template_region] as example")
+        my_list = []
+        print()
+        info("Options in section [template_region]:\n")
+        for key in config['template_region']:
+            my_list.append(key)
+        for key in my_list:
+            print("    " + str(my_list.index(key)+1) + "     "
+                  + key + "    " + config['template_region'][key])
+        edit = "a"
+
+    if edit == "q":
         print()
         quit()
+    elif edit == "e":
+        print(text_end)
+        fin = "no"
+        while fin != "q":
+            print()
+            text = ("    Enter the number of the key to edit:   ")
+            new_key = input(text)
+            if new_key == "q":
+                break
+            new_key = int(new_key)-1
+            new_key = my_list[new_key]
+            if new_key != "name_tag_list":
+                print("\n    Old value:   " + new_key
+                      + " = " + config[opts_section][new_key] + "\n")
+                text = (text_new_value)
+                new_value = input(text)
+                if new_value != config[opts_section][key]:
+                    config.set(opts_section, new_key, new_value)
+                    write_config()
+            else:
+                language = input(text_ntl)
+                if language == "q":
+                    break
+                elif language:
+                    name_tag_list = "name:" + language + ",name:int,name"
+                else:
+                    name_tag_list = 'name:en,name:int,name'
+                config.set(opts_section, 'name_tag_list', name_tag_list)
+
+    elif edit == "a":
+        if not config.has_section(opts_section):
+            config.add_section(opts_section)
+
+        text = ("\n    Which options do want to add"
+                + " to pygmap3.cfg?\n\n")
+        print(text_end)
+        fin = "no"
+        while fin != "q":
+            print()
+            text = (text_new_key)
+            new_key = input(text)
+            if new_key == "q":
+                break
+
+            if new_key != "name_tag_list":
+                text = (text_new_value)
+                new_value = input(text)
+                config.set(opts_section, new_key, new_value)
+            else:
+                language = input(text_ntl)
+                if language == "q":
+                    break
+                elif language:
+                    name_tag_list = "name:" + language + ",name:int,name"
+                else:
+                    name_tag_list = 'name:en,name:int,name'
+                config.set(opts_section, 'name_tag_list', name_tag_list)
+
+    elif edit == "d":
+        text = ("\n    You can delete [a]ll, [s]ome or [N]o option\n"
+                + "    Use [q] to exit without changes. \n\n"
+                + "    Enter your choice:  ")
+        kill_opts = input(text)
+        if kill_opts == "q":
+            quit()
+        elif kill_opts == "a":
+            text = ("    Really delete ALL options for '"
+                    + opts_section + "'? [y|N]   ")
+            rem_section = input(text)
+            if rem_section == "y":
+                config.remove_section(opts_section)
+                write_config()
+                print("\n    " + opts_section + " removed!\n")
+                quit()
+            else:
+                print()
+                quit()
+        elif kill_opts == "s":
+            print(text_end)
+            fin = "no"
+            while fin != "q":
+                print()
+                text = ("    Enter the number of the key to delete:   ")
+                rem_option = input(text)
+                if rem_option == "q":
+                    break
+                rem_option = int(rem_option)-1
+                rem_option = my_list[rem_option]
+                config.remove_option(opts_section, rem_option)
+
+    write_config()
+    print()
+    info("These are the new values in opts_section "
+         + opts_section + ":\n")
+    for key in config[opts_section]:
+        print("    " + key + "  " + config[opts_section][key])
+    print()
+    quit()
 
 
 # map build options
