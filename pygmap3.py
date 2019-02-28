@@ -383,8 +383,8 @@ if args.edit_opts:
         for key in config[opts_section]:
             my_list.append(key)
         for key in my_list:
-            print("    " + str(my_list.index(key)+1) + "     "
-                  + key + "    " + config[opts_section][key])
+            print("    " + str(my_list.index(key)+1) + "\t"
+                  + key + "\n\t\t\t" + config[opts_section][key])
         text = ("\n\n    You can edit, add and delete sections "
                 + "and options in pygmap3.cfg. \n\n"
                 + "    [e]dit | [a]dd | [d]elete | [q]uit \n\n"
@@ -413,10 +413,10 @@ if args.edit_opts:
         while fin != "q":
             print()
             text = ("    Enter the number of the key to edit:   ")
-            new_key = input(text)
-            if new_key == "q":
+            num_key = input(text)
+            if num_key == "q":
                 break
-            new_key = int(new_key)-1
+            new_key = int(num_key)-1
             new_key = my_list[new_key]
             if new_key != "name_tag_list":
                 print("\n    Old value:   " + new_key
@@ -502,7 +502,7 @@ if args.edit_opts:
     info("These are the new values in opts_section "
          + opts_section + ":\n")
     for key in config[opts_section]:
-        print("    " + key + "  " + config[opts_section][key])
+        print("    " + key + "\n\t\t\t" + config[opts_section][key])
     print()
     quit()
 

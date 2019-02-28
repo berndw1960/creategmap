@@ -62,8 +62,7 @@ def typ_txt_test():
             print()
             warn(layer + " build without a typ_file")
             typ_file = " "
-        style_file = (" --style-file=" + WORK_DIR
-                      + "styles/" + layer + "_style ")
+        style_file = (WORK_DIR + "styles/" + layer + "_style ")
 
 
 # style check
@@ -80,9 +79,9 @@ def check():
             info("checking needed files to build " + layer)
             typ_txt_test()
             print()
-            info("typ_file   = " + WORK_DIR + typ_file)
+            info("typ_file   = " + typ_file)
             print()
-            info("style_file = " + WORK_DIR + style_file)
+            info("style_file = " + style_file)
             print()
 
             defaultmap_opts = (" --split-name-index "
@@ -287,7 +286,7 @@ def render():
                             + max_jobs
                             + bounds
                             + sea
-                            + style_file
+                            + " --style-file=" + style_file
                             + name_tag_list
                             + " --levels=" + config['maplevel']['levels']
                             + dem
