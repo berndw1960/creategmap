@@ -28,16 +28,16 @@ def create():
     config['java'] = {'xmx': '-Xmx4G',
                       'xms': '-Xms4G', }
 
-    config['map_styles'] = {}
-    config['map_styles'] = {'basemap': 'no',
-                            'bikemap': 'no',
-                            'carmap': 'no',
-                            'defaultmap': 'yes',
-                            'oldev': 'no',
-                            'fixme': 'no',
-                            'bikeroute': 'no',
-                            'boundary': 'no',
-                            }
+    config['mapstyles'] = {}
+    config['mapstyles'] = {'basemap': 'no',
+                           'bikemap': 'no',
+                           'carmap': 'no',
+                           'defaultmap': 'yes',
+                           'olddev': 'no',
+                           'fixme': 'no',
+                           'bikeroute': 'no',
+                           'boundary': 'no',
+                           }
 
     config['defaultmap'] = {}
     config['defaultmap'] = {'product-id': '1',
@@ -126,6 +126,30 @@ def update():
 
     if not config.has_option('runtime', 'mapset'):
         config.set('runtime', 'mapset', '0')
+
+    if not config.has_section('mapstyles'):
+        config.add_section('mapstyles')
+        if config.has_section('map_styles'):
+            for key in config['mapstyles']:
+                config.set('mapstyles', key, config['map_styles'][key])
+                config.remove_option('map_styles', key)
+            config.remove_section('map_styles')
+        else:
+            config.set('mapstyles', 'defaultmap', 'yes')
+
+    if not config.has_option('runtime', 'default_region'):
+        if config.has_option('runtime', 'default'):
+            config.set('runtime', 'default_region',
+                       config['runtime']['default'])
+            config.remove_option('runtime', 'default')
+        elif config.has_option('runtime', 'buildmap'):
+            config.set('runtime', 'default_region',
+                       config['runtime']['buildmap'])
+        else:
+            config.set('runtime', 'default_region', 'germany')
+
+    if config.has_option('runtime', 'buildmap'):
+        config.remove_option('runtime', 'buildmap')
 
     # remove temporary options
 

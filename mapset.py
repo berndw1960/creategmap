@@ -68,6 +68,19 @@ if config.has_section('mapset_backup'):
         config.remove_option('mapset_backup', key)
     config.remove_section('mapset_backup')
 
+
+def remove_faststyle():
+    if config.has_section('faststyle'):
+        for key in (config['faststyle']):
+            config.remove_option('faststyle', key)
+        config.remove_section('faststyle')
+    if config.has_option('runtime', 'faststyle'):
+        config.remove_option('runtime', 'faststyle')
+
+
+remove_faststyle()
+
+
 write_config()
 
 
@@ -103,8 +116,11 @@ parser.add_argument('-rm', '--remove_mapset', default=0, nargs='*',
                     " ALL for all mapsets on the list")
 parser.add_argument('-lm', '--list_mapset', action="store_true",
                     help="print out the mapset list")
-parser.add_argument('-f', '--fastbuild', default=0, nargs='*',
+parser.add_argument('-fb', '--fastbuild', default=0, nargs='*',
                     help="a space separated list of mapsets")
+parser.add_argument('-fs', '--faststyle', default=0, nargs='*',
+                    help="a space separated list of styles for the default " +
+                    "region, to set the region, us 'pygmap3.py -s $REGION' ")
 parser.add_argument('-ba', '--break_after', default=0,
                     help="break mapset creating after this" +
                     " changeset, use '-lm' for the list")
@@ -134,6 +150,24 @@ def mapset_backup():
         config.add_section('mapset_backup')
     for key in (config['mapset']):
         config.set('mapset_backup', key, config['mapset'][key])
+        config.set('mapset', key, 'no')
+
+
+if args.faststyle:
+    if not args.fastbuild:
+        mapset_backup()
+        config.set('mapset', config['runtime']['default_region'], 'yes')
+    if not config.has_section('faststyle'):
+        config.add_section('faststyle')
+    for i in args.faststyle:
+        config.set('faststyle', i, 'yes')
+    config.set('runtime', 'faststyle', '1')
+
+
+if args.fastbuild:
+    mapset_backup()
+    for i in args.fastbuild:
+        config.set('mapset', i, 'yes')
 
 
 # set, edit or delete mapset list
@@ -237,7 +271,7 @@ if args.list_mapset:
                 print("      " + key)
         print()
         print("    disabled:")
-        for key in (config['mapset']):
+        for key in config['mapset']:
             if config['mapset'][key] == "no":
                 print("      " + key)
     else:
@@ -247,13 +281,6 @@ if args.list_mapset:
     quit()
 
 
-if args.fastbuild:
-    mapset_backup()
-    for key in (config['mapset']):
-        config.set('mapset', key, 'no')
-    for i in args.fastbuild:
-        config.set('mapset', i, 'yes')
-    print()
 write_config()
 
 
@@ -340,6 +367,9 @@ for region in config['mapset']:
 
     if os.path.exists(WORK_DIR + "stop"):
         os.remove(WORK_DIR + "stop")
+
+
+remove_faststyle()
 
 
 config.set('runtime', 'mapset', "0")

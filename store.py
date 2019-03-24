@@ -65,8 +65,8 @@ def log():
     os.chdir(WORK_DIR)
     config.read('pygmap3.cfg')
 
-    for layer in config['map_styles']:
-        if config['map_styles'][layer] == "yes":
+    for layer in config['mapstyles']:
+        if config['mapstyles'][layer] == "yes":
             region = config['runtime']['region']
             log_dir = ("log/mkgmap/" + region + "/" + layer)
 

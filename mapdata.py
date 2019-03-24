@@ -66,7 +66,7 @@ def create_o5m():
         if difftime > 1741800:
             print()
             warn("Your planet file is older then one month")
-            print(" You should update it.")
+            print("    You should update it.")
         if os.path.exists("poly/" + region + ".poly"):
             print()
             info("now extracting " + region

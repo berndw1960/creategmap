@@ -155,12 +155,8 @@ parser.add_argument('-e', '--edit_opts', action="store_true",
 parser.add_argument('-r', '--region', default=0,
                     help=" set the map region to build " +
                          " need at least a poly or a O5M file ")
-parser.add_argument('-p', '--poly', default=0,
-                    help=" set the poly file for the map region to build")
 parser.add_argument('-lp',  '--list_poly', action="store_true",
                     help="list all poly files in " + WORK_DIR + "poly ")
-parser.add_argument('-o', '--o5m', default=0,
-                    help=" set the o5m file for the map region to build")
 parser.add_argument('-lo', '--list_o5m', action="store_true",
                     help=" list all O5M files in " + WORK_DIR + "o5m ")
 parser.add_argument('-s', '--set_default', default=0,
@@ -274,14 +270,14 @@ if args.list_o5m:
 
 
 # set default region
-if args.set_default or not config.has_option('runtime', 'default'):
+if args.set_default or not config.has_option('runtime', 'default_region'):
     region = input(" \n\n "
                    + "    Which should be your default map region? \n"
                    + "    You can build this region without any option\n"
                    + "    for pygmap3.py in the future.\n\n"
                    + "    please enter a region:    ")
     region = os.path.splitext(region)[0]
-    config.set('runtime', 'default', region)
+    config.set('runtime', 'default_region', region)
     write_config()
 
 
@@ -292,28 +288,19 @@ if args.interactive:
                    + "    please enter a region:    ")
 elif args.region:
     region = args.region
-elif args.o5m:
-    print()
-    warn("The option -o/--o5m will be removed in further releases,\n"
-         + "    please use -r/--region instead")
-    region = args.o5m
-elif args.poly:
-    print()
-    warn("The option -p/--poly will be removed in further releases,\n"
-         + "    please use -r/--region instead")
-    region = args.poly
 else:
-    region = config['runtime']['default']
+    region = config['runtime']['default_region']
 
 
 region = os.path.splitext(region)[0]
 config.set('runtime', 'region', region)
+write_config()
 
 
 if not config.has_section(region):
     config.add_section(region)
-    for key in config['map_styles']:
-        config.set(region, key, config['map_styles'][key])
+    for key in config['mapstyles']:
+        config.set(region, key, config['mapstyles'][key])
     config.set(region, 'name_tag_list', config['name_tag_list']['default'])
     write_config()
     warn("Some options are set to default values\n"
@@ -328,13 +315,13 @@ if config.has_option('name_tag_list', region):
 
 
 # copy style config to new regions
-for style in config['map_styles']:
+for style in config['mapstyles']:
     if (not config.has_option(region, style) and
        not config.has_option(region, 'lock')):
-        config.set(region, style, config['map_styles'][style])
+        config.set(region, style, config['mapstyles'][style])
         write_config()
     if not config.has_option('template_region', style):
-        config.set('template_region', style, config['map_styles'][style])
+        config.set('template_region', style, config['mapstyles'][style])
         write_config()
 
 
@@ -509,20 +496,20 @@ if args.edit_opts:
 
 # map build options
 if args.list_mapstyle:
-    if config.has_section('map_styles'):
+    if config.has_section('mapstyles'):
         print()
-        info("map_styles list includes: ")
+        info("mapstyles list includes: ")
         print()
-        for key in config['map_styles']:
+        for key in config['mapstyles']:
             print("  " + key)
         print()
         if config.has_section('mapset'):
             print()
             info("mapset list includes: ")
-            if config.has_option('runtime', 'default'):
+            if config.has_option('runtime', 'default_region'):
                 print()
                 print(" default:")
-                print("  " + config['runtime']['default'])
+                print("  " + config['runtime']['default_region'])
             print()
             print(" enabled:")
             for key in (config['mapset']):
@@ -574,10 +561,10 @@ if args.add_style:
             for key in config['fixme']:
                 print("  " + key + " = " + config['fixme'][key])
             print()
-        config.set('map_styles', args.add_style, 'no')
+        config.set('mapstyles', args.add_style, 'no')
 
     elif args.add_style == "defaultmap":
-        config.set('map_styles', args.add_style, 'no')
+        config.set('mapstyles', args.add_style, 'no')
     else:
         info_styles()
         quit()
@@ -586,8 +573,8 @@ if args.add_style:
 
 
 if args.rm_style:
-    if config.has_option('map_styles', args.rm_style):
-        config.remove_option('map_styles', args.rm_style)
+    if config.has_option('mapstyles', args.rm_style):
+        config.remove_option('mapstyles', args.rm_style)
         write_config()
     quit()
 
