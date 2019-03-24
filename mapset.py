@@ -347,6 +347,12 @@ write_config()
 
 
 for region in config['mapset']:
+    if os.path.exists("stop"):
+        print()
+        error("Process stopped while there is the stop file!")
+        print()
+        quit()
+
     if not os.path.exists(WORK_DIR + "stop"):
         file = open('stop', 'w')
         file.write("\n\n emergency break for mapset.py\n"

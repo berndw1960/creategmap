@@ -132,14 +132,14 @@ def render():
     global layer
     stylelist = []
     if config.has_option('runtime', 'faststyle'):
-        for style in config['faststyle']:
-            stylelist.append(style)
+        for layer in config['faststyle']:
+            stylelist.append(layer)
     else:
-        for style in config['mapstyles']:
+        for layer in config['mapstyles']:
             if (layer in config[region] and
                 (config[region][layer] == "yes" or
                  config[region][layer] == "tdb")):
-                stylelist.append(style)
+                stylelist.append(layer)
 
     for layer in stylelist:
         # Test for (layer)-dir and remove old data from there
