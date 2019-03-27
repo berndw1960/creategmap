@@ -160,14 +160,27 @@ if args.faststyle:
     if not config.has_section('faststyle'):
         config.add_section('faststyle')
     for i in args.faststyle:
-        config.set('faststyle', i, 'yes')
+        if not config.has_section('mapstyles'):
+            config.add_section('mapstyles')
+        if os.path.exists("styles/" + i + "_style"):
+            config.set('mapstyles', i, 'yes')
+            config.set('faststyle', i, 'yes')
+        else:
+            print()
+            warn("Style " + i + " not found")
+            print()
     config.set('runtime', 'faststyle', '1')
 
 
 if args.fastbuild:
     mapset_backup()
     for i in args.fastbuild:
-        config.set('mapset', i, 'yes')
+        if os.path.exists("poly/" + i + ".poly" or "o5m/" + i + ".o5m"):
+            config.set('mapset', i, 'yes')
+        else:
+            print()
+            warn("Neither " + i + ".poly nor " + i + ".o5m found!")
+            print()
 
 
 # set, edit or delete mapset list
