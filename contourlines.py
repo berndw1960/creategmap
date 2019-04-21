@@ -61,7 +61,6 @@ def create_cont():
     config.read('pygmap3.cfg')
 
     region = config['runtime']['region']
-    path = WORK_DIR + config['runtime']['mkgmap'] + "/mkgmap.jar "
 
     cl_dir = "gps_ready/zipped/" + region + "/"
     cltemp_dir = "cl_temp/"
@@ -141,9 +140,11 @@ def create_cont():
         os.chdir(cltemp_dir)
         info("entered " + os.getcwd())
 
+        mkgmap = WORK_DIR + config['mkgmap']['rev'] + "/mkgmap.jar "
+
         command_line = ("java -ea "
                         + heap
-                        + " -jar " + path
+                        + " -jar " + mkgmap
                         + " --max-jobs "
                         + " --read-config="
                         + WORK_DIR + "styles/contourlines_style/options"
