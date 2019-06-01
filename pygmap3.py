@@ -325,13 +325,15 @@ for style in config['mapstyles']:
         write_config()
 
 
-if args.list_sections:
+if args.list_sections or args.edit_opts:
     print()
     info("These are the section in pygmap3.cfg.\n"
          + "  You can edit this sections 'with pygmap3.py -e\n\n")
     for section in config.sections():
         print("    " + section)
     print()
+
+if args.list_sections:
     quit()
 
 
