@@ -596,7 +596,7 @@ write_config()
 
 if args.check_styles:
     mkgmap.check()
-    quit()
+    quit()KeyError: 'serbia'
 
 
 # special opts to debug the raw map data
@@ -808,8 +808,7 @@ if not args.keep_data:
 config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
     print()
-    info(" Mapdata for " + region + " "
-         + config['time_stamp'][region]
+    info(" Mapdata for " + region
          + " successful extracted/updated")
     print()
     quit()
