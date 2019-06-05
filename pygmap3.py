@@ -596,7 +596,7 @@ write_config()
 
 if args.check_styles:
     mkgmap.check()
-    quit()KeyError: 'serbia'
+    quit()
 
 
 # special opts to debug the raw map data
@@ -643,7 +643,7 @@ if args.list_test_version:
     quit()
 
 
-if args.splitter_test:
+if argsKeyError: 'serbia'.splitter_test:
     config.set('splitter', 'test', args.splitter_test)
     print()
     info(" SPLITTER test version set to " + args.splitter_test)
@@ -808,8 +808,7 @@ if not args.keep_data:
 config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
     print()
-    info(" Mapdata for " + region
-         + " successful extracted/updated")
+    info(" Mapdata for " + region + " successful extracted/updated")
     print()
     quit()
 
