@@ -643,7 +643,7 @@ if args.list_test_version:
     quit()
 
 
-if argsKeyError: 'serbia'.splitter_test:
+if args.splitter_test:
     config.set('splitter', 'test', args.splitter_test)
     print()
     info(" SPLITTER test version set to " + args.splitter_test)
