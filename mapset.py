@@ -35,8 +35,8 @@ os.chdir(WORK_DIR)
 if os.path.exists(WORK_DIR + "stop"):
     os.remove(WORK_DIR + "stop")
     print()
-    warn("Oops! Something went wrong\n"
-         + "    stopped build_process using the " + WORK_DIR + "stop file!")
+    warn("Oops! Something went wrong with the previous build,\n"
+         + "    stopped build process by using the " + WORK_DIR + "stop file!")
     print()
     quit()
 
@@ -159,27 +159,28 @@ if args.faststyle:
         config.set('mapset', config['runtime']['default_region'], 'yes')
     if not config.has_section('faststyle'):
         config.add_section('faststyle')
-    for i in args.faststyle:
+    for style in args.faststyle:
         if not config.has_section('mapstyles'):
             config.add_section('mapstyles')
-        if os.path.exists("styles/" + i + "_style"):
-            config.set('mapstyles', i, 'yes')
-            config.set('faststyle', i, 'yes')
+        if os.path.exists("styles/" + style + "_style"):
+            config.set('mapstyles', style, 'yes')
+            config.set('faststyle', style, 'yes')
         else:
             print()
-            warn("Style " + i + " not found")
+            warn("Style " + style + " not found")
             print()
     config.set('runtime', 'faststyle', '1')
 
 
 if args.fastbuild:
     mapset_backup()
-    for i in args.fastbuild:
-        if os.path.exists("poly/" + i + ".poly" or "o5m/" + i + ".o5m"):
-            config.set('mapset', i, 'yes')
+    for region in args.fastbuild:
+        if os.path.exists("poly/" + region + ".poly" or
+                          "o5m/" + region + ".o5m"):
+            config.set('mapset', region, 'yes')
         else:
             print()
-            warn("Neither " + i + ".poly nor " + i + ".o5m found!")
+            warn("Neither " + region + ".poly nor " + region + ".o5m found!")
             print()
 
 
@@ -195,10 +196,10 @@ if args.add_poly:
             config.set('mapset', file, 'no')
     write_config()
     print()
-    warn("ALL poly files added to mapset list, but not enabled! ")
+    warn("ALL poly files added to mapset list, but not enabled!")
     print()
-    info("To enable a mapset, use '--enable_mapset ALL' for whole list  ")
-    info("or '--enable_mapset $POLY' for a special mapset ")
+    info("To enable a mapset, use '--enable_mapset ALL' for whole list")
+    info("or '--enable_mapset $POLY' for a special mapset")
     print()
     quit()
 
@@ -216,8 +217,8 @@ if args.add_folder:
 
 if args.add_o5m:
     mapset_backup()
-    for i in os.listdir("o5m"):
-        file = os.path.splitext(os.path.basename(i))[0]
+    for region in os.listdir("o5m"):
+        file = os.path.splitext(os.path.basename(region))[0]
         if not config.has_option('mapset', file):
             config.set('mapset', file, 'yes')
         for key in (config['mapset']):
@@ -225,17 +226,23 @@ if args.add_o5m:
 
 
 if args.add_mapset:
-    for i in args.add_mapset:
-        file = os.path.splitext(os.path.basename(i))[0]
-        if not config.has_option('mapset', i):
-            if not os.path.exists("poly/" + i + ".poly"):
+    for region in args.add_mapset:
+        file = os.path.splitext(os.path.basename(region))[0]
+        if not config.has_option('mapset', region):
+            if not os.path.exists("poly/" + region + ".poly"):
                 print()
                 error(WORK_DIR + "poly/" + file + ".poly not found... ")
                 print("please create or download " + file + ".poly")
                 print()
                 quit()
-        config.set('mapset', i, 'yes')
+        config.set('mapset', region, 'yes')
+        if not config.has_section(region):
+            config.add_section(region)
+            config.set(region, 'new_region', 'yes')
     write_config()
+    print()
+    info(" please check the options for this mapset with:   pygmap3.py -e")
+    print()
     quit()
 
 
@@ -244,8 +251,8 @@ if args.enable_mapset == "ALL":
     for key in (config['mapset']):
         config.set('mapset', key, 'yes')
 elif args.enable_mapset:
-    for i in args.enable_mapset:
-        config.set('mapset', i, 'yes')
+    for region in args.enable_mapset:
+        config.set('mapset', region, 'yes')
     write_config()
     quit()
 
@@ -256,8 +263,8 @@ if args.disable_mapset == "ALL":
     write_config()
     quit()
 elif args.disable_mapset:
-    for i in args.disable_mapset:
-        config.set('mapset', i, 'no')
+    for region in args.disable_mapset:
+        config.set('mapset', region, 'no')
     write_config()
     quit()
 
@@ -267,8 +274,8 @@ if args.remove_mapset == "ALL":
     write_config()
     quit()
 elif args.remove_mapset:
-    for i in args.remove_mapset:
-        config.remove_option('mapset', i)
+    for region in args.remove_mapset:
+        config.remove_option('mapset', region)
     write_config()
     quit()
 
@@ -349,9 +356,9 @@ info("Ready to start?   ")
 print()
 print("    In the next 5 seconds you can stop ")
 print("    building the maps with STRG+C ")
-i = 5
-while i > 0:
-    i -= 1
+counter = 5
+while counter > 0:
+    counter -= 1
     time.sleep(1)
 
 

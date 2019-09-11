@@ -146,10 +146,10 @@ parser.add_argument('-i', '--interactive', action="store_true",
                     help=" an interactive mode to set the region")
 
 # edit options interactive
-parser.add_argument('-ls', '--list_sections', action="store_true",
+parser.add_argument('-lr', '--list_regions', action="store_true",
                     help=" list the sections in configuration")
 parser.add_argument('-e', '--edit_opts', action="store_true",
-                    help=" list and edit the options in configuration")
+                    help=" edit the regions in configuration")
 
 # mapset handling
 parser.add_argument('-r', '--region', default=0,
@@ -269,6 +269,34 @@ if args.list_o5m:
     quit()
 
 
+if args.list_regions or args.edit_opts:
+    print()
+    pre_region_list = []
+    new_region_list = []
+    print_new_list = "no"
+    for section in config.sections():
+        if config.has_option(section, 'new_region'):
+            print_new_list = "yes"
+            new_region_list.append(section)
+        elif config.has_option(section, 'mapid'):
+            pre_region_list.append(section)
+    print()
+    if print_new_list == "yes":
+        info("These are new regions with default values:\n")
+        for key in new_region_list:
+            print("    " + (key))
+        print()
+        print()
+    info("These are configured regions:\n")
+    for key in pre_region_list:
+        print("    " + (key))
+    print()
+
+
+if args.list_regions:
+    quit()
+
+
 # set default region
 if args.set_default or not config.has_option('runtime', 'default_region'):
     region = input(" \n\n "
@@ -294,51 +322,40 @@ else:
 
 region = os.path.splitext(region)[0]
 config.set('runtime', 'region', region)
-write_config()
 
 
 if not config.has_section(region):
     config.add_section(region)
-    for key in config['mapstyles']:
-        config.set(region, key, config['mapstyles'][key])
-    config.set(region, 'name_tag_list', config['name_tag_list']['default'])
-    write_config()
-    warn("Some options are set to default values\n"
-         + "    you can edit them with pygmap3.py -e")
+    config.set(region, 'new_region', 'yes')
 
 
-# move old name_tag_list entries to region options
-if config.has_option('name_tag_list', region):
-    ntl_temp = config['name_tag_list'][region]
-    config.set(region, 'name_tag_list', ntl_temp)
-    config.remove_option('name_tag_list', region)
+for section in config.sections():
+    if config.has_option(section, 'new_region'):
+        for key in config['mapstyles']:
+            config.set(section, key, config['mapstyles'][key])
+        config.set(section, 'name_tag_list', config['name_tag_list']['default'])
+        # copy style config to new regions
+        for style in config['mapstyles']:
+            if (not config.has_option(section, style) and
+               not config.has_option(section, 'lock')):
+                config.set(section, style, config['mapstyles'][style])
+            if not config.has_option('template_region', style):
+                config.set('template_region', style, config['mapstyles'][style])
+        # set the mapid to new regions
+        mapid = config['mapid']['next_mapid']
+        next_mapid = str(int(mapid)+1)
+        config.set(section, 'mapid',  mapid)
+        config.set('mapid', 'next_mapid', next_mapid)
+        config.remove_option(section, 'new_region')
 
-
-# copy style config to new regions
-for style in config['mapstyles']:
-    if (not config.has_option(region, style) and
-       not config.has_option(region, 'lock')):
-        config.set(region, style, config['mapstyles'][style])
-        write_config()
-    if not config.has_option('template_region', style):
-        config.set('template_region', style, config['mapstyles'][style])
-        write_config()
-
-
-if args.list_sections or args.edit_opts:
-    print()
-    info("These are the section in pygmap3.cfg.\n"
-         + "  You can edit this sections 'with pygmap3.py -e\n\n")
-    for section in config.sections():
-        print("    " + section)
-    print()
-
-if args.list_sections:
-    quit()
+write_config()
 
 
 if args.edit_opts:
-    text_new_section = ("    Add the new section:   ")
+    print()
+    info(" You can edit these regions\n"
+         + "     or enter a name for a new region\n ")
+    text_new_section = ("    Add the new region:   ")
     text_new_key = ("    Add the new key:   ")
     text_new_value = ("    Add the new value:   ")
     text_end = ("\n    to end editing set a key to 'q'")
@@ -358,22 +375,22 @@ if args.edit_opts:
                 + "    'q' breaks without changings\n\n"
                 + "    please enter only a ISO code:   ")
 
-    text = ("\n    Please enter the name of the section:\n\n"
+    text = ("\n    Please enter the name of the region:\n\n"
             + "    Enter the name, 'q' to exit: ")
-    opts_section = input(text)
-    if opts_section == "q":
+    opts_region = input(text)
+    if opts_region == "q":
         print()
         quit()
 
     my_list = []
-    if config.has_section(opts_section):
+    if config.has_section(opts_region):
         print()
-        info("Options in section '" + opts_section + "':\n")
-        for key in config[opts_section]:
+        info("Options in section '" + opts_region + "':\n")
+        for key in config[opts_region]:
             my_list.append(key)
         for key in my_list:
             print("    " + str(my_list.index(key)+1) + "\t"
-                  + key + "\n\t\t\t" + config[opts_section][key])
+                  + key + "\n\t\t\t" + config[opts_region][key])
         text = ("\n\n    You can edit, add and delete sections "
                 + "and options in pygmap3.cfg. \n\n"
                 + "    [e]dit | [a]dd | [d]elete | [q]uit \n\n"
@@ -381,7 +398,7 @@ if args.edit_opts:
         edit = input(text)
     else:
         print()
-        warn("This is a new section, please at least one key.\n"
+        warn("This is a new region, please at least one key.\n"
              + "    see the section [template_region] as example")
         my_list = []
         print()
@@ -409,11 +426,11 @@ if args.edit_opts:
             new_key = my_list[new_key]
             if new_key != "name_tag_list":
                 print("\n    Old value:   " + new_key
-                      + " = " + config[opts_section][new_key] + "\n")
+                      + " = " + config[opts_region][new_key] + "\n")
                 text = (text_new_value)
                 new_value = input(text)
-                if new_value != config[opts_section][key]:
-                    config.set(opts_section, new_key, new_value)
+                if new_value != config[opts_region][key]:
+                    config.set(opts_region, new_key, new_value)
                     write_config()
             else:
                 language = input(text_ntl)
@@ -423,11 +440,13 @@ if args.edit_opts:
                     name_tag_list = "name:" + language + ",name:int,name"
                 else:
                     name_tag_list = 'name:en,name:int,name'
-                config.set(opts_section, 'name_tag_list', name_tag_list)
-
+                config.set(opts_region, 'name_tag_list', name_tag_list)
+            if config.has_option(opts_region, 'new_region'):
+                config.remove_option(opts_region, 'new_region')
+                write_config()
     elif edit == "a":
-        if not config.has_section(opts_section):
-            config.add_section(opts_section)
+        if not config.has_section(opts_region):
+            config.add_section(opts_region)
 
         text = ("\n    Which options do want to add"
                 + " to pygmap3.cfg?\n\n")
@@ -443,7 +462,7 @@ if args.edit_opts:
             if new_key != "name_tag_list":
                 text = (text_new_value)
                 new_value = input(text)
-                config.set(opts_section, new_key, new_value)
+                config.set(opts_region, new_key, new_value)
             else:
                 language = input(text_ntl)
                 if language == "q":
@@ -452,7 +471,7 @@ if args.edit_opts:
                     name_tag_list = "name:" + language + ",name:int,name"
                 else:
                     name_tag_list = 'name:en,name:int,name'
-                config.set(opts_section, 'name_tag_list', name_tag_list)
+                config.set(opts_region, 'name_tag_list', name_tag_list)
 
     elif edit == "d":
         text = ("\n    You can delete [a]ll, [s]ome or [N]o option\n"
@@ -463,12 +482,12 @@ if args.edit_opts:
             quit()
         elif kill_opts == "a":
             text = ("    Really delete ALL options for '"
-                    + opts_section + "'? [y|N]   ")
+                    + opts_region + "'? [y|N]   ")
             rem_section = input(text)
             if rem_section == "y":
-                config.remove_section(opts_section)
+                config.remove_section(opts_region)
                 write_config()
-                print("\n    " + opts_section + " removed!\n")
+                print("\n    " + opts_region + " removed!\n")
                 quit()
             else:
                 print()
@@ -484,14 +503,14 @@ if args.edit_opts:
                     break
                 rem_option = int(rem_option)-1
                 rem_option = my_list[rem_option]
-                config.remove_option(opts_section, rem_option)
+                config.remove_option(opts_region, rem_option)
 
     write_config()
     print()
-    info("These are the new values in opts_section "
-         + opts_section + ":\n")
-    for key in config[opts_section]:
-        print("    " + key + "\n\t\t\t" + config[opts_section][key])
+    info("These are the new values for the region "
+         + opts_region + ":\n")
+    for key in config[opts_region]:
+        print("    " + key + "\n\t\t\t" + config[opts_region][key])
     print()
     quit()
 
@@ -579,16 +598,6 @@ if args.rm_style:
         config.remove_option('mapstyles', args.rm_style)
         write_config()
     quit()
-
-
-# set or create the mapid
-if config.has_option(region, 'mapid'):
-    mapid = config[region]['mapid']
-else:
-    mapid = config['mapid']['next_mapid']
-    next_mapid = str(int(mapid)+1)
-    config.set(region, 'mapid',  mapid)
-    config.set('mapid', 'next_mapid', next_mapid)
 
 
 write_config()

@@ -74,8 +74,6 @@ def create_cont():
         if os.path.isfile(os.path.join(path, file)):
             os.remove(os.path.join(path, file))
 
-    print("searching for " + region + "_contourlines_gmapsupp.img.zip")
-
     if not os.path.exists(cl_dir + region +
                           "_contourlines_gmapsupp.img.zip"):
         hint = "Install phyghtmap to create contourlines if needed"
@@ -138,7 +136,6 @@ def create_cont():
         # contourlines-build with mkgmap
 
         os.chdir(cltemp_dir)
-        info("entered " + os.getcwd())
 
         mkgmap = WORK_DIR + config['mkgmap']['rev'] + "/mkgmap.jar "
 
