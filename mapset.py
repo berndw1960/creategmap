@@ -32,13 +32,8 @@ if not os.path.exists(WORK_DIR):
 os.chdir(WORK_DIR)
 
 
-if os.path.exists(WORK_DIR + "stop"):
-    os.remove(WORK_DIR + "stop")
-    print()
-    warn("Oops! Something went wrong with the previous build,\n"
-         + "    stopped build process by using the " + WORK_DIR + "stop file!")
-    print()
-    quit()
+if os.path.exists("stop"):
+    os.remove("stop")
 
 
 # configparser
@@ -367,7 +362,7 @@ write_config()
 
 
 for region in config['mapset']:
-    if os.path.exists("stop"):
+    if os.path.exists(WORK_DIR + "stop"):
         print()
         error("Process stopped while there is the stop file!")
         print()
@@ -390,9 +385,6 @@ for region in config['mapset']:
 
     if region == args.break_after:
         quit()
-
-    if os.path.exists(WORK_DIR + "stop"):
-        os.remove(WORK_DIR + "stop")
 
 
 remove_faststyle()

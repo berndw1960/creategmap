@@ -333,14 +333,16 @@ for section in config.sections():
     if config.has_option(section, 'new_region'):
         for key in config['mapstyles']:
             config.set(section, key, config['mapstyles'][key])
-        config.set(section, 'name_tag_list', config['name_tag_list']['default'])
+        config.set(section, 'name_tag_list',
+                   config['name_tag_list']['default'])
         # copy style config to new regions
         for style in config['mapstyles']:
             if (not config.has_option(section, style) and
                not config.has_option(section, 'lock')):
                 config.set(section, style, config['mapstyles'][style])
             if not config.has_option('template_region', style):
-                config.set('template_region', style, config['mapstyles'][style])
+                config.set('template_region', style,
+                           config['mapstyles'][style])
         # set the mapid to new regions
         mapid = config['mapid']['next_mapid']
         next_mapid = str(int(mapid)+1)
@@ -747,6 +749,8 @@ if args.new_bounds:
     config.set('precomp', 'bounds', "bounds-latest.zip")
     config.set('precomp', 'sea', "sea-latest.zip")
     os.chdir(WORK_DIR)
+    precomp.fetch_bounds()
+    print()
     quit()
 
 
@@ -761,6 +765,7 @@ if args.use_sea:
 write_config()
 
 
+# check bounds, download only if needed
 precomp.fetch_bounds()
 
 
@@ -882,6 +887,8 @@ DATE = today.strftime('%Y%m%d_%H%M')
 
 config.read('pygmap3.cfg')
 
+if os.path.exists(WORK_DIR + "stop"):
+    os.remove(WORK_DIR + "stop")
 
 print()
 print()
