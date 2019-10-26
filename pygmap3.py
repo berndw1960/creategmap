@@ -246,7 +246,7 @@ if args.list_poly:
     path = WORK_DIR + "poly"
     dir = sorted(os.listdir(path))
     print()
-    info(" This poly files are in '" + WORK_DIR + "poly': ")
+    info("This poly files are in '" + WORK_DIR + "poly': ")
     print()
     for file in dir:
         file = os.path.splitext(file)[0]
@@ -260,7 +260,7 @@ if args.list_o5m:
     path = WORK_DIR + "o5m"
     dir = sorted(os.listdir(path))
     print()
-    info(" This O5M files are in '" + WORK_DIR + "o5m': ")
+    info("This O5M files are in '" + WORK_DIR + "o5m': ")
     print()
     for file in dir:
         file = os.path.splitext(file)[0]
@@ -355,7 +355,7 @@ write_config()
 
 if args.edit_opts:
     print()
-    info(" You can edit these regions\n"
+    info("You can edit these regions\n"
          + "     or enter a name for a new region\n ")
     text_new_section = ("    Add the new region:   ")
     text_new_key = ("    Add the new key:   ")
@@ -657,13 +657,13 @@ if args.list_test_version:
 if args.splitter_test:
     config.set('splitter', 'test', args.splitter_test)
     print()
-    info(" SPLITTER test version set to " + args.splitter_test)
+    info("SPLITTER test version set to " + args.splitter_test)
 
 
 if args.mkgmap_test:
     config.set('mkgmap', 'test', args.mkgmap_test)
     print()
-    info(" MKGMAP test version set to " + args.mkgmap_test)
+    info("MKGMAP test version set to " + args.mkgmap_test)
 
 
 # set the amount of levels
@@ -822,7 +822,7 @@ if not args.keep_data:
 config.read('pygmap3.cfg')
 if args.stop_after == "mapdata":
     print()
-    info(" Mapdata for " + region + " successful extracted/updated")
+    info("Mapdata for " + region + " successful extracted/updated")
     print()
     quit()
 
@@ -866,7 +866,7 @@ mkgmap.render()
 if args.stop_after == "mkgmap":
     config.read('pygmap3.cfg')
     print()
-    info(" Mapset for " + region + " successful created")
+    info("Mapset for " + region + " successful created")
     print()
     quit()
 
@@ -887,8 +887,6 @@ DATE = today.strftime('%Y%m%d_%H%M')
 
 config.read('pygmap3.cfg')
 
-if os.path.exists(WORK_DIR + "stop"):
-    os.remove(WORK_DIR + "stop")
 
 print()
 print()

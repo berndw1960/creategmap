@@ -32,10 +32,6 @@ if not os.path.exists(WORK_DIR):
 os.chdir(WORK_DIR)
 
 
-if os.path.exists("stop"):
-    os.remove("stop")
-
-
 # configparser
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
@@ -54,58 +50,35 @@ else:
 config.read('pygmap3.cfg')
 
 
-if config.has_section('mapset_backup'):
-    if config.has_section('mapset'):
-        config.remove_section('mapset')
-    config.add_section('mapset')
-    for key in (config['mapset_backup']):
-        config.set('mapset', key, config['mapset_backup'][key])
-        config.remove_option('mapset_backup', key)
-    config.remove_section('mapset_backup')
-
-
-def remove_faststyle():
-    if config.has_section('faststyle'):
-        for key in (config['faststyle']):
-            config.remove_option('faststyle', key)
-        config.remove_section('faststyle')
-    if config.has_option('runtime', 'faststyle'):
-        config.remove_option('runtime', 'faststyle')
-
-
-remove_faststyle()
-
-
-write_config()
-
-
 # argparse
 parser = argparse.ArgumentParser(
         prog='PROG',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
 
-          This Program create mapsets for different regions for Garmin PNA
+          This program create mapsets for different regions for Garmin PNA
         '''))
 
 # mapsets
 parser.add_argument('-am', '--add_mapset', default=0, nargs='*',
                     help="add a space separated list of mapsets")
-parser.add_argument('-ap', '--add_poly', action="store_true",
-                    help="add mapsets by using all poly files in " +
+parser.add_argument('-ap', '--all_poly', action="store_true",
+                    help="build mapsets by using all poly files in " +
                     WORK_DIR + "poly")
-parser.add_argument('-af', '--add_folder', action="store_true",
-                    help="add mapsets using the names of the folders in " +
+parser.add_argument('-af', '--all_folder', action="store_true",
+                    help="build mapsets using the names of the folders in " +
                     WORK_DIR + "gps_ready/zipped")
-parser.add_argument('-ao', '--add_o5m', action="store_true",
-                    help="add mapsets using the names of the o5m files in " +
+parser.add_argument('-ao', '--all_o5m', action="store_true",
+                    help="build mapsets using the names of the o5m files in " +
                     WORK_DIR + "o5m")
 parser.add_argument('-em', '--enable_mapset', default=0, nargs='*',
-                    help="enable a space separated list of mapsets," +
-                    " ALL for all mapsets on the list")
+                    help="enable a space separated list of mapsets")
+parser.add_argument('-ea', '--enable_all', action="store_true",
+                    help="enable all mapsets")
 parser.add_argument('-dm', '--disable_mapset', default=0, nargs='*',
-                    help="disable a space separated list of mapsets, " +
-                    " ALL for all mapsets on the list")
+                    help="disable a space separated list of mapsets")
+parser.add_argument('-da', '--disable_all', action="store_true",
+                    help="disable all mapsets")
 parser.add_argument('-rm', '--remove_mapset', default=0, nargs='*',
                     help="delete a space separated list of mapsets," +
                     " ALL for all mapsets on the list")
@@ -180,7 +153,7 @@ if args.fastbuild:
 
 
 # set, edit or delete mapset list
-if args.add_poly:
+if args.all_poly:
     path = WORK_DIR + "poly"
     dir = sorted(os.listdir(path))
     for file in dir:
@@ -191,16 +164,12 @@ if args.add_poly:
             config.set('mapset', file, 'no')
     write_config()
     print()
-    warn("ALL poly files added to mapset list, but not enabled!")
-    print()
-    info("To enable a mapset, use '--enable_mapset ALL' for whole list")
-    info("or '--enable_mapset $POLY' for a special mapset")
+    warn("ALL poly files added to mapset list!")
     print()
     quit()
 
 
-if args.add_folder:
-    mapset_backup()
+if args.all_folder:
     path = WORK_DIR + "gps_ready/zipped"
     dir = sorted(os.listdir(path))
     for folder in dir:
@@ -210,8 +179,7 @@ if args.add_folder:
         config.set('mapset', key, 'yes')
 
 
-if args.add_o5m:
-    mapset_backup()
+if args.all_o5m:
     for region in os.listdir("o5m"):
         file = os.path.splitext(os.path.basename(region))[0]
         if not config.has_option('mapset', file):
@@ -236,41 +204,57 @@ if args.add_mapset:
             config.set(region, 'new_region', 'yes')
     write_config()
     print()
-    info(" please check the options for this mapset with:   pygmap3.py -e")
+    info("please check the options for this mapset with:   pygmap3.py -e")
     print()
     quit()
 
 
-if args.enable_mapset == "ALL":
+if args.enable_mapset:
+    if args.enable_mapset == "ALL":
+        mapset_backup()
+        for region in (config['mapset']):
+            config.set('mapset', region, 'yes')
+    else:
+        for region in args.enable_mapset:
+            config.set('mapset', region, 'yes')
+    write_config()
+    quit()
+
+
+if args.enable_all:
     mapset_backup()
-    for key in (config['mapset']):
-        config.set('mapset', key, 'yes')
-elif args.enable_mapset:
-    for region in args.enable_mapset:
+    for region in (config['mapset']):
         config.set('mapset', region, 'yes')
     write_config()
     quit()
 
 
-if args.disable_mapset == "ALL":
-    for key in (config['mapset']):
-        config.set('mapset', key, 'no')
+if args.disable_mapset:
+    if args.disable_mapset == "ALL":
+        mapset_backup()
+        for region in (config['mapset']):
+            config.set('mapset', region, 'no')
+    else:
+        for region in args.disable_mapset:
+            config.set('mapset', region, 'no')
     write_config()
     quit()
-elif args.disable_mapset:
-    for region in args.disable_mapset:
+
+
+if args.disable_all:
+    mapset_backup()
+    for region in (config['mapset']):
         config.set('mapset', region, 'no')
     write_config()
     quit()
 
 
-if args.remove_mapset == "ALL":
-    config.remove_section('mapset')
-    write_config()
-    quit()
-elif args.remove_mapset:
-    for region in args.remove_mapset:
-        config.remove_option('mapset', region)
+if args.remove_mapset:
+    if args.remove_mapset == "ALL":
+        config.remove_section('mapset')
+    else:
+        for region in args.remove_mapset:
+            config.remove_option('mapset', region)
     write_config()
     quit()
 
@@ -346,37 +330,24 @@ command_line = ("pygmap3.py -kg " +
                 verbose + stop + cl + test + log + zip)
 
 
-print()
-info("Ready to start?   ")
-print()
-print("    In the next 5 seconds you can stop ")
-print("    building the maps with STRG+C ")
-counter = 5
-while counter > 0:
-    counter -= 1
-    time.sleep(1)
-
-
 config.set('runtime', 'mapset', "1")
 write_config()
 
 
 for region in config['mapset']:
-    if os.path.exists(WORK_DIR + "stop"):
-        print()
-        error("Process stopped while there is the stop file!")
-        print()
-        quit()
-
-    if not os.path.exists(WORK_DIR + "stop"):
-        file = open('stop', 'w')
-        file.write("\n\n emergency break for mapset.py\n"
-                   + " this file should not exist, if the last"
-                   + " run was successful")
-        file.close()
+    print()
+    info("next mapset to create is " + region)
+    print()
+    print("    In the next 5 seconds you can stop ")
+    print("    building the maps with STRG+C ")
+    print()
+    print("    continue?")
+    counter = 5
+    while counter > 0:
+        counter -= 1
+        time.sleep(1)
 
     if config['mapset'][region] == "yes":
-
         if region == args.break_after:
             print()
             warn("Stopping creating mapsets after this mapset")
@@ -387,7 +358,22 @@ for region in config['mapset']:
         quit()
 
 
-remove_faststyle()
+if config.has_section('mapset_backup'):
+    if config.has_section('mapset'):
+        config.remove_section('mapset')
+    config.add_section('mapset')
+    for key in (config['mapset_backup']):
+        config.set('mapset', key, config['mapset_backup'][key])
+        config.remove_option('mapset_backup', key)
+    config.remove_section('mapset_backup')
+
+
+if config.has_section('faststyle'):
+    for key in (config['faststyle']):
+        config.remove_option('faststyle', key)
+    config.remove_section('faststyle')
+if config.has_option('runtime', 'faststyle'):
+    config.remove_option('runtime', 'faststyle')
 
 
 config.set('runtime', 'mapset', "0")
