@@ -187,6 +187,12 @@ def update():
     if config.has_option('runtime', 'xms'):
         config.remove_option('runtime', 'xms')
 
+    if config.has_option('runtime', 'no_sea'):
+        config.remove_option('runtime', 'no_sea')
+
+    if config.has_option('runtime', 'no_bounds'):
+        config.remove_option('runtime', 'no_bounds')
+
     if not config.has_section('name_tag_list'):
         config.add_section('name_tag_list')
         config.set('name_tag_list', 'default', 'name:en,name:int,name')

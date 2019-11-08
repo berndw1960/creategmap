@@ -45,12 +45,16 @@ def split():
     BUILD_O5M = WORK_DIR + "o5m/" + region + ".o5m"
 
     sea = " "
-    if config.has_option('precomp', 'sea'):
+
+    if config.has_option('runtime', 'no_sea'):
+        pass
+    elif config.has_option('precomp', 'sea'):
         sea_zip = WORK_DIR + "precomp/" + config['precomp']['sea']
         if os.path.exists(sea_zip):
             sea = " --precomp-sea=" + sea_zip
 
     cities15000 = WORK_DIR + "cities15000.zip"
+
     if os.path.exists(cities15000):
         geonames = " --geonames-file=" + cities15000
     else:

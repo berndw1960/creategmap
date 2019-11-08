@@ -177,7 +177,7 @@ def render():
 
         logging = " "
         if config.has_option('runtime', 'logging'):
-            logging = (" -Dlog.config=log.props ")
+            logging = (" -Dlog.config=" + WORK_DIR + "log.props ")
 
         # options to create hillshading
         dem = " "
@@ -227,7 +227,10 @@ def render():
             bounds = " "
         else:
             bounds = " --location-autofill=is_in,nearest "
-            if config.has_option('precomp', 'bounds'):
+
+            if config.has_option('runtime', 'no_bounds'):
+                pass
+            elif config.has_option('precomp', 'bounds'):
                 bounds_zip = (WORK_DIR + "precomp/"
                               + config['precomp']['bounds'])
                 if os.path.exists(bounds_zip):
@@ -239,7 +242,10 @@ def render():
             sea = (" --generate-sea=extend-sea-sectors,"
                    + "close-gaps=6000,floodblocker,"
                    + "land-tag=natural=background ")
-            if config.has_option('precomp', 'sea'):
+
+            if config.has_option('runtime', 'no_sea'):
+                pass
+            elif config.has_option('precomp', 'sea'):
                 sea_zip = WORK_DIR + "precomp/" + config['precomp']['sea']
                 if os.path.exists(sea_zip):
                     sea = (" --precomp-sea="
@@ -262,6 +268,9 @@ def render():
 
         if config.has_option('runtime', 'use_spec_opts'):
             spec_opts = (" --report-similar-arcs --report-dead-ends ")
+        elif config.has_option('mkgmap', 'test'):
+            if config['mkgmap']['test'] == "NET-no-NOD":
+                spec_opts = " --check-routing-island-len=500 "
         else:
             spec_opts = " "
 

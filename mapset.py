@@ -335,27 +335,27 @@ write_config()
 
 
 for region in config['mapset']:
-    print()
-    info("next mapset to create is " + region)
-    print()
-    print("    In the next 5 seconds you can stop ")
-    print("    building the maps with STRG+C ")
-    print()
-    print("    continue?")
-    counter = 5
-    while counter > 0:
-        counter -= 1
-        time.sleep(1)
-
     if config['mapset'][region] == "yes":
+        print()
+        info("next mapset to create is " + region)
+        print()
+        print("    In the next 5 seconds you can stop ")
+        print("    building the maps with STRG+C ")
+        print()
+        print("    continue?")
+        counter = 5
+        while counter > 0:
+            counter -= 1
+            time.sleep(1)
+
         if region == args.break_after:
             print()
             warn("Stopping creating mapsets after this mapset")
 
         os.system(command_line + "-r " + region)
 
-    if region == args.break_after:
-        quit()
+        if region == args.break_after:
+            quit()
 
 
 if config.has_section('mapset_backup'):

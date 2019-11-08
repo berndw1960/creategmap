@@ -183,6 +183,10 @@ parser.add_argument('-lb', '--list_bounds', action="store_true",
                     help="list the local precomp sea or bounds")
 parser.add_argument('-rb', '--reset_bounds', action="store_true",
                     help="use the latest precomp sea or bounds")
+parser.add_argument('-nps', '--no_sea', action="store_true",
+                    help="don't use precompiled sea tiles")
+parser.add_argument('-npb', '--no_bounds', action="store_true",
+                    help="don't use precompiled bounds")
 parser.add_argument('--hourly', action="store_true",
                     help="update the raw mapdata with the hourly files")
 parser.add_argument('--minutely', action="store_true",
@@ -762,6 +766,14 @@ if args.use_sea:
     config.set('precomp', 'sea', args.use_sea)
 
 
+if args.no_sea:
+    config.set('runtime', 'no_sea', '1')
+
+
+if args.no_bounds:
+    config.set('runtime', 'no_bounds', '1')
+
+
 write_config()
 
 
@@ -849,6 +861,12 @@ else:
     splitter.split()
 
 
+#  remove test option
+if config.has_option('splitter', 'test'):
+    config.remove_option('splitter', 'test')
+    write_config()
+
+
 # --stop_after splitter
 config.read('pygmap3.cfg')
 if args.stop_after == "splitter":
@@ -860,6 +878,12 @@ if args.stop_after == "splitter":
 
 # render the map-images
 mkgmap.render()
+
+
+#  remove test option
+if config.has_option('mkgmap', 'test'):
+    config.remove_option('mkgmap', 'test')
+    write_config()
 
 
 # --stop_after mkgmap
