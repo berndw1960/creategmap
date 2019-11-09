@@ -435,7 +435,7 @@ if args.edit_opts:
                       + " = " + config[opts_region][new_key] + "\n")
                 text = (text_new_value)
                 new_value = input(text)
-                if new_value != config[opts_region][key]:
+                if new_value != config[opts_region][new_key]:
                     config.set(opts_region, new_key, new_value)
                     write_config()
             else:
