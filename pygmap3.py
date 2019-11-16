@@ -358,6 +358,12 @@ write_config()
 
 
 if args.edit_opts:
+    for folder in [WORK_DIR + "hgt/COPERNICUS",
+                   WORK_DIR + "hgt/VIEW1",
+                   WORK_DIR + "hgt/VIEW3"]:
+        if os.path.exists(folder):
+            hillshading = '1'
+
     print()
     info("You can edit these regions\n"
          + "     or enter a name for a new region\n ")
@@ -431,6 +437,10 @@ if args.edit_opts:
             new_key = int(num_key)-1
             new_key = my_list[new_key]
             if new_key != "name_tag_list":
+                if new_key in config['tdb_layer'] and hillshading == '1':
+                    print()
+                    info(" If you want to enable hillshading for this layer,"
+                         + "\n     set it to 'tdb' instead of ' yes'!")
                 print("\n    Old value:   " + new_key
                       + " = " + config[opts_region][new_key] + "\n")
                 text = (text_new_value)

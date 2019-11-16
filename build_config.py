@@ -112,6 +112,21 @@ def update():
         config.set('precomp', 'sea', 'sea-latest.zip')
         config.set('precomp', 'bounds', 'bounds-latest.zip')
 
+    if not config.has_section('routing_layer'):
+        config.add_section('routing_layer')
+        config.set('routing_layer', 'defaultmap', '1')
+        config.set('routing_layer', 'basemap', '1')
+        config.set('routing_layer', 'bikemap', '1')
+        config.set('routing_layer', 'carmap', '1')
+        config.set('routing_layer', 'olddev', '1')
+
+    if not config.has_section('tdb_layer'):
+        config.add_section('tdb_layer')
+        config.set('tdb_layer', 'defaultmap', '1')
+        config.set('tdb_layer', 'basemap', '1')
+        config.set('tdb_layer', 'bikemap', '1')
+        config.set('tdb_layer', 'carmap', '1')
+
     if config.has_section('bounds'):
         config.remove_section('bounds')
 

@@ -21,6 +21,12 @@ def error(msg):
     print("EE: " + msg)
 
 
+# configparser
+def write_config():
+    with open('pygmap3.cfg', 'w') as configfile:
+        config.write(configfile)
+
+
 config = configparser.ConfigParser()
 
 
@@ -129,6 +135,32 @@ def render():
     config.read('pygmap3.cfg')
     region = config['runtime']['region']
 
+    # Java HEAP, RAM oder Mode
+    if config['java']['agh'] == "1":
+        heap = " -XX:+AggressiveHeap "
+    else:
+        heap = (config['java']['xmx'] + config['java']['xms'])
+
+    # mkgmap-options
+
+    mkgmap = (config['mkgmap']['rev'] + "/mkgmap.jar ")
+    max_jobs = " "
+    if config['runtime']['max_jobs'] != "yes":
+        if config['runtime']['max_jobs'] == "no":
+            max_jobs = " --max-jobs=1 "
+        else:
+            max_jobs = (" --max-jobs=" + config['runtime']['max_jobs'])
+    else:
+        max_jobs = " --max-jobs "
+
+    keep_going = " "
+    if config.has_option('runtime', 'keep_going'):
+        keep_going = " --keep-going "
+
+    logging = " "
+    if config.has_option('runtime', 'logging'):
+        logging = (" -Dlog.config=" + WORK_DIR + "log.props ")
+
     global layer
     stylelist = []
     if config.has_option('runtime', 'faststyle'):
@@ -136,11 +168,11 @@ def render():
             stylelist.append(layer)
     else:
         for layer in config['mapstyles']:
-            if (layer in config[region] and
-                (config[region][layer] == "yes" or
-                 config[region][layer] == "tdb")):
+            if layer in config[region] and (config[region][layer] == "yes" or
+                                            config[region][layer] == "tdb"):
                 stylelist.append(layer)
 
+    # build the map layer
     for layer in stylelist:
         # Test for (layer)-dir and remove old data from there
 
@@ -152,93 +184,62 @@ def render():
                 if os.path.isfile(os.path.join(path, file)):
                     os.remove(os.path.join(path, file))
 
-        # Java HEAP, RAM oder Mode
-
-        if config['java']['agh'] == "1":
-            heap = " -XX:+AggressiveHeap "
-        else:
-            heap = (config['java']['xmx'] + config['java']['xms'])
-
-        # mkgmap-options
-
-        mkgmap = (config['mkgmap']['rev'] + "/mkgmap.jar ")
-        max_jobs = " "
-        if config['runtime']['max_jobs'] != "yes":
-            if config['runtime']['max_jobs'] == "no":
-                max_jobs = " --max-jobs=1 "
-            else:
-                max_jobs = (" --max-jobs=" + config['runtime']['max_jobs'])
-        else:
-            max_jobs = " --max-jobs "
-
-        keep_going = " "
-        if config.has_option('runtime', 'keep_going'):
-            keep_going = " --keep-going "
-
-        logging = " "
-        if config.has_option('runtime', 'logging'):
-            logging = (" -Dlog.config=" + WORK_DIR + "log.props ")
-
         # options to create hillshading
         dem = " "
         dem_dists = " "
         poly = " "
 
-        if layer != "fixme" or layer != "boundary":
-            if config[region][layer] == "tdb":
-                demdir = WORK_DIR + "hgt/COPERNICUS"
-                if os.path.exists(demdir):
-                    dem_temp = demdir
-                    hs = "1"
-                hgtdir1 = WORK_DIR + "hgt/VIEW1"
-                if os.path.exists(hgtdir1):
-                    dem_temp = dem_temp + "," + hgtdir1
-                    hs = "1"
-                hgtdir3 = WORK_DIR + "hgt/VIEW3"
-                if os.path.exists(hgtdir3):
-                    dem_temp = dem_temp + "," + hgtdir3
-                    hs = "1"
-                if hs == "1":
-                    dem = " --dem=" + dem_temp
-                    dem_dists = (" --dem-dists="
-                                 + config['demtdb']['demdists'])
-                    poly_file = WORK_DIR + "poly/" + region + ".poly"
-                    if os.path.exists(poly_file):
-                        poly = (" --dem-poly=" + poly_file)
+        if layer in config['tdb_layer'] and config[region][layer] == "tdb":
+            dem_temp = " "
 
-        # create a windows installer
-        if config.has_option('runtime', 'installer'):
-            installer = " --nsis --tdbfile "
-        else:
-            installer = " "
+            demdir = WORK_DIR + "hgt/COPERNICUS"
+            if os.path.exists(demdir):
+                dem_temp = demdir + ","
+                hs = "1"
+
+            hgtdir1 = WORK_DIR + "hgt/VIEW1"
+            if os.path.exists(hgtdir1):
+                dem_temp = dem_temp + hgtdir1 + ","
+                hs = "1"
+
+            hgtdir3 = WORK_DIR + "hgt/VIEW3"
+            if os.path.exists(hgtdir3):
+                dem_temp = dem_temp + hgtdir3
+                hs = "1"
+
+            if hs == "1":
+                dem = " --dem=" + dem_temp
+                dem_dists = (" --dem-dists=" + config['demtdb']['demdists'])
+
+                poly_file = WORK_DIR + "poly/" + region + ".poly"
+                if os.path.exists(poly_file):
+                    poly = (" --dem-poly=" + poly_file)
+            else:
+                print()
+                warn("Couldn't enable hillshading for thie layer")
 
         # set the name tag list
-        if layer == "fixme" or layer == "boundary":
-            name_tag_list = " "
-        elif config.has_option(region, 'name_tag_list'):
-            name_tag_list = (" --name-tag-list="
-                             + config[region]['name_tag_list'])
-        else:
-            name_tag_list = (" --name-tag-list="
-                             + config['name_tag_list']['default'])
+        if layer in config['routing_layer']:
+            if config.has_option(region, 'name_tag_list'):
+                name_tag_list = (" --name-tag-list="
+                                 + config[region]['name_tag_list'])
+            else:
+                name_tag_list = (" --name-tag-list="
+                                 + config['name_tag_list']['default'])
 
         # settings for precomp bounds and sea
-        if layer == "fixme" or layer == "boundary":
-            bounds = " "
-        else:
-            bounds = " --location-autofill=is_in,nearest "
-
+        if layer in config['routing_layer']:
             if config.has_option('runtime', 'no_bounds'):
-                pass
+                bounds = " --location-autofill=is_in,nearest "
             elif config.has_option('precomp', 'bounds'):
                 bounds_zip = (WORK_DIR + "precomp/"
                               + config['precomp']['bounds'])
                 if os.path.exists(bounds_zip):
                     bounds = " --bounds=" + bounds_zip
-
-        if layer == "fixme" or layer == "boundary":
-            sea = " "
         else:
+            bounds = " "
+
+        if layer in config['routing_layer']:
             sea = (" --generate-sea=extend-sea-sectors,"
                    + "close-gaps=6000,floodblocker,"
                    + "land-tag=natural=background ")
@@ -250,12 +251,24 @@ def render():
                 if os.path.exists(sea_zip):
                     sea = (" --precomp-sea="
                            + sea_zip + " --generate-sea ")
+        else:
+            sea = " "
 
-        # style options
-        defaultmap_opts = (" --split-name-index "
-                           + " --route "
-                           + " --housenumbers "
-                           + " --index ")
+        # exclude routing island
+        if layer in config['routing_layer']:
+            routing_islands = " --check-routing-island-len=500 "
+        else:
+            routing_islands = " "
+
+        # style options for routing layer
+        if layer in config['routing_layer']:
+            defaultmap_opts = (" --split-name-index "
+                               + " --route "
+                               + " --housenumbers "
+                               + " --index ")
+        else:
+            defaultmap_opts = " "
+
         style_opts = WORK_DIR + "styles/" + layer + "_style/options"
         base_opts = WORK_DIR + "styles/options "
 
@@ -268,21 +281,22 @@ def render():
 
         if config.has_option('runtime', 'use_spec_opts'):
             spec_opts = (" --report-similar-arcs --report-dead-ends ")
-        elif config.has_option('mkgmap', 'test'):
-            if config['mkgmap']['test'] == "NET-no-NOD":
-                spec_opts = " --check-routing-island-len=500 "
         else:
             spec_opts = " "
 
         # street name index options
         index = (WORK_DIR + config['mkgmap']['rev'] +
                  "/examples/roadNameConfig.txt")
-        if layer == "fixme" or layer == "boundary":
-            index_opts = " "
-        elif os.path.exists(index):
+        if layer in config['routing_layer']:
             index_opts = (" --road-name-config=" + index)
         else:
             index_opts = " "
+
+        # create a windows installer
+        if config.has_option('runtime', 'installer'):
+            installer = " --nsis --tdbfile "
+        else:
+            installer = " "
 
         # use  TYP or TXT
         typ_txt_test()
@@ -301,6 +315,7 @@ def render():
                         + max_jobs
                         + bounds
                         + sea
+                        + routing_islands
                         + " --style-file=" + style_file
                         + name_tag_list
                         + " --levels=" + config['maplevel']['levels']
