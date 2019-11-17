@@ -120,6 +120,13 @@ def update():
         config.set('routing_layer', 'carmap', '1')
         config.set('routing_layer', 'olddev', '1')
 
+    if not config.has_section('non_routing_layer'):
+        config.add_section('routing_layer')
+        config.set('routing_layer', 'boundary', '1')
+        config.set('routing_layer', 'fixme', '1')
+        config.set('routing_layer', 'housenumber', '1')
+        config.set('routing_layer', 'bikeroute', '1')
+
     if not config.has_section('tdb_layer'):
         config.add_section('tdb_layer')
         config.set('tdb_layer', 'defaultmap', '1')
