@@ -254,11 +254,12 @@ def render():
         else:
             sea = " "
 
-        # exclude routing island
-        if layer in config['routing_layer']:
-            routing_islands = " --check-routing-island-len=500 "
-        else:
-            routing_islands = " "
+#        # exclude routing island
+#        # add '+ routing_islands' to the mkgmap options!
+#        if layer in config['routing_layer']:
+#            routing_islands = " --check-routing-island-len=500 "
+#        else:
+#            routing_islands = " "
 
         # style options for routing layer
         if layer in config['routing_layer']:
@@ -315,7 +316,6 @@ def render():
                         + max_jobs
                         + bounds
                         + sea
-                        + routing_islands
                         + " --style-file=" + style_file
                         + name_tag_list
                         + " --levels=" + config['maplevel']['levels']
