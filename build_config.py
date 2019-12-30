@@ -121,7 +121,7 @@ def update():
         config.set('routing_layer', 'olddev', '1')
 
     if not config.has_section('non_routing_layer'):
-        config.add_section('routing_layer')
+        config.add_section('non_routing_layer')
         config.set('non_routing_layer', 'boundary', '1')
         config.set('non_routing_layer', 'fixme', '1')
         config.set('non_routing_layer', 'housenumber', '1')
