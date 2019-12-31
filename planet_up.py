@@ -126,23 +126,11 @@ if not os.path.exists("planet/planet.o5m"):
 config = configparser.ConfigParser()
 
 
-def write_config():
-    with open('pygmap3.cfg', 'w') as configfile:
-        config.write(configfile)
-
-
 if not os.path.exists("pygmap3.cfg"):
     build_config.create()
 
 
 config.read('pygmap3.cfg')
-
-
-if 'planet' not in config:
-    config.add_section('planet')
-
-
-write_config()
 
 
 command_line = (" osmupdate -v --daily --keep-tempfiles "
