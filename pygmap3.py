@@ -31,14 +31,14 @@ import mkgmap
 import store
 
 
-__version__ = "0.9.60"
+__version__ = "1.0.0"
 __author__ = "Bernd Weigelt"
-__copyright__ = "Copyright 2018 Bernd Weigelt"
+__copyright__ = "Copyright 2020 Bernd Weigelt"
 __credits__ = "Franco B."
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
-__status__ = "RC"
+__status__ = "released"
 
 
 WORK_DIR = os.environ['HOME'] + "/map_build/"

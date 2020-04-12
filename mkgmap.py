@@ -34,8 +34,6 @@ def typ_txt_test():
     os.chdir(WORK_DIR)
     global typ_file
     global style_file
-    typ_file = WORK_DIR + "styles/styles_typ.typ"
-    txt_file = WORK_DIR + "styles/styles_typ.txt"
 
     if (layer == "defaultmap"):
         typ_file = " "
@@ -43,31 +41,19 @@ def typ_txt_test():
                       + config['mkgmap']['rev']
                       + "/examples/styles/default/ ")
     else:
-        if os.path.exists(typ_file) and os.path.exists(txt_file):
-            m1 = os.path.getmtime(typ_file)
-            m2 = os.path.getmtime(txt_file)
-            if m1 > m2:
-                typ_file = typ_file
-            elif m2 > m1:
-                typ_file = txt_file
-                print()
-                warn("styles_typ.typ and styles_typ.txt exist, "
-                     + " use the newer file")
-                print()
-                info("typ_file   = " + typ_file)
-                print()
-        elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.typ"):
+        if os.path.exists(WORK_DIR + "styles/" + layer + "_typ.typ"):
             typ_file = WORK_DIR + "styles/" + layer + "_typ.typ"
         elif os.path.exists(WORK_DIR + "styles/" + layer + "_typ.txt"):
             typ_file = WORK_DIR + "styles/" + layer + "_typ.txt"
-        elif os.path.exists(typ_file):
-            typ_file = typ_file
-        elif os.path.exists(txt_file):
-            typ_file = txt_file
+        elif os.path.exists(WORK_DIR + "styles/styles_typ.typ"):
+            typ_file = WORK_DIR + "styles/styles_typ.typ"
+        elif os.path.exists(WORK_DIR + "styles/styles_typ.txt"):
+            typ_file = WORK_DIR + "styles/styles_typ.txt"
         else:
             print()
             warn(layer + " build without a typ_file")
             typ_file = " "
+
         style_file = (WORK_DIR + "styles/" + layer + "_style ")
 
 
@@ -188,6 +174,7 @@ def render():
         dem = " "
         dem_dists = " "
         poly = " "
+        show_profiles = " "
 
         if layer in config['tdb_layer'] and config[region][layer] == "tdb":
             dem_temp = " "
@@ -210,13 +197,14 @@ def render():
             if hs == "1":
                 dem = " --dem=" + dem_temp
                 dem_dists = (" --dem-dists=" + config['demtdb']['demdists'])
+                show_profiles = (" --show-profiles=1 ")
 
                 poly_file = WORK_DIR + "poly/" + region + ".poly"
                 if os.path.exists(poly_file):
                     poly = (" --dem-poly=" + poly_file)
             else:
                 print()
-                warn("Couldn't enable hillshading for thie layer")
+                warn("Couldn't enable hillshading for this layer")
 
         # set the name tag list
         if layer in config['routing_layer']:
@@ -321,6 +309,7 @@ def render():
                         + " --levels=" + config['maplevel']['levels']
                         + dem
                         + dem_dists
+                        + show_profiles
                         + poly
                         + " --mapname=" + config[region]['mapid']
                         + config[layer]['mapid_ext']

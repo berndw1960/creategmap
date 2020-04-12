@@ -13,13 +13,13 @@
 """
 
 
-__version__ = "0.9.60"
+__version__ = "1.0.0"
 __author__ = "Bernd Weigelt"
-__copyright__ = "Copyright 2012 Bernd Weigelt"
+__copyright__ = "Copyright 2020 Bernd Weigelt"
 __license__ = "AGPLv3"
 __maintainer__ = "Bernd Weigelt"
 __email__ = "weigelt.bernd@web.de"
-__status__ = "RC"
+__status__ = "released"
 
 import os
 import argparse
