@@ -207,6 +207,7 @@ def render():
                 warn("Couldn't enable hillshading for this layer")
 
         # set the name tag list
+        name_tag_list = ""
         if layer in config['routing_layer']:
             if config.has_option(region, 'name_tag_list'):
                 name_tag_list = (" --name-tag-list="
