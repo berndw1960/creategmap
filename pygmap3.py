@@ -648,9 +648,12 @@ if args.no_aggressiveheap:
     config.set('java', 'agh', '0')
 
 
-if config['java']['agh'] == "0":
+if args.xmx:
     if args.xmx != config['java']['xmx']:
         config.set('java', 'xmx', "-Xmx" + str(args.xmx))
+
+
+if args.xms:
     if args.xms != config['java']['xms']:
         config.set('java', 'xms', "-Xms" + str(args.xms))
 
