@@ -75,6 +75,8 @@ parser.add_argument('-em', '--enable_mapset', default=0, nargs='*',
                     help="enable a space separated list of mapsets")
 parser.add_argument('-ea', '--enable_all', action="store_true",
                     help="enable all mapsets")
+parser.add_argument('-rst', '--restore', action="store_true",
+                    help="restore mapsets from mapset_backup")
 parser.add_argument('-dm', '--disable_mapset', default=0, nargs='*',
                     help="disable a space separated list of mapsets")
 parser.add_argument('-da', '--disable_all', action="store_true",
@@ -119,6 +121,18 @@ def mapset_backup():
     for key in (config['mapset']):
         config.set('mapset_backup', key, config['mapset'][key])
         config.set('mapset', key, 'no')
+
+
+def mapset_restore():
+    if config.has_section('mapset'):
+        config.remove_section('mapset')
+    config.add_section('mapset')
+    for key in (config['mapset_backup']):
+        config.set('mapset', key, config['mapset_backup'][key])
+        config.remove_option('mapset_backup', key)
+    config.remove_section('mapset_backup')
+    if config.has_option('runtime', 'fix_mapset'):
+        config.remove_option('runtime', 'fix_mapset')
 
 
 if args.faststyle:
@@ -209,34 +223,33 @@ if args.add_mapset:
     quit()
 
 
+if args.restore:
+    if config.has_section('mapset_backup'):
+        mapset_restore()
+        write_config()
+        quit()
+
 if args.enable_mapset:
-    if args.enable_mapset == "ALL":
-        mapset_backup()
-        for region in (config['mapset']):
-            config.set('mapset', region, 'yes')
-    else:
-        for region in args.enable_mapset:
-            config.set('mapset', region, 'yes')
-    write_config()
-    quit()
-
-
-if args.enable_all:
-    mapset_backup()
-    for region in (config['mapset']):
+    for region in args.enable_mapset:
         config.set('mapset', region, 'yes')
     write_config()
     quit()
 
 
+if args.enable_all:
+    if config.has_option('runtime', 'fix_mapset'):
+        quit()
+    mapset_backup()
+    for region in (config['mapset']):
+        config.set('mapset', region, 'yes')
+    config.set('runtime', 'fix_mapset', '1')
+    write_config()
+    quit()
+
+
 if args.disable_mapset:
-    if args.disable_mapset == "ALL":
-        mapset_backup()
-        for region in (config['mapset']):
-            config.set('mapset', region, 'no')
-    else:
-        for region in args.disable_mapset:
-            config.set('mapset', region, 'no')
+    for region in args.disable_mapset:
+        config.set('mapset', region, 'no')
     write_config()
     quit()
 
@@ -359,13 +372,7 @@ for region in config['mapset']:
 
 
 if config.has_section('mapset_backup'):
-    if config.has_section('mapset'):
-        config.remove_section('mapset')
-    config.add_section('mapset')
-    for key in (config['mapset_backup']):
-        config.set('mapset', key, config['mapset_backup'][key])
-        config.remove_option('mapset_backup', key)
-    config.remove_section('mapset_backup')
+    mapset_restore()
 
 
 if config.has_section('faststyle'):
