@@ -227,7 +227,9 @@ if args.restore:
     if config.has_section('mapset_backup'):
         mapset_restore()
         write_config()
-        quit()
+    quit()
+
+
 
 if args.enable_mapset:
     for region in args.enable_mapset:
