@@ -230,13 +230,15 @@ if args.restore:
     quit()
 
 
-
 if args.enable_mapset:
     for region in args.enable_mapset:
         config.set('mapset', region, 'yes')
     write_config()
     quit()
 
+
+# 'fix_mapset' to prevent overwriting mapset_backup
+# if 'args.enable_all' is used twice or more
 
 if args.enable_all:
     if config.has_option('runtime', 'fix_mapset'):
