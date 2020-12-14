@@ -37,9 +37,9 @@ def typ_txt_test():
 
     if (layer == "defaultmap"):
         typ_file = " "
-        style_file = ("--style-file=" + WORK_DIR
+        style_file = (WORK_DIR
                       + config['mkgmap']['rev']
-                      + "/examples/styles/default/ ")
+                      + "/examples/styles/default ")
     else:
         if os.path.exists(WORK_DIR + "styles/" + layer + "_typ.typ"):
             typ_file = WORK_DIR + "styles/" + layer + "_typ.typ"
