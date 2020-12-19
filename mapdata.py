@@ -132,7 +132,7 @@ def update_o5m():
     poly = " "
     if os.path.exists("poly/" + region + ".poly"):
         poly = " -B=poly/" + region + ".poly "
-    os.system("osmupdate --daily"
+    os.system("osmupdate --daily "
               + "--drop-version "
               + "--drop-author "
               + update_opts
