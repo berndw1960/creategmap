@@ -106,21 +106,6 @@ for tool in ['osmconvert', 'osmupdate', 'osmfilter']:
     hint = tool + " missed, please use mk_osmtools to build it from sources"
     checkprg(tool, hint)
 
-if os.path.exists("o5m/planet.o5m"):
-    print()
-    error("please move planet.o5m to " + WORK_DIR + "planet/")
-    quit()
-
-if not os.path.exists("planet/planet.o5m"):
-    print()
-    os.chdir("planet/")
-    info("Download started. Size ~50 Gigabytes... please wait! ")
-    os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/"
-              + "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
-    os.system("osmconvert planet-latest.osm.pbf -o=planet.o5m")
-    os.remove("planet-latest.osm.pbf")
-    os.chdir(WORK_DIR)
-
 
 # check for pygmap3.cfg
 config = configparser.ConfigParser()
@@ -133,8 +118,20 @@ if not os.path.exists("pygmap3.cfg"):
 config.read('pygmap3.cfg')
 
 
+os.chdir("planet/")
+
+
+if not os.path.exists("planet.osm.pbf"):
+    print()
+    info("Download started. Size ~50 Gigabytes... please wait! ")
+    os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/"
+              + "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
+    os.rename("planet-latest.osm.pbf", "planet.osm.pbf")
+    os.chdir(WORK_DIR)
+
+
 command_line = (" osmupdate -v --daily --keep-tempfiles "
-                + "planet/planet.o5m planet/planet_new.o5m")
+                + "planet.osm.pbf planet_new.osm.pbf")
 
 
 if args.verbose:
@@ -149,14 +146,11 @@ os.system(command_line)
 print()
 
 
-os.chdir("planet/")
-
-
-if os.path.exists("planet_new.o5m"):
-    os.rename("planet.o5m", "planet_temp.o5m")
-    os.rename("planet_new.o5m", "planet.o5m")
-    if os.path.exists("planet.o5m"):
-        os.remove("planet_temp.o5m")
+if os.path.exists("planet_new.osm.pbf"):
+    os.rename("planet.osm.pbf", "planet_temp.osm.pbf")
+    os.rename("planet_new.osm.pbf", "planet.osm.pbf")
+    if os.path.exists("planet.osm.pbf"):
+        os.remove("planet_temp.osm.pbf")
 
 
 # create the bounds from planet
@@ -164,7 +158,7 @@ if os.path.exists("planet_new.o5m"):
 
 if args.create_bounds:
 
-    command_line = ("osmfilter -v planet.o5m  --keep-nodes= "
+    command_line = ("osmfilter -v planet.osm.pbf  --keep-nodes= "
                     + "--keep-ways-relations='boundary=administrative "
                     + "=postal_code postal_code=' "
                     + "--drop-tags='created_by= source= building= "

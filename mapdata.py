@@ -34,6 +34,12 @@ config = configparser.ConfigParser()
 
 
 # cut data from planet-file
+def error_raw_data():
+    message = (" \n "
+               " Oops, something went wrong while creating the raw data file "
+               " \n ")
+    print(message)
+    quit()
 
 
 def create_o5m():
@@ -42,25 +48,33 @@ def create_o5m():
     config.read('pygmap3.cfg')
     region = config['runtime']['region']
 
-    if os.path.exists("o5m/" + region + "osm.pbf"):
+    if os.path.exists("pbf/" + region + "osm.pbf"):
         print()
-        info("converting o5m/" + region
+        info("converting pbf/" + region
              + ".osm.pbf to o5m/" + region
              + ".o5m, please wait...")
-        os.system("osmconvert o5m/" + region
+        os.system("osmconvert pbf/" + region
                   + ".osm.pbf -o=o5m/" + region
                   + ".o5m")
+        if os.path.exists("o5m/" + region + ".o5m"):
+            os.remove("pbf/" + region + ".osm.pbf")
+        else:
+            error_raw_data()
 
-    elif os.path.exists("o5m/" + region + "-latest.osm.pbf"):
+    elif os.path.exists("pbf/" + region + "-latest.osm.pbf"):
         print()
-        info("converting o5m/" + region
+        info("converting pbf/" + region
              + "-latest.osm.pbf to o5m/" + region
              + ".o5m, please wait...")
-        os.system("osmconvert o5m/" + region +
+        os.system("osmconvert pbf/" + region +
                   "-latest.osm.pbf -o=o5m/" + region + ".o5m")
+        if os.path.exists("o5m/" + region + ".o5m"):
+            os.remove("pbf/" + region + "-latest.osm.pbf")
+        else:
+            error_raw_data()
 
-    elif os.path.exists("planet/planet.o5m"):
-        ftime = os.path.getmtime("planet/planet.o5m")
+    elif os.path.exists("planet/planet.osm.pbf"):
+        ftime = os.path.getmtime("planet/planet.osm.pbf")
         curtime = time.time()
         difftime = curtime - ftime
         if difftime > 1741800:
@@ -71,7 +85,7 @@ def create_o5m():
             print()
             info("now extracting " + region
                  + ".o5m from Planet, please wait...")
-            os.system("osmconvert planet/planet.o5m "
+            os.system("osmconvert planet/planet.osm.pbf "
                       + "--complete-ways --complex-ways --drop-version "
                       + " -B=poly/" + region + ".poly "
                       + " -o=o5m/" + region + ".o5m")

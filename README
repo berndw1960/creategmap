@@ -49,16 +49,34 @@ mapset.py -     if you want to build more than one mapset, as example dach and
 pygmap3.py -    the main script, start it without any option to create map
                 for Germany with the default style of mkgmap
 
-                you need a poly file of the region, if you want to build your
-                choice of region
+                you need a poly file of the region, 
+                if you want to build yourchoice of region, store this file 
+                in the subfolder poly.
                 search for osm2poly and poly2osm in the web, if you want to
                 create a poly file from scratch.
 
-                if you want to create your maps with your own styles,
-                you have to do some work
+                you can also use rawdata files like germany-latest.osm.pbf from
+                https://download.geofabrik.de
+                store this file in a subfolder of the work dir named pbf.
+                the same is possible with o5m files, store these files in the
+                subfolder o5m.
+                files with names like germany or germany-latest.[pbf|o5m] can be used.
+                to prevent large updates, download a poly for this region, too, and 
+                store it in the folder poly.                i
 
-                add a folder named {your_map}_style and a textbased file
-                named {your_map}_typ.txt to the folder 'styles'
+                it is also possible to use a planet file to create the raw data, but
+                this download is huge, in 2020 ~55 GB.
+                extracting raw data from a planet is very slow, so try to use smaller
+                extracts
+
+                all raw data from pbf files will be converted to o5m,
+                stored, updated and used in future builds.
+
+                if you want to create your maps with your own styles,
+                you have to do some work:
+
+                    add a folder named {your_map}_style and a textbased file
+                    named {your_map}_typ.txt to the folder 'styles'
 
                 you can also use our fork of the AIO, copy the complete
                 repository to 'styles'
