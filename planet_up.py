@@ -118,20 +118,20 @@ if not os.path.exists("pygmap3.cfg"):
 config.read('pygmap3.cfg')
 
 
-os.chdir("planet/")
 
 
-if not os.path.exists("planet.osm.pbf"):
+
+if not os.path.exists("planet/planet.osm.pbf"):
     print()
     info("Download started. Size ~50 Gigabytes... please wait! ")
     os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/"
               + "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
-    os.rename("planet-latest.osm.pbf", "planet.osm.pbf")
+    os.rename("planet/planet-latest.osm.pbf", "planet/planet.osm.pbf")
     os.chdir(WORK_DIR)
 
 
 command_line = (" osmupdate -v --daily --keep-tempfiles "
-                + "planet.osm.pbf planet_new.osm.pbf")
+                + "planet/planet.osm.pbf planet/planet_new.osm.pbf")
 
 
 if args.verbose:
@@ -142,7 +142,7 @@ if args.verbose:
 
 os.system(command_line)
 
-
+os.chdir("planet/")
 print()
 
 
