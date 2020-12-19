@@ -54,6 +54,8 @@ def create_o5m():
              + ".osm.pbf to o5m/" + region
              + ".o5m, please wait...")
         os.system("osmconvert pbf/" + region
+                  + "--drop-version "
+                  + "--drop-author "
                   + ".osm.pbf -o=o5m/" + region
                   + ".o5m")
         if os.path.exists("o5m/" + region + ".o5m"):
@@ -66,8 +68,10 @@ def create_o5m():
         info("converting pbf/" + region
              + "-latest.osm.pbf to o5m/" + region
              + ".o5m, please wait...")
-        os.system("osmconvert pbf/" + region +
-                  "-latest.osm.pbf -o=o5m/" + region + ".o5m")
+        os.system("osmconvert pbf/" + region
+                  + "--drop-version "
+                  + "--drop-author "
+                  + "-latest.osm.pbf -o=o5m/" + region + ".o5m")
         if os.path.exists("o5m/" + region + ".o5m"):
             os.remove("pbf/" + region + "-latest.osm.pbf")
         else:

@@ -131,6 +131,8 @@ if not os.path.exists("planet/planet.osm.pbf"):
 
 
 command_line = (" osmupdate -v --daily --keep-tempfiles "
+                + "--drop-version "
+                + "--drop-author "
                 + "planet/planet.osm.pbf planet/planet_new.osm.pbf")
 
 
