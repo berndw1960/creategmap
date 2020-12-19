@@ -185,7 +185,7 @@ if args.create_bounds:
     if config['java']['agh'] == "1":
         heap = " -XX:+AggressiveHeap "
     else:
-        heap = config['java']['xmx'] + config['java']['xms']
+        heap = config['java']['xmx'] + ' ' + config['java']['xms']
 
     command_line = ("java -ea " +
                     heap +

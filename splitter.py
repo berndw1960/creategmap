@@ -36,7 +36,7 @@ def split():
     if config['java']['agh'] == "1":
         heap = " -XX:+AggressiveHeap "
     else:
-        heap = (config['java']['xmx'] + config['java']['xms'])
+        heap = (config['java']['xmx'] + ' ' + config['java']['xms'])
 
     java_opts = "java -ea " + heap + " -jar " + WORK_DIR + splitter
     log_opts = " > splitter.log "
