@@ -48,7 +48,7 @@ def create_o5m():
     config.read('pygmap3.cfg')
     region = config['runtime']['region']
 
-    if os.path.exists("pbf/" + region + "osm.pbf"):
+    if os.path.exists("pbf/" + region + ".osm.pbf"):
         print()
         info("converting pbf/" + region
              + ".osm.pbf to o5m/" + region
