@@ -86,7 +86,11 @@ def create_o5m():
             info("now extracting " + region
                  + ".o5m from Planet, please wait...")
             os.system("osmconvert planet/planet.osm.pbf "
-                      + "--complete-ways --complex-ways --drop-version "
+                      + "--complete-ways "
+                      + "--complete-multipolygons "
+                      + "--complete-boundaries "
+                      + "--drop-version "
+                      + "--drop-author "
                       + " -B=poly/" + region + ".poly "
                       + " -o=o5m/" + region + ".o5m")
         else:
