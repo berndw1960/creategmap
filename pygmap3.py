@@ -159,7 +159,7 @@ parser.add_argument('-lp',  '--list_poly', action="store_true",
                     help="list all poly files in " + WORK_DIR + "poly ")
 parser.add_argument('-lo', '--list_o5m', action="store_true",
                     help=" list all O5M files in " + WORK_DIR + "o5m ")
-parser.add_argument('-s', '--set_default', default=0,
+parser.add_argument('-s', '--set_default', action="store_true",
                     help="set region to build as new default")
 
 # mapstyle handling
@@ -303,7 +303,7 @@ if args.list_regions:
 
 # set default region
 if args.set_default or not config.has_option('runtime', 'default_region'):
-    region = input(" \n\n "
+    region = input(" \n\n"
                    + "    Which should be your default map region? \n"
                    + "    You can build this region without any option\n"
                    + "    for pygmap3.py in the future.\n\n"
