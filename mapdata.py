@@ -77,6 +77,36 @@ def create_o5m():
         else:
             error_raw_data()
 
+    elif os.path.exists("planet/planet.o5m"):
+        ftime = os.path.getmtime("planet/planet.o5m")
+        curtime = time.time()
+        difftime = curtime - ftime
+        if difftime > 1741800:
+            print()
+            warn("Your planet file is older then one month")
+            print("    You should update it.")
+        if os.path.exists("poly/" + region + ".poly"):
+            print()
+            info("now extracting " + region
+                 + ".o5m from Planet, please wait...")
+            os.system("osmconvert planet/planet.o5m "
+                      + "--complete-ways "
+                      + "--complete-multipolygons "
+                      + "--complete-boundaries "
+                      + "--drop-version "
+                      + "--drop-author "
+                      + " -B=poly/" + region + ".poly "
+                      + " -o=o5m/" + region + ".o5m")
+        else:
+            print()
+            error("missing poly/" + region + ".poly")
+            print()
+            info("created it or try to get one from \n\n"
+                 + " http://download.geofabrik.de \n\n "
+                 + " or use another source for this file")
+            print()
+            quit()
+
     elif os.path.exists("planet/planet.osm.pbf"):
         ftime = os.path.getmtime("planet/planet.osm.pbf")
         curtime = time.time()
