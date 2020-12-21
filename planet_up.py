@@ -23,8 +23,6 @@ __status__ = "released"
 
 import os
 import argparse
-import configparser
-import build_config
 
 
 WORK_DIR = (os.environ['HOME'] + "/map_build/")
@@ -70,20 +68,22 @@ def is_there(find, solutionhint):
 hint = ("mkdir " + WORK_DIR)
 is_there(WORK_DIR, hint)
 
+
 os.chdir(WORK_DIR)
 
+
+for dir in ['planet', 'o5m']:
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
+
 # argparse
-
-
 parser = argparse.ArgumentParser(
         prog='PROG',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=('''\
 
             To create and update a local copy of the OSM planet file
-            There is a option to create new precomp boundaries
-            from the planet file, useful if the server thkukuk.de is
-            not reachable
 
         '''))
 
@@ -91,9 +91,6 @@ parser = argparse.ArgumentParser(
 
          prog='PROG',
          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-parser.add_argument('-v', '--verbose', action="store_true",
-                    help=False)
 
 args = parser.parse_args()
 
@@ -103,49 +100,70 @@ for tool in ['osmconvert', 'osmupdate', 'osmfilter']:
     checkprg(tool, hint)
 
 
-# check for pygmap3.cfg
-config = configparser.ConfigParser()
+os.chdir(WORK_DIR + "/planet")
 
 
-if not os.path.exists("pygmap3.cfg"):
-    build_config.create()
-
-
-config.read('pygmap3.cfg')
-
-
-if not os.path.exists("planet/planet.osm.pbf"):
+if not os.path.exists("planet.osm.pbf") and not os.path.exists("planet.o5m"):
     print()
     info("Download started. Size ~50 Gigabytes... please wait! ")
+
     os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/"
               + "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
-    os.rename("planet/planet-latest.osm.pbf", "planet/planet.osm.pbf")
-    os.chdir(WORK_DIR)
+
+    conv_hint = ("\n\n Download successful!"
+                 + "\n You can now convert the downloaded planet file,"
+                 + "\n from OSM.PBF to O5M. "
+                 + "\n O5M stores the raw data in a larger file, ~40 percent,"
+                 + "\n but extracting data is much faster. Converting the file"
+                 + "\n take 15 to 20 minutes on a fast drive."
+                 + "\n\n Start converting? [Y|n]")
+    conv = input(conv_hint)
+    if conv != "n":
+        os.system("osmconvert "
+                  + "--drop-version "
+                  + "--drop-author "
+                  + "planet-latest.osm.pbf -o=planet.o5m")
+        if os.path.exists("planet.o5m"):
+            os.remove("planet-latest.osm.pbf")
+    else:
+        os.remane("planet-latest.osm.pbf", "planet.osm.pbf")
+        print()
+        info("if needed in the future, you can convert the planet file"
+             + "\n in the planet dir with "
+             + "\n\n       'osmconvert planet.osm.pbf -o=planet.o5m' ")
 
 
-command_line = (" osmupdate -v --daily --keep-tempfiles "
-                + "--drop-version "
-                + "--drop-author "
-                + "planet/planet.osm.pbf planet/planet_new.osm.pbf")
-
-
-if args.verbose:
-    print()
-    print(command_line)
-    print()
-
-
-os.system(command_line)
-
-os.chdir("planet/")
+# updating the planet file(s)
+print()
+info("Now updating the existing planet file(s)")
 print()
 
 
-if os.path.exists("planet_new.osm.pbf"):
-    os.rename("planet.osm.pbf", "planet_temp.osm.pbf")
-    os.rename("planet_new.osm.pbf", "planet.osm.pbf")
-    if os.path.exists("planet.osm.pbf"):
-        os.remove("planet_temp.osm.pbf")
+# to use only one temp dir for osmupdate work one level higher
+os.chdir(WORK_DIR)
+
+
+if os.path.exists("planet/planet.o5m"):
+    os.rename("planet/planet.o5m", "planet/planet_temp.o5m")
+    os.system(" osmupdate -v --daily --keep-tempfiles "
+              + "--drop-version "
+              + "--drop-author "
+              + "planet/planet_temp.o5m planet/planet.o5m ")
+    if os.path.exists("planet/planet.o5m"):
+        os.remove("planet/planet_temp.o5m")
+
+
+if os.path.exists("planet/planet.osm.pbf"):
+    os.rename("planet/planet.osm.pbf", "planet/plamet_temp.osm.pbf")
+    os.system(" osmupdate -v --daily --keep-tempfiles "
+              + "--drop-version "
+              + "--drop-author "
+              + "planet/planet_temp.osm.pbf planet/planet.osm.pbf")
+    if os.path.exists("planet/planet.osm.pbf"):
+        os.remove("planet/planet_temp.osm.pbf")
+
+
+print()
 
 
 info("Habe fertig!")

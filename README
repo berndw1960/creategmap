@@ -66,7 +66,7 @@ pygmap3.py -    the main script, start it without any option to create map
 
                 it is also possible to use a planet file to create the raw data, but
                 this download is huge, in 2020 ~55 GB.
-                extracting raw data from a planet is very slow, so try to use smaller
+                extracting raw data from a planet is slow, so try to use smaller
                 extracts
 
                 all raw data from pbf files will be converted to o5m,
