@@ -71,6 +71,9 @@ def create_o5m():
                           + "--drop-author "
                           + "-B=poly/" + region + ".poly "
                           + " -o=o5m/" + region + ".o5m ")
+
+            break
+
         else:
             print()
             error("No planet file found, couldn't extract the raw data!")
