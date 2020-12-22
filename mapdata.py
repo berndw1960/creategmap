@@ -48,59 +48,34 @@ def create_o5m():
         print()
         quit()
 
-    # extracting from planet.o5m --> region.o5m with poly
-    if os.path.exists("planet/planet.o5m"):
-        ftime = os.path.getmtime("planet/planet.o5m")
-        curtime = time.time()
-        difftime = curtime - ftime
+    for planet in ["planet/planet.o5m", "planet/planet.osm.pbf"]:
+        if os.path.exists(planet):
+            ftime = os.path.getmtime(planet)
+            curtime = time.time()
+            difftime = curtime - ftime
 
-        if difftime > 1741800:
+            if difftime > 1741800:
+                print()
+                warn("Your planet file is older then one month")
+                print("    You should update it.")
+
+            if os.path.exists("poly/" + region + ".poly"):
+                print()
+                info("now extracting " + region
+                     + ".o5m from Planet, please wait...")
+                os.system("osmconvert " + planet + " "
+                          + "--complete-ways "
+                          + "--complete-multipolygons "
+                          + "--complete-boundaries "
+                          + "--drop-version "
+                          + "--drop-author "
+                          + "-B=poly/" + region + ".poly "
+                          + " -o=o5m/" + region + ".o5m ")
+        else:
             print()
-            warn("Your planet file is older then one month")
-            print("    You should update it.")
-
-        if os.path.exists("poly/" + region + ".poly"):
+            error("No planet file found, couldn't extract the raw data!")
             print()
-            info("now extracting " + region
-                 + ".o5m from Planet, please wait...")
-            os.system("osmconvert planet/planet.o5m "
-                      + "--complete-ways "
-                      + "--complete-multipolygons "
-                      + "--complete-boundaries "
-                      + "--drop-version "
-                      + "--drop-author "
-                      + "-B=poly/" + region + ".poly "
-                      + " -o=o5m/" + region + ".o5m ")
-
-    # extracting from planet.osm.pbf--> region.o5m with poly
-    elif os.path.exists("planet/planet.osm.pbf"):
-        ftime = os.path.getmtime("planet/planet.osm.pbf")
-        curtime = time.time()
-        difftime = curtime - ftime
-
-        if difftime > 1741800:
-            print()
-            warn("Your planet file is older then one month")
-            print("    You should update it.")
-
-        if os.path.exists("poly/" + region + ".poly"):
-            print()
-            info("now extracting " + region
-                 + ".o5m from Planet, please wait...")
-            os.system("osmconvert planet/planet.osm.pbf "
-                      + "--complete-ways "
-                      + "--complete-multipolygons "
-                      + "--complete-boundaries "
-                      + "--drop-version "
-                      + "--drop-author "
-                      + "-B=poly/" + region + ".poly "
-                      + " -o=o5m/" + region + ".o5m ")
-
-    else:
-        print()
-        error((WORK_DIR) + "o5m/" + region + ".o5m not found! ")
-        print()
-        quit()
+            quit()
 
 
 def update_o5m():
