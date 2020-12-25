@@ -103,9 +103,8 @@ def update_o5m():
               + "--drop-author "
               + update_opts
               + poly
-              + " --keep-tempfiles o5m/"
-              + region +
-              ".o5m  o5m/" + region + "_new.o5m")
+              + "--keep-tempfiles "
+              + "o5m/" + region + ".o5m  o5m/" + region + "_new.o5m")
 
     os.chdir("o5m")
 
