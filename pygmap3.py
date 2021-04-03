@@ -703,11 +703,11 @@ if args.dem_dists != config['demtdb']['demdists']:
 
 
 if args.ed_user:
-    config.set('runtime', 'ed_user', args.ed_user)
+    config.set('earthdata', 'ed_user', args.ed_user)
 
 
 if args.ed_pwd:
-    config.set('runtime', 'ed_pwd', args.ed_pwd)
+    config.set('earthdata', 'ed_pwd', args.ed_pwd)
 
 
 write_config()

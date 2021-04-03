@@ -103,6 +103,7 @@ def update():
               'demtdb',
               'maxnodes',
               'mapset',
+              'earthdata',
               'runtime']:
         if not config.has_section(i):
             config.add_section(i)
