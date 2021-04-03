@@ -68,9 +68,6 @@ parser.add_argument('-ap', '--all_poly', action="store_true",
 parser.add_argument('-af', '--all_folder', action="store_true",
                     help="build mapsets using the names of the folders in " +
                     WORK_DIR + "gps_ready/zipped")
-parser.add_argument('-ao', '--all_o5m', action="store_true",
-                    help="build mapsets using the names of the o5m files in " +
-                    WORK_DIR + "o5m")
 parser.add_argument('-em', '--enable_mapset', default=0, nargs='*',
                     help="enable a space separated list of mapsets")
 parser.add_argument('-ea', '--enable_all', action="store_true",
@@ -189,17 +186,8 @@ if args.all_folder:
     for folder in dir:
         if not config.has_option('mapset', folder):
             config.set('mapset', folder, 'yes')
-    for key in (config['mapset']):
+    for key in dir:
         config.set('mapset', key, 'yes')
-
-
-if args.all_o5m:
-    for region in os.listdir("o5m"):
-        file = os.path.splitext(os.path.basename(region))[0]
-        if not config.has_option('mapset', file):
-            config.set('mapset', file, 'yes')
-        for key in (config['mapset']):
-            config.set('mapset', key, 'yes')
 
 
 if args.add_mapset:
