@@ -31,7 +31,7 @@ def list_test_version():
     print()
     for i in ['splitter', 'mkgmap']:
         try:
-            target = http.client.HTTPConnection("www.mkgmap.org.uk")
+            target = http.client.HTTPSConnection("www.mkgmap.org.uk")
             target.request("GET", "/download/" + i + ".html")
             htmlcontent = target.getresponse()
             data = htmlcontent.read()
@@ -73,7 +73,7 @@ def get_tools():
 
     for i in ['splitter', 'mkgmap']:
         try:
-            target = http.client.HTTPConnection("www.mkgmap.org.uk")
+            target = http.client.HTTPSConnection("www.mkgmap.org.uk")
             target.request("GET", "/download/" + i + ".html")
             htmlcontent = target.getresponse()
             data = htmlcontent.read()
@@ -107,7 +107,7 @@ def get_tools():
                 tar.extractall()
                 tar.close()
             else:
-                url = "http://www.mkgmap.org.uk/download/" + i_rev + ".tar.gz"
+                url = "https://www.mkgmap.org.uk/download/" + i_rev + ".tar.gz"
                 file = i_rev + ".tar.gz"
                 print()
                 info("download " + url)
