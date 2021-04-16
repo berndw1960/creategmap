@@ -269,8 +269,12 @@ def render():
         else:
             options = " -c " + base_opts
 
+        # following opts are mostly diagnostics output
         if config.has_option('runtime', 'use_spec_opts'):
-            spec_opts = (" --report-similar-arcs --report-dead-ends ")
+            spec_opts = (" --report-similar-arcs "
+                         + " --report-dead-ends "
+                         + " --check-roundabouts "
+                         + " --check-roundabout-flares ")
         else:
             spec_opts = " "
 
