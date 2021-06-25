@@ -96,7 +96,7 @@ def create_cont():
             use_srtm3 = ",srtm3 "
         else:
             ed_pwd_opts = " "
-            ed_pwd_opt = " "
+            ed_pwd_opts = " "
             use_srtm3 = " "
 
         # use phyghtmap to get the raw-data from the internet,

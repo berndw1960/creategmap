@@ -197,6 +197,8 @@ parser.add_argument('-ns', '--no_split', action="store_true",
                     help="don't split the mapdata")
 parser.add_argument('-mn', '--maxnodes',
                     help="set the maxnodes for splitter")
+parser.add_argument('-spv', '--splitter_version', default=0,
+                    help="splitter version to use, use it with '-spv r123'")
 
 # mkgmap options
 parser.add_argument('-mj', '--max_jobs', default='yes',
@@ -205,6 +207,8 @@ parser.add_argument('-kg', '--keep_going', action="store_true",
                     help=False)
 parser.add_argument('-in', '--installer', action="store_true",
                     help="create mapsource installer")
+parser.add_argument('-mkv', '--mkgmap_version', default=0,
+                    help="mkgmap version to use, use it with '-mkv r123'")
 
 # editable with commandline options
 parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
@@ -683,6 +687,22 @@ if args.mkgmap_test:
     info("MKGMAP test version set to " + args.mkgmap_test)
 
 
+# to use previous versions of splitter and mkgmap
+if args.splitter_version:
+    config.set('splitter', 'old_version', '1')
+    config.set('splitter', 'rev', 'splitter-' + args.splitter_version)
+    write_config()
+    print()
+    info("SPLITTER version set to " + config['splitter']['rev'])
+
+if args.mkgmap_version:
+    config.set('mkgmap', 'old_version', '1')
+    config.set('mkgmap', 'rev', 'mkgmap-' + args.mkgmap_version)
+    write_config()
+    print()
+    info("MKGMAP version set to " + config['mkgmap']['rev'])
+
+
 # set the amount of levels
 if args.levels != config['maplevel']['levels']:
     config.set('maplevel', 'levels', args.levels)
@@ -896,6 +916,12 @@ mkgmap.render()
 #  remove test option
 if config.has_option('mkgmap', 'test'):
     config.remove_option('mkgmap', 'test')
+    write_config()
+
+
+for i in ['splitter', 'mkgmap']:
+    if config.has_option(i, 'old_version'):
+        config.remove_option(i, 'old_version')
     write_config()
 
 

@@ -185,6 +185,9 @@ def update():
     for i in ['mkgmap', 'splitter']:
         if config.has_option(i, 'test'):
             config.remove_option(i, 'test')
+        if config.has_option(i, 'old_version'):
+            config.remove_option(i, 'old_version')
+
 
     if config.has_option('runtime', 'installer'):
         config.remove_option('runtime', 'installer')
