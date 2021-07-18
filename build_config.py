@@ -188,7 +188,6 @@ def update():
         if config.has_option(i, 'old_version'):
             config.remove_option(i, 'old_version')
 
-
     if config.has_option('runtime', 'installer'):
         config.remove_option('runtime', 'installer')
 

@@ -66,9 +66,18 @@ if not os.path.exists(WORK_DIR):
 
 os.chdir(WORK_DIR)
 
+if os.path.isfile("pygmap3.lck"):
+    error("last run of pygmap3.py was not ended correctly!\n\n"
+          + "please the error messages and remove the lockfile\n\n"
+          + "      " + WORK_DIR + "pygmap3.lck\n")
+    quit()
+else:
+    fobj = open("pygmap3.lck", "w")
+    fobj.close()
 
-if os.path.exists("pygmap3.cfg"):
-    if os.path.exists("pygmap3.cfg.bak"):
+
+if os.path.isfile("pygmap3.cfg"):
+    if os.path.isfile("pygmap3.cfg.bak"):
         os.remove("pygmap3.cfg.bak")
 
     shutil.copyfile('pygmap3.cfg', 'pygmap3.cfg.bak')
@@ -90,7 +99,7 @@ config = configparser.ConfigParser()
 
 
 # create a new config if needed
-if not os.path.exists("pygmap3.cfg"):
+if not os.path.isfile("pygmap3.cfg"):
     build_config.create()
 
 
@@ -949,6 +958,10 @@ DATE = today.strftime('%Y%m%d_%H%M')
 
 
 config.read('pygmap3.cfg')
+
+
+if os.path.isfile("pygmap3.lck"):
+    os.remove("pygmap3.lck")
 
 
 print()
