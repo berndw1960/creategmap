@@ -67,8 +67,9 @@ if not os.path.exists(WORK_DIR):
 os.chdir(WORK_DIR)
 
 if os.path.isfile("pygmap3.lck"):
+    print()
     error("last run of pygmap3.py was not ended correctly!\n\n"
-          + "please the error messages and remove the lockfile\n\n"
+          + "please check the error messages and remove the lockfile\n\n"
           + "      " + WORK_DIR + "pygmap3.lck\n")
     quit()
 else:
