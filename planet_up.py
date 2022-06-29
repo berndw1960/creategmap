@@ -126,7 +126,7 @@ if not os.path.exists("planet.osm.pbf") and not os.path.exists("planet.o5m"):
         if os.path.exists("planet.o5m"):
             os.remove("planet-latest.osm.pbf")
     else:
-        os.remane("planet-latest.osm.pbf", "planet.osm.pbf")
+        os.rename("planet-latest.osm.pbf", "planet.osm.pbf")
         print()
         info("if needed in the future, you can convert the planet file"
              + "\n in the planet dir with "
