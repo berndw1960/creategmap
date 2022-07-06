@@ -170,6 +170,10 @@ parser.add_argument('-as', '--add_style', default=0,
 parser.add_argument('-rs', '--rm_style', default=0,
                     help="remove a style")
 
+# update tools
+parser.add_argument('-kt', '--keep_tools', action="store_true",
+                    help="don't update the tools from mkgmap")
+
 # mapdata
 parser.add_argument('-k', '--keep_data', action="store_true",
                     help="don't update the mapdata")
@@ -695,10 +699,21 @@ if args.splitter_version:
     print()
     info("SPLITTER version set to " + config['splitter']['rev'])
 
+
 if args.mkgmap_version:
     config.set('mkgmap', 'old_version', '1')
     config.set('mkgmap', 'rev', 'mkgmap-' + args.mkgmap_version)
     write_config()
+    print()
+    info("MKGMAP version set to " + config['mkgmap']['rev'])
+
+
+if args.keep_tools:
+    config.set('splitter', 'old_version', '1')
+    print()
+    info("SPLITTER version set to " + config['splitter']['rev'])
+
+    config.set('mkgmap', 'old_version', '1')
     print()
     info("MKGMAP version set to " + config['mkgmap']['rev'])
 
