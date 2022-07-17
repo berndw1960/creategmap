@@ -6,7 +6,7 @@ import configparser
 import shutil
 
 
-WORK_DIR = os.environ['HOME'] + "/map_build/"
+WORK_DIR = os.path.expanduser('~') + "/map_build/"
 
 
 def info(msg):

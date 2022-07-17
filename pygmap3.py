@@ -41,7 +41,7 @@ __email__ = "weigelt.bernd@web.de"
 __status__ = "released"
 
 
-WORK_DIR = os.environ['HOME'] + "/map_build/"
+WORK_DIR = os.path.expanduser('~') + "/map_build/"
 
 
 # set prefix for messages

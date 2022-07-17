@@ -7,7 +7,7 @@ import shutil
 import zipfile
 
 
-WORK_DIR = os.environ['HOME'] + "/map_build/"
+WORK_DIR = os.path.expanduser('~') + "/map_build/"
 
 
 config = configparser.ConfigParser()

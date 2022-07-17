@@ -25,7 +25,7 @@ import os
 import argparse
 
 
-WORK_DIR = (os.environ['HOME'] + "/map_build/")
+WORK_DIR = os.path.expanduser('~') + "/map_build/")
 
 
 def info(msg):

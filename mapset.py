@@ -8,7 +8,7 @@ import build_config
 import time
 
 
-WORK_DIR = os.environ['HOME'] + "/map_build/"
+WORK_DIR = os.path.expanduser('~') + "/map_build/"
 
 
 # set prefix for messages
