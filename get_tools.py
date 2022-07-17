@@ -106,7 +106,7 @@ def get_tools():
 
         if not os.path.exists(i_rev):
             if os.path.isfile(i_rev + ".tar.gz"):
-                tar = tarfile.open((i_rev) + ".tar.gz")
+                tar = tarfile.open(i_rev + ".tar.gz")
                 tar.extractall()
                 tar.close()
             else:
@@ -126,7 +126,7 @@ def get_tools():
                     print()
                     break
 
-                tar = tarfile.open((i_rev) + ".tar.gz")
+                tar = tarfile.open(i_rev + ".tar.gz")
                 tar.extractall()
                 tar.close()
 

@@ -42,7 +42,8 @@ def cities15000():
             uo = urllib.request.urlopen
             with uo(url) as response, open(file, 'wb') as out_file:
                 shutil.copyfileobj(response, out_file)
-            os.remove(file + ".bak")
+            if os.path.exists(file + ".bak"):
+                os.remove(file + ".bak")
         except urllib.error.URLError:
             print()
             print(" can't download " + file)

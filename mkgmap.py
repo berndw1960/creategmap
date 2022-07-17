@@ -35,7 +35,7 @@ def typ_txt_test():
     global typ_file
     global style_file
 
-    if (layer == "defaultmap"):
+    if layer == "defaultmap":
         typ_file = " "
         style_file = (WORK_DIR
                       + config['mkgmap']['rev']
@@ -80,7 +80,7 @@ def check():
                                + " --route "
                                + " --housenumbers "
                                + " --index ")
-            style_opts = WORK_DIR + "styles/" + (layer) + "_style/options "
+            style_opts = WORK_DIR + "styles/" + layer + "_style/options "
             base_opts = WORK_DIR + "styles/options "
 
             if layer == "defaultmap":
@@ -197,7 +197,7 @@ def render():
             if hs == "1":
                 dem = " --dem=" + dem_temp
                 dem_dists = (" --dem-dists=" + config['demtdb']['demdists'])
-                show_profiles = (" --show-profiles=1 ")
+                show_profiles = " --show-profiles=1 "
 
                 poly_file = WORK_DIR + "poly/" + region + ".poly"
                 if os.path.exists(poly_file):

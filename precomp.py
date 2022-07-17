@@ -52,7 +52,7 @@ def list_bounds():
     for i in ['sea', 'bounds']:
         try:
             target = http.client.HTTPConnection(www)
-            target.request("GET", (path))
+            target.request("GET", path)
             htmlcontent = target.getresponse()
             data = htmlcontent.read()
             data = data.decode('utf8')

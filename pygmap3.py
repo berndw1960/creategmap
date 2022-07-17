@@ -296,12 +296,12 @@ if args.list_regions or args.edit_opts:
     if print_new_list == "yes":
         info("These are new regions with default values:\n")
         for key in new_region_list:
-            print("    " + (key))
+            print("    " + key)
         print()
         print()
     info("These are configured regions:\n")
     for key in pre_region_list:
-        print("    " + (key))
+        print("    " + key)
     print()
 
 
@@ -375,10 +375,10 @@ if args.edit_opts:
     print()
     info("You can edit these regions\n"
          + "     or enter a name for a new region\n ")
-    text_new_section = ("    Add the new region:   ")
-    text_new_key = ("    Add the new key:   ")
-    text_new_value = ("    Add the new value:   ")
-    text_end = ("\n    to end editing set a key to 'q'")
+    text_new_section = "    Add the new region:   "
+    text_new_key = "    Add the new key:   "
+    text_new_value = "    Add the new value:   "
+    text_end = "\n    to end editing set a key to 'q'"
     text_ntl = (" \n"
                 + "    Which language do you prefer for naming \n"
                 + "    objects in your map?\n\n "
@@ -438,7 +438,7 @@ if args.edit_opts:
         fin = "no"
         while fin != "q":
             print()
-            text = ("    Enter the number of the key to edit:   ")
+            text = "    Enter the number of the key to edit:   "
             num_key = input(text)
             if num_key == "q":
                 break
@@ -451,7 +451,7 @@ if args.edit_opts:
                          + "\n     set it to 'tdb' instead of ' yes'!")
                 print("\n    Old value:   " + new_key
                       + " = " + config[opts_region][new_key] + "\n")
-                text = (text_new_value)
+                text = text_new_value
                 new_value = input(text)
                 if new_value != config[opts_region][new_key]:
                     config.set(opts_region, new_key, new_value)
@@ -478,13 +478,13 @@ if args.edit_opts:
         fin = "no"
         while fin != "q":
             print()
-            text = (text_new_key)
+            text = text_new_key
             new_key = input(text)
             if new_key == "q":
                 break
 
             if new_key != "name_tag_list":
-                text = (text_new_value)
+                text = text_new_value
                 new_value = input(text)
                 config.set(opts_region, new_key, new_value)
             else:
@@ -521,7 +521,7 @@ if args.edit_opts:
             fin = "no"
             while fin != "q":
                 print()
-                text = ("    Enter the number of the key to delete:   ")
+                text = "    Enter the number of the key to delete:   "
                 rem_option = input(text)
                 if rem_option == "q":
                     break
@@ -983,7 +983,7 @@ if os.path.isfile("pygmap3.lck"):
 
 print()
 print()
-print(" ----- " + (DATE) + " ----- " + (region) + " ready! -----")
+print(" ----- " + DATE + " ----- " + region + " ready! -----")
 print()
 print()
 
