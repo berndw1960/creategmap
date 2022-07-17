@@ -46,7 +46,7 @@ def is_there(find, solutionhint):
         print(solutionhint)
 
 
-WORK_DIR = (os.environ['HOME'] + "/map_build/")
+WORK_DIR = os.path.expanduser('~') + "/map_build/"
 
 config = configparser.ConfigParser()
 

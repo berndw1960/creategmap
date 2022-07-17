@@ -10,7 +10,7 @@ import urllib.request
 import shutil
 
 
-WORK_DIR = os.path.expanduser('~') + "/map_build/"
+# WORK_DIR = os.path.expanduser('~') + "/map_build/"
 
 
 def info(msg):
