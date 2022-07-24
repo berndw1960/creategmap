@@ -62,12 +62,16 @@ parser = argparse.ArgumentParser(
 # mapsets
 parser.add_argument('-am', '--add_mapset', default=0, nargs='*',
                     help="add a space separated list of mapsets")
-parser.add_argument('-ap', '--all_poly', action="store_true",
-                    help="build mapsets by using all poly files in " +
-                    WORK_DIR + "poly")
 parser.add_argument('-af', '--all_folder', action="store_true",
-                    help="build mapsets using the names of the folders in " +
-                    WORK_DIR + "gps_ready/zipped")
+                    help="add all folder in " +
+                    WORK_DIR + "gps_ready/zipped" +
+                    " to the mapset list")
+parser.add_argument('-ap', '--all_poly', action="store_true",
+                    help="same as before with the poly files in " +
+                    WORK_DIR + "poly")
+parser.add_argument('-ao', '--all_o5m', action="store_true",
+                    help="same as before with the o5m files in " +
+                    WORK_DIR + "o5m")
 parser.add_argument('-em', '--enable_mapset', default=0, nargs='*',
                     help="enable a space separated list of mapsets")
 parser.add_argument('-ea', '--enable_all', action="store_true",
@@ -175,7 +179,23 @@ if args.all_poly:
             config.set('mapset', file, 'no')
     write_config()
     print()
-    warn("ALL poly files added to mapset list!")
+    warn("ALL poly files added to mapset list but not enabled!")
+    print()
+    quit()
+
+
+if args.all_o5m:
+    path = WORK_DIR + "o5m"
+    dir = sorted(os.listdir(path))
+    for file in dir:
+        file = os.path.splitext(file)[0]
+        if config.has_option('mapset', file):
+            continue
+        else:
+            config.set('mapset', file, 'no')
+    write_config()
+    print()
+    warn("ALL o5m files added to mapset list but not enabled!!")
     print()
     quit()
 

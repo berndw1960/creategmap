@@ -159,6 +159,8 @@ parser.add_argument('-lp',  '--list_poly', action="store_true",
                     help="list all poly files in " + WORK_DIR + "poly ")
 parser.add_argument('-lo', '--list_o5m', action="store_true",
                     help=" list all O5M files in " + WORK_DIR + "o5m ")
+parser.add_argument('-uo', '--update_o5m', action="store_true",
+                    help="update all local o5m files")
 parser.add_argument('-s', '--set_default', action="store_true",
                     help="set region to build as new default")
 
@@ -277,6 +279,21 @@ if args.list_o5m:
     for file in dir:
         file = os.path.splitext(file)[0]
         print(file)
+    print()
+    quit()
+
+
+# update all local o5m files and quit
+if args.update_o5m:
+    path = WORK_DIR + "o5m"
+    dir = sorted(os.listdir(path))
+    for o5m in dir:
+        o5m = os.path.splitext(o5m)[0]
+        config.set('runtime', 'region', o5m)
+        write_config()
+        mapdata.update_o5m()
+    print()
+    info("All o5m files successful updated")
     print()
     quit()
 
@@ -872,6 +889,7 @@ if args.stop_after == "contourlines":
 
 # mapdata to use
 os.chdir(WORK_DIR)
+
 
 if not args.keep_data:
     if not os.path.exists("o5m/" + region + ".o5m"):
