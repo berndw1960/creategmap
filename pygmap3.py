@@ -67,6 +67,16 @@ if not os.path.exists(WORK_DIR):
 os.chdir(WORK_DIR)
 
 
+#if os.path.isfile("pygmap3.lck"):
+#    os.remove("pygmap3.lck")
+#    print()
+#    error("last run of pygmap3.py was not ended correctly!\n\n")
+#    quit()
+#else:
+#    fobj = open("pygmap3.lck", "w")
+#    fobj.close()
+
+
 if os.path.isfile("pygmap3.cfg"):
     if os.path.isfile("pygmap3.cfg.bak"):
         os.remove("pygmap3.cfg.bak")
@@ -985,6 +995,10 @@ DATE = today.strftime('%Y%m%d_%H%M')
 
 
 config.read('pygmap3.cfg')
+
+
+#if os.path.isfile("pygmap3.lck"):
+#    os.remove("pygmap3.lck")
 
 
 print()
