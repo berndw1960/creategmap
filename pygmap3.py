@@ -346,6 +346,7 @@ if args.set_default or not config.has_option('runtime', 'default_region'):
     region = os.path.splitext(region)[0]
     config.set('runtime', 'default_region', region)
     write_config()
+    quit()
 
 
 # set the region
