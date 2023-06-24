@@ -36,8 +36,9 @@ def list_bounds():
     os.chdir(WORK_DIR + "precomp")
 
     info("local files:")
+    print()
     for i in ['sea', 'bounds']:
-        print()
+
         dir = os.listdir()
         list = [x for x in dir if x.startswith(i) if x.endswith(".zip")]
         list = sorted(list, reverse=True)
