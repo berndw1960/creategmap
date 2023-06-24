@@ -38,7 +38,6 @@ def list_bounds():
     info("local files:")
     print()
     for i in ['sea', 'bounds']:
-
         dir = os.listdir()
         list = [x for x in dir if x.startswith(i) if x.endswith(".zip")]
         list = sorted(list, reverse=True)
