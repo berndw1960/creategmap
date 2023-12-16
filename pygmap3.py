@@ -67,16 +67,6 @@ if not os.path.exists(WORK_DIR):
 os.chdir(WORK_DIR)
 
 
-#if os.path.isfile("pygmap3.lck"):
-#    os.remove("pygmap3.lck")
-#    print()
-#    error("last run of pygmap3.py was not ended correctly!\n\n")
-#    quit()
-#else:
-#    fobj = open("pygmap3.lck", "w")
-#    fobj.close()
-
-
 if os.path.isfile("pygmap3.cfg"):
     if os.path.isfile("pygmap3.cfg.bak"):
         os.remove("pygmap3.cfg.bak")
@@ -232,10 +222,6 @@ parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
 parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'],
                     help="set the distance between two points")
 parser.add_argument('-c', '--contourlines', action="store_true",
-                    help=False)
-parser.add_argument('-edu', '--ed_user', default=0,
-                    help=False)
-parser.add_argument('-edp', '--ed_pwd', default=0,
                     help=False)
 
 # image handling
@@ -765,14 +751,6 @@ if args.dem_dists != config['demtdb']['demdists']:
     config.set('demtdb', 'demdists', args.dem_dists)
 
 
-if args.ed_user:
-    config.set('earthdata', 'ed_user', args.ed_user)
-
-
-if args.ed_pwd:
-    config.set('earthdata', 'ed_pwd', args.ed_pwd)
-
-
 write_config()
 
 
@@ -851,9 +829,6 @@ if args.no_bounds:
 
 
 write_config()
-
-
-
 
 
 # check bounds, download only if needed
@@ -996,10 +971,6 @@ DATE = today.strftime('%Y%m%d_%H%M')
 
 
 config.read('pygmap3.cfg')
-
-
-#if os.path.isfile("pygmap3.lck"):
-#    os.remove("pygmap3.lck")
 
 
 print()

@@ -88,24 +88,10 @@ def create_cont():
         else:
             maxnodes = config['maxnodes']['default']
 
-        if config.has_option('earthdata', 'ed_user'):
-            ed_user_opts = (" --earthexplorer-user="
-                            + config['earthdata']['ed_user'])
-            ed_pwd_opts = (" --earthexplorer-password="
-                           + config['earthdata']['ed_pwd'])
-            use_srtm3 = ",srtm3 "
-        else:
-            ed_pwd_opts = " "
-            ed_pwd_opts = " "
-            use_srtm3 = " "
-
         # use phyghtmap to get the raw-data from the internet,
         # downloaded files will be stored for later builds
 
         command_line = ("phyghtmap --source=view1,view3,srtm1"
-                        + use_srtm3
-                        + ed_user_opts
-                        + ed_pwd_opts
                         + " --start-node-id=1 "
                         + " --start-way-id=1 "
                         + " --max-nodes-per-tile="
