@@ -129,6 +129,7 @@ def get_tools():
                 tar = tarfile.open(i_rev + ".tar.gz")
                 tar.extractall()
                 tar.close()
+                shutil.copy2(i_rev + ".tar.gz","MKGMAP_backups/")
 
         if config.has_option(i, 'test'):
             print()

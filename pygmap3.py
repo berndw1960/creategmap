@@ -75,7 +75,7 @@ if os.path.isfile("pygmap3.cfg"):
 
 
 # create dir o5m, poly and tiles
-for dir in ['o5m', 'pbf', 'poly', 'tiles', 'precomp']:
+for dir in ['o5m', 'pbf', 'poly', 'tiles', 'precomp', 'MKGMAP_backups']:
     if not os.path.exists(dir):
         os.mkdir(dir)
 
