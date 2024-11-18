@@ -296,6 +296,10 @@ if args.update_o5m:
 
 if args.list_regions or args.edit_opts:
     print()
+    info("This is the default region, if pygmap3.py runs without options\n")
+    region =  config['runtime']['default_region']
+    print("    " + region)
+    print()
     pre_region_list = []
     new_region_list = []
     print_new_list = "no"
