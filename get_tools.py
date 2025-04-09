@@ -95,14 +95,32 @@ def get_tools():
 
                 target.close()
 
-            except http.client.NotConnected:
+            except http.client.HTTPException:
                 print()
                 print(" can't connect to " + target)
                 print()
                 break
 
-            i_rev = sorted(pattern.findall(data), reverse=True)[0]
-            i_rev = os.path.splitext(os.path.basename(i_rev))[0]
+            # if we got no usable version on www.mkgmap.org.uk, use the old one
+            try:
+                i_rev = sorted(pattern.findall(data), reverse=True)[0]
+                i_rev = os.path.splitext(os.path.basename(i_rev))[0]
+
+            except IndexError:
+                if config.has_option(i,'rev'):
+                    i_rev = config[i]['rev']
+                    print()
+                    print(" an older version of " + i + " is being used because a website error occurse")
+                    print()
+                    print(" using " + i_rev)
+                    print()
+
+                else:
+                    print()
+                    print(" can't find any version of " + i + " on " + target)
+                    print(" please use the option --spv or --mkv as workaround")
+                    print()
+                    break
 
         if not os.path.exists(i_rev):
             if os.path.isfile(i_rev + ".tar.gz"):
