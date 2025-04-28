@@ -45,13 +45,13 @@ def list_bounds():
             print("  " + i)
     print()
 
-    www = "osm.thkukuk.de"
-    path = "/data/"
+    www = "www.thkukuk.de"
+    path = "/osm/data/"
 
     info("files on thkukuk.de (*-latest not listed):")
     for i in ['sea', 'bounds']:
         try:
-            target = http.client.HTTPConnection(www)
+            target = http.client.HTTPSConnection(www)
             target.request("GET", path)
             htmlcontent = target.getresponse()
             data = htmlcontent.read()
@@ -83,8 +83,8 @@ def fetch_bounds():
     config.read('pygmap3.cfg')
     os.chdir(WORK_DIR + "precomp")
 
-    www = "osm.thkukuk.de"
-    path = "/data/"
+    www = "www.thkukuk.de"
+    path = "/osm/data/"
 
     for i in ['sea', 'bounds']:
         file = config['precomp'][i]
