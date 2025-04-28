@@ -17,6 +17,11 @@ WORK_DIR = os.path.expanduser('~') + "/map_build/"
 config = configparser.ConfigParser()
 
 
+# download path to thekukuk.de
+www = "www.thkukuk.de"
+path = "/osm/data/"
+
+
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
         config.write(configfile)
@@ -45,8 +50,6 @@ def list_bounds():
             print("  " + i)
     print()
 
-    www = "www.thkukuk.de"
-    path = "/osm/data/"
 
     info("files on thkukuk.de (*-latest not listed):")
     for i in ['sea', 'bounds']:
@@ -82,9 +85,6 @@ def fetch_bounds():
 
     config.read('pygmap3.cfg')
     os.chdir(WORK_DIR + "precomp")
-
-    www = "www.thkukuk.de"
-    path = "/osm/data/"
 
     for i in ['sea', 'bounds']:
         file = config['precomp'][i]
