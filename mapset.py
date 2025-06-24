@@ -344,7 +344,7 @@ else:
 
 
 command_line = ("pygmap3.py -kg " +
-                verbose + stop + cl + test + log + zip)
+                verbose + stop + test + log + zip)
 
 
 config.set('runtime', 'mapset', "1")

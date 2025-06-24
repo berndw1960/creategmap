@@ -107,7 +107,7 @@ def get_tools():
                 i_rev = os.path.splitext(os.path.basename(i_rev))[0]
 
             except IndexError:
-                if config.has_option(i,'rev'):
+                if config.has_option(i, 'rev'):
                     i_rev = config[i]['rev']
                     print()
                     print(" an older version of " + i + " is being used because a website error occurse")
@@ -147,7 +147,7 @@ def get_tools():
                 tar = tarfile.open(i_rev + ".tar.gz")
                 tar.extractall()
                 tar.close()
-                shutil.copy2(i_rev + ".tar.gz","MKGMAP_backups/")
+                shutil.copy2(i_rev + ".tar.gz", "MKGMAP_backups/")
 
         if config.has_option(i, 'test'):
             print()
