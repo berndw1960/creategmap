@@ -79,6 +79,10 @@ for dir in ['o5m', 'pbf', 'poly', 'tiles', 'precomp', 'MKGMAP_backups']:
         os.mkdir(dir)
 
 
+def clear():
+    os.system('clear')
+
+
 # configparser
 def write_config():
     with open('pygmap3.cfg', 'w') as configfile:
@@ -97,6 +101,9 @@ build_config.update()
 
 
 config.read('pygmap3.cfg')
+
+
+clear()
 
 
 # argparse
@@ -292,6 +299,7 @@ if args.update_o5m:
 
 
 if args.list_regions or args.edit_opts:
+    clear()
     print()
     info("This is the default region, if pygmap3.py runs without options\n")
     region =  config['runtime']['default_region']
@@ -388,15 +396,15 @@ if args.edit_opts:
             hillshading = '1'
 
     print()
-    info("You can edit these regions\n"
-         + "     or enter a name for a new region\n ")
-    text_new_section = "    Add the new region:   "
-    text_new_key = "    Add the new key:   "
-    text_new_value = "    Add the new value:   "
+    info("You can edit the regions in the list above\n"
+         + "    or enter a name for a new region:")
+    text_new_section = "  Please enter the new region:   "
+    text_new_key = "    Please enter the key number:   "
+    text_new_value = "   Please enter the new value:   "
     text_end = "\n    to end editing set a key to 'q'"
     text_ntl = (" \n"
                 + "    Which language do you prefer for naming \n"
-                + "    objects in your map?\n\n "
+                + "    objects in your map?\n\n"
                 + "    default is the english value,\n\n"
                 + "    'name:en,name:int,name'\n\n"
                 + "    you can also use:\n\n"
@@ -419,6 +427,7 @@ if args.edit_opts:
 
     my_list = []
     if config.has_section(opts_region):
+        clear()
         print()
         info("Options in section '" + opts_region + "':\n")
         for key in config[opts_region]:
@@ -426,23 +435,29 @@ if args.edit_opts:
         for key in my_list:
             print("    " + str(my_list.index(key)+1) + "\t"
                   + key + "\n\t\t\t" + config[opts_region][key])
-        text = ("\n\n    You can edit, add and delete sections "
+        text = ("\n\n    You can edit, add or delete sections "
                 + "and options in pygmap3.cfg. \n\n"
                 + "    [e]dit | [a]dd | [d]elete | [q]uit \n\n"
                 + "    Enter your choice:    ")
         edit = input(text)
     else:
+        config.add_section(opts_region)
+        for key in config['template_region']:
+                config.set(opts_region, key, config['template_region'][key])
+                config.set(opts_region, 'new_region', 'yes')
+                write_config()
+        clear()
         print()
-        warn("This is a new region, please at least one key.\n"
-             + "    see the section [template_region] as example")
+        warn("This is a new region!\n\n"
+             + "    These are the currently set default values.")
         my_list = []
         print()
-        info("Options in section [template_region]:\n")
-        for key in config['template_region']:
+        info("Options in the new section " + opts_region + ":\n")
+        for key in config[opts_region]:
             my_list.append(key)
         for key in my_list:
             print("    " + str(my_list.index(key)+1) + "     "
-                  + key + "    " + config['template_region'][key])
+                  + key + "    " + config[opts_region][key])
         edit = "a"
 
     if edit == "q":
@@ -462,8 +477,8 @@ if args.edit_opts:
             if new_key != "name_tag_list":
                 if new_key in config['tdb_layer'] and hillshading == '1':
                     print()
-                    info(" If you want to enable hillshading for this layer,"
-                         + "\n     set it to 'tdb' instead of ' yes'!")
+                    info("If you want to enable hillshading for this layer,\n "
+                         + "   set it to 'tdb' instead of ' yes'!")
                 print("\n    Old value:   " + new_key
                       + " = " + config[opts_region][new_key] + "\n")
                 text = text_new_value
@@ -471,6 +486,7 @@ if args.edit_opts:
                 if new_value != config[opts_region][new_key]:
                     config.set(opts_region, new_key, new_value)
                     write_config()
+                    print("    Success!")
             else:
                 language = input(text_ntl)
                 if language == "q":
@@ -480,6 +496,7 @@ if args.edit_opts:
                 else:
                     name_tag_list = 'name:en,name:int,name'
                 config.set(opts_region, 'name_tag_list', name_tag_list)
+                write_config()
             if config.has_option(opts_region, 'new_region'):
                 config.remove_option(opts_region, 'new_region')
                 write_config()
@@ -513,7 +530,7 @@ if args.edit_opts:
                 config.set(opts_region, 'name_tag_list', name_tag_list)
 
     elif edit == "d":
-        text = ("\n    You can delete [a]ll, [s]ome or [N]o option\n"
+        text = ("\n    You can delete [a]ll, [s]ome or o[n]e key\n"
                 + "    Use [q] to exit without changes. \n\n"
                 + "    Enter your choice:  ")
         kill_opts = input(text)
