@@ -80,9 +80,6 @@ def create():
     config['demtdb'] = {}
     config['demtdb'] = {'demdists': '3314,6628,13256,26512,53024,106048', }
 
-    config['contourlines'] = {}
-    config['contourlines'] = {'draw-priority': '16', }
-
     config['name_tag_list'] = {}
     config['name_tag_list'] = {'default': 'name:en,name:int,name', }
 

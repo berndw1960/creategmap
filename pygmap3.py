@@ -24,7 +24,6 @@ import build_config
 import get_tools
 import precomp
 import geonames
-import contourlines
 import mapdata
 import splitter
 import mkgmap
@@ -221,8 +220,6 @@ parser.add_argument('-lv', '--levels', default=config['maplevel']['levels'],
                     help="This is a number between 0 and 16")
 parser.add_argument('-dd', '--dem_dists', default=config['demtdb']['demdists'],
                     help="set the distance between two points")
-parser.add_argument('-c', '--contourlines', action="store_true",
-                    help=False)
 
 # image handling
 parser.add_argument('-z', '--zip_img', action="store_true",
@@ -851,22 +848,6 @@ if args.stop_after == "get_tools":
 # create an installer for mapsource
 if args.installer:
     config.set('runtime', 'installer', "1")
-
-
-if args.contourlines:
-    if os.path.exists("styles/contourlines_style"):
-        contourlines.create_cont()
-    else:
-        warn("dir styles/contourlines_style not found")
-
-
-# --stop_after contourlines
-config.read('pygmap3.cfg')
-if args.stop_after == "contourlines":
-    print()
-    info("stop after contourlines creation")
-    print()
-    quit()
 
 
 # mapdata to use

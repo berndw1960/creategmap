@@ -99,11 +99,9 @@ parser.add_argument('-ba', '--break_after', default=0,
 # pygmap3
 parser.add_argument('-nz', '--no_zip', action="store_true",
                     help="don't zip the images after build")
-parser.add_argument('-c', '--contourlines', action="store_true",
-                    help="enable countourlines layer creation")
 parser.add_argument('-st', '--stop_after', default=0,
                     help="build process stop after" +
-                    " [tests|contourlines|mapdata|splitter|mkgmap]")
+                    " [tests|mapdata|splitter|mkgmap]")
 parser.add_argument('-l', '--log', action="store_true",
                     help="enable splitter and mkgmap logging")
 parser.add_argument('-v', '--verbose', action="store_true",
@@ -313,12 +311,6 @@ if args.stop_after:
     stop = "-st " + args.stop_after + " "
 else:
     stop = ""
-
-
-if args.contourlines:
-    cl = "-c "
-else:
-    cl = ""
 
 
 if args.test and config.has_option('runtime', 'test'):
