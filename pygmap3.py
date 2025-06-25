@@ -397,10 +397,16 @@ if args.edit_opts:
 
     print()
     info("You can edit the regions in the list above\n"
-         + "    or enter a name for a new region:")
+         + "    or enter a name for a new region.\n\n"
+         + "    Enter 'mapset' if you want to edit the \n"
+         + "    mapset list.")
     text_new_section = "  Please enter the new region:   "
-    text_new_key = "    Please enter the key number:   "
-    text_new_value = "   Please enter the new value:   "
+    text_new_key = "    Please enter the key name:   "
+    text_new_value = "    Please enter the new value:   "
+    text_edit_value = "    Enter the number of the key to edit:   "
+    text_mapset = ("    enter 'd' = daily build \n"
+                   + "    or    'w' = weekly build \n"
+                   + "    or    'no' to disable a mapset\n")
     text_end = "\n    to end editing set a key to 'q'"
     text_ntl = (" \n"
                 + "    Which language do you prefer for naming \n"
@@ -418,7 +424,7 @@ if args.edit_opts:
                 + "    'q' breaks without changings\n\n"
                 + "    please enter only a ISO code:   ")
 
-    text = ("\n    Please enter the name of the region:\n\n"
+    text = ("\n    Please enter the name of the region or 'mapset':\n\n"
             + "    Enter the name, 'q' to exit: ")
     opts_region = input(text)
     if opts_region == "q":
@@ -468,7 +474,11 @@ if args.edit_opts:
         fin = "no"
         while fin != "q":
             print()
-            text = "    Enter the number of the key to edit:   "
+            if opts_region == "mapset":
+                print(text_mapset)
+                text = text_edit_value
+            else:
+                text = text_edit_value
             num_key = input(text)
             if num_key == "q":
                 break
@@ -530,7 +540,7 @@ if args.edit_opts:
                 config.set(opts_region, 'name_tag_list', name_tag_list)
 
     elif edit == "d":
-        text = ("\n    You can delete [a]ll, [s]ome or o[n]e key\n"
+        text = ("\n    You can delete [a]ll or [o]ne key\n"
                 + "    Use [q] to exit without changes. \n\n"
                 + "    Enter your choice:  ")
         kill_opts = input(text)
@@ -548,7 +558,7 @@ if args.edit_opts:
             else:
                 print()
                 quit()
-        elif kill_opts == "s":
+        elif kill_opts == "o":
             print(text_end)
             fin = "no"
             while fin != "q":
@@ -560,10 +570,12 @@ if args.edit_opts:
                 rem_option = int(rem_option)-1
                 rem_option = my_list[rem_option]
                 config.remove_option(opts_region, rem_option)
+                print("    Removed! ")
 
     write_config()
+    clear()
     print()
-    info("These are the new values for the region "
+    info("These are the new values for the section "
          + opts_region + ":\n")
     for key in config[opts_region]:
         print("    " + key + "\n\t\t\t" + config[opts_region][key])
@@ -590,12 +602,12 @@ if args.list_mapstyle:
             print()
             print(" enabled:")
             for key in (config['mapset']):
-                if config['mapset'][key] == "yes":
+                if config['mapset'][key] == "d":
                     print("  " + key)
             print()
             print(" disabled:")
             for key in (config['mapset']):
-                if config['mapset'][key] == "no":
+                if config['mapset'][key] == "w":
                     print("  " + key)
     print()
     quit()

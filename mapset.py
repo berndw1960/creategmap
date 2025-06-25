@@ -24,6 +24,10 @@ def error(msg):
     print("EE: " + msg)
 
 
+def clear():
+    os.system('clear')
+
+
 if not os.path.exists(WORK_DIR):
     error("Please create" + WORK_DIR)
     quit()
@@ -70,12 +74,14 @@ parser.add_argument('-ap', '--all_poly', action="store_true",
                     help="same as before with the poly files in " +
                     WORK_DIR + "poly")
 parser.add_argument('-ao', '--all_o5m', action="store_true",
-                    help="same as before with the o5m files in " +
+                    help="same as before with the o5m files in " + 
                     WORK_DIR + "o5m")
-parser.add_argument('-em', '--enable_mapset', default=0, nargs='*',
+parser.add_argument('-emd', '--enable_mapset_daily', default=0, nargs='*',
+                    help="enable a space separated list of mapsets")
+parser.add_argument('-emw', '--enable_mapset_weekly', default=0, nargs='*',
                     help="enable a space separated list of mapsets")
 parser.add_argument('-ea', '--enable_all', action="store_true",
-                    help="enable all mapsets")
+                    help="enable all weekly mapsets for daily build")
 parser.add_argument('-rst', '--restore', action="store_true",
                     help="restore mapsets from mapset_backup")
 parser.add_argument('-dm', '--disable_mapset', default=0, nargs='*',
@@ -117,18 +123,19 @@ args = parser.parse_args()
 def mapset_backup():
     if not config.has_section('mapset_backup'):
         config.add_section('mapset_backup')
-    for key in (config['mapset']):
-        config.set('mapset_backup', key, config['mapset'][key])
-        config.set('mapset', key, 'no')
+    for region in (config['mapset']):
+        config.set('mapset_backup', region, config['mapset'][region])
+        if config['mapset'][region] != "no":
+            config.set('mapset', region, 'd')
 
 
 def mapset_restore():
     if config.has_section('mapset'):
         config.remove_section('mapset')
     config.add_section('mapset')
-    for key in (config['mapset_backup']):
-        config.set('mapset', key, config['mapset_backup'][key])
-        config.remove_option('mapset_backup', key)
+    for region in (config['mapset_backup']):
+        config.set('mapset', region, config['mapset_backup'][region])
+        config.remove_option('mapset_backup', region)
     config.remove_section('mapset_backup')
     if config.has_option('runtime', 'fix_mapset'):
         config.remove_option('runtime', 'fix_mapset')
@@ -218,7 +225,7 @@ if args.add_mapset:
                 print("please create or download " + file + ".poly")
                 print()
                 quit()
-        config.set('mapset', region, 'yes')
+        config.set('mapset', region, 'w')
         if not config.has_section(region):
             config.add_section(region)
             config.set(region, 'new_region', 'yes')
@@ -236,13 +243,6 @@ if args.restore:
     quit()
 
 
-if args.enable_mapset:
-    for region in args.enable_mapset:
-        config.set('mapset', region, 'yes')
-    write_config()
-    quit()
-
-
 # 'fix_mapset' to prevent overwriting mapset_backup
 # if 'args.enable_all' is used twice or more
 
@@ -251,15 +251,38 @@ if args.enable_all:
         quit()
     mapset_backup()
     for region in (config['mapset']):
-        config.set('mapset', region, 'yes')
+        if config['mapset'][region] != "no":
+            config.set('mapset', region, 'd')
     config.set('runtime', 'fix_mapset', '1')
     write_config()
     quit()
 
 
+if args.enable_mapset_daily:
+    print()
+    for region in args.enable_mapset_daily:
+        config.set('mapset', region, 'd')
+        write_config()
+        print("    enabled " + region + " for daily build")
+    print()
+    quit()
+
+
+if args.enable_mapset_weekly:
+    print()
+    for region in args.enable_mapset_weekly:
+        config.set('mapset', region, 'w')
+        write_config()
+        print("    enabled " + region + " for weekly build")
+    print()
+    quit()
+
+
 if args.disable_mapset:
+    print()
     for region in args.disable_mapset:
         config.set('mapset', region, 'no')
+        info("disabled " + region + "\n")
     write_config()
     quit()
 
@@ -287,9 +310,14 @@ if args.list_mapset:
         print()
         info("mapset list includes: ")
         print()
-        print("    enabled:")
+        print("    enabled for daily build:")
         for key in (config['mapset']):
-            if config['mapset'][key] == "yes":
+            if config['mapset'][key] == "d":
+                print("      " + key)
+        print()
+        print("    enabled for weekly build:")
+        for key in (config['mapset']):
+            if config['mapset'][key] == "w":
                 print("      " + key)
         print()
         print("    disabled:")
@@ -352,7 +380,8 @@ write_config()
 
 
 for region in config['mapset']:
-    if config['mapset'][region] == "yes":
+    if config['mapset'][region] == "d":
+        clear()
         print()
         info("next mapset to create is " + region)
         print()
@@ -389,6 +418,9 @@ if config.has_option('runtime', 'faststyle'):
 
 config.set('runtime', 'mapset', "0")
 write_config()
+
+
+clear()
 
 
 print()
