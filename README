@@ -32,14 +32,6 @@ to create this tools, needs cc installed
     http://wiki.openstreetmap.org/wiki/osmfilter
 
 
-phyghtmap comes with an install routine
-
-    phyghtmap (to create the contourlines)
-    http://katze.tfiu.de/projects/phyghtmap/
-    please use the version 2.21 or later!
-
-
-
 Description:
 
 mapset.py -     if you want to build more than one mapset, as example dach and
@@ -51,7 +43,7 @@ pygmap3.py -    the main script, start it without any option to create map
                 for Germany with the default style of mkgmap
 
                 you need a poly file of the region, 
-                if you want to build yourchoice of region, store this file 
+                if you want to build your choice of region, store the poly file 
                 in the subfolder poly.
                 search for osm2poly and poly2osm in the web, if you want to
                 create a poly file from scratch.
@@ -61,8 +53,9 @@ pygmap3.py -    the main script, start it without any option to create map
                 store this file in a subfolder of the work dir named pbf.
                 the same is possible with o5m files, store these files in the
                 subfolder o5m.
+
                 files with names like germany or germany-latest.[pbf|o5m] can be used.
-                to prevent large updates, download a poly for this region, too, and 
+                to prevent large updates, download a poly for this region and 
                 store it in the folder poly.                i
 
                 it is also possible to use a planet file to create the raw data, but
@@ -89,7 +82,6 @@ planet_up.py -  download  a complete planet from openstreetmap.org or update it
 
 
 all other *.py are helper for 'pygmap3.py', they must be in the same folder!
-
 
 
                 #### Examples ####
