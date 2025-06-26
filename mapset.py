@@ -64,6 +64,8 @@ parser = argparse.ArgumentParser(
         '''))
 
 # mapsets
+parser.add_argument('-bw', '--build_weekly', action="store_true",
+                    help="build all daily and weekly regions")
 parser.add_argument('-am', '--add_mapset', default=0, nargs='*',
                     help="add a space separated list of mapsets")
 parser.add_argument('-af', '--all_folder', action="store_true",
@@ -378,30 +380,36 @@ command_line = ("pygmap3.py -kg " +
 config.set('runtime', 'mapset', "1")
 write_config()
 
-
-for region in config['mapset']:
-    if config['mapset'][region] == "d":
-        clear()
+def build():
+    print()
+    info("next mapset to create is " + region)
+    print()
+    print("    In the next 5 seconds you can stop ")
+    print("    building the maps with STRG+C ")
+    print()
+    print("    continue?")
+    counter = 5
+    while counter > 0:
+        counter -= 1
+        time.sleep(1)
+    if region == args.break_after:
         print()
-        info("next mapset to create is " + region)
-        print()
-        print("    In the next 5 seconds you can stop ")
-        print("    building the maps with STRG+C ")
-        print()
-        print("    continue?")
-        counter = 5
-        while counter > 0:
-            counter -= 1
-            time.sleep(1)
+        warn("Stopping creating mapsets after this mapset")
+    os.system(command_line + "-r " + region)
+    if region == args.break_after:
+        quit()
 
-        if region == args.break_after:
-            print()
-            warn("Stopping creating mapsets after this mapset")
 
-        os.system(command_line + "-r " + region)
-
-        if region == args.break_after:
-            quit()
+if args.build_weekly:
+    for region in config['mapset']:
+        if config['mapset'][region] != "no":
+            clear()
+            build()
+else:
+    for region in config['mapset']:
+        if config['mapset'][region] == "d":
+            clear()
+            build()
 
 
 if config.has_section('mapset_backup'):

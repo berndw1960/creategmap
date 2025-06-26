@@ -12,6 +12,7 @@ Oregon 6x0
 Oregom 7x0
 some Nüvis
 
+Edge Explore 2 
 
 Tools will be installed by the script:
 
@@ -88,3 +89,33 @@ planet_up.py -  download  a complete planet from openstreetmap.org or update it
 
 
 all other *.py are helper for 'pygmap3.py', they must be in the same folder!
+
+
+
+                #### Examples ####
+
+Crontab:
+
+                # all regions on wednesday
+                02 3 * * 3 mapset.py -bw >/dev/null 2>&1
+
+                # only daily builds on thursday until tuesday
+                03 3 * * 0-2,4-6 mapset.py >/dev/null 2>&1
+
+                II: mapset list includes: 
+
+Output mapset -lm with defined regions:
+
+                enabled for daily build:
+                  germany
+
+                enabled for weekly build:
+                  switzerland
+                  alps
+                  bonn
+
+                disabled:
+                  poland
+                  france
+                  spain
+                  italy
