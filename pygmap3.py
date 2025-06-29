@@ -471,7 +471,7 @@ if args.edit_opts:
         quit()
     elif edit == "e":
         print(text_end)
-        fin = "no"
+        fin = "0"
         while fin != "q":
             print()
             if opts_region == "mapset":
@@ -517,7 +517,7 @@ if args.edit_opts:
         text = ("\n    Which options do want to add"
                 + " to pygmap3.cfg?\n\n")
         print(text_end)
-        fin = "no"
+        fin = "0"
         while fin != "q":
             print()
             text = text_new_key
@@ -560,7 +560,7 @@ if args.edit_opts:
                 quit()
         elif kill_opts == "o":
             print(text_end)
-            fin = "no"
+            fin = "0"
             while fin != "q":
                 print()
                 text = "    Enter the number of the key to delete:   "
