@@ -64,7 +64,7 @@ parser = argparse.ArgumentParser(
         '''))
 
 # mapsets
-parser.add_argument('-bw', '--build_weekly', action="store_true",
+parser.add_argument('-ba', '--build_all', action="store_true",
                     help="build all daily and weekly regions")
 parser.add_argument('-am', '--add_mapset', default=0, nargs='*',
                     help="add a space separated list of mapsets")
@@ -100,8 +100,8 @@ parser.add_argument('-fb', '--fastbuild', default=0, nargs='*',
 parser.add_argument('-fs', '--faststyle', default=0, nargs='*',
                     help="a space separated list of styles for the default " +
                     "region, to set the region, us 'pygmap3.py -s $REGION' ")
-parser.add_argument('-ba', '--break_after', default=0,
-                    help="break mapset creating after this" +
+parser.add_argument('-sb', '--stop_build', default=0,
+                    help="stop mapset creating after this" +
                     " changeset, use '-lm' for the list")
 
 # pygmap3
@@ -373,7 +373,7 @@ else:
     so = " "
 
 
-command_line = ("pygmap3.py -kg " +
+command_line = ("pygmap3.py -kg -kt " +
                 verbose + stop + test + log + zip)
 
 
@@ -392,15 +392,15 @@ def build():
     while counter > 0:
         counter -= 1
         time.sleep(1)
-    if region == args.break_after:
+    if region == args.stop_build:
         print()
         warn("Stopping creating mapsets after this mapset")
     os.system(command_line + "-r " + region)
-    if region == args.break_after:
+    if region == args.stop_build:
         quit()
 
 
-if args.build_weekly:
+if args.build_all:
     for region in config['mapset']:
         if config['mapset'][region] != "no":
             clear()
