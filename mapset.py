@@ -76,7 +76,7 @@ parser.add_argument('-ap', '--all_poly', action="store_true",
                     help="same as before with the poly files in " +
                     WORK_DIR + "poly")
 parser.add_argument('-ao', '--all_o5m', action="store_true",
-                    help="same as before with the o5m files in " + 
+                    help="same as before with the o5m files in " +
                     WORK_DIR + "o5m")
 parser.add_argument('-emd', '--enable_mapset_daily', default=0, nargs='*',
                     help="enable a space separated list of mapsets")
@@ -379,6 +379,7 @@ command_line = ("pygmap3.py -kg -kt " +
 
 config.set('runtime', 'mapset', "1")
 write_config()
+
 
 def build():
     print()

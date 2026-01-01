@@ -28,7 +28,6 @@ def write_config():
 
 
 def list_bounds():
-
     config.read('pygmap3.cfg')
 
     print()
@@ -49,7 +48,6 @@ def list_bounds():
         for i in list:
             print("  " + i)
     print()
-
 
     info("files on thkukuk.de (*-latest not listed):")
     for i in ['sea', 'bounds']:

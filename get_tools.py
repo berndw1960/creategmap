@@ -110,7 +110,8 @@ def get_tools():
                 if config.has_option(i, 'rev'):
                     i_rev = config[i]['rev']
                     print()
-                    print(" an older version of " + i + " is being used because a website error occurse")
+                    print(" an older version of " + i +
+                          " is being used because a website error occurse")
                     print()
                     print(" using " + i_rev)
                     print()
@@ -118,7 +119,7 @@ def get_tools():
                 else:
                     print()
                     print(" can't find any version of " + i + " on " + target)
-                    print(" please use the option --spv or --mkv as workaround")
+                    print(" please use the option --spv or --mkv")
                     print()
                     break
 

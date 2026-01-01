@@ -302,7 +302,7 @@ if args.list_regions or args.edit_opts:
     clear()
     print()
     info("This is the default region, if pygmap3.py runs without options\n")
-    region =  config['runtime']['default_region']
+    region = config['runtime']['default_region']
     print("    " + region)
     print()
     pre_region_list = []
@@ -449,9 +449,9 @@ if args.edit_opts:
     else:
         config.add_section(opts_region)
         for key in config['template_region']:
-                config.set(opts_region, key, config['template_region'][key])
-                config.set(opts_region, 'new_region', 'yes')
-                write_config()
+            config.set(opts_region, key, config['template_region'][key])
+            config.set(opts_region, 'new_region', 'yes')
+            write_config()
         clear()
         print()
         warn("This is a new region!\n\n"
@@ -848,6 +848,11 @@ if args.use_bounds:
 
 if args.use_sea:
     config.set('precomp', 'sea', args.use_sea)
+
+
+if args.use_bounds or args.use_sea:
+    write_config()
+    quit()
 
 
 if args.no_sea:

@@ -65,8 +65,7 @@ def split():
                      + " --output=o5m "
                      + sea
                      + " --write-kml=" + region + ".kml "
-                     + " --keep-complete "
-                     + " --overlap=0 ")
+                     + " --keep-complete=true ")
 
     # maxnodes
     if config.has_option('maxnodes', region):
