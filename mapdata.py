@@ -87,7 +87,7 @@ def update_o5m():
     region = config['runtime']['region']
 
     if config.has_option('runtime', 'minutely'):
-        update_opts = " --hourly -- minutely "
+        update_opts = " --hourly --minutely "
     elif config.has_option('runtime', 'hourly'):
         update_opts = " --hourly "
     else:
@@ -98,6 +98,7 @@ def update_o5m():
     poly = " "
     if os.path.exists("poly/" + region + ".poly"):
         poly = " -B=poly/" + region + ".poly "
+
     os.system("osmupdate --daily "
               + "--drop-version "
               + "--drop-author "

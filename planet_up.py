@@ -105,7 +105,7 @@ os.chdir(WORK_DIR + "/planet")
 
 if not os.path.exists("planet.osm.pbf") and not os.path.exists("planet.o5m"):
     print()
-    info("Download started. Size ~50 Gigabytes... please wait! ")
+    info("Download started. Size >80 Gigabytes... please wait! ")
 
     os.system("wget http://ftp5.gwdg.de/pub/misc/openstreetmap/"
               + "planet.openstreetmap.org/pbf/planet-latest.osm.pbf")
